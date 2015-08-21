@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databases xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <database create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" filename="uniprot-human-reviewed-trypsin-april-2015_concatenated_target_decoy.fasta" search_expression="&gt;.*\|(.*)\|" mutation_parse_rule="" species="Homo sapiens (Human)" taxid="9606" source="UniprotKB" />
+</databases>

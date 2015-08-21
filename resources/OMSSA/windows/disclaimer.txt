@@ -1,0 +1,36 @@
+National Library of Medicine disclaimer: 
+http://www.ncbi.nlm.nih.gov/About/disclaimer.html
+
+NCBI source code disclaimer:
+   **************************************************************************
+   *                                                                        *
+   *              National Center for Biotechnology Information             *
+   *       Bldg. 38A, NIH,  8600 Rockville Pike,  Bethesda, MD  20894       *
+   *                                                                        *
+   *                             COPYRIGHT NOTICE                           *
+   *                                                                        *
+   * This software/database is "United States Government Work" under the    *
+   * terms of the United States Copyright Act.  It was written as part of   *
+   * the author's official duties as a Government employee and thus cannot  *
+   * be copyrighted.  This software/database is freely available to the     *
+   * public for use without a copyright notice.  Restrictions cannot be     *
+   * placed on its present or future use.                                   *
+   *                                                                        *
+   * Although all reasonable efforts have been taken to ensure the accuracy *
+   * and reliability of the software and data, the National Library of      *
+   * Medicine (NLM) and the U.S. Government does not and cannot warrant the *
+   * performance or results that may be obtained by using this software or  *
+   * data.  The NLM and the U.S. Government disclaims all warranties as to  *
+   * performance, merchantability or fitness for any particular purpose.    *
+   *                                                                        *
+   * In any work or product derived from this material, proper attribution  *
+   * of the author as the source of the software or data would be           *
+   * appreciated.                                                           *
+   *                                                                        *
+   **************************************************************************
+
+OMSSA Citation:
+Geer LY, Markey SP, Kowalak JA, Wagner L, Xu M, Maynard DM, Yang X, Shi W, Bryant SH.  "Open mass spectrometry search algorithm." J Proteome Res. 2004 Sep-Oct;3(5):958-64.
+
+http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15473683 
+

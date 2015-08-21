@@ -1,0 +1,154 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+    <HEAD>
+        <TITLE></TITLE>
+    </HEAD>
+    <BODY>
+        <a name="#top"/>
+        <H2>Databases</H2>
+
+        <ul>
+            <li><a href='#Introduction'>Introduction</a></li>
+            <li><a href='#FASTA_Format'>FASTA Format</a></li>
+            <li><a href='#UniProt_Databases'>UniProt Databases</a></li>
+            <li><a href='#IPI_Databases'>IPI Databases</a></li>
+            <li><a href='#Decoy_Sequences'>Decoy Sequences</a></li>
+            <li><a href='#Mascot_Users'>Mascot Users</a></li>
+            <li><a href='#PeptideShaker'>PeptideShaker</a></li>
+        </ul>
+
+        <a name="#Introduction"></a>
+        <h3>Introduction</h3>
+        <p align="justify">
+            Besides the spectra themselves, the sequence database to search in is the most important 
+            input of the search. If a sequence is not in the database the corresponding peptide/protein 
+            cannot be identified. 
+            <br><br>
+            On the other hand, adding sequences of proteins that cannot occur in 
+            your experiment will increase the rate of false identifications. It is therefore essential to 
+            use the correct sequence database.
+        </p>
+        <br>
+        <a href="#top">More on the Databases</a>
+        <br><br><br>
+
+        <a name="#FASTA_Format"></a>
+        <h3>FASTA Format</h3>
+        <p align="justify">
+            The standard format for sequence databases is called <a href="http://en.wikipedia.org/wiki/FASTA_format">FASTA</a>. 
+            <b>SearchGUI</b> therefore requires that the sequences are stored in this format. 
+            <br><br>
+            In a FASTA file each sequence is represented by a header and the sequence itself. The header contains information about where the sequence 
+            comes from, e.g., protein accession number, database and species. However, the format of the header varies 
+            from database to database. <b>SearchGUI</b> supports the most common databases like <a href="http://www.uniprot.org/">SwissProt/UniProt</a>, NCBI 
+            and IPI, plus a long list of less common databases.
+            <br><br>
+            <i>It is strongly recommended to use one of the standard databases, and of these <a href="http://www.uniprot.org/">SwissProt/UniProt</a> 
+                is the preferred option.</i> 
+            <br><br>
+            Non-standard home made sequence databases with non-standard headers can also be used, but the downstream 
+            usage may be limited , e.g., in <a href="http://peptide-shaker.googlecode.com">PeptideShaker</a>. If 
+            you have a sequence database that cannot be used, please let us know be setting up an 
+            <a href="http://code.google.com/p/searchgui/issues/list">issue at the SearchGUI home page</a>.  
+        </p>
+        <br>
+        <a href="#top">More on the Databases</a>
+        <br><br><br>
+
+        <a name="#UniProt_Databases"></a>
+        <h3>UniProt Databases</h3>
+        <p align="justify">
+            As mentioned above it is strongly recommended to use sequence databases based on <a href="http://www.uniprot.org/">SwissProt/UniProt</a>. 
+            This ensures that you get reviewed, maintained and well-annotated sequences that can easily be linked to a long list of 
+            other resources.
+            <br><br>
+            To get the SwissProt/UniProt sequence database for your species go to <a href="http://www.uniprot.org/">http://www.uniprot.org</a>
+            and type <i>organism:'name of your species'</i> into the Query field at the top, e.g., <i>organism:human</i>. 
+            <br><br>
+            Next select one of the three 
+            provided options: <i>show only reviewed entries (UniProtKB/Swiss-Prot), show unreviewed entries (UniProtKB/TrEMBL), or show only entries 
+                from a complete proteome set</i>. Which option to chose depends on the properties of your experiment and on how well-annotated your 
+            given species is. 
+            <br><br>
+            Next click on the Download link in the upper right corner, and under the FASTA header select and download either 
+            <i>Canonical sequence data in FASTA format</i> or <i>Canonical and isoform sequence data in FASTA format</i>. Again the choice depends 
+            on the properties of your experiment. 
+            <br><br>
+            Note that the presence of isoforms makes the downstream protein inference task more complex. It is generally advised to use a simple 
+            database and subsequently improve the complexity if needed.
+            <br><br>
+            You now have a <a href="http://www.uniprot.org/">SwissProt/UniProt</a> sequence database containing only sequences from your s
+            pecies that can be used as input 
+            to a <b>SearchGUI</b> search.
+        </p>
+        <br>
+        <a href="#top">More on the Databases</a>
+        <br><br><br>
+
+        <a name="#IPI_Databases"></a>
+        <h3>IPI_Databases</h3>
+        <p align="justify">
+            Sequence databases based on the <a href="http://www.ebi.ac.uk/IPI/IPIhelp.html">International Protein Index (IPI)</a> 
+            used to be a very common in proteomics. However, this format has been discontinued and ought to be replaced 
+            by corresponding <a href="http://www.uniprot.org/">SwissProt/UniProt</a> databases as explained above.
+            <br><br>
+            For more information on why IPI was discontinued see <a href="http://www.ebi.ac.uk/IPI/IPIhelp.html">the IPI home page</a>. 
+        </p>
+        <br>
+        <a href="#top">More on the Databases</a>
+        <br><br><br>
+
+        <a name="#Decoy_Sequences"></a>
+        <h3>Decoy Sequences</h3>
+        <p align="justify">
+            In order to conduct an unbiased validation of the identification results, it is possible to append non-existing sequences (so-called decoy sequences) 
+            to your protein sequences (target sequences). Decoy sequences must fulfill two necessary and sufficient conditions: (1) similarity: the similarity 
+            between target and decoy sequences will ensure that false positives occur in equal amounts in both target and decoy sequences; (2) orthogonality: the 
+            absence of shared peptides between target and decoy sequences will allow the distinction of target and decoy hits.
+            After searching this concatenated target/decoy database, results can hence be thresholded to a desired level of quality.
+            For this task, we recommend the use of <a href="http://peptide-shaker.googlecode.com">PeptideShaker</a>.
+            <br><br>
+            There are various ways of creating the decoy sequences, 
+            the most popular being reversed versions of the actual sequences. Adding decoy sequences is easily done by clicking the <i>Decoy</i> button next 
+            to the database file text field. Reversed versions of 
+            every sequence in the original sequences database will then be added to the FASTA file.
+        </p>
+        <br>
+        <a href="#top">More on the Databases</a>
+        <br><br><br>
+
+        <a name="#Mascot_Users"></a>
+        <h3>Mascot Users</h3>
+        <p align="justify">
+            <i>Using Mascot's <a href="http://www.matrixscience.com/help/decoy_help.html#AUTO">Automatic Decoy Search</a> is not compatible with 
+                <a href="http://peptide-shaker.googlecode.com">PeptideShaker</a></i>! The reason for this is that Mascot decoy sequences are not present in the FASTA file. 
+            Moreover, when combining results from different search engines it is vital that the database and decoys used are identical, 
+            something that cannot be guaranteed when using Mascot's <a href="http://www.matrixscience.com/help/decoy_help.html#AUTO">Automatic Decoy Search</a>. 
+            <br><br>
+            To combine Mascot results with your OMSSA and X!Tandem results you therefore have to use the same target-decoy database as the one 
+            used in the <b>SearchGUI</b> search and <u><b>not</b></u> select the decoy option when performing the Mascot search.  
+            <br><br>
+            Finally, to ensure compatibility between search engines, be sure that the <a href="http://www.matrixscience.com/help/seq_db_setup.html">Mascot parsing rule</a> 
+            is compatible with the database you are using. 
+        </p>
+        <br>
+        <a href="#top">More on the Databases</a>
+        <br><br><br>
+
+        <a name="#PeptideShaker"></a>
+        <h3>PeptideShaker</h3>
+        <p align="justify">
+            Note that for your search results to be compatible with <a href="http://peptide-shaker.googlecode.com">PeptideShaker</a>, decoy 
+            sequences have to be added as explained in the <a href="#Decoy_Sequences">Decoy Sequences section</a> above. 
+            <br><br>
+            <i>Search results from <b>SearchGUI</b> can 
+                be opened in <a href="http://peptide-shaker.googlecode.com">PeptideShaker</a> even when decoys are not added, but it will then 
+                not be possible to statistically validate the identifications!</i>
+        </p>
+        <br>
+        <a href="#top">More on the Databases</a>
+        <br><br><br>
+
+    </BODY>
+</HTML>

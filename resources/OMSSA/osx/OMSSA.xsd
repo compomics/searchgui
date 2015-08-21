@@ -1,0 +1,1738 @@
+<?xml version="1.0" ?>
+<!-- ============================================
+     ::DATATOOL:: Generated from "/netopt/ncbi_tools/c++.potluck/src/objects/omssa/omssa.asn"
+     ::DATATOOL:: by application DATATOOL version 2.1.1
+     ::DATATOOL:: on 07/21/2010 12:56:06
+     ============================================ -->
+
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:ncbi="http://www.ncbi.nlm.nih.gov"
+  xmlns="http://www.ncbi.nlm.nih.gov"
+  targetNamespace="http://www.ncbi.nlm.nih.gov"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+<!-- ============================================ -->
+<!-- This section is mapped from module "OMSSA"
+================================================= -->
+<!--
+ $Id: omssa.asn 192083 2010-05-19 22:28:08Z lewisg $
+**********************************************************************
+
+  OMSSA (Open Mass Spectrometry Search Algorithm) data definitions
+  Lewis Geer, 2003
+
+  make using something like
+  "datatool -m omssa.asn -oc ObjOmssa -oA -od omssa.def"
+
+  note that this file requires omssa.def
+
+**********************************************************************
+-->
+<!-- Elements referenced from other modules:
+          Bioseq FROM NCBI-Sequence -->
+
+<!-- ============================================ -->
+
+
+
+<!-- Generic holder for experimental info -->
+<xs:element name="NameValue">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="NameValue_name" type="xs:string"/>
+      <xs:element name="NameValue_value" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- Holds a single spectrum -->
+<xs:element name="MSSpectrum">
+  <xs:complexType>
+    <xs:sequence>
+<!-- unique number of spectrum -->
+      <xs:element name="MSSpectrum_number" type="xs:integer"/>
+<!-- may be more than one if unknown -->
+      <xs:element name="MSSpectrum_charge">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSSpectrum_charge_E" type="xs:integer"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- scaled precursor m/z, scale is in MSSearchSettings -->
+      <xs:element name="MSSpectrum_precursormz" type="xs:integer"/>
+<!-- scaled product m/z -->
+      <xs:element name="MSSpectrum_mz">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSSpectrum_mz_E" type="xs:integer"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- scaled product abundance -->
+      <xs:element name="MSSpectrum_abundance">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSSpectrum_abundance_E" type="xs:integer"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- abundance scale, float to integer -->
+      <xs:element name="MSSpectrum_iscale" type="xs:double"/>
+<!-- ids/filenames -->
+      <xs:element name="MSSpectrum_ids" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSSpectrum_ids_E" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- extra info: retention times, etc. -->
+      <xs:element name="MSSpectrum_namevalue" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="NameValue"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- Holds a set of spectra -->
+<xs:element name="MSSpectrumset">
+  <xs:complexType>
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="MSSpectrum"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- enumerate enzymes -->
+<xs:element name="MSEnzymes">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="trypsin" ncbi:intvalue="0"/>
+              <xs:enumeration value="argc" ncbi:intvalue="1"/>
+              <xs:enumeration value="cnbr" ncbi:intvalue="2"/>
+              <xs:enumeration value="chymotrypsin" ncbi:intvalue="3"/>
+              <xs:enumeration value="formicacid" ncbi:intvalue="4"/>
+              <xs:enumeration value="lysc" ncbi:intvalue="5"/>
+              <xs:enumeration value="lysc-p" ncbi:intvalue="6"/>
+              <xs:enumeration value="pepsin-a" ncbi:intvalue="7"/>
+              <xs:enumeration value="tryp-cnbr" ncbi:intvalue="8"/>
+              <xs:enumeration value="tryp-chymo" ncbi:intvalue="9"/>
+              <xs:enumeration value="trypsin-p" ncbi:intvalue="10"/>
+              <xs:enumeration value="whole-protein" ncbi:intvalue="11"/>
+              <xs:enumeration value="aspn" ncbi:intvalue="12"/>
+              <xs:enumeration value="gluc" ncbi:intvalue="13"/>
+              <xs:enumeration value="aspngluc" ncbi:intvalue="14"/>
+              <xs:enumeration value="top-down" ncbi:intvalue="15"/>
+              <xs:enumeration value="semi-tryptic" ncbi:intvalue="16"/>
+              <xs:enumeration value="no-enzyme" ncbi:intvalue="17"/>
+              <xs:enumeration value="chymotrypsin-p" ncbi:intvalue="18"/>
+              <xs:enumeration value="aspn-de" ncbi:intvalue="19"/>
+              <xs:enumeration value="gluc-de" ncbi:intvalue="20"/>
+              <xs:enumeration value="lysn" ncbi:intvalue="21"/>
+              <xs:enumeration value="thermolysin-p" ncbi:intvalue="22"/>
+              <xs:enumeration value="semi-chymotrypsin" ncbi:intvalue="23"/>
+              <xs:enumeration value="semi-gluc" ncbi:intvalue="24"/>
+              <xs:enumeration value="max" ncbi:intvalue="25"/>
+              <xs:enumeration value="none" ncbi:intvalue="255"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- enumerate modifications -->
+<xs:element name="MSMod">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    methylk	-  methylation of K
+    oxym	-  oxidation of methionine
+    carboxymethylc	-  carboxymethyl cysteine
+    carbamidomethylc	-  carbamidomethyl cysteine
+    deamidationkq	-  deamidation of K and Q
+    propionamidec	-  propionamide cysteine
+    phosphorylations	-  phosphorylation of S
+    phosphorylationt	-  phosphorylation of T
+    phosphorylationy	-  phosphorylation of Y    
+    ntermmcleave	-  N terminal methionine cleavage
+    ntermacetyl	-  N terminal protein acetyl
+    ntermmethyl	-  N terminal protein methyl
+    ntermtrimethyl	-  N terminal protein trimethyl
+    methythiold	-  beta methythiolation of D
+    methylq	-  methylation of Q
+    trimethylk	-  trimethylation of K
+    methyld	-  methylation of D
+    methyle	-  methylation of E
+    ctermpepmethyl	-  C terminal methylation
+    trideuteromethyld	-  trideuteromethylation of D
+    trideuteromethyle	-  trideuteromethylation of E
+    ctermpeptrideuteromethyl	-  C terminal trideuteromethylation
+    usermod1	-  start of user defined mods
+    usermod10	-  end of user defined mods
+    max	-  maximum number of mods
+    unknown	-  modification of unknown type
+-->
+              <xs:enumeration value="methylk" ncbi:intvalue="0"/>
+              <xs:enumeration value="oxym" ncbi:intvalue="1"/>
+              <xs:enumeration value="carboxymethylc" ncbi:intvalue="2"/>
+              <xs:enumeration value="carbamidomethylc" ncbi:intvalue="3"/>
+              <xs:enumeration value="deamidationkq" ncbi:intvalue="4"/>
+              <xs:enumeration value="propionamidec" ncbi:intvalue="5"/>
+              <xs:enumeration value="phosphorylations" ncbi:intvalue="6"/>
+              <xs:enumeration value="phosphorylationt" ncbi:intvalue="7"/>
+              <xs:enumeration value="phosphorylationy" ncbi:intvalue="8"/>
+              <xs:enumeration value="ntermmcleave" ncbi:intvalue="9"/>
+              <xs:enumeration value="ntermacetyl" ncbi:intvalue="10"/>
+              <xs:enumeration value="ntermmethyl" ncbi:intvalue="11"/>
+              <xs:enumeration value="ntermtrimethyl" ncbi:intvalue="12"/>
+              <xs:enumeration value="methythiold" ncbi:intvalue="13"/>
+              <xs:enumeration value="methylq" ncbi:intvalue="14"/>
+              <xs:enumeration value="trimethylk" ncbi:intvalue="15"/>
+              <xs:enumeration value="methyld" ncbi:intvalue="16"/>
+              <xs:enumeration value="methyle" ncbi:intvalue="17"/>
+              <xs:enumeration value="ctermpepmethyl" ncbi:intvalue="18"/>
+              <xs:enumeration value="trideuteromethyld" ncbi:intvalue="19"/>
+              <xs:enumeration value="trideuteromethyle" ncbi:intvalue="20"/>
+              <xs:enumeration value="ctermpeptrideuteromethyl" ncbi:intvalue="21"/>
+              <xs:enumeration value="nformylmet" ncbi:intvalue="22"/>
+              <xs:enumeration value="twoamino3oxobutanoicacid" ncbi:intvalue="23"/>
+              <xs:enumeration value="acetylk" ncbi:intvalue="24"/>
+              <xs:enumeration value="ctermamide" ncbi:intvalue="25"/>
+              <xs:enumeration value="bmethylthiold" ncbi:intvalue="26"/>
+              <xs:enumeration value="carbamidomethylk" ncbi:intvalue="27"/>
+              <xs:enumeration value="carbamidometylh" ncbi:intvalue="28"/>
+              <xs:enumeration value="carbamidomethyld" ncbi:intvalue="29"/>
+              <xs:enumeration value="carbamidomethyle" ncbi:intvalue="30"/>
+              <xs:enumeration value="carbamylk" ncbi:intvalue="31"/>
+              <xs:enumeration value="ntermcarbamyl" ncbi:intvalue="32"/>
+              <xs:enumeration value="citrullinationr" ncbi:intvalue="33"/>
+              <xs:enumeration value="cysteicacidc" ncbi:intvalue="34"/>
+              <xs:enumeration value="diiodinationy" ncbi:intvalue="35"/>
+              <xs:enumeration value="dimethylk" ncbi:intvalue="36"/>
+              <xs:enumeration value="dimethylr" ncbi:intvalue="37"/>
+              <xs:enumeration value="ntermpepdimethyl" ncbi:intvalue="38"/>
+              <xs:enumeration value="dihydroxyf" ncbi:intvalue="39"/>
+              <xs:enumeration value="thioacetylk" ncbi:intvalue="40"/>
+              <xs:enumeration value="ntermpeptioacetyl" ncbi:intvalue="41"/>
+              <xs:enumeration value="farnesylationc" ncbi:intvalue="42"/>
+              <xs:enumeration value="formylk" ncbi:intvalue="43"/>
+              <xs:enumeration value="ntermpepformyl" ncbi:intvalue="44"/>
+              <xs:enumeration value="formylkynureninw" ncbi:intvalue="45"/>
+              <xs:enumeration value="phef" ncbi:intvalue="46"/>
+              <xs:enumeration value="gammacarboxyld" ncbi:intvalue="47"/>
+              <xs:enumeration value="gammacarboxyle" ncbi:intvalue="48"/>
+              <xs:enumeration value="geranylgeranylc" ncbi:intvalue="49"/>
+              <xs:enumeration value="ntermpepglucuronylg" ncbi:intvalue="50"/>
+              <xs:enumeration value="glutathionec" ncbi:intvalue="51"/>
+              <xs:enumeration value="glyglyk" ncbi:intvalue="52"/>
+              <xs:enumeration value="guanidinationk" ncbi:intvalue="53"/>
+              <xs:enumeration value="his2asnh" ncbi:intvalue="54"/>
+              <xs:enumeration value="his2asph" ncbi:intvalue="55"/>
+              <xs:enumeration value="ctermpephsem" ncbi:intvalue="56"/>
+              <xs:enumeration value="ctermpephselactm" ncbi:intvalue="57"/>
+              <xs:enumeration value="hydroxykynureninw" ncbi:intvalue="58"/>
+              <xs:enumeration value="hydroxylationd" ncbi:intvalue="59"/>
+              <xs:enumeration value="hydroxylationk" ncbi:intvalue="60"/>
+              <xs:enumeration value="hydroxylationn" ncbi:intvalue="61"/>
+              <xs:enumeration value="hydroxylationp" ncbi:intvalue="62"/>
+              <xs:enumeration value="hydroxylationf" ncbi:intvalue="63"/>
+              <xs:enumeration value="hydroxylationy" ncbi:intvalue="64"/>
+              <xs:enumeration value="iodinationy" ncbi:intvalue="65"/>
+              <xs:enumeration value="kynureninw" ncbi:intvalue="66"/>
+              <xs:enumeration value="lipoylk" ncbi:intvalue="67"/>
+              <xs:enumeration value="ctermpepmeester" ncbi:intvalue="68"/>
+              <xs:enumeration value="meesterd" ncbi:intvalue="69"/>
+              <xs:enumeration value="meestere" ncbi:intvalue="70"/>
+              <xs:enumeration value="meesters" ncbi:intvalue="71"/>
+              <xs:enumeration value="meestery" ncbi:intvalue="72"/>
+              <xs:enumeration value="methylc" ncbi:intvalue="73"/>
+              <xs:enumeration value="methylh" ncbi:intvalue="74"/>
+              <xs:enumeration value="methyln" ncbi:intvalue="75"/>
+              <xs:enumeration value="ntermpepmethyl" ncbi:intvalue="76"/>
+              <xs:enumeration value="methylr" ncbi:intvalue="77"/>
+              <xs:enumeration value="ntermpepmyristoyeylationg" ncbi:intvalue="78"/>
+              <xs:enumeration value="ntermpepmyristoyl4hg" ncbi:intvalue="79"/>
+              <xs:enumeration value="ntermpepmyristoylationg" ncbi:intvalue="80"/>
+              <xs:enumeration value="myristoylationk" ncbi:intvalue="81"/>
+              <xs:enumeration value="ntermformyl" ncbi:intvalue="82"/>
+              <xs:enumeration value="nemc" ncbi:intvalue="83"/>
+              <xs:enumeration value="nipcam" ncbi:intvalue="84"/>
+              <xs:enumeration value="nitrow" ncbi:intvalue="85"/>
+              <xs:enumeration value="nitroy" ncbi:intvalue="86"/>
+              <xs:enumeration value="ctermpepo18" ncbi:intvalue="87"/>
+              <xs:enumeration value="ctermpepdio18" ncbi:intvalue="88"/>
+              <xs:enumeration value="oxyh" ncbi:intvalue="89"/>
+              <xs:enumeration value="oxyw" ncbi:intvalue="90"/>
+              <xs:enumeration value="ppantetheines" ncbi:intvalue="91"/>
+              <xs:enumeration value="palmitoylationc" ncbi:intvalue="92"/>
+              <xs:enumeration value="palmitoylationk" ncbi:intvalue="93"/>
+              <xs:enumeration value="palmitoylations" ncbi:intvalue="94"/>
+              <xs:enumeration value="palmitoylationt" ncbi:intvalue="95"/>
+              <xs:enumeration value="phospholosss" ncbi:intvalue="96"/>
+              <xs:enumeration value="phospholosst" ncbi:intvalue="97"/>
+              <xs:enumeration value="phospholossy" ncbi:intvalue="98"/>
+              <xs:enumeration value="phosphoneutrallossc" ncbi:intvalue="99"/>
+              <xs:enumeration value="phosphoneutrallossd" ncbi:intvalue="100"/>
+              <xs:enumeration value="phosphoneutrallossh" ncbi:intvalue="101"/>
+              <xs:enumeration value="propionylk" ncbi:intvalue="102"/>
+              <xs:enumeration value="ntermpeppropionyl" ncbi:intvalue="103"/>
+              <xs:enumeration value="propionylheavyk" ncbi:intvalue="104"/>
+              <xs:enumeration value="ntermpeppropionylheavy" ncbi:intvalue="105"/>
+              <xs:enumeration value="pyridylk" ncbi:intvalue="106"/>
+              <xs:enumeration value="ntermpeppyridyl" ncbi:intvalue="107"/>
+              <xs:enumeration value="ntermpeppyrocmc" ncbi:intvalue="108"/>
+              <xs:enumeration value="ntermpeppyroe" ncbi:intvalue="109"/>
+              <xs:enumeration value="ntermpeppyroq" ncbi:intvalue="110"/>
+              <xs:enumeration value="pyroglutamicp" ncbi:intvalue="111"/>
+              <xs:enumeration value="spyridylethylc" ncbi:intvalue="112"/>
+              <xs:enumeration value="semetm" ncbi:intvalue="113"/>
+              <xs:enumeration value="sulfationy" ncbi:intvalue="114"/>
+              <xs:enumeration value="suphonem" ncbi:intvalue="115"/>
+              <xs:enumeration value="triiodinationy" ncbi:intvalue="116"/>
+              <xs:enumeration value="trimethylationr" ncbi:intvalue="117"/>
+              <xs:enumeration value="ntermpeptripalmitatec" ncbi:intvalue="118"/>
+              <xs:enumeration value="usermod1" ncbi:intvalue="119"/>
+              <xs:enumeration value="usermod2" ncbi:intvalue="120"/>
+              <xs:enumeration value="usermod3" ncbi:intvalue="121"/>
+              <xs:enumeration value="usermod4" ncbi:intvalue="122"/>
+              <xs:enumeration value="usermod5" ncbi:intvalue="123"/>
+              <xs:enumeration value="usermod6" ncbi:intvalue="124"/>
+              <xs:enumeration value="usermod7" ncbi:intvalue="125"/>
+              <xs:enumeration value="usermod8" ncbi:intvalue="126"/>
+              <xs:enumeration value="usermod9" ncbi:intvalue="127"/>
+              <xs:enumeration value="usermod10" ncbi:intvalue="128"/>
+              <xs:enumeration value="icatlight" ncbi:intvalue="129"/>
+              <xs:enumeration value="icatheavy" ncbi:intvalue="130"/>
+              <xs:enumeration value="camthiopropanoylk" ncbi:intvalue="131"/>
+              <xs:enumeration value="phosphoneutrallosss" ncbi:intvalue="132"/>
+              <xs:enumeration value="phosphoneutrallosst" ncbi:intvalue="133"/>
+              <xs:enumeration value="phosphoetdlosss" ncbi:intvalue="134"/>
+              <xs:enumeration value="phosphoetdlosst" ncbi:intvalue="135"/>
+              <xs:enumeration value="arg-13c6" ncbi:intvalue="136"/>
+              <xs:enumeration value="arg-13c6-15n4" ncbi:intvalue="137"/>
+              <xs:enumeration value="lys-13c6" ncbi:intvalue="138"/>
+              <xs:enumeration value="oxy18" ncbi:intvalue="139"/>
+              <xs:enumeration value="beta-elim-s" ncbi:intvalue="140"/>
+              <xs:enumeration value="beta-elim-t" ncbi:intvalue="141"/>
+              <xs:enumeration value="usermod11" ncbi:intvalue="142"/>
+              <xs:enumeration value="usermod12" ncbi:intvalue="143"/>
+              <xs:enumeration value="usermod13" ncbi:intvalue="144"/>
+              <xs:enumeration value="usermod14" ncbi:intvalue="145"/>
+              <xs:enumeration value="usermod15" ncbi:intvalue="146"/>
+              <xs:enumeration value="usermod16" ncbi:intvalue="147"/>
+              <xs:enumeration value="usermod17" ncbi:intvalue="148"/>
+              <xs:enumeration value="usermod18" ncbi:intvalue="149"/>
+              <xs:enumeration value="usermod19" ncbi:intvalue="150"/>
+              <xs:enumeration value="usermod20" ncbi:intvalue="151"/>
+              <xs:enumeration value="usermod21" ncbi:intvalue="152"/>
+              <xs:enumeration value="usermod22" ncbi:intvalue="153"/>
+              <xs:enumeration value="usermod23" ncbi:intvalue="154"/>
+              <xs:enumeration value="usermod24" ncbi:intvalue="155"/>
+              <xs:enumeration value="usermod25" ncbi:intvalue="156"/>
+              <xs:enumeration value="usermod26" ncbi:intvalue="157"/>
+              <xs:enumeration value="usermod27" ncbi:intvalue="158"/>
+              <xs:enumeration value="usermod28" ncbi:intvalue="159"/>
+              <xs:enumeration value="usermod29" ncbi:intvalue="160"/>
+              <xs:enumeration value="usermod30" ncbi:intvalue="161"/>
+              <xs:enumeration value="sulfinicacid" ncbi:intvalue="162"/>
+              <xs:enumeration value="arg2orn" ncbi:intvalue="163"/>
+              <xs:enumeration value="dehydro" ncbi:intvalue="164"/>
+              <xs:enumeration value="carboxykynurenin" ncbi:intvalue="165"/>
+              <xs:enumeration value="sumoylation" ncbi:intvalue="166"/>
+              <xs:enumeration value="iTRAQ114nterm" ncbi:intvalue="167"/>
+              <xs:enumeration value="iTRAQ114K" ncbi:intvalue="168"/>
+              <xs:enumeration value="iTRAQ114Y" ncbi:intvalue="169"/>
+              <xs:enumeration value="iTRAQ115nterm" ncbi:intvalue="170"/>
+              <xs:enumeration value="iTRAQ115K" ncbi:intvalue="171"/>
+              <xs:enumeration value="iTRAQ115Y" ncbi:intvalue="172"/>
+              <xs:enumeration value="iTRAQ116nterm" ncbi:intvalue="173"/>
+              <xs:enumeration value="iTRAQ116K" ncbi:intvalue="174"/>
+              <xs:enumeration value="iTRAQ116Y" ncbi:intvalue="175"/>
+              <xs:enumeration value="iTRAQ117nterm" ncbi:intvalue="176"/>
+              <xs:enumeration value="iTRAQ117K" ncbi:intvalue="177"/>
+              <xs:enumeration value="iTRAQ117Y" ncbi:intvalue="178"/>
+              <xs:enumeration value="mmts" ncbi:intvalue="179"/>
+              <xs:enumeration value="lys-2H4" ncbi:intvalue="180"/>
+              <xs:enumeration value="lys-13C615N2" ncbi:intvalue="181"/>
+              <xs:enumeration value="hexNAcN" ncbi:intvalue="182"/>
+              <xs:enumeration value="dHexHexNAcN" ncbi:intvalue="183"/>
+              <xs:enumeration value="hexNAcS" ncbi:intvalue="184"/>
+              <xs:enumeration value="hexNAcT" ncbi:intvalue="185"/>
+              <xs:enumeration value="mod186" ncbi:intvalue="186"/>
+              <xs:enumeration value="mod187" ncbi:intvalue="187"/>
+              <xs:enumeration value="mod188" ncbi:intvalue="188"/>
+              <xs:enumeration value="mod189" ncbi:intvalue="189"/>
+              <xs:enumeration value="mod190" ncbi:intvalue="190"/>
+              <xs:enumeration value="mod191" ncbi:intvalue="191"/>
+              <xs:enumeration value="mod192" ncbi:intvalue="192"/>
+              <xs:enumeration value="mod193" ncbi:intvalue="193"/>
+              <xs:enumeration value="mod194" ncbi:intvalue="194"/>
+              <xs:enumeration value="mod195" ncbi:intvalue="195"/>
+              <xs:enumeration value="mod196" ncbi:intvalue="196"/>
+              <xs:enumeration value="mod197" ncbi:intvalue="197"/>
+              <xs:enumeration value="mod198" ncbi:intvalue="198"/>
+              <xs:enumeration value="mod199" ncbi:intvalue="199"/>
+              <xs:enumeration value="mod200" ncbi:intvalue="200"/>
+              <xs:enumeration value="mod201" ncbi:intvalue="201"/>
+              <xs:enumeration value="mod202" ncbi:intvalue="202"/>
+              <xs:enumeration value="mod203" ncbi:intvalue="203"/>
+              <xs:enumeration value="mod204" ncbi:intvalue="204"/>
+              <xs:enumeration value="mod205" ncbi:intvalue="205"/>
+              <xs:enumeration value="mod206" ncbi:intvalue="206"/>
+              <xs:enumeration value="mod207" ncbi:intvalue="207"/>
+              <xs:enumeration value="mod208" ncbi:intvalue="208"/>
+              <xs:enumeration value="mod209" ncbi:intvalue="209"/>
+              <xs:enumeration value="mod210" ncbi:intvalue="210"/>
+              <xs:enumeration value="mod211" ncbi:intvalue="211"/>
+              <xs:enumeration value="mod212" ncbi:intvalue="212"/>
+              <xs:enumeration value="mod213" ncbi:intvalue="213"/>
+              <xs:enumeration value="mod214" ncbi:intvalue="214"/>
+              <xs:enumeration value="mod215" ncbi:intvalue="215"/>
+              <xs:enumeration value="mod216" ncbi:intvalue="216"/>
+              <xs:enumeration value="mod217" ncbi:intvalue="217"/>
+              <xs:enumeration value="mod218" ncbi:intvalue="218"/>
+              <xs:enumeration value="mod219" ncbi:intvalue="219"/>
+              <xs:enumeration value="mod220" ncbi:intvalue="220"/>
+              <xs:enumeration value="mod221" ncbi:intvalue="221"/>
+              <xs:enumeration value="mod222" ncbi:intvalue="222"/>
+              <xs:enumeration value="mod223" ncbi:intvalue="223"/>
+              <xs:enumeration value="mod224" ncbi:intvalue="224"/>
+              <xs:enumeration value="mod225" ncbi:intvalue="225"/>
+              <xs:enumeration value="mod226" ncbi:intvalue="226"/>
+              <xs:enumeration value="mod227" ncbi:intvalue="227"/>
+              <xs:enumeration value="mod228" ncbi:intvalue="228"/>
+              <xs:enumeration value="mod229" ncbi:intvalue="229"/>
+              <xs:enumeration value="mod230" ncbi:intvalue="230"/>
+              <xs:enumeration value="max" ncbi:intvalue="231"/>
+              <xs:enumeration value="unknown" ncbi:intvalue="9999"/>
+              <xs:enumeration value="none" ncbi:intvalue="10000"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- enumerate modification types -->
+<xs:element name="MSModType">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    modaa	-  at particular amino acids
+    modn	-  at the N terminus of a protein
+    modnaa	-  at the N terminus of a protein at particular amino acids
+    modc	-  at the C terminus of a protein
+    modcaa	-  at the C terminus of a protein at particular amino acids
+    modnp	-  at the N terminus of a peptide
+    modnpaa	-  at the N terminus of a peptide at particular amino acids
+    modcp	-  at the C terminus of a peptide
+    modcpaa	-  at the C terminus of a peptide at particular amino acids
+    modmax	-  the max number of modification types
+-->
+              <xs:enumeration value="modaa" ncbi:intvalue="0"/>
+              <xs:enumeration value="modn" ncbi:intvalue="1"/>
+              <xs:enumeration value="modnaa" ncbi:intvalue="2"/>
+              <xs:enumeration value="modc" ncbi:intvalue="3"/>
+              <xs:enumeration value="modcaa" ncbi:intvalue="4"/>
+              <xs:enumeration value="modnp" ncbi:intvalue="5"/>
+              <xs:enumeration value="modnpaa" ncbi:intvalue="6"/>
+              <xs:enumeration value="modcp" ncbi:intvalue="7"/>
+              <xs:enumeration value="modcpaa" ncbi:intvalue="8"/>
+              <xs:enumeration value="modmax" ncbi:intvalue="9"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- mass container -->
+<xs:element name="MSMassSet">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="MSMassSet_monomass" type="xs:double"/>
+      <xs:element name="MSMassSet_averagemass" type="xs:double"/>
+      <xs:element name="MSMassSet_n15mass" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- Modification Definition -->
+<xs:element name="MSModSpec">
+  <xs:complexType>
+    <xs:sequence>
+<!-- what is the mod -->
+      <xs:element name="MSModSpec_mod">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSMod"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- modification type -->
+      <xs:element name="MSModSpec_type">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSModType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- friendly name of mod -->
+      <xs:element name="MSModSpec_name" type="xs:string"/>
+<!-- monoisotopic mass -->
+      <xs:element name="MSModSpec_monomass" type="xs:double"/>
+<!-- average mass -->
+      <xs:element name="MSModSpec_averagemass" type="xs:double"/>
+<!-- monoisotopic n15 mass -->
+      <xs:element name="MSModSpec_n15mass" type="xs:double"/>
+<!-- residues to apply mod to -->
+      <xs:element name="MSModSpec_residues" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSModSpec_residues_E" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- loss after precursor mass determination -->
+      <xs:element name="MSModSpec_neutralloss" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSMassSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- the equivalent Unimod Accession number -->
+      <xs:element name="MSModSpec_unimod" type="xs:integer" minOccurs="0"/>
+<!-- the PSI-MS equivalent name   -->
+      <xs:element name="MSModSpec_psi-ms" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- Holds a set of modifications -->
+<xs:element name="MSModSpecSet">
+  <xs:complexType>
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="MSModSpec"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!--
+ How is charge to be handled?  Some input files are not clear
+ on this.  For example, a dta file only specifies one charge, 
+ even though the charge is not really known.
+-->
+<xs:element name="MSCalcPlusOne">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    dontcalc	-  don't guess charge one
+    calc	-  guess charge one
+-->
+              <xs:enumeration value="dontcalc" ncbi:intvalue="0"/>
+              <xs:enumeration value="calc" ncbi:intvalue="1"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- user instructions on whether to believe charges in input file -->
+<xs:element name="MSCalcCharge">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    calculate	-  guess the charge(s) from the data
+    usefile	-  use what the input file says
+    userange	-  use the charge range specified
+-->
+              <xs:enumeration value="calculate" ncbi:intvalue="0"/>
+              <xs:enumeration value="usefile" ncbi:intvalue="1"/>
+              <xs:enumeration value="userange" ncbi:intvalue="2"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- How to handle precursor charge -->
+<xs:element name="MSChargeHandle">
+  <xs:complexType>
+    <xs:sequence>
+<!-- do we guess charge one? -->
+      <xs:element name="MSChargeHandle_calcplusone" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSCalcPlusOne"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- how do we handle charges? -->
+      <xs:element name="MSChargeHandle_calccharge" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSCalcCharge"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- if userange, what is the min? -->
+      <xs:element name="MSChargeHandle_mincharge" type="xs:integer" default="2"/>
+<!-- if userange, what is the max? -->
+      <xs:element name="MSChargeHandle_maxcharge" type="xs:integer" default="3"/>
+<!-- at which precursor charge to consider +2 ions? -->
+      <xs:element name="MSChargeHandle_considermult" type="xs:integer" default="3"/>
+<!-- what % of peaks below precursor needed to call as +1 -->
+      <xs:element name="MSChargeHandle_plusone" type="xs:double"/>
+<!-- maximum product ion charge -->
+      <xs:element name="MSChargeHandle_maxproductcharge" type="xs:integer" minOccurs="0"/>
+<!-- product charge always less thanor equal to precursor? -->
+      <xs:element name="MSChargeHandle_prodlesspre" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- negative ion search if -1, positive ion if 1 -->
+      <xs:element name="MSChargeHandle_negative" type="xs:integer" default="1"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- what type of atomic mass to use -->
+<xs:element name="MSSearchType">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="monoisotopic" ncbi:intvalue="0"/>
+              <xs:enumeration value="average" ncbi:intvalue="1"/>
+              <xs:enumeration value="monon15" ncbi:intvalue="2"/>
+              <xs:enumeration value="exact" ncbi:intvalue="3"/>
+              <xs:enumeration value="multiisotope" ncbi:intvalue="4"/>
+              <xs:enumeration value="max" ncbi:intvalue="5"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- what is the charge dependence of the mass tolerance? -->
+<xs:element name="MSZdependence">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    independent	-  mass tol. invariant with charge
+    linearwithz	-  mass tol. scales with charge
+-->
+              <xs:enumeration value="independent" ncbi:intvalue="0"/>
+              <xs:enumeration value="linearwithz" ncbi:intvalue="1"/>
+              <xs:enumeration value="max" ncbi:intvalue="2"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- Iterative search settings -->
+<xs:element name="MSIterativeSettings">
+  <xs:complexType>
+    <xs:sequence>
+<!-- e-val threshold for re-searching spectra, 0 = always re-search -->
+      <xs:element name="MSIterativeSettings_researchthresh" type="xs:double"/>
+<!-- e-val threshold for picking sequence subset, 0 = all sequences -->
+      <xs:element name="MSIterativeSettings_subsetthresh" type="xs:double"/>
+<!-- e-val threshold for replacing hitset, 0 = only if better -->
+      <xs:element name="MSIterativeSettings_replacethresh" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- Library search settings -->
+<xs:element name="MSLibrarySettings">
+  <xs:complexType>
+    <xs:sequence>
+<!-- names of search libraries -->
+      <xs:element name="MSLibrarySettings_libnames">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSLibrarySettings_libnames_E" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- should there be a restriction on precursor mass? -->
+      <xs:element name="MSLibrarySettings_presearch">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- use the omssa score? -->
+      <xs:element name="MSLibrarySettings_useomssascore">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- use the number of replicates score? -->
+      <xs:element name="MSLibrarySettings_usereplicatescore">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- use the qtof score? -->
+      <xs:element name="MSLibrarySettings_qtofscore">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- Generic search settings -->
+<xs:element name="MSSearchSettings">
+  <xs:complexType>
+    <xs:sequence>
+<!-- average or monoisotopic? -->
+      <xs:element name="MSSearchSettings_precursorsearchtype">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSSearchType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- average or monoisotopic? -->
+      <xs:element name="MSSearchSettings_productsearchtype">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSSearchType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- which ions to search? -->
+      <xs:element name="MSSearchSettings_ionstosearch">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSIonType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- peptide mass tolerance -->
+      <xs:element name="MSSearchSettings_peptol" type="xs:double"/>
+<!-- msms mass tolerance -->
+      <xs:element name="MSSearchSettings_msmstol" type="xs:double"/>
+<!-- what is the charge dependence of the mass tolerance? -->
+      <xs:element name="MSSearchSettings_zdep">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSZdependence"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!--
+ evalue cutoff
+ next 3 fields define intensity fraction below
+ which peaks will be discard
+-->
+      <xs:element name="MSSearchSettings_cutoff" type="xs:double"/>
+<!-- the start of the cutoff, fraction of most intense peak -->
+      <xs:element name="MSSearchSettings_cutlo" type="xs:double"/>
+<!-- the end of the cutoff -->
+      <xs:element name="MSSearchSettings_cuthi" type="xs:double"/>
+<!-- the increment of the cutoff -->
+      <xs:element name="MSSearchSettings_cutinc" type="xs:double"/>
+<!-- the size of the single charge filtering window -->
+      <xs:element name="MSSearchSettings_singlewin" type="xs:integer"/>
+<!-- the size of the double charge filtering window -->
+      <xs:element name="MSSearchSettings_doublewin" type="xs:integer"/>
+<!-- the number of peaks allowed in the single window -->
+      <xs:element name="MSSearchSettings_singlenum" type="xs:integer"/>
+<!-- the number of peaks allowed in the double window -->
+      <xs:element name="MSSearchSettings_doublenum" type="xs:integer"/>
+<!-- fixed PTM's -->
+      <xs:element name="MSSearchSettings_fixed">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSMod"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- variable PTM's -->
+      <xs:element name="MSSearchSettings_variable">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSMod"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- digestion enzyme -->
+      <xs:element name="MSSearchSettings_enzyme">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSEnzymes"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- number of missed cleaves allowed -->
+      <xs:element name="MSSearchSettings_missedcleave" type="xs:integer"/>
+<!--
+ the number of hits kept in memory
+ for a spectrum
+-->
+      <xs:element name="MSSearchSettings_hitlistlen" type="xs:integer" default="25"/>
+<!-- sequence set to search, e.g. "nr" -->
+      <xs:element name="MSSearchSettings_db" type="xs:string"/>
+<!-- number of m/z to consider in first pass -->
+      <xs:element name="MSSearchSettings_tophitnum" type="xs:integer"/>
+<!-- minimum number of m/z values for a valid hit -->
+      <xs:element name="MSSearchSettings_minhit" type="xs:integer" default="2"/>
+<!-- minimum number of m/z for a valid spectra -->
+      <xs:element name="MSSearchSettings_minspectra" type="xs:integer" default="4"/>
+<!-- scale for m/z float to integer -->
+      <xs:element name="MSSearchSettings_scale" type="xs:integer" default="100"/>
+<!--
+ maximum number of mass ladders per
+ database peptide
+-->
+      <xs:element name="MSSearchSettings_maxmods" type="xs:integer" default="64"/>
+<!-- taxa to limit search -->
+      <xs:element name="MSSearchSettings_taxids" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSSearchSettings_taxids_E" type="xs:integer"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- how to deal with charges -->
+      <xs:element name="MSSearchSettings_chargehandling" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSChargeHandle"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- user defined modifications -->
+      <xs:element name="MSSearchSettings_usermods" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSModSpecSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- min number of counts per precursor bin -->
+      <xs:element name="MSSearchSettings_pseudocount" type="xs:integer" default="1"/>
+<!-- should b1 product be in search (1=no, 0=yes) -->
+      <xs:element name="MSSearchSettings_searchb1" type="xs:integer" default="0"/>
+<!-- should c terminus ion be searched (1=no, 0=yes) -->
+      <xs:element name="MSSearchSettings_searchctermproduct" type="xs:integer" default="0"/>
+<!-- max number of ions in each series (0=all) -->
+      <xs:element name="MSSearchSettings_maxproductions" type="xs:integer" default="0"/>
+<!-- min number of AA in peptide for noenzyme search -->
+      <xs:element name="MSSearchSettings_minnoenzyme" type="xs:integer" default="4"/>
+<!-- max number of AA in peptide for noenzyme search (0=none) -->
+      <xs:element name="MSSearchSettings_maxnoenzyme" type="xs:integer" default="0"/>
+<!-- the threshold in Da for adding neutron -->
+      <xs:element name="MSSearchSettings_exactmass" type="xs:double" minOccurs="0"/>
+<!-- id of the search settings -->
+      <xs:element name="MSSearchSettings_settingid" type="xs:integer" minOccurs="0"/>
+<!-- iterative search settings -->
+      <xs:element name="MSSearchSettings_iterativesettings" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSIterativeSettings"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- turn on aggressive precursor culling for ETD (0=none) -->
+      <xs:element name="MSSearchSettings_precursorcull" type="xs:integer" minOccurs="0"/>
+<!-- input files -->
+      <xs:element name="MSSearchSettings_infiles" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSInFile"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- output files -->
+      <xs:element name="MSSearchSettings_outfiles" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSOutFile"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- turn on correlation score (1=nocorr) -->
+      <xs:element name="MSSearchSettings_nocorrelationscore" type="xs:integer" minOccurs="0"/>
+<!-- probability of a consecutive ion (used in correlation) -->
+      <xs:element name="MSSearchSettings_probfollowingion" type="xs:double" minOccurs="0"/>
+<!-- should nmethionine be cleaved? -->
+      <xs:element name="MSSearchSettings_nmethionine" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- fraction allowable adjustment of product mass tolerance -->
+      <xs:element name="MSSearchSettings_automassadjust" type="xs:double" minOccurs="0"/>
+<!-- low mass filter in Daltons, unscaled -->
+      <xs:element name="MSSearchSettings_lomasscutoff" type="xs:double" minOccurs="0"/>
+<!-- library search settings -->
+      <xs:element name="MSSearchSettings_libsearchsettings" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSLibrarySettings"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- which ions to use no proline rule -->
+      <xs:element name="MSSearchSettings_noprolineions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSIonType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- do reverse search -->
+      <xs:element name="MSSearchSettings_reversesearch" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- extra search settings -->
+      <xs:element name="MSSearchSettings_othersettings" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="NameValue"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- number of isotopic peaks to search when using MSSearchType multiisotope -->
+      <xs:element name="MSSearchSettings_numisotopes" type="xs:integer" minOccurs="0"/>
+<!-- search precursor as ppm -->
+      <xs:element name="MSSearchSettings_pepppm" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- search product as ppm -->
+      <xs:element name="MSSearchSettings_msmsppm" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- the maximum number of hits to report per spectrum, 0=all -->
+      <xs:element name="MSSearchSettings_reportedhitcount" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="MSSerialDataFormat">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    asntext	-  open ASN.1 text format
+    asnbinary	-  open ASN.1 binary format
+    xml	-  open XML format
+    csv	-  csv (excel)
+    pepxml	-  pepXML format
+    xmlbz2	-  bzip2 XML format
+-->
+              <xs:enumeration value="none" ncbi:intvalue="0"/>
+              <xs:enumeration value="asntext" ncbi:intvalue="1"/>
+              <xs:enumeration value="asnbinary" ncbi:intvalue="2"/>
+              <xs:enumeration value="xml" ncbi:intvalue="3"/>
+              <xs:enumeration value="csv" ncbi:intvalue="4"/>
+              <xs:enumeration value="pepxml" ncbi:intvalue="5"/>
+              <xs:enumeration value="xmlbz2" ncbi:intvalue="6"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="MSOutFile">
+  <xs:complexType>
+    <xs:sequence>
+<!-- output file name -->
+      <xs:element name="MSOutFile_outfile" type="xs:string"/>
+<!-- output file type -->
+      <xs:element name="MSOutFile_outfiletype">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSSerialDataFormat"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- should the output include the request? -->
+      <xs:element name="MSOutFile_includerequest">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="MSSpectrumFileType">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    oms	-  asn.1 binary for iterative search
+    omx	-  xml for iterative search
+    xml	-  xml MSRequest
+    omxbz2	-  bzip2 omx file
+-->
+              <xs:enumeration value="dta" ncbi:intvalue="0"/>
+              <xs:enumeration value="dtablank" ncbi:intvalue="1"/>
+              <xs:enumeration value="dtaxml" ncbi:intvalue="2"/>
+              <xs:enumeration value="asc" ncbi:intvalue="3"/>
+              <xs:enumeration value="pkl" ncbi:intvalue="4"/>
+              <xs:enumeration value="pks" ncbi:intvalue="5"/>
+              <xs:enumeration value="sciex" ncbi:intvalue="6"/>
+              <xs:enumeration value="mgf" ncbi:intvalue="7"/>
+              <xs:enumeration value="unknown" ncbi:intvalue="8"/>
+              <xs:enumeration value="oms" ncbi:intvalue="9"/>
+              <xs:enumeration value="omx" ncbi:intvalue="10"/>
+              <xs:enumeration value="xml" ncbi:intvalue="11"/>
+              <xs:enumeration value="omxbz2" ncbi:intvalue="12"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="MSInFile">
+  <xs:complexType>
+    <xs:sequence>
+<!-- input file name -->
+      <xs:element name="MSInFile_infile" type="xs:string"/>
+<!-- input file type -->
+      <xs:element name="MSInFile_infiletype">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSSpectrumFileType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="MSSearchSettingsSet">
+  <xs:complexType>
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="MSSearchSettings"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- The search request that is given to the OMSSA algorithm -->
+<xs:element name="MSRequest">
+  <xs:complexType>
+    <xs:sequence>
+<!-- the set of spectra -->
+      <xs:element name="MSRequest_spectra">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSSpectrumset"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- the search settings -->
+      <xs:element name="MSRequest_settings">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSSearchSettings"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- request id -->
+      <xs:element name="MSRequest_rid" type="xs:string" minOccurs="0"/>
+<!-- additional search runs -->
+      <xs:element name="MSRequest_moresettings" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSSearchSettingsSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- list of mods that can be used in search -->
+      <xs:element name="MSRequest_modset" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSModSpecSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- enumeration of ion types -->
+<xs:element name="MSIonType">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    z	-  actually zdot
+-->
+              <xs:enumeration value="a" ncbi:intvalue="0"/>
+              <xs:enumeration value="b" ncbi:intvalue="1"/>
+              <xs:enumeration value="c" ncbi:intvalue="2"/>
+              <xs:enumeration value="x" ncbi:intvalue="3"/>
+              <xs:enumeration value="y" ncbi:intvalue="4"/>
+              <xs:enumeration value="z" ncbi:intvalue="5"/>
+              <xs:enumeration value="parent" ncbi:intvalue="6"/>
+              <xs:enumeration value="internal" ncbi:intvalue="7"/>
+              <xs:enumeration value="immonium" ncbi:intvalue="8"/>
+              <xs:enumeration value="unknown" ncbi:intvalue="9"/>
+              <xs:enumeration value="adot" ncbi:intvalue="10"/>
+              <xs:enumeration value="x-CO2" ncbi:intvalue="11"/>
+              <xs:enumeration value="adot-CO2" ncbi:intvalue="12"/>
+              <xs:enumeration value="max" ncbi:intvalue="13"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- types of neutral loss -->
+<xs:element name="MSIonNeutralLoss">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    water	-  minus 18 Da
+    ammonia	-  minus 17 Da
+-->
+              <xs:enumeration value="water" ncbi:intvalue="0"/>
+              <xs:enumeration value="ammonia" ncbi:intvalue="1"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- iosotopic type of ion -->
+<xs:element name="MSIonIsotopicType">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    monoisotopic	-  no c13s in molecule
+    c13	-  one c13 in molecule
+    c13two	-  two c13s in molecule, and so on...
+-->
+              <xs:enumeration value="monoisotopic" ncbi:intvalue="0"/>
+              <xs:enumeration value="c13" ncbi:intvalue="1"/>
+              <xs:enumeration value="c13two" ncbi:intvalue="2"/>
+              <xs:enumeration value="c13three" ncbi:intvalue="3"/>
+              <xs:enumeration value="c13four" ncbi:intvalue="4"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- type of immonium ion -->
+<xs:element name="MSImmonium">
+  <xs:complexType>
+    <xs:sequence>
+<!-- parent amino acid -->
+      <xs:element name="MSImmonium_parent" type="xs:string"/>
+<!-- product ion code -->
+      <xs:element name="MSImmonium_product" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- ion type at a finer level than ion series -->
+<xs:element name="MSIon">
+  <xs:complexType>
+    <xs:sequence>
+<!-- is this peak a neutral loss? -->
+      <xs:element name="MSIon_neutralloss" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSIonNeutralLoss"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- isotopic composition of peak -->
+      <xs:element name="MSIon_isotope" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSIonIsotopicType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- if iontype is internal, this is the internal sequence -->
+      <xs:element name="MSIon_internal" type="xs:string" minOccurs="0"/>
+<!-- if iontype is immonium, show characteristics -->
+      <xs:element name="MSIon_immonium" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSImmonium"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- annotated comments about the ion -->
+<xs:element name="MSIonAnnot">
+  <xs:complexType>
+    <xs:sequence>
+<!-- is this peak suspect? -->
+      <xs:element name="MSIonAnnot_suspect" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- what is the difference in mass from library spectrum? -->
+      <xs:element name="MSIonAnnot_massdiff" type="xs:double" minOccurs="0"/>
+<!-- are the lower mass peaks missing? -->
+      <xs:element name="MSIonAnnot_missingisotope" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- defines a particular ion -->
+<xs:element name="MSMZHit">
+  <xs:complexType>
+    <xs:sequence>
+<!-- ion type, e.g. b -->
+      <xs:element name="MSMZHit_ion">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSIonType"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- ion charge -->
+      <xs:element name="MSMZHit_charge" type="xs:integer"/>
+<!-- the sequential number of the ion -->
+      <xs:element name="MSMZHit_number" type="xs:integer"/>
+<!-- scaled m/z value in Da -->
+      <xs:element name="MSMZHit_mz" type="xs:integer"/>
+<!-- the index of the peak in the original spectrum -->
+      <xs:element name="MSMZHit_index" type="xs:integer" minOccurs="0"/>
+<!-- more information about the ion type -->
+      <xs:element name="MSMZHit_moreion" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSIon"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- annotations on the ion -->
+      <xs:element name="MSMZHit_annotation" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSIonAnnot"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!--
+ contains information about sequences with identical peptide
+ sequences
+-->
+<xs:element name="MSPepHit">
+  <xs:complexType>
+    <xs:sequence>
+<!-- start position (inclusive) in sequence -->
+      <xs:element name="MSPepHit_start" type="xs:integer"/>
+<!-- stop position (inclusive) in sequence -->
+      <xs:element name="MSPepHit_stop" type="xs:integer"/>
+<!-- genbank identifier -->
+      <xs:element name="MSPepHit_gi" type="xs:integer" minOccurs="0"/>
+<!-- sequence accession -->
+      <xs:element name="MSPepHit_accession" type="xs:string" minOccurs="0"/>
+<!-- sequence description -->
+      <xs:element name="MSPepHit_defline" type="xs:string" minOccurs="0"/>
+<!-- length of protein -->
+      <xs:element name="MSPepHit_protlength" type="xs:integer" minOccurs="0"/>
+<!-- blast library oid  -->
+      <xs:element name="MSPepHit_oid" type="xs:integer" minOccurs="0"/>
+<!-- reversed sequence -->
+      <xs:element name="MSPepHit_reversed" minOccurs="0">
+        <xs:complexType>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="true"/>
+                <xs:enumeration value="false"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+<!-- AA before the peptide -->
+      <xs:element name="MSPepHit_pepstart" type="xs:string" minOccurs="0"/>
+<!-- AA after the peptide -->
+      <xs:element name="MSPepHit_pepstop" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- modifications to a hit peptide -->
+<xs:element name="MSModHit">
+  <xs:complexType>
+    <xs:sequence>
+<!-- the position in the peptide -->
+      <xs:element name="MSModHit_site" type="xs:integer"/>
+<!-- the type of modification -->
+      <xs:element name="MSModHit_modtype">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSMod"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- sets of scores -->
+<xs:element name="MSScoreSet">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="MSScoreSet_name" type="xs:string"/>
+      <xs:element name="MSScoreSet_value" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- hits to a given spectrum -->
+<xs:element name="MSHits">
+  <xs:complexType>
+    <xs:sequence>
+<!-- E-value (expect value) -->
+      <xs:element name="MSHits_evalue" type="xs:double"/>
+<!-- P-value (probability value) -->
+      <xs:element name="MSHits_pvalue" type="xs:double"/>
+<!-- the charge state used in search.  -1 == not +1 -->
+      <xs:element name="MSHits_charge" type="xs:integer"/>
+<!-- peptides that match this hit -->
+      <xs:element name="MSHits_pephits">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSPepHit"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- ions hit -->
+      <xs:element name="MSHits_mzhits" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSMZHit"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- the peptide sequence -->
+      <xs:element name="MSHits_pepstring" type="xs:string" minOccurs="0"/>
+<!-- scaled experimental mass of peptide in Da -->
+      <xs:element name="MSHits_mass" type="xs:integer" minOccurs="0"/>
+<!-- modifications to sequence -->
+      <xs:element name="MSHits_mods" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSModHit"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- AA before the peptide (depricated) -->
+      <xs:element name="MSHits_pepstart" type="xs:string" minOccurs="0"/>
+<!-- AA after the peptide (depricated) -->
+      <xs:element name="MSHits_pepstop" type="xs:string" minOccurs="0"/>
+<!-- length of protein hit (depricated) -->
+      <xs:element name="MSHits_protlength" type="xs:integer" minOccurs="0"/>
+<!-- scaled theoretical mass of peptide hit -->
+      <xs:element name="MSHits_theomass" type="xs:integer" minOccurs="0"/>
+<!-- blast library oid (depricated)  -->
+      <xs:element name="MSHits_oid" type="xs:integer" minOccurs="0"/>
+<!-- optional scores (for library search) -->
+      <xs:element name="MSHits_scores" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSScoreSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- library search accesssion -->
+      <xs:element name="MSHits_libaccession" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- error return for a particular spectrum's hitset -->
+<xs:element name="MSHitError">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    unable2read	-  can't read the spectrum
+    notenuffpeaks	-  not enough peaks to search
+-->
+              <xs:enumeration value="none" ncbi:intvalue="0"/>
+              <xs:enumeration value="generalerr" ncbi:intvalue="1"/>
+              <xs:enumeration value="unable2read" ncbi:intvalue="2"/>
+              <xs:enumeration value="notenuffpeaks" ncbi:intvalue="3"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- MSHitSet annotation by end user -->
+<xs:element name="MSUserAnnot">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="none" ncbi:intvalue="0"/>
+              <xs:enumeration value="delete" ncbi:intvalue="1"/>
+              <xs:enumeration value="flag" ncbi:intvalue="2"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- contains a set of hits to a single spectrum -->
+<xs:element name="MSHitSet">
+  <xs:complexType>
+    <xs:sequence>
+<!-- unique number of spectrum -->
+      <xs:element name="MSHitSet_number" type="xs:integer"/>
+<!-- error, if any -->
+      <xs:element name="MSHitSet_error" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSHitError"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- set of hit to spectrum -->
+      <xs:element name="MSHitSet_hits" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSHits"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- filenames or other ids of spectra searched -->
+      <xs:element name="MSHitSet_ids" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="MSHitSet_ids_E" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- extra info: retention times, etc. -->
+      <xs:element name="MSHitSet_namevalue" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="NameValue"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- id of the search setting used -->
+      <xs:element name="MSHitSet_settingid" type="xs:integer" minOccurs="0"/>
+<!-- allows users to flag certain -->
+      <xs:element name="MSHitSet_userannotation" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSUserAnnot"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- error return for the entire response -->
+<xs:element name="MSResponseError">
+  <xs:complexType>
+    <xs:simpleContent>
+      <xs:extension base="xs:integer">
+        <xs:attribute name="value" use="optional">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+<!--
+    noblastdb	-  unable to open blast library
+    noinput	-  input missing
+-->
+              <xs:enumeration value="none" ncbi:intvalue="0"/>
+              <xs:enumeration value="generalerr" ncbi:intvalue="1"/>
+              <xs:enumeration value="noblastdb" ncbi:intvalue="2"/>
+              <xs:enumeration value="noinput" ncbi:intvalue="3"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:element>
+
+<!-- bioseq container -->
+<xs:element name="MSBioseq">
+  <xs:complexType>
+    <xs:sequence>
+<!-- blast library oid -->
+      <xs:element name="MSBioseq_oid" type="xs:integer"/>
+      <xs:element name="MSBioseq_seq">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="Bioseq"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="MSBioseqSet">
+  <xs:complexType>
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element ref="MSBioseq"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- search results -->
+<xs:element name="MSResponse">
+  <xs:complexType>
+    <xs:sequence>
+<!-- hits grouped by spectrum -->
+      <xs:element name="MSResponse_hitsets">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSHitSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- scale to change m/z float to integer -->
+      <xs:element name="MSResponse_scale" type="xs:integer" default="100"/>
+<!-- request id -->
+      <xs:element name="MSResponse_rid" type="xs:string" minOccurs="0"/>
+<!-- error response -->
+      <xs:element name="MSResponse_error" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSResponseError"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+<!-- version of OMSSA -->
+      <xs:element name="MSResponse_version" type="xs:string" minOccurs="0"/>
+<!-- email address for notification -->
+      <xs:element name="MSResponse_email" type="xs:string" minOccurs="0"/>
+<!-- version of db searched (usually size) -->
+      <xs:element name="MSResponse_dbversion" type="xs:integer" minOccurs="0"/>
+<!-- sequences found in search      -->
+      <xs:element name="MSResponse_bioseqs" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="MSBioseqSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<!-- holds both search requests and responses -->
+<xs:element name="MSSearch">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="MSSearch_request" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSRequest"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="MSSearch_response" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="MSResponse"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

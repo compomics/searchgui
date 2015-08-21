@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<crosslinks xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <crosslink title="BS3" description="Sulfo-DSS; Bis(Sulfosuccinimidyl) suberate" create_date="2012-07-22T19:30:51.122051+02:00" last_modified_date="2015-02-21T19:33:33.3361562+01:00" user="cox" saturated_composition="H(12) C(6)" unsaturated_composition="H(2) C(5) O(7) N Na" specificity="K" proteinNterm="true" proteinCterm="false">
+      <position>notTerm</position>
+   </crosslink>
+   <crosslink title="Formaldehyde" description="Formaldehyde" create_date="2015-02-21T19:31:33.8300007+01:00" last_modified_date="2015-02-21T19:32:58.6780583+01:00" user="cox" saturated_composition="H(12) C(6)" unsaturated_composition="H(2) O(7)" specificity="K" proteinNterm="false" proteinCterm="false">
+      <position>notTerm</position>
+   </crosslink>
+   <crosslink title="Disulfide bridge" description="Disulfide bridge" create_date="2015-02-21T23:27:23.9795195+01:00" last_modified_date="2015-02-21T23:28:28.5132402+01:00" user="cox" saturated_composition="H(12) C(6)" unsaturated_composition="H(2) O(7)" specificity="K" proteinNterm="false" proteinCterm="false">
+      <position>notTerm</position>
+   </crosslink>
+</crosslinks>

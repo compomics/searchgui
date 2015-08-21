@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BCOConstants>
+  <Constants namespace="BDal.BCO.Exception">
+    <Constant key="Source" value="Source" />
+    <Constant key="FileName" value="FileName" />
+    <Constant key="LineNumber" value="LineNumber" />
+    <Constant key="FunctionName" value="FunctionName" />
+    <Constant key="ExceptionID" value="ExceptionID" />
+    <Constant key="Data" value="Data" />
+    <Constant key="InnerException" value="InnerException" />
+    <Constant key="Message" value="Message" />
+    <Constant key="MutatingReadOnlyCollection" value="MutatingReadOnlyCollection" />
+    <Constant key="IndexInvalid" value="IndexInvalid" />
+    <Constant key="ArgumentInvalid" value="ArgumentInvalid" />
+    <Constant key="KeyNotFound" value="KeyNotFound" />
+    <Constant key="ItemWithSameKeyAlreadyAdded" value="ItemWithSameKeyAlreadyAdded" />
+    <Constant key="MethodNotImplemented" value="MethodNotImplemented" />
+    <Constant key="ObjectInvalid" value="ObjectInvalid" />
+    <Constant key="ObjectInvalid1" value="ObjectInvalid1" />
+    <Constant key="ConfigFileNotFoundOrCorrupted" value="ConfigFileNotFoundOrCorrupted" />
+    <Constant key="ConfigFileNoBCOSection" value="ConfigFileNoBCOSection" />
+    <Constant key="NoObjectConfigFilesFound" value="NoObjectConfigFilesFound" />
+    <Constant key="ObjectIsNotSerializable" value="ObjectIsNotSerializable" />
+    <Constant key="ObjectIsNotDeserializable" value="ObjectIsNotDeserializable" />
+    <!--<Constant key="Unknown" value="Unknown" />
+    <Constant key="MethodNotImplemented" value="MethodNotImplemented" />
+    <Constant key="ObjectInvalid" value="ObjectInvalid" />
+    <Constant key="ObjectInvalid1" value="ObjectInvalid1" />
+    <Constant key="CalibrationConstantsTypeUnknown" value="CalibrationConstantsTypeUnknown" />
+    <Constant key="CalibrationStrategyUnknown" value="CalibrationStrategyUnknown" />
+    <Constant key="PeakfinderResultTypeUnknown" value="PeakfinderResultTypeUnknown" />
+    <Constant key="AIDAReadException" value="AIDAReadException" />
+    <Constant key="AIDAWriteException" value="AIDAWriteException" />
+    <Constant key="ValueTypeInvalid" value="ValueTypeInvalid" />
+    <Constant key="XMassWrongNumberOfCollections" value="XMassWrongNumberOfCollections" />
+    <Constant key="XMassNoSpectraInCollection" value="XMassNoSpectraInCollection" />
+    <Constant key="InvalidDataInStorage" value="InvalidDataInStorage" />
+    <Constant key="VarTabEntryNotFound" value="VarTabEntryNotFound" />
+    <Constant key="VarTabEntryTypeInvalid" value="VarTabEntryTypeInvalid" />
+    <Constant key="VarTabDefinitionInvalid" value="VarTabDefinitionInvalid" />
+    <Constant key="VarTabCreationFailed" value="VarTabCreationFailed" />
+    <Constant key="NTBFilterCreationFailed" value="NTBFilterCreationFailed" />
+    <Constant key="NTBFilterFailed" value="NTBFilterFailed" />
+    <Constant key="NTBGetResultFailed" value="NTBGetResultFailed" />
+    <Constant key="NTBFinderDetectFailed" value="NTBFinderDetectFailed" />
+    <Constant key="NTBFunctionModeUnknown" value="NTBFunctionModeUnknown" />
+    <Constant key="NTBFunctionInitFailed" value="NTBFunctionInitFailed" />
+    <Constant key="PeakListInvalidInputForPeakIdentification" value="PeakListInvalidInputForPeakIdentification" />
+    <Constant key="CalibrationReCalibrationFailed" value="CalibrationReCalibrationFailed" />
+    <Constant key="ReCalibrationCalibrantCreationFailed" value="ReCalibrationCalibrantCreationFailed" />
+    <Constant key="RawCalibInvalidCalibConstants" value="RawCalibInvalidCalibConstants" />
+    <Constant key="RawCalibConstantsNotAvailable" value="RawCalibConstantsNotAvailable" />
+    <Constant key="CalibrationFailedWithXNotMonoton" value="CalibrationFailedWithXNotMonoton" />
+    <Constant key="CalibrationValuesInvalid" value="CalibrationValuesInvalid" />
+    <Constant key="SpectrumCreationFailed" value="SpectrumCreationFailed" />
+    <Constant key="AIDACalibrationException" value="AIDACalibrationException" />
+    <Constant key="BFLUserManagement" value="BFLUserManagement" />
+    <Constant key="ObjectIsNotSerializable" value="ObjectIsNotSerializable" />
+    <Constant key="ObjectIsNotDeserializable" value="ObjectIsNotDeserializable" />
+    <Constant key="ManagedExceptionCopy" value="ManagedExceptionCopy" />
+    <Constant key="NoAlgorithmSelected" value="NoAlgorithmSelected" />-->
+  </Constants>
+  <Constants namespace="BDal.BCO.Logging">
+    <Constant key="BCOStarted" value="BCOStarted" />
+    <Constant key="BCOStopped" value="BCOStopped" />
+    <Constant key="BCOExceptionOccured" value="ExceptionOccured" />    
+  </Constants>
+  <Constants namespace="BDal.BCO.Trace">
+    <Constant key="InitBCO" value="InitBCO" />
+    <Constant key="CreateObject" value="CreateObject" />
+  </Constants>
+  <Constants namespace="BDal.BCO.AcquisitionMode">
+    <Constant key="Unknown" value="Unknown" />
+    <Constant key="TOFLinear" value="TOFLinear" />
+    <Constant key="TOFReflector" value="TOFReflector" />
+    <Constant key="TOFReflectorDouble" value="TOFReflectorDouble" />
+    <Constant key="TOFFASTSegment" value="TOFFASTSegment" />
+    <Constant key="TOFFAST" value="TOFFAST" />
+    <Constant key="TOFLIFT" value="TOFLIFT" />
+    <Constant key="MM2Linear" value="MM2Linear" />
+    <Constant key="MM2Sim" value="MM2Sim" />
+    <Constant key="FTMS" value="FTMS" />
+    <Constant key="Independent" value="Independent" />
+  </Constants>
+  <Constants namespace="BDal.BCO.AnalysisMetaData">
+    <Constant key="Title" value="Title" />
+    <Constant key="Name" value="Name" />
+    <Constant key="PathName" value="PathName" />
+    <Constant key="InstrumentName" value="InstrumentName" />
+    <Constant key="UserName" value="UserName" />
+    <Constant key="MethodName" value="MethodName" />
+    <Constant key="SampleName" value="SampleName" />
+    <Constant key="Comment1" value="Comment1" />
+    <Constant key="Comment2" value="Comment2" />
+    <Constant key="Comment3" value="Comment3" />
+  </Constants>
+  <Constants namespace="BDal.BCO.Annotation">
+    <Constant key="X1" value="X1" />
+    <Constant key="X2" value="X2" />
+    <Constant key="Y" value="Y" />
+    <Constant key="ID" value="ID" />
+    <Constant key="Description" value="Description" />
+    <Constant key="Peak1" value="Peak1" />
+    <Constant key="Peak2" value="Peak2" />
+  </Constants>
+  <Constants namespace="BDal.BCO.ApplicationMetaData">
+    <Constant key="ProductName" value="ProductName" />
+    <Constant key="ProductVersion" value="ProductVersion" />
+    <Constant key="UserName" value="UserName" />
+  </Constants>
+  <Constants namespace="BDal.BCO.AuditTrailAuditType">
+    <Constant key="Information" value="Information" />
+    <Constant key="Warning" value="Warning" />
+    <Constant key="Error" value="Error" />
+    <Constant key="Critical" value="Critical" />
+    <Constant key="Undefined" value="Undefined" />
+  </Constants>
+  <Constants namespace="BDal.BCO.AxSpreadsheetEntry">
+    <Constant key="ScoutCode" value="ScoutCode" />
+    <Constant key="PosOnScout" value="PosOnScout" />
+    <Constant key="ChipOnScout" value="ChipOnScout" />
+    <Constant key="ProbeGeometry" value="ProbeGeometry" />
+    <Constant key="SPDPCode" value="SPDPCode" />
+    <Constant key="SPDPVial" value="SPDPVial" />
+    <Constant key="GelWorklist" value="GelWorklist" />
+    <Constant key="Status" value="Status" />
+    <Constant key="User" value="User" />
+    <Constant key="Instrument" value="Instrument" />
+    <Constant key="OriginalImagePath" value="OriginalImagePath" />
+    <Constant key="SpotNo" value="SpotNo" />
+    <Constant key="DigestMethod" value="DigestMethod" />
+    <Constant key="PrepMethod" value="PrepMethod" />
+    <Constant key="AutoXMethod" value="AutoXMethod" />
+    <Constant key="SpectrumDir" value="SpectrumDir" />
+    <Constant key="SpectrumFilename" value="SpectrumFilename" />
+    <Constant key="BioToolsMethod" value="BioToolsMethod" />
+    <Constant key="BioToolsResult" value="BioToolsResult" />
+    <Constant key="X" value="X" />
+    <Constant key="Y" value="Y" />
+    <Constant key="MW" value="MW" />
+    <Constant key="pI" value="pI" />
+    <Constant key="SpotID" value="SpotID" />
+    <Constant key="GelName" value="GelName" />
+    <Constant key="SpotName" value="SpotName" />
+  </Constants>
+  <Constants namespace="BDal.BCOlineParameter">
+    <Constant key="Flatness" value="Flatness" />
+    <Constant key="SegmentWidth" value="SegmentWidth" />
+    <Constant key="MedianLevel" value="MedianLevel" />
+    <Constant key="CalculateNoise" value="CalculateNoise" />
+    <Constant key="NoiseFactor" value="NoiseFactor" />
+    <Constant key="PositiveValuesOnly" value="PositiveValuesOnly" />
+    <Constant key="SubtractMedian" value="SubtractMedian" />
+    <Constant key="MinimalNoise" value="MinimalNoise" />
+    <Constant key="LogScalingForNoise" value="LogScalingForNoise" />
+    <Constant key="MaxSegmentsForNoise" value="MaxSegmentsForNoise" />
+    <Constant key="MinimalRelativeWidthStructuringElement" value="MinimalRelativeWidthStructuringElement" />
+    <Constant key="UseOldHistogramNoise" value="UseOldHistogramNoise" />
+    <Constant key="UseRelativeIntensities" value="UseRelativeIntensities" />
+    <Constant key="UseDistanceBasedCleanup" value="UseDistanceBasedCleanup" />
+    <Constant key="ChemicalNoiseParameter" value="ChemicalNoiseParameter" />
+    <Constant key="HistogramNoiseMode" value="HistogramNoiseMode" />
+    <Constant key="LocalSegment" value="LocalSegment" />
+    <Constant key="GlobalValley" value="GlobalValley" />
+    <Constant key="Prefiltering" value="Prefiltering" />
+  </Constants>
+  <Constants namespace="BDal.BCO.BuildingBlock">
+    <Constant key="SingleLetterCode" value="SingleLetterCode" />
+    <Constant key="Abbreviation" value="Abbreviation" />
+    <Constant key="FullName" value="FullName" />
+    <Constant key="CategoryName" value="CategoryName" />
+    <Constant key="MolecularFormula" value="MolecularFormula" />
+    <Constant key="MonoisotopicMass" value="MonoisotopicMass" />
+    <Constant key="AverageMass" value="AverageMass" />
+    <Constant key="NominalMass" value="NominalMass" />
+  </Constants>
+  <Constants namespace="BDal.BCO.CalibrationStrategy">
+    <Constant key="Unknown" value="Unknown" />
+    <Constant key="Tof" value="Tof" />
+    <Constant key="Esquire" value="Esquire" />
+    <Constant key="ICR" value="ICR" />
+    <Constant key="Linear" value="Linear" />
+    <Constant key="PSD" value="PSD" />
+    <Constant key="Lift" value="Lift" />
+    <Constant key="MicroTof" value="MicroTof" />
+    <Constant key="TofTemperatureCompensate" value="TofTemperatureCompensate" />
+    <Constant key="Lift2" value="Lift2" />
+    <Constant key="ICRSpaceChargeCorrection" value="ICRSpaceChargeCorrection" />
+  </Constants>
+  <Constants namespace="BDal.BCO.FormatType">
+    <Constant key="UNKNOWN_Format" value="UNKNOWN_Format" />
+    <Constant key="XMASS_Format" value="XMASS_Format" />
+    <Constant key="BAF_Format" value="BAF_Format" />
+    <Constant key="YEP_Format" value="YEP_Format" />
+    <Constant key="DB_Format" value="DB_Format" />
+    <Constant key="CiphergenCSV_Format" value="CiphergenCSV_Format" />
+  </Constants>
+  <Constants namespace="BDal.BCO.MassControlEntry">
+    <Constant key="Mass" value="Mass" />
+    <Constant key="Tolerance" value="Tolerance" />
+    <Constant key="CalibrantFrequency" value="CalibrantFrequency" />
+    <Constant key="BackgroundFlag" value="BackgroundFlag" />
+    <Constant key="CalibrantFlag" value="CalibrantFlag" />
+    <Constant key="LockFlag" value="LockFlag" />
+    <Constant key="Label" value="Label" />
+  </Constants>
+  <Constants namespace="BDal.BCO.Peak">
+    <Constant key="Algorithm" value="meth" />
+    <Constant key="Type" value="type" />
+    <Constant key="Mass" value="mass" />
+    <Constant key="Intensity" value="absi" />
+    <Constant key="Area" value="area" />
+    <Constant key="Index" value="ind" />
+    <Constant key="StartIndex" value="lind" />
+    <Constant key="EndIndex" value="rind" />
+    <Constant key="Goodness" value="goodn" />
+    <Constant key="SignalToNoiseRatio" value="s2n" />
+    <Constant key="Resolution" value="reso" />
+    <Constant key="ChiSquare" value="chisq" />
+    <Constant key="BaselineHeight" value="baslh" />
+    <Constant key="BackgroundFlag" value="background" />
+  </Constants>
+  <Constants namespace="BDal.BCO.PeakFinderAlgorithm">
+    <Constant key="Unknown" value="Unknown" />
+    <Constant key="Maximum" value="Maximum" />
+    <Constant key="Apex" value="Apex" />
+    <Constant key="Centroid" value="Centroid" />
+    <Constant key="WeightAverage" value="WeightAverage" />
+    <Constant key="SNAP" value="SNAP" />
+    <Constant key="Sum" value="Sum" />
+    <Constant key="EnhancedSum" value="EnhancedSum" />
+    <Constant key="XMASSApex" value="XMASSApex" />
+    <Constant key="XMASSCentroid" value="XMASSCentroid" />
+  </Constants>
+  <Constants namespace="BDal.BCO.PeakFinderParameter">
+    <Constant key="PeakWidth" value="PeakWidth" />
+    <Constant key="Noise" value="Noise" />
+    <Constant key="SignalToNoiseThreshold" value="SignalToNoiseThreshold" />
+    <Constant key="RelativeThresholdBasePeak" value="RelativeThresholdBasePeak" />
+    <Constant key="CentroidMultiplePeaks" value="CentroidMultiplePeaks" />
+    <Constant key="CentroidMultiplePeaksConsiderValleys" value="CentroidMultiplePeaksConsiderValleys" />
+    <Constant key="CentroidPercent" value="CentroidPercent" />
+    <Constant key="MaxPeakCount" value="MaxPeakCount" />
+    <Constant key="MaxPeakCountCriteria" value="MaxPeakCountCriteria" />
+    <Constant key="PeakFinderAlgorithm" value="PeakFinderAlgorithm" />
+    <Constant key="CalculateArea" value="CalculateArea" />
+    <Constant key="CalculateWidth" value="CalculateWidth" />
+    <Constant key="UseMaxSensivityForPeakPicking" value="UseMaxSensivityForPeakPicking" />
+    <Constant key="MinimumIntensity" value="MinimumIntensity" />
+    <Constant key="MaximumIntensity" value="MaximumIntensity" />
+    <Constant key="AreaLevelBaseline" value="AreaLevelBaseline" />
+    <Constant key="BaselineParameter" value="BaselineParameter" />
+    <Constant key="ChargeLimit" value="ChargeLimit" />
+    <Constant key="ChargeThreshold" value="ChargeThreshold" />
+    <Constant key="GoodnessThreshold" value="GoodnessThreshold" />
+    <Constant key="BuildingBlockStrings" value="BuildingBlockStrings" />
+    <Constant key="ExclusionMassRanges" value="ExclusionMassRanges" />
+    <Constant key="IsoDistLevel" value="IsoDistLevel" />
+    <Constant key="ChargeCarrierMass" value="ChargeCarrierMass" />
+    <Constant key="WidthFragments" value="WidthFragments" />
+    <Constant key="RemoveFragments" value="RemoveFragments" />
+    <Constant key="ICATMassDifferences" value="ICATMassDifferences" />
+    <Constant key="ICATPartnerThreshSN" value="ICATPartnerThreshSN" />
+    <Constant key="UseICAT" value="UseICAT" />
+    <Constant key="SummationWidth" value="SummationWidth" />
+    <Constant key="AreaStrategy" value="AreaStrategy" />
+    <Constant key="AreaIntegrateNone" value="AreaIntegrateNone" />
+    <Constant key="AreaIntegrateV1" value="AreaIntegrateV1" />
+    <Constant key="AreaIntegrateV2" value="AreaIntegrateV2" />
+    <Constant key="AreaIntegrateV3" value="AreaIntegrateV3" />
+    <Constant key="AreaWidthStrategy" value="AreaWidthStrategy" />
+    <Constant key="AreaWidthV1" value="AreaWidthV1" />
+    <Constant key="AreaWidthV2" value="AreaWidthV2" />
+    <Constant key="AreaWidthV2StartEndLevel5" value="AreaWidthV2StartEndLevel5" />
+    <Constant key="VaryingPeakWidthStart" value="VaryingPeakWidthStart" />
+    <Constant key="VaryingPeakWidthEnd" value="VaryingPeakWidthEnd" />
+    <Constant key="VaryingPeakWidthSegments" value="VaryingPeakWidthSegments" />
+    <Constant key="Resolution" value="Resolution" />
+    <Constant key="MinSummationWidth" value="MinSummationWidth" />
+    <Constant key="CheckNoiseAgainstOne" value="CheckNoiseAgainstOne" />
+    <Constant key="IterateDetectMode" value="IterateDetectMode" />
+    <Constant key="NoIteration" value="NoIteration" />
+    <Constant key="IterationV1" value="IterationV1" />
+    <Constant key="MaxNumberOfPointsToCentroid" value="MaxNumberOfPointsToCentroid" />
+    <Constant key="RelativeThresholdForNearbyPeaks" value="RelativeThresholdForNearbyPeaks" />
+    <Constant key="DistanceForNearbyPeaks" value="DistanceForNearbyPeaks" />
+    <Constant key="ApexCalculation" value="ApexCalculation" />
+    <Constant key="ChemicalNoiseFilterStrategy" value="ChemicalNoiseFilterStrategy" />
+    <Constant key="EnhancedIntensity" value="EnhancedIntensity" />
+  </Constants>
+  <Constants namespace="BDal.BCO.PeakListMetaData">
+    <Constant key="CreatorName" value="CreatorName" />
+    <Constant key="CountOfAveragedSpectra" value="CountOfAveragedSpectra" />
+    <Constant key="MassControlListName" value="MassControlListName" />
+    <Constant key="SpectrumID" value="SpectrumID" />
+    <Constant key="ParentMass" value="ParentMass" />
+    <Constant key="ParentCharge" value="ParentCharge" />
+  </Constants>
+  <Constants namespace="BDal.BCO.ReCalibrateWithReferenceMasses">
+    <Constant key="QuantityTime" value="QuantityTime" />
+    <Constant key="QuantityMass" value="QuantityMass" />
+    <Constant key="CalibModeStandard" value="CalibModeStandard" />
+    <Constant key="CalibModeC0" value="CalibModeC0" />
+    <Constant key="CalibModeC1" value="CalibModeC1" />
+    <Constant key="CalibModeLinear" value="CalibModeLinear" />
+    <Constant key="CalibModeLinearPart" value="CalibModeLinearPart" />
+    <Constant key="CalibModeIterativeRegression" value="CalibModeIterativeRegression" />
+    <Constant key="CalibModeQuadraticC0" value="CalibModeQuadraticC0" />
+    <Constant key="CalibModeQuadraticC1" value="CalibModeQuadraticC1" />
+    <Constant key="CalibModeQuadraticC1C2C0" value="CalibModeQuadraticC1C2C0" />
+    <Constant key="CalibModePPM" value="CalibModePPM" />
+    <Constant key="CalibModeRaw" value="CalibModeRaw" />
+    <Constant key="CalibModeStatisticLIFT" value="CalibModeStatisticLIFT" />
+  </Constants>
+  <Constants namespace="BDal.BCO.ReCalibrationAlgorithm">
+    <Constant key="SelfCalibration" value="SelfCalibration" />
+    <Constant key="MassProjection" value="MassProjection" />
+    <Constant key="PrimaryReferenceMode" value="PrimaryReferenceMode" />
+    <Constant key="ProjectionMassesMode" value="ProjectionMassesMode" />
+    <Constant key="SimpleReferenceMode" value="SimpleReferenceMode" />
+    <Constant key="SimpleProjectionMode" value="SimpleProjectionMode" />
+    <Constant key="FullCycleMode1" value="FullCycleMode1" />
+    <Constant key="SelfCalibrationFixedC2" value="SelfCalibrationFixedC2" />
+  </Constants>
+  <Constants namespace="BDal.BCO.SignatureAccessStatus">
+    <Constant key="OK" value="OK" />
+    <Constant key="SignatureManipulated" value="SignatureManipulated" />
+    <Constant key="DirectoryNotExists" value="DirectoryNotExists" />
+    <Constant key="SignatureFileNotExists" value="SignatureFileNotExists" />
+    <Constant key="SignedFileError" value="SignedFileError" />
+    <Constant key="UnexpectedError" value="UnexpectedError" />
+    <Constant key="NoLicense" value="NoLicense" />
+    <Constant key="SignatureCorrupt" value="SignatureCorrupt" />
+    <Constant key="StatusContainsManipulated" value="StatusContainsManipulated" />
+  </Constants>
+  <Constants namespace="BDal.BCO.SignatureStatus">
+    <Constant key="OK" value="OK" />
+    <Constant key="NotOK" value="NotOK" />
+    <Constant key="Unknown" value="Unknown" />
+  </Constants>
+  <Constants namespace="BDal.BCO.SmoothParameter">
+    <Constant key="Width" value="Width" />
+    <Constant key="Cycles" value="Cycles" />
+  </Constants>
+  <Constants namespace="BDal.BCO.Spectrum">
+    <Constant key="BaselineSubtracted" value="BaselineSubtracted" />
+    <Constant key="Smoothed" value="Smoothed" />
+  </Constants>
+  <Constants namespace="BDal.BCO.SpectrumMetaData">
+    <Constant key="Name" value="Name" />
+    <Constant key="FilePath" value="FilePath" />
+    <Constant key="Operations" value="Operations" />
+    <Constant key="AcquisitionMode" value="AcquisitionMode" />
+  </Constants>
+  <Constants namespace="BDal.BCO.SpectrumParameterDefinition">
+    <Constant key="Value" value="Value" />
+    <Constant key="ID" value="ID" />
+    <Constant key="Name" value="Name" />
+    <Constant key="DisplayName" value="DisplayName" />
+    <Constant key="Type" value="Type" />
+    <Constant key="Unit" value="Unit" />
+    <Constant key="GroupName" value="GroupName" />
+    <Constant key="Usage" value="Usage" />
+    <Constant key="DefaultValue" value="DefaultValue" />
+    <Constant key="UsageTargetValue" value="UsageTargetValue" />
+    <Constant key="UsageActualValue" value="UsageActualValue" />
+    <Constant key="UsageUnknown" value="UsageUnknown" />
+    <Constant key="Description" value="Description" />
+    <Constant key="DisplayOrder" value="DisplayOrder" />
+  </Constants>
+  <Constants namespace="BDal.BCO.SpectrumType">
+    <Constant key="UnknownSpectrum" value="UnknownSpectrum" />
+    <Constant key="MSSpectrum" value="MSSpectrum" />
+    <Constant key="FASTSegmentSpectrum" value="FASTSegmentSpectrum" />
+    <Constant key="FASTSpectrum" value="FASTSpectrum" />
+    <Constant key="LIFTSpectrum" value="LIFTSpectrum" />
+  </Constants>
+  <Constants namespace="BDal.BCO.UserManagerControlMode">
+    <Constant key="FullControl" value="FullControl" />
+    <Constant key="RestrictedControl" value="RestrictedControl" />
+  </Constants>
+  <Constants namespace="BDal.BCO.UserManagerGroup">
+    <Constant key="SimpleUser" value="SimpleUser" />
+    <Constant key="MediumUser" value="MediumUser" />
+    <Constant key="HighLevelUser" value="HighLevelUser" />
+    <Constant key="Administrator" value="Administrator" />
+    <Constant key="Service" value="Service" />
+  </Constants>
+  <Constants namespace="BDal.BCO.XMassVarTab">
+    <Constant key="Empty" value="Empty" />
+    <Constant key="None" value="None" />
+    <Constant key="Unknown" value="Unknown" />
+    <Constant key="Zero" value="Zero" />
+  </Constants>
+  <Constants namespace="BDal.BCO.NTBReCalibrationFilterErrorCodes">
+    <Constant key="Unknown" value="{06D4C501-F624-4fd6-A483-FF04D5FE965A}" />
+    <Constant key="LimitMassShift" value="{669A5B09-1468-41d4-8E7A-2AF2F760966A}" />
+    <Constant key="NotEnoughCalibrantsFound" value="{AA5F3C83-92D9-4cf9-A23B-CBDB0BD141BF}" />
+    <Constant key="InvalidCalibrator" value="{CC531142-F73F-4a76-BC3E-837778CF2904}" />
+    <Constant key="ProtagenModeFailed" value="{B33EFFCD-5F35-44cf-96CF-C2EADD742DCB}" />
+    <Constant key="InternalCalibrationFailed" value="{02C9F7C2-8F65-4c4e-8518-82D0A37072B3}" />
+  </Constants>
+  <Constants namespace="BDal.BCO.PeakFinderGuiParameter">
+    <Constant key="BuildingBlockFile" value="BuildingBlockFile" />
+    <Constant key="UseICATMassDifferences" value="UseICATMassDifferences" />
+    <Constant key="UseFragmentsWidth" value="RemoveFragments" />
+    <Constant key="AssureBaselineSubtraction" value="AssureBaselineSubtraction" />
+  </Constants>
+  <Constants namespace="BDal.BCO.NTBFunctionMode">
+    <Constant key="Unknown" value="Unknown" />
+    <Constant key="Spec1DConst" value="Spec1DConst" />
+    <Constant key="Spec1DLinear" value="Spec1DLinear" />
+    <Constant key="Spec1DCubicSpline" value="Spec1DCubicSpline" />
+    <Constant key="Spec1DIntPolynomXAll" value="Spec1DIntPolynomXAll" />
+    <Constant key="Spec1DIntPolynomXCopyExt" value="Spec1DIntPolynomXCopyExt" />
+    <Constant key="Spec1DIntPolynomHPCExt" value="Spec1DIntPolynomHPCExt" />
+    <Constant key="Spec1DRealPolynomXDerivExt" value="Spec1DIntPolynomXDerivExt" />
+    <Constant key="Linear1D" value="Linear1D" />
+    <Constant key="Haar1D" value="Haar1D" />
+    <Constant key="Spec1DAkima" value="Spec1DAkima" />
+    <Constant key="Spec1DAkimaPosConstrained" value="Spec1DAkimaPosConstrained" />
+  </Constants>
+</BCOConstants>

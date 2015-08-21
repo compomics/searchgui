@@ -1,0 +1,5032 @@
+<?xml version="1.0"?>
+<xmass version="1.0">
+<parameter id="32767">
+<name>CurrSpecFile</name>
+<displayname>CurrSpecFile</displayname>
+<description>Current absolute file path of the spectrum</description>
+<group>Acquisition Misc</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>none </default>
+</type>
+</parameter>
+<parameter id="1">
+<name>ABSF1</name>
+<displayname>ABSF1</displayname>
+<description>left limit for absf</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="2">
+<name>ABSF2</name>
+<displayname>ABSF2</displayname>
+<description>right limit for absf</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="3">
+<name>ABSG</name>
+<displayname>ABSG</displayname>
+<description>degree of polynomial in ABS</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>5 </default>
+</type>
+</parameter>
+<parameter id="4">
+<name>ABSL</name>
+<displayname>ABSL</displayname>
+<description>noise factor for limit in ABS</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>3.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="5">
+<name>ADCINSL</name>
+<displayname>ADCINSL</displayname>
+<description>Digitize excitation/receiver signal</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. THRU_CELL </default>
+<value>DIRECT</value>
+<value>THRU_CELL</value>
+</type>
+</parameter>
+<parameter id="6">
+<name>AE</name>
+<displayname>AE</displayname>
+<description>Activation Energy in eV</description>
+<displayorder>1</displayorder>
+<unit>eV</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 1.000000E+01  1.000000E+01  1.000000E+01  1.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="7">
+<name>ALPHA</name>
+<displayname>ALPHA</displayname>
+<description>1st quad correction constant for qk, qc</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="8">
+<name>APA</name>
+<displayname>APA</displayname>
+<description>Activation Pulse Amplitude in %</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 1.000000E+02  1.000000E+02  1.000000E+02  1.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="9">
+<name>AQLOCK</name>
+<displayname>AQLOCK</displayname>
+<description>Data set locked for acquisition?</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsTRUE </default>
+</type>
+</parameter>
+<parameter id="10">
+<name>AQSmode</name>
+<displayname>AQSmode</displayname>
+<description>acquisition save mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. single_fid </default>
+<value>single_fid</value>
+<value>multi_fids</value>
+<value>serial</value>
+<value>multi_serial</value>
+</type>
+</parameter>
+<parameter id="11">
+<name>AQ_DATE</name>
+<displayname>AQ_DATE</displayname>
+<description>Date of acquisition</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>unknown </default>
+</type>
+</parameter>
+<parameter id="12">
+<name>AQ_mod</name>
+<displayname>AQ_mod</displayname>
+<description>acquisition mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. qf </default>
+<value>qf</value>
+<value>qsim</value>
+<value>qseq</value>
+<value>DQD</value>
+</type>
+</parameter>
+<parameter id="13">
+<name>AR</name>
+<displayname>AR</displayname>
+<description>Activation Radius in %</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 2.000000E+01  2.000000E+01  2.000000E+01  2.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="14">
+<name>AZFE</name>
+<displayname>AZFE</displayname>
+<description>integral extension</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="15">
+<name>AZFW</name>
+<displayname>AZFW</displayname>
+<description>integral width</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="16">
+<name>AqDSize</name>
+<displayname>AqDSize</displayname>
+<description>Acquisition display size, for compression</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>8192 </default>
+</type>
+</parameter>
+<parameter id="17">
+<name>AqProcM</name>
+<displayname>AqProcM</displayname>
+<description>post Acquisiton Processing Macro</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>none </default>
+</type>
+</parameter>
+<parameter id="18">
+<name>BCFW</name>
+<displayname>BCFW</displayname>
+<description>bc filter width for sfil and qfil</description>
+<displayorder>1</displayorder>
+<unit>ppm</unit>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="19">
+<name>BC_mod</name>
+<displayname>BC_mod</displayname>
+<description>FID bias correction mode</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. no </default>
+<value>no</value>
+<value>single</value>
+<value>quad</value>
+</type>
+</parameter>
+<parameter id="20">
+<name>BF1</name>
+<displayname>BF1</displayname>
+<description>Base frequency for observe channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="21">
+<name>BF2</name>
+<displayname>BF2</displayname>
+<description>Base frequency for 2nd channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="22">
+<name>BF3</name>
+<displayname>BF3</displayname>
+<description>Base Frequency for 3rd channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="23">
+<name>BF4</name>
+<displayname>BF4</displayname>
+<description>Base Frequency for 4th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="24">
+<name>BF5</name>
+<displayname>BF5</displayname>
+<description>Base Frequency for 5th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="25">
+<name>BF6</name>
+<displayname>BF6</displayname>
+<description>Base Frequency for 6th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="26">
+<name>BF7</name>
+<displayname>BF7</displayname>
+<description>Base Frequency for 7th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="27">
+<name>BF8</name>
+<displayname>BF8</displayname>
+<description>Base Frequency for 8th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="28">
+<name>BLDNM</name>
+<displayname>BLDNM</displayname>
+<description>name of building block file</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>averagine.bld </default>
+</type>
+</parameter>
+<parameter id="29">
+<name>BYTORDA</name>
+<displayname>BYTORDA</displayname>
+<description>byte order</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. little </default>
+<value>little</value>
+<value>big</value>
+</type>
+</parameter>
+<parameter id="30">
+<name>BYTORDP</name>
+<displayname>BYTORDP</displayname>
+<description>byte order</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. little </default>
+<value>little</value>
+<value>big</value>
+</type>
+</parameter>
+<parameter id="31">
+<name>CALME</name>
+<displayname>CALME</displayname>
+<description>List of exp Masses</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="32">
+<name>CALMR</name>
+<displayname>CALMR</displayname>
+<description>List of reference masses</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="33">
+<name>CFDGTYP</name>
+<displayname>CFDGTYP</displayname>
+<description>configuration of diff. digitizers</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="34">
+<name>CFRGTYP</name>
+<displayname>CFRGTYP</displayname>
+<description>rg as configured</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>7 (ord) resp. FTICRMS </default>
+<value>NOTSET</value>
+<value>AC</value>
+<value>SE451</value>
+<value>AMXR</value>
+<value>AMXS</value>
+<value>RX22</value>
+<value>RXC</value>
+<value>FTICRMS</value>
+</type>
+</parameter>
+<parameter id="35">
+<name>CLDATE</name>
+<displayname>CLDATE</displayname>
+<description>date of calibration</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>unknown </default>
+</type>
+</parameter>
+<parameter id="36">
+<name>CLPTS</name>
+<displayname>CLPTS</displayname>
+<description>number of points used for calibration</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="37">
+<name>CLREFNM</name>
+<displayname>CLREFNM</displayname>
+<description>name of spectrum used for calibration</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>unknown </default>
+</type>
+</parameter>
+<parameter id="38">
+<name>CLSTAT</name>
+<displayname>CLSTAT</displayname>
+<description>calibration status of Spectrum</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. ORI </default>
+<value>ORI</value>
+<value>KEYB</value>
+<value>TABLE</value>
+<value>INST</value>
+<value>DATA</value>
+<value>LOCKMASS</value>
+</type>
+</parameter>
+<parameter id="39">
+<name>CLUPA</name>
+<displayname>CLUPA</displayname>
+<description>CLeanUp Pulse Amplitude</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 2.500000E+01  2.500000E+01  2.500000E+01  2.500000E+01 </default>
+</type>
+</parameter>
+<parameter id="40">
+<name>CNST</name>
+<displayname>CNST</displayname>
+<description>constant for arithmetic in pulse progr.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00  1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="41">
+<name>CNdl</name>
+<displayname>CNdl</displayname>
+<description>corona Needle</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="42">
+<name>COROFFS</name>
+<displayname>COROFFS</displayname>
+<description>freq. offset for BC_mod=qpol</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="43">
+<name>Calmet</name>
+<displayname>Calmet</displayname>
+<description>ICR calibration method</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. cal2 </default>
+<value>cal2</value>
+<value>cal3</value>
+<value>sim</value>
+<value>calLOCK</value>
+</type>
+</parameter>
+<parameter id="44">
+<name>CapEnt</name>
+<displayname>CapEnt</displayname>
+<description>Capillary Entrance voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>-3.800000E+03 </default>
+</type>
+</parameter>
+<parameter id="45">
+<name>CapExit</name>
+<displayname>CapExit</displayname>
+<description>Capillary Exit voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.100000E+02 </default>
+</type>
+</parameter>
+<parameter id="46">
+<name>CapHtr</name>
+<displayname>CapHtr</displayname>
+<description>Capillary Heater for ESI</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. OFF </default>
+<value>OFF</value>
+<value>LOW</value>
+<value>MED</value>
+<value>HIGH</value>
+</type>
+</parameter>
+<parameter id="47">
+<name>ChromDe</name>
+<displayname>ChromDe</displayname>
+<description>Initial Chromatography acquisition Delay</description>
+<displayorder>1</displayorder>
+<unit>min</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="48">
+<name>CompThr</name>
+<displayname>CompThr</displayname>
+<description>Abs. Intens. for On-Line 2D compression</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="49">
+<name>Console</name>
+<displayname>Console</displayname>
+<description>Type of Console</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. Undefined </default>
+<value>Undefined</value>
+<value>Aspect</value>
+<value>APEX_I</value>
+<value>APEX_II</value>
+</type>
+</parameter>
+<parameter id="50">
+<name>CorrLst</name>
+<displayname>CorrLst</displayname>
+<description>List of masses for multiply correlated sweeps</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..15) -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00  -1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="51">
+<name>Cyl</name>
+<displayname>Cyl</displayname>
+<description>Cylindical lens voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="52">
+<name>D</name>
+<displayname>D</displayname>
+<description>fixed delay</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="53">
+<name>DATE</name>
+<displayname>DATE</displayname>
+<description>acquisition date</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="54">
+<name>DATMOD</name>
+<displayname>DATMOD</displayname>
+<description>Use 'raw' or 'proc'essed data</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. proc </default>
+<value>raw</value>
+<value>proc</value>
+</type>
+</parameter>
+<parameter id="55">
+<name>DBL</name>
+<displayname>DBL</displayname>
+<description>low power square pule dec. B size</description>
+<displayorder>1</displayorder>
+<unit>dB</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..7) 1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02 </default>
+</type>
+</parameter>
+<parameter id="56">
+<name>DC</name>
+<displayname>DC</displayname>
+<description>constant for additive transfers</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="57">
+<name>DCOff1</name>
+<displayname>DCOff1</displayname>
+<description>RF Bias voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="58">
+<name>DDSMOD1</name>
+<displayname>DDSMOD1</displayname>
+<description>Excitation mode channel 1.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsTRUE </default>
+</type>
+</parameter>
+<parameter id="59">
+<name>DDSMOD2</name>
+<displayname>DDSMOD2</displayname>
+<description>Excitation mode channel 2.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsTRUE </default>
+</type>
+</parameter>
+<parameter id="60">
+<name>DDSMOD3</name>
+<displayname>DDSMOD3</displayname>
+<description>Excitation mode for channel 3.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsTRUE </default>
+</type>
+</parameter>
+<parameter id="61">
+<name>DE</name>
+<displayname>DE</displayname>
+<description>pre-scan-delay</description>
+<displayorder>1</displayorder>
+<unit>usec</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>6.250000E+02 </default>
+</type>
+</parameter>
+<parameter id="62">
+<name>DECIM</name>
+<displayname>DECIM</displayname>
+<description>decimation rate of digital filter</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="63">
+<name>DETP</name>
+<displayname>DETP</displayname>
+<description>External source Delta ExTraction Plate.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="64">
+<name>DEV2</name>
+<displayname>DEV2</displayname>
+<description>ICR cell delta extraction plate 2.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="65">
+<name>DFILT</name>
+<displayname>DFILT</displayname>
+<description>Digital filter name</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="66">
+<name>DIGMOD</name>
+<displayname>DIGMOD</displayname>
+<description>digitizer modus</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. analog </default>
+<value>analog</value>
+<value>digital</value>
+<value>homodecoupling-digital</value>
+</type>
+</parameter>
+<parameter id="67">
+<name>DIGTYP</name>
+<displayname>DIGTYP</displayname>
+<description>digitizer type</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>5 (ord) resp. FADC </default>
+<value>slow</value>
+<value>16Bit</value>
+<value>fast</value>
+<value>BC132-12</value>
+<value>BC132-16</value>
+<value>FADC</value>
+<value>HADC</value>
+<value>SADC</value>
+<value>HADC+</value>
+<value>SADC+</value>
+<value>HRD16</value>
+<value>IADC</value>
+</type>
+</parameter>
+<parameter id="68">
+<name>DIP</name>
+<displayname>DIP</displayname>
+<description>Direct Insertion Probe Temp.</description>
+<displayorder>1</displayorder>
+<unit>C</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="69">
+<name>DL</name>
+<displayname>DL</displayname>
+<description>low power square pulse decoupler</description>
+<displayorder>1</displayorder>
+<unit>dB</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..7) 1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02 </default>
+</type>
+</parameter>
+<parameter id="70">
+<name>DM</name>
+<displayname>DM</displayname>
+<description>detection mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. bb </default>
+<value>hires</value>
+<value>bb</value>
+</type>
+</parameter>
+<parameter id="71">
+<name>DPL2</name>
+<displayname>DPL2</displayname>
+<description>Ion transfer Delta PLate 2.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="72">
+<name>DPL4</name>
+<displayname>DPL4</displayname>
+<description>Ion transfer Delta PLate 4.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="73">
+<name>DR</name>
+<displayname>DR</displayname>
+<description>digitizer resolution</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>12 </default>
+</type>
+</parameter>
+<parameter id="74">
+<name>DS</name>
+<displayname>DS</displayname>
+<description>number of dummy scans</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="75">
+<name>DSPFIRM</name>
+<displayname>DSPFIRM</displayname>
+<description>firmware used for digital filtering</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. sharp(standard) </default>
+<value>sharp(standard)</value>
+<value>user_defined</value>
+<value>smooth</value>
+<value>medium</value>
+</type>
+</parameter>
+<parameter id="76">
+<name>DSPFVS</name>
+<displayname>DSPFVS</displayname>
+<description>DSP firmware version</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="77">
+<name>DU</name>
+<displayname>DU</displayname>
+<description>disk unit</description>
+<displayorder>1</displayorder>
+<group>CURD</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>"" </default>
+</type>
+</parameter>
+<parameter id="78">
+<name>DW</name>
+<displayname>DW</displayname>
+<description>Dwell Time</description>
+<displayorder>1</displayorder>
+<unit>sec</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>8.000000E-02 </default>
+</type>
+</parameter>
+<parameter id="79">
+<name>DataDep</name>
+<displayname>DataDep</displayname>
+<description>Data Dependency mode for acquisition</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. standard(OFF) </default>
+<value>standard(OFF)</value>
+<value>ms_msms(ON)</value>
+</type>
+</parameter>
+<parameter id="80">
+<name>DryFlow</name>
+<displayname>DryFlow</displayname>
+<description>Dry gas Flow rate</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>3.500000E+01 </default>
+</type>
+</parameter>
+<parameter id="81">
+<name>DrySW</name>
+<displayname>DrySW</displayname>
+<description>drying gas switch</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. TURN_off </default>
+<value>TURN_off</value>
+<value>TURN_on</value>
+</type>
+</parameter>
+<parameter id="82">
+<name>DryTemp</name>
+<displayname>DryTemp</displayname>
+<description>Dry gas temperature</description>
+<displayorder>1</displayorder>
+<unit>C</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.500000E+02 </default>
+</type>
+</parameter>
+<parameter id="83">
+<name>Dy2max</name>
+<displayname>Dy2max</displayname>
+<description>max dy2 for SNAP</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>4.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="84">
+<name>EC</name>
+<displayname>EC</displayname>
+<description>filament emission current</description>
+<displayorder>1</displayorder>
+<unit>mA</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="85">
+<name>EM</name>
+<displayname>EM</displayname>
+<description>excitation mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. sweep </default>
+<value>shot</value>
+<value>sweep</value>
+</type>
+</parameter>
+<parameter id="86">
+<name>ENT</name>
+<displayname>ENT</displayname>
+<description>Final Temp for DIP ramp</description>
+<displayorder>1</displayorder>
+<unit>C</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="87">
+<name>ETP</name>
+<displayname>ETP</displayname>
+<description>External source ExTraction Plate potential.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="88">
+<name>EV1</name>
+<displayname>EV1</displayname>
+<description>ICR cell extraction plate 1.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="89">
+<name>EV2</name>
+<displayname>EV2</displayname>
+<description>ICR cell extraction plate 2.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="90">
+<name>EXC_AMP</name>
+<displayname>EXC_AMP</displayname>
+<description>Excitation Amplitude in % of max. pulse</description>
+<displayorder>1</displayorder>
+<unit>%</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="91">
+<name>EXC_CTL</name>
+<displayname>EXC_CTL</displayname>
+<description>Excite parameter control selection</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. Calculated </default>
+<value>Calculated</value>
+<value>User_Controlled</value>
+</type>
+</parameter>
+<parameter id="92">
+<name>EXC_RAD</name>
+<displayname>EXC_RAD</displayname>
+<description>Excitation Radius in % of cell radius</description>
+<displayorder>1</displayorder>
+<unit>%</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="93">
+<name>EXC_hi</name>
+<displayname>EXC_hi</displayname>
+<description>High mass limit for detect excite event</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+03 </default>
+</type>
+</parameter>
+<parameter id="94">
+<name>EXC_low</name>
+<displayname>EXC_low</displayname>
+<description>Low mass limit for detect excite event</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="95">
+<name>EXPNO</name>
+<displayname>EXPNO</displayname>
+<description>Experiment number</description>
+<displayorder>1</displayorder>
+<group>CURD</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="96">
+<name>EndP</name>
+<displayname>EndP</displayname>
+<description>End Plate electrode voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>-3.500000E+03 </default>
+</type>
+</parameter>
+<parameter id="97">
+<name>EsiMode</name>
+<displayname>EsiMode</displayname>
+<description>Esi source controller system mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. ESI_positive </default>
+<value>ESI_positive</value>
+<value>ESI_negative</value>
+<value>APCI_positive</value>
+<value>APCI_negative</value>
+</type>
+</parameter>
+<parameter id="98">
+<name>ExpFile</name>
+<displayname>ExpFile</displayname>
+<description>Name of experiment file used</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>UNKNOWN </default>
+</type>
+</parameter>
+<parameter id="99">
+<name>Extract</name>
+<displayname>Extract</displayname>
+<description>Extraction voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="100">
+<name>F1LIST</name>
+<displayname>F1LIST</displayname>
+<description>name of F1 frequency list</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>49 (dec), 1 (char) </default>
+</type>
+</parameter>
+<parameter id="101">
+<name>F2LIST</name>
+<displayname>F2LIST</displayname>
+<description>name of F2 frequency list</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>50 (dec), 2 (char) </default>
+</type>
+</parameter>
+<parameter id="102">
+<name>F3LIST</name>
+<displayname>F3LIST</displayname>
+<description>name of F3 frequency list</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>51 (dec), 3 (char) </default>
+</type>
+</parameter>
+<parameter id="103">
+<name>FMOD</name>
+<displayname>FMOD</displayname>
+<description>filter mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. 100kHz </default>
+<value>100kHz</value>
+<value>50kHz</value>
+<value>25kHz</value>
+<value>12.5kHz</value>
+</type>
+</parameter>
+<parameter id="104">
+<name>FOCL1</name>
+<displayname>FOCL1</displayname>
+<description>Ion transfer FOcussing Lens 1.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="105">
+<name>FOCL2</name>
+<displayname>FOCL2</displayname>
+<description>Ion transfer FOcussing Lens 2.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="106">
+<name>FOV</name>
+<displayname>FOV</displayname>
+<description>Field of view</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="107">
+<name>FQ1LIST</name>
+<displayname>FQ1LIST</displayname>
+<description>Name of frequency list 1</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist1 </default>
+</type>
+</parameter>
+<parameter id="108">
+<name>FQ2LIST</name>
+<displayname>FQ2LIST</displayname>
+<description>Name of frequency list 2</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist2 </default>
+</type>
+</parameter>
+<parameter id="109">
+<name>FQ3LIST</name>
+<displayname>FQ3LIST</displayname>
+<description>Name of frequency list 3</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist3 </default>
+</type>
+</parameter>
+<parameter id="110">
+<name>FQ4LIST</name>
+<displayname>FQ4LIST</displayname>
+<description>Name of frequency list 4</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist4 </default>
+</type>
+</parameter>
+<parameter id="111">
+<name>FQ5LIST</name>
+<displayname>FQ5LIST</displayname>
+<description>Name of frequency list 5</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist5 </default>
+</type>
+</parameter>
+<parameter id="112">
+<name>FQ6LIST</name>
+<displayname>FQ6LIST</displayname>
+<description>Name of frequency list 6</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist6 </default>
+</type>
+</parameter>
+<parameter id="113">
+<name>FQ7LIST</name>
+<displayname>FQ7LIST</displayname>
+<description>Name of frequency list 7</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist7 </default>
+</type>
+</parameter>
+<parameter id="114">
+<name>FQ8LIST</name>
+<displayname>FQ8LIST</displayname>
+<description>Name of frequency list 8</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>freqlist8 </default>
+</type>
+</parameter>
+<parameter id="115">
+<name>FR_low</name>
+<displayname>FR_low</displayname>
+<description>Low Frequency limit</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.00000000000000000E+03 </default>
+</type>
+</parameter>
+<parameter id="116">
+<name>FTSIZE</name>
+<displayname>FTSIZE</displayname>
+<description>FT size</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1024 </default>
+</type>
+</parameter>
+<parameter id="117">
+<name>FT_mod</name>
+<displayname>FT_mod</displayname>
+<description>type of Fourier transformation</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. no </default>
+<value>no</value>
+<value>isr</value>
+<value>iqc</value>
+<value>iqr</value>
+<value>fsc</value>
+<value>fsr</value>
+<value>fqc</value>
+<value>fqr</value>
+<value>isc</value>
+</type>
+</parameter>
+<parameter id="118">
+<name>FW</name>
+<displayname>FW</displayname>
+<description>filter width</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.500000E+03 </default>
+</type>
+</parameter>
+<parameter id="119">
+<name>FidCorI</name>
+<displayname>FidCorI</displayname>
+<description>factor applied to first imaginary fid point</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="120">
+<name>FidCorR</name>
+<displayname>FidCorR</displayname>
+<description>factor applied to first real fid point</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="121">
+<name>FidSum</name>
+<displayname>FidSum</displayname>
+<description>Points to Sum in FID during acqu</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="122">
+<name>GAMMA</name>
+<displayname>GAMMA</displayname>
+<description>2nd quad correction constant for qk, qc</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="123">
+<name>GB</name>
+<displayname>GB</displayname>
+<description>gaussian broadening</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="124">
+<name>GCT</name>
+<displayname>GCT</displayname>
+<description>ICR GC cycle time</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>-1.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="125">
+<name>GOODNLV</name>
+<displayname>GOODNLV</displayname>
+<description>SNAP goodness level</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="126">
+<name>GRD</name>
+<displayname>GRD</displayname>
+<description>Gradient for DIP ramp.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000010E-02 </default>
+</type>
+</parameter>
+<parameter id="127">
+<name>HEC</name>
+<displayname>HEC</displayname>
+<description>Heater current Cell.</description>
+<displayorder>1</displayorder>
+<unit>A</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="128">
+<name>HES</name>
+<displayname>HES</displayname>
+<description>Heater current satellite.</description>
+<displayorder>1</displayorder>
+<unit>A</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="129">
+<name>HVO</name>
+<displayname>HVO</displayname>
+<description>Ion transfer optics High VOltage.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="130">
+<name>HVSW</name>
+<displayname>HVSW</displayname>
+<description>AoB controller High Voltage switch</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. TURN_on </default>
+<value>TURN_off</value>
+<value>TURN_on</value>
+</type>
+</parameter>
+<parameter id="131">
+<name>IHEF</name>
+<displayname>IHEF</displayname>
+<description>Internal filament current.</description>
+<displayorder>1</displayorder>
+<unit>A</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="132">
+<name>IIE</name>
+<displayname>IIE</displayname>
+<description>ICR cell Internal Ionization Energy.</description>
+<displayorder>1</displayorder>
+<unit>eV</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="133">
+<name>II_path</name>
+<displayname>II_path</displayname>
+<description>alternative path for ii file</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="134">
+<name>IM</name>
+<displayname>IM</displayname>
+<description>ionization mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. external </default>
+<value>internal</value>
+<value>external</value>
+<value>both</value>
+</type>
+</parameter>
+<parameter id="135">
+<name>IN</name>
+<displayname>IN</displayname>
+<description>increment for delay D[0]</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03  1.00000000000000002E-03 </default>
+</type>
+</parameter>
+<parameter id="136">
+<name>INH</name>
+<displayname>INH</displayname>
+<description>Inlet Heater Current.</description>
+<displayorder>1</displayorder>
+<unit>A</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="137">
+<name>INP</name>
+<displayname>INP</displayname>
+<description>increment for pulse</description>
+<displayorder>1</displayorder>
+<unit>usec</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="138">
+<name>INSTRUM</name>
+<displayname>INSTRUM</displayname>
+<description>name of spectrometer</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>spect </default>
+</type>
+</parameter>
+<parameter id="139">
+<name>INTBC</name>
+<displayname>INTBC</displayname>
+<description>perform automatic baseline corr. for integr</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. yes </default>
+<value>no</value>
+<value>yes</value>
+</type>
+</parameter>
+<parameter id="140">
+<name>INTSCL</name>
+<displayname>INTSCL</displayname>
+<description>integral scaling factor</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="141">
+<name>IR_path</name>
+<displayname>IR_path</displayname>
+<description>alternative path for ir file</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="142">
+<name>ISEN</name>
+<displayname>ISEN</displayname>
+<description>integral sensitivity factor</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.280000E+02 </default>
+</type>
+</parameter>
+<parameter id="143">
+<name>IccAux1</name>
+<displayname>IccAux1</displayname>
+<description>ICC Auxiliary 1 Voltage</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="144">
+<name>IccAux2</name>
+<displayname>IccAux2</displayname>
+<description>ICC Auxiliary 2 Voltage</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="145">
+<name>IccAux3</name>
+<displayname>IccAux3</displayname>
+<description>ICC Auxiliary 3 Voltage</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="146">
+<name>IccAux4</name>
+<displayname>IccAux4</displayname>
+<description>ICC Auxiliary 4 Voltage</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="147">
+<name>IonOptM</name>
+<displayname>IonOptM</displayname>
+<description>External Ion Optics Mode</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. Off </default>
+<value>Off</value>
+<value>Positive</value>
+<value>Negative</value>
+<value>External</value>
+</type>
+</parameter>
+<parameter id="148">
+<name>JHIGH</name>
+<displayname>JHIGH</displayname>
+<description>eJection range HIGH mass</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 1.000000E+03  1.000000E+03  1.000000E+03  1.000000E+03 </default>
+</type>
+</parameter>
+<parameter id="149">
+<name>JLOW</name>
+<displayname>JLOW</displayname>
+<description>eJection range LOW mass</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 1.000000E+02  1.000000E+02  1.000000E+02  1.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="150">
+<name>JRAD</name>
+<displayname>JRAD</displayname>
+<description>eJection RADius in %</description>
+<displayorder>1</displayorder>
+<unit>%</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.500000E+02 </default>
+</type>
+</parameter>
+<parameter id="151">
+<name>JSB</name>
+<displayname>JSB</displayname>
+<description>eJection Savety Belt</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 2.000000E+04  2.000000E+04  2.000000E+04  2.000000E+04 </default>
+</type>
+</parameter>
+<parameter id="152">
+<name>JSHA</name>
+<displayname>JSHA</displayname>
+<description>eJection SHape Amplitude</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 2.000000E+01  2.000000E+01  2.000000E+01  2.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="153">
+<name>JSWA</name>
+<displayname>JSWA</displayname>
+<description>eJection SWeep Amplitude</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 1.000000E+02  1.000000E+02  1.000000E+02  1.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="154">
+<name>L</name>
+<displayname>L</displayname>
+<description>loop counter</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>1</dimension>
+<default>(0..31) 1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1 </default>
+</type>
+</parameter>
+<parameter id="155">
+<name>LB</name>
+<displayname>LB</displayname>
+<description>line broadening</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="156">
+<name>LPBIN</name>
+<displayname>LPBIN</displayname>
+<description>input points for back LP</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="157">
+<name>M1LIST</name>
+<displayname>M1LIST</displayname>
+<description>name of M1 mass list</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>se__curr_m1 </default>
+</type>
+</parameter>
+<parameter id="158">
+<name>MAXI</name>
+<displayname>MAXI</displayname>
+<description>maximum intensity for peak picking</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+04 </default>
+</type>
+</parameter>
+<parameter id="159">
+<name>MAXPKS</name>
+<displayname>MAXPKS</displayname>
+<description>Max. no. of peaks (for pp)</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>200 </default>
+</type>
+</parameter>
+<parameter id="160">
+<name>MC2</name>
+<displayname>MC2</displayname>
+<description>2D-transform-type</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. QF </default>
+<value>QF</value>
+<value>QSEQ</value>
+<value>TPPI</value>
+<value>States</value>
+<value>States-TPPI</value>
+<value>echo-antiecho</value>
+</type>
+</parameter>
+<parameter id="161">
+<name>MEAN</name>
+<displayname>MEAN</displayname>
+<description>mean noise value</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="162">
+<name>ME_mod</name>
+<displayname>ME_mod</displayname>
+<description>Maximum Entropy mode</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. no </default>
+<value>no</value>
+<value>LPfr</value>
+<value>LPfc</value>
+<value>LPbr</value>
+<value>LPbc</value>
+</type>
+</parameter>
+<parameter id="163">
+<name>MI</name>
+<displayname>MI</displayname>
+<description>minimum intensity for peak picking</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="164">
+<name>ML1</name>
+<displayname>ML1</displayname>
+<description>Mass Calibration Constant 1</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>7.60000000000000000E+07 </default>
+</type>
+</parameter>
+<parameter id="165">
+<name>ML2</name>
+<displayname>ML2</displayname>
+<description>Mass Calibration Constant 2</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="166">
+<name>ML3</name>
+<displayname>ML3</displayname>
+<description>Calibration constant number 3</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="167">
+<name>MODFLT1</name>
+<displayname>MODFLT1</displayname>
+<description>Mod filter frequency for channel 1.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="168">
+<name>MODFLT2</name>
+<displayname>MODFLT2</displayname>
+<description>Mod filter frequency for channel 2.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="169">
+<name>MPWCH</name>
+<displayname>MPWCH</displayname>
+<description>max peak width in channels</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+03 </default>
+</type>
+</parameter>
+<parameter id="170">
+<name>MSDTAID</name>
+<displayname>MSDTAID</displayname>
+<description>primary DB key of MSDataset</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>-1 </default>
+</type>
+</parameter>
+<parameter id="171">
+<name>MW_cent</name>
+<displayname>MW_cent</displayname>
+<description>mass window center</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.00000000000000000E+02 </default>
+</type>
+</parameter>
+<parameter id="172">
+<name>MW_high</name>
+<displayname>MW_high</displayname>
+<description>high mass limit for MS acquisition</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00000000000000000E+03 </default>
+</type>
+</parameter>
+<parameter id="173">
+<name>MW_low</name>
+<displayname>MW_low</displayname>
+<description>Low Mass Limit</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.00000000000000000E+02 </default>
+</type>
+</parameter>
+<parameter id="174">
+<name>NAME</name>
+<displayname>NAME</displayname>
+<description>name of current data set</description>
+<displayorder>1</displayorder>
+<group>CURD</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>"" </default>
+</type>
+</parameter>
+<parameter id="175">
+<name>NBADCSL</name>
+<displayname>NBADCSL</displayname>
+<description>feed BB/NB signal to slow ADC</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsFALSE </default>
+</type>
+</parameter>
+<parameter id="176">
+<name>NBL</name>
+<displayname>NBL</displayname>
+<description>number of blocks of TD size</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="177">
+<name>NC</name>
+<displayname>NC</displayname>
+<description>data normalization constant</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="178">
+<name>NCOEF</name>
+<displayname>NCOEF</displayname>
+<description>number of linear prediction coefficients</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="179">
+<name>NC_proc</name>
+<displayname>NC_proc</displayname>
+<description>normal. const. after proc.</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="180">
+<name>NF</name>
+<displayname>NF</displayname>
+<description>number of 1D files in ser file</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="181">
+<name>NOISE</name>
+<displayname>NOISE</displayname>
+<description>noise value in spectrum</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="182">
+<name>NS</name>
+<displayname>NS</displayname>
+<description>number of scans</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>16 </default>
+</type>
+</parameter>
+<parameter id="183">
+<name>NSP</name>
+<displayname>NSP</displayname>
+<description>Number shift points</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="184">
+<name>NTH_PF</name>
+<displayname>NTH_PF</displayname>
+<description>n-th point (floating)</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="185">
+<name>NTH_PI</name>
+<displayname>NTH_PI</displayname>
+<description>n-th point (integer)</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="186">
+<name>NZP</name>
+<displayname>NZP</displayname>
+<description>Number of zero points</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="187">
+<name>NebFlow</name>
+<displayname>NebFlow</displayname>
+<description>Neb gas Flow rate</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>3.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="188">
+<name>NebSW</name>
+<displayname>NebSW</displayname>
+<description>Neb gas switch</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. TURN_off </default>
+<value>TURN_off</value>
+<value>TURN_on</value>
+</type>
+</parameter>
+<parameter id="189">
+<name>NebTemp</name>
+<displayname>NebTemp</displayname>
+<description>Nebulise gas temperature</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>3.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="190">
+<name>O1</name>
+<displayname>O1</displayname>
+<description>Offset channel 1</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>4.00000000000000000E+06 </default>
+</type>
+</parameter>
+<parameter id="191">
+<name>O2</name>
+<displayname>O2</displayname>
+<description>Offset channel 2</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="192">
+<name>O3</name>
+<displayname>O3</displayname>
+<description>Offset channel 3</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="193">
+<name>O4</name>
+<displayname>O4</displayname>
+<description>Offset channel 4</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="194">
+<name>O5</name>
+<displayname>O5</displayname>
+<description>Offset channel 5</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="195">
+<name>O6</name>
+<displayname>O6</displayname>
+<description>Offset channel 6</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="196">
+<name>O7</name>
+<displayname>O7</displayname>
+<description>Offset channel 7</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="197">
+<name>O8</name>
+<displayname>O8</displayname>
+<description>Offset channel 8</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="198">
+<name>OFFSET</name>
+<displayname>OFFSET</displayname>
+<description>frequency of left end of spectrum</description>
+<displayorder>1</displayorder>
+<unit>ppm</unit>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="199">
+<name>P</name>
+<displayname>P</displayname>
+<description>fixed pulse</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="200">
+<name>PAPS</name>
+<displayname>PAPS</displayname>
+<description>phase cycling</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. CP </default>
+<value>CP</value>
+<value>AP</value>
+<value>QP</value>
+</type>
+</parameter>
+<parameter id="201">
+<name>PC</name>
+<displayname>PC</displayname>
+<description>peak sensitivity for peak picking</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>4.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="202">
+<name>PHC0</name>
+<displayname>PHC0</displayname>
+<description>zero order phase correction constant</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="203">
+<name>PHC1</name>
+<displayname>PHC1</displayname>
+<description>first order phase correction constant</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="204">
+<name>PHP</name>
+<displayname>PHP</displayname>
+<description>preamplifier housing position</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="205">
+<name>PH_mod</name>
+<displayname>PH_mod</displayname>
+<description>kind of phase correction</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. no </default>
+<value>no</value>
+<value>pk</value>
+<value>mc</value>
+<value>ps</value>
+</type>
+</parameter>
+<parameter id="206">
+<name>PI</name>
+<displayname>PI</displayname>
+<description>Parent Ions</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 1.000000E+02  1.000000E+02  1.000000E+02  1.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="207">
+<name>PIoff</name>
+<displayname>PIoff</displayname>
+<description>Frequency Offset from Parent Ion</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="208">
+<name>PKNL</name>
+<displayname>PKNL</displayname>
+<description>non linear phase correction</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="209">
+<name>PL</name>
+<displayname>PL</displayname>
+<description>power level</description>
+<displayorder>1</displayorder>
+<unit>dB</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02  1.200000E+02 </default>
+</type>
+</parameter>
+<parameter id="210">
+<name>PL1</name>
+<displayname>PL1</displayname>
+<description>Ion optics plate 1 potential.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="211">
+<name>PL2</name>
+<displayname>PL2</displayname>
+<description>Ion transfer optics PLate 2.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="212">
+<name>PL3</name>
+<displayname>PL3</displayname>
+<description>Ion transfer optics PLate 3.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="213">
+<name>PL4</name>
+<displayname>PL4</displayname>
+<description>Ion transfer optics PLate 4.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="214">
+<name>PL9</name>
+<displayname>PL9</displayname>
+<description>Ion transfer optics PLate 9.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="215">
+<name>PPERC</name>
+<displayname>PPERC</displayname>
+<description>percentage of maximum for centroiding</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="216">
+<name>PP_meth</name>
+<displayname>PP_meth</displayname>
+<description>peak picking method</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. APEX </default>
+<value>APEX</value>
+<value>MAXIMUM</value>
+<value>CENTROID</value>
+<value>POSITION</value>
+<value>SNAP</value>
+</type>
+</parameter>
+<parameter id="217">
+<name>PR</name>
+<displayname>PR</displayname>
+<description>pulser range</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. 11 </default>
+<value>0</value>
+<value>11</value>
+<value>12</value>
+<value>H1</value>
+<value>H2</value>
+<value>H3</value>
+<value>H4</value>
+<value>L1</value>
+<value>L2</value>
+<value>L3</value>
+<value>L4</value>
+</type>
+</parameter>
+<parameter id="218">
+<name>PROCNO</name>
+<displayname>PROCNO</displayname>
+<description>processed data number</description>
+<displayorder>1</displayorder>
+<group>CURD</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="219">
+<name>PSH</name>
+<displayname>PSH</displayname>
+<description>External source PuSHer potential.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="220">
+<name>PULPROG</name>
+<displayname>PULPROG</displayname>
+<description>pulse program for acquisition</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="221">
+<name>PV</name>
+<displayname>PV</displayname>
+<description>Plate Voltages</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..7) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="222">
+<name>PV1</name>
+<displayname>PV1</displayname>
+<description>ICR cell Trapping plate 1 potential.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="223">
+<name>PV2</name>
+<displayname>PV2</displayname>
+<description>ICR cell trapping plate 2 voltage.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="224">
+<name>ParDim</name>
+<displayname>ParDim</displayname>
+<description>parameter dimension</description>
+<displayorder>1</displayorder>
+<group>CURD</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="225">
+<name>QNP</name>
+<displayname>QNP</displayname>
+<description>QNP position</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="226">
+<name>RECGAIN</name>
+<displayname>RECGAIN</displayname>
+<description>Receiver gain Low/High.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsTRUE </default>
+</type>
+</parameter>
+<parameter id="227">
+<name>REVERSE</name>
+<displayname>REVERSE</displayname>
+<description>reverse spectrum order</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsTRUE </default>
+</type>
+</parameter>
+<parameter id="228">
+<name>RFAmp</name>
+<displayname>RFAmp</displayname>
+<description>DC RF amplitude</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.000000E+02 </default>
+</type>
+</parameter>
+<parameter id="229">
+<name>RG</name>
+<displayname>RG</displayname>
+<description>receiver gain</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="230">
+<name>RGAIN</name>
+<displayname>RGAIN</displayname>
+<description>receiver gain</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. low </default>
+<value>low</value>
+<value>high</value>
+</type>
+</parameter>
+<parameter id="231">
+<name>RI_path</name>
+<displayname>RI_path</displayname>
+<description>alternative path for ri file</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="232">
+<name>ROUTWD1</name>
+<displayname>ROUTWD1</displayname>
+<description>router control word 1</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>1</dimension>
+<default>(0..23) 0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0 </default>
+<value>0</value>
+<value>1</value>
+</type>
+</parameter>
+<parameter id="233">
+<name>ROUTWD2</name>
+<displayname>ROUTWD2</displayname>
+<description>router control word 2</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>1</dimension>
+<default>(0..23) 0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0  0 (ord) resp. 0 </default>
+<value>0</value>
+<value>1</value>
+</type>
+</parameter>
+<parameter id="234">
+<name>RR_path</name>
+<displayname>RR_path</displayname>
+<description>alternative path for rr file</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="235">
+<name>SEL</name>
+<displayname>SEL</displayname>
+<description>SELectivity in amu/e</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..3) 5.000000E-01  5.000000E-01  5.000000E-01  5.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="236">
+<name>SEOUT</name>
+<displayname>SEOUT</displayname>
+<description>used SE451 output</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. HR </default>
+<value>HR</value>
+<value>BB</value>
+</type>
+</parameter>
+<parameter id="237">
+<name>SE_BLKS</name>
+<displayname>SE_BLKS</displayname>
+<description>SetExp event Block usage</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>1</dimension>
+<default>(0..127) XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE  XsFALSE </default>
+</type>
+</parameter>
+<parameter id="238">
+<name>SF</name>
+<displayname>SF</displayname>
+<description>Spectrometer Reference Frequency</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.00000000000000000E+03 </default>
+</type>
+</parameter>
+<parameter id="239">
+<name>SFO1</name>
+<displayname>SFO1</displayname>
+<description>Transmitter Frequency</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="240">
+<name>SFO2</name>
+<displayname>SFO2</displayname>
+<description>frequency of 2nd channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="241">
+<name>SFO3</name>
+<displayname>SFO3</displayname>
+<description>frequency of 3rd channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="242">
+<name>SFO4</name>
+<displayname>SFO4</displayname>
+<description>frequency of 4th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="243">
+<name>SFO5</name>
+<displayname>SFO5</displayname>
+<description>frequency of 5th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="244">
+<name>SFO6</name>
+<displayname>SFO6</displayname>
+<description>frequency of 6th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="245">
+<name>SFO7</name>
+<displayname>SFO7</displayname>
+<description>frequency of 7th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="246">
+<name>SFO8</name>
+<displayname>SFO8</displayname>
+<description>frequency of 8th channel</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.00129999999999995E+02 </default>
+</type>
+</parameter>
+<parameter id="247">
+<name>SI</name>
+<displayname>SI</displayname>
+<description>real transform size</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>8192 </default>
+</type>
+</parameter>
+<parameter id="248">
+<name>SIC_gco</name>
+<displayname>SIC_gco</displayname>
+<description>single ion current start time offset [min]</description>
+<displayorder>1</displayorder>
+<unit>min</unit>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="249">
+<name>SIC_gct</name>
+<displayname>SIC_gct</displayname>
+<description>single ion current gc cycle time [min]</description>
+<displayorder>1</displayorder>
+<unit>min</unit>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="250">
+<name>SIC_ion</name>
+<displayname>SIC_ion</displayname>
+<description>single ion current ion mass [m/z]</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="251">
+<name>SIC_max</name>
+<displayname>SIC_max</displayname>
+<description>single ion current maximum intensity</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="252">
+<name>SIC_min</name>
+<displayname>SIC_min</displayname>
+<description>single ion current minimum intensity</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="253">
+<name>SOH</name>
+<displayname>SOH</displayname>
+<description>External source SOurce Housing potential.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="254">
+<name>SOTYPE</name>
+<displayname>SOTYPE</displayname>
+<description>Source type identifier.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="255">
+<name>SP</name>
+<displayname>SP</displayname>
+<description>power for shaped pulses</description>
+<displayorder>1</displayorder>
+<unit>dB</unit>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..15) 1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02 </default>
+</type>
+</parameter>
+<parameter id="256">
+<name>SP07</name>
+<displayname>SP07</displayname>
+<description>shaped pulses table</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. edit </default>
+<value>edit</value>
+<value>yes</value>
+</type>
+</parameter>
+<parameter id="257">
+<name>SPNAM0</name>
+<displayname>SPNAM0</displayname>
+<description>filename for sp0</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="258">
+<name>SPNAM1</name>
+<displayname>SPNAM1</displayname>
+<description>filename for sp1</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="259">
+<name>SPNAM10</name>
+<displayname>SPNAM10</displayname>
+<description>filename for sp10</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="260">
+<name>SPNAM11</name>
+<displayname>SPNAM11</displayname>
+<description>filename for sp11</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="261">
+<name>SPNAM12</name>
+<displayname>SPNAM12</displayname>
+<description>filename for sp12</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="262">
+<name>SPNAM13</name>
+<displayname>SPNAM13</displayname>
+<description>filename for sp13</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="263">
+<name>SPNAM14</name>
+<displayname>SPNAM14</displayname>
+<description>filename for sp14</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="264">
+<name>SPNAM15</name>
+<displayname>SPNAM15</displayname>
+<description>filename for sp15</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="265">
+<name>SPNAM2</name>
+<displayname>SPNAM2</displayname>
+<description>filename for sp2</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="266">
+<name>SPNAM3</name>
+<displayname>SPNAM3</displayname>
+<description>filename for sp3</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="267">
+<name>SPNAM4</name>
+<displayname>SPNAM4</displayname>
+<description>filename for sp4</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="268">
+<name>SPNAM5</name>
+<displayname>SPNAM5</displayname>
+<description>filename for sp5</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="269">
+<name>SPNAM6</name>
+<displayname>SPNAM6</displayname>
+<description>filename for sp6</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="270">
+<name>SPNAM7</name>
+<displayname>SPNAM7</displayname>
+<description>filename for sp7</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="271">
+<name>SPNAM8</name>
+<displayname>SPNAM8</displayname>
+<description>filename for sp8</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="272">
+<name>SPNAM9</name>
+<displayname>SPNAM9</displayname>
+<description>filename for sp9</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="273">
+<name>SPOFFS</name>
+<displayname>SPOFFS</displayname>
+<description>Offset frequencies for shaped pulses</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..15) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="274">
+<name>SREGLST</name>
+<displayname>SREGLST</displayname>
+<description>name of scaling region list file</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>82 (dec), R (char) </default>
+</type>
+</parameter>
+<parameter id="275">
+<name>SSB</name>
+<displayname>SSB</displayname>
+<description>sine bell shift</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="276">
+<name>ST</name>
+<displayname>ST</displayname>
+<description>External Source Temperature</description>
+<displayorder>1</displayorder>
+<unit>C</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="277">
+<name>STSI</name>
+<displayname>STSI</displayname>
+<description>strip width for 2D strip transform</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="278">
+<name>STSR</name>
+<displayname>STSR</displayname>
+<description>starting point for 2D strip transform</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="279">
+<name>SW</name>
+<displayname>SW</displayname>
+<description>Spectral Width</description>
+<displayorder>1</displayorder>
+<unit>ppm</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.00000000000000000E+01 </default>
+</type>
+</parameter>
+<parameter id="280">
+<name>SW_h</name>
+<displayname>SW_h</displayname>
+<description>sweep width in Hz</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.00000000000000000E+03 </default>
+</type>
+</parameter>
+<parameter id="281">
+<name>SW_p</name>
+<displayname>SW_p</displayname>
+<description>sweep widht in ppm</description>
+<displayorder>1</displayorder>
+<unit>ppm</unit>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.00000000000000000E+02 </default>
+</type>
+</parameter>
+<parameter id="282">
+<name>SYMM</name>
+<displayname>SYMM</displayname>
+<description>2D data symmetrisation type</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. no </default>
+<value>no</value>
+<value>sym</value>
+<value>syma</value>
+<value>symj</value>
+</type>
+</parameter>
+<parameter id="283">
+<name>SYSTA</name>
+<displayname>SYSTA</displayname>
+<description>System status.</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="284">
+<name>S_DEV</name>
+<displayname>S_DEV</displayname>
+<description>standard deviation from MEAN</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="285">
+<name>SctLasP</name>
+<displayname>SctLasP</displayname>
+<description>Laser Power for Scout 100</description>
+<displayorder>1</displayorder>
+<unit>%</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="286">
+<name>SctRfA</name>
+<displayname>SctRfA</displayname>
+<description>Hexapole RF Amplitude for Scout 100</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="287">
+<name>SctRfF</name>
+<displayname>SctRfF</displayname>
+<description>Hexapole RF Frequency for Scout 100</description>
+<displayorder>1</displayorder>
+<unit>MHz</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="288">
+<name>Skim1</name>
+<displayname>Skim1</displayname>
+<description>Skimmer1 voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="289">
+<name>Skim2</name>
+<displayname>Skim2</displayname>
+<description>Skimmer2 voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="290">
+<name>Subbasl</name>
+<displayname>Subbasl</displayname>
+<description>subbasl called?</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsFALSE </default>
+</type>
+</parameter>
+<parameter id="291">
+<name>Subbpar</name>
+<displayname>Subbpar</displayname>
+<description>subbasl parameter</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>8.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="292">
+<name>TD</name>
+<displayname>TD</displayname>
+<description>time domain size</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>8192 </default>
+</type>
+</parameter>
+<parameter id="293">
+<name>TDeff</name>
+<displayname>TDeff</displayname>
+<description>number of points of FID for processing</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="294">
+<name>TDoff</name>
+<displayname>TDoff</displayname>
+<description>start display offset</description>
+<displayorder>1</displayorder>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="295">
+<name>TI</name>
+<displayname>TI</displayname>
+<description>Title of data</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="296">
+<name>TIC_gco</name>
+<displayname>TIC_gco</displayname>
+<description>Total Ion Current start time offset [min]</description>
+<displayorder>1</displayorder>
+<unit>min</unit>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="297">
+<name>TIC_gct</name>
+<displayname>TIC_gct</displayname>
+<description>Total Ion Current repetition time [min]</description>
+<displayorder>1</displayorder>
+<unit>min</unit>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="298">
+<name>TIC_hig</name>
+<displayname>TIC_hig</displayname>
+<description>Total Ion Current end mass [m/z]</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="299">
+<name>TIC_low</name>
+<displayname>TIC_low</displayname>
+<description>Total Ion Current start mass [m/z]</description>
+<displayorder>1</displayorder>
+<unit>m/z</unit>
+<group>PROC</group>
+<group>DISPL</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.00000000000000000E+00 </default>
+</type>
+</parameter>
+<parameter id="300">
+<name>TIC_max</name>
+<displayname>TIC_max</displayname>
+<description>Total Ion Current maximum intensity</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>-9.99999999999999977E+37 </default>
+</type>
+</parameter>
+<parameter id="301">
+<name>TIC_min</name>
+<displayname>TIC_min</displayname>
+<description>Total Ion Current minimum intensity</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>9.99999999999999977E+37 </default>
+</type>
+</parameter>
+<parameter id="302">
+<name>TIC_rhi</name>
+<displayname>TIC_rhi</displayname>
+<description>high index for TIC RangeAverage correction</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="303">
+<name>TIC_rlo</name>
+<displayname>TIC_rlo</displayname>
+<description>low index for TIC RangeAverage correction</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>1 </default>
+</type>
+</parameter>
+<parameter id="304">
+<name>TICcorr</name>
+<displayname>TICcorr</displayname>
+<description>Type of TIC background correction</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>2 (ord) resp. Threshold </default>
+<value>None</value>
+<value>RangeAverage</value>
+<value>Threshold</value>
+</type>
+</parameter>
+<parameter id="305">
+<name>TILT</name>
+<displayname>TILT</displayname>
+<description>2-D tilt calculation for J-spectra</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>bool</basetype>
+<dimension>0</dimension>
+<default>XsFALSE </default>
+</type>
+</parameter>
+<parameter id="306">
+<name>TIME</name>
+<displayname>TIME</displayname>
+<description>Preset time for bake out timer.</description>
+<displayorder>1</displayorder>
+<unit>min</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>6.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="307">
+<name>TL</name>
+<displayname>TL</displayname>
+<description>Transmitter power</description>
+<displayorder>1</displayorder>
+<unit>dB</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..7) 1.500000E+01  1.500000E+01  1.500000E+01  1.500000E+01  1.500000E+01  1.500000E+01  1.500000E+01  1.500000E+01 </default>
+</type>
+</parameter>
+<parameter id="308">
+<name>TM1</name>
+<displayname>TM1</displayname>
+<description>left limit for trapez. multiplication</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="309">
+<name>TM2</name>
+<displayname>TM2</displayname>
+<description>right limit for trapez. multiplication</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>9.000000E-01 </default>
+</type>
+</parameter>
+<parameter id="310">
+<name>TP</name>
+<displayname>TP</displayname>
+<description>power for shaped pulse on OBS channel</description>
+<displayorder>1</displayorder>
+<unit>dB</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..7) 1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02  1.500000E+02 </default>
+</type>
+</parameter>
+<parameter id="311">
+<name>TP07</name>
+<displayname>TP07</displayname>
+<description>shaped pulses on OBS channel</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. edit </default>
+<value>edit</value>
+<value>yes</value>
+</type>
+</parameter>
+<parameter id="312">
+<name>TPNAME0</name>
+<displayname>TPNAME0</displayname>
+<description>filename for tp0</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="313">
+<name>TPNAME1</name>
+<displayname>TPNAME1</displayname>
+<description>shape filename for tp1</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="314">
+<name>TPNAME2</name>
+<displayname>TPNAME2</displayname>
+<description>shape filename for tp2</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="315">
+<name>TPNAME3</name>
+<displayname>TPNAME3</displayname>
+<description>shape filenmae for tp3</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="316">
+<name>TPNAME4</name>
+<displayname>TPNAME4</displayname>
+<description>shape filename for tp4</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="317">
+<name>TPNAME5</name>
+<displayname>TPNAME5</displayname>
+<description>shape filename for tp5</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="318">
+<name>TPNAME6</name>
+<displayname>TPNAME6</displayname>
+<description>shape filename for tp6</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="319">
+<name>TPNAME7</name>
+<displayname>TPNAME7</displayname>
+<description>shape filename for tp7</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>gauss </default>
+</type>
+</parameter>
+<parameter id="320">
+<name>TPOFFS</name>
+<displayname>TPOFFS</displayname>
+<description>offset frequency for shaped pulse</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..7) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="321">
+<name>TRAMP</name>
+<displayname>TRAMP</displayname>
+<description>DIP Temperature RAMP Toggle</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. OFF </default>
+<value>OFF</value>
+<value>ON</value>
+</type>
+</parameter>
+<parameter id="322">
+<name>TYPE</name>
+<displayname>TYPE</displayname>
+<description>data type</description>
+<displayorder>1</displayorder>
+<group>CURD</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>0 (dec), </default>
+</type>
+</parameter>
+<parameter id="323">
+<name>Trap</name>
+<displayname>Trap</displayname>
+<description>DC Trap voltage for ESI</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="324">
+<name>USER</name>
+<displayname>USER</displayname>
+<description>Owner of data set</description>
+<displayorder>1</displayorder>
+<group>CURD</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>"" </default>
+</type>
+</parameter>
+<parameter id="325">
+<name>V9</name>
+<displayname>V9</displayname>
+<description>variation of D9</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>5.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="326">
+<name>VCLIST</name>
+<displayname>VCLIST</displayname>
+<description>name of variable loop counter list</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>67 (dec), C (char) </default>
+</type>
+</parameter>
+<parameter id="327">
+<name>VD</name>
+<displayname>VD</displayname>
+<description>variable delay</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="328">
+<name>VDLIST</name>
+<displayname>VDLIST</displayname>
+<description>name of variable delay list</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>68 (dec), D (char) </default>
+</type>
+</parameter>
+<parameter id="329">
+<name>VP</name>
+<displayname>VP</displayname>
+<description>variable pulse</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="330">
+<name>VPLIST</name>
+<displayname>VPLIST</displayname>
+<description>name of variable pulse list</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>string</basetype>
+<dimension>0</dimension>
+<default>PPPPPPPPPPPPPPP </default>
+</type>
+</parameter>
+<parameter id="331">
+<name>VPV1</name>
+<displayname>VPV1</displayname>
+<description>plate 1 voltage list for ramp</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="332">
+<name>VPV2</name>
+<displayname>VPV2</displayname>
+<description>plate 2 voltage list for ramp</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="333">
+<name>VSEL</name>
+<displayname>VSEL</displayname>
+<description>valve selection</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>0 (ord) resp. none </default>
+<value>none</value>
+<value>one</value>
+<value>two</value>
+<value>both</value>
+</type>
+</parameter>
+<parameter id="334">
+<name>VSTEP</name>
+<displayname>VSTEP</displayname>
+<description>step number array for ramp</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>1</dimension>
+<default>(0..31) 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 </default>
+</type>
+</parameter>
+<parameter id="335">
+<name>WDW</name>
+<displayname>WDW</displayname>
+<description>Window Type</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>enum</basetype>
+<dimension>0</dimension>
+<default>1 (ord) resp. EM </default>
+<value>no</value>
+<value>EM</value>
+<value>GM</value>
+<value>SINE</value>
+<value>QSINE</value>
+<value>TRAP</value>
+<value>USER</value>
+<value>SINC</value>
+<value>QSINC</value>
+<value>TRAF</value>
+<value>TRAFS</value>
+</type>
+</parameter>
+<parameter id="336">
+<name>XBB</name>
+<displayname>XBB</displayname>
+<description>magic constant for broadband</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>1.200000E+01 </default>
+</type>
+</parameter>
+<parameter id="337">
+<name>XDFL</name>
+<displayname>XDFL</displayname>
+<description>Ion transfer optics X Deflector.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="338">
+<name>XDIM</name>
+<displayname>XDIM</displayname>
+<description>SMX dimension</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>64 </default>
+</type>
+</parameter>
+<parameter id="339">
+<name>XFC</name>
+<displayname>XFC</displayname>
+<description>Excitation Frequency Cover</description>
+<displayorder>1</displayorder>
+<unit>Hz</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>2.500000E+04 </default>
+</type>
+</parameter>
+<parameter id="340">
+<name>XHEF</name>
+<displayname>XHEF</displayname>
+<description>eXternal source Filament current.</description>
+<displayorder>1</displayorder>
+<unit>A</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="341">
+<name>XHR</name>
+<displayname>XHR</displayname>
+<description>magic constant for hires</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>4.500000E+01 </default>
+</type>
+</parameter>
+<parameter id="342">
+<name>XIE</name>
+<displayname>XIE</displayname>
+<description>eXternal source Ionization Energy.</description>
+<displayorder>1</displayorder>
+<unit>eV</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>7.000000E+01 </default>
+</type>
+</parameter>
+<parameter id="343">
+<name>YDFL</name>
+<displayname>YDFL</displayname>
+<description>Ion transfer optics Y DeFLector.</description>
+<displayorder>1</displayorder>
+<unit>V</unit>
+<group>ACQU</group>
+<group>Selectable</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>double</basetype>
+<dimension>0</dimension>
+<default>0.000000E+00 </default>
+</type>
+</parameter>
+<parameter id="344">
+<name>YMAX_a</name>
+<displayname>YMAX_a</displayname>
+<description>Maximum value of raw data</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="345">
+<name>YMAX_p</name>
+<displayname>YMAX_p</displayname>
+<description>Maximum value of processed data</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="346">
+<name>YMIN_a</name>
+<displayname>YMIN_a</displayname>
+<description>Minimum value of raw data</description>
+<displayorder>1</displayorder>
+<group>ACQU</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+<parameter id="347">
+<name>YMIN_p</name>
+<displayname>YMIN_p</displayname>
+<description>Minimum value of processes data</description>
+<displayorder>1</displayorder>
+<group>PROC</group>
+<spectrumtype value="ICR"/>
+<type>
+<basetype>int</basetype>
+<dimension>0</dimension>
+<default>0 </default>
+</type>
+</parameter>
+</xmass>

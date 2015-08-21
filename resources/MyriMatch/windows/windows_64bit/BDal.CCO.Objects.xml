@@ -1,0 +1,87 @@
+<BCOComponents>
+  <Component name="Calibration">
+    <NativeModule name="BDal.CCO.Calibration" version="2.1.73.0" />
+    <ManagedModule name="MBDal.CCO" version="2.1.73.0" />
+    <Objects>
+      <Object name="BDal.CCO.Calibration.AssignPeaksToCalibrants" guid="36621CF3-9440-4f22-964C-7E8D3355C463" />
+      <Object name="BDal.CCO.Calibration.CalibrateWithCalibrantsTOF" guid="90BF674B-C404-45ed-8EE4-F429B57EAD5A" />
+      <Object name="BDal.CCO.Calibration.CalibrationData" guid="{616E6812-2E6C-451c-BE6A-7135E005152F}" />
+      <Object name="BDal.CCO.Calibration.CalibrationDataEsquire" guid="{D6107544-189D-4831-A1C9-E72F36D6E4E1}" />
+      <Object name="BDal.CCO.Calibration.CalibrationDataLIFT2" guid="{2141FAA7-6081-47c1-9300-37ABD53F4F9D}" />
+      <Object name="BDal.CCO.Calibration.CalibrationDataTOF" guid="{F3C014B2-8736-4ab5-AFEA-E3300A3F8551}" />
+      <Object name="BDal.CCO.Calibration.CalibrationMode" guid="{D1F15B83-C2E5-4d4b-82BB-73B7D0C03998}" />
+      <Object name="BDal.CCO.Calibration.CalibratorEsquire" guid="{CE703C84-0BB5-4788-8887-78B8E4D15F72}" />
+      <Object name="BDal.CCO.Calibration.CalibratorLIFT" guid="{F515478F-F6F2-410c-80DC-2DCB0EE882BD}" />
+      <Object name="BDal.CCO.Calibration.CalibratorLIFT2" guid="{54E092C3-3BFE-4e56-91C9-1669A36D0D4E}" />
+      <Object name="BDal.CCO.Calibration.CalibratorLIFT3" guid="{58151924-65CB-4085-8F3D-1F7DC1EAEA81}" />
+      <Object name="BDal.CCO.Calibration.CalibratorLinear" guid="{ADDDA3D1-3C76-4840-A5CB-E5003ED64EA6}" />
+      <Object name="BDal.CCO.Calibration.CalibratorTOF" guid="{2BAF116D-2521-4a82-BBBD-CA642CB20C4A}" />
+      <Object name="BDal.CCO.Calibration.CalibratorTOF2" guid="{313CF78F-9778-4b3f-852B-7528C6441108}" />
+    </Objects>
+  </Component>
+  <Component name="TemperatureCompensation">
+    <NativeModule name="BDal.CCO.TemperatureCompensation" version="2.1.73.0" />
+    <ManagedModule name="MBDal.CCO" version="2.1.73.0" />
+    <Objects>
+      <Object name="BDal.CCO.TemperatureCompensation.CalibrationTemperatureCompensator" guid="{C65AA12C-26FB-473f-9A76-9890E987FC2A}" />
+    </Objects>
+  </Component>
+  <Component name="Transformation">
+    <NativeModule name="BDal.CCO.Transformation" version="2.1.73.0" />
+    <ManagedModule name="MBDal.CCO" version="2.1.73.0" />
+    <Objects>
+      <Object name="BDal.CCO.Transformation.AdditionalParameterReferenceInfo" guid="{74BF06E3-7F27-48a0-B65E-6235989CAD99}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalEsquire" guid="{CC3DDDEB-FEA2-416c-A738-35EF80D0D809}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalFTMS04" guid="{12C63C24-3964-4e8e-B5AB-748D91D6A868}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalFTMS1356" guid="{6955A129-FDBC-4a3c-8894-34F6004327F6}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalFTMS2" guid="{029E4585-F6A0-425f-8AD6-C440501FF8F8}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalFTMSSC4" guid="{21BA66C6-5951-4ee8-8BB3-85C64DF4112F}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalFTMSSC56" guid="{AFBFF6EF-AEF7-432e-8EEB-B8BD7789AF25}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalLinear" guid="{C4CE68A7-F7CB-4ea2-97AF-2F65A7BB0170}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalTOF1" guid="{3C62D539-DA60-4bce-8CCF-8EE6E11DF742}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalTOF1TemperatureCompensation" guid="{78A69F69-FC7B-4ce3-8B69-7A0808A0E950}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalTOF2" guid="{8BAF883A-8C9A-4353-88E2-19DF6E2B39EB}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsFunctionalTOF2TemperatureCompensation" guid="{A94B4AB0-3FB1-470b-BEC1-D3AF64C9A96A}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsPhysicalEsquire" guid="{444C3D8D-7869-44f0-97DE-DD41CD6196BE}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsPhysicalFTMS" guid="{C20BD9B9-BF38-416f-BF60-A9CDE79A4607}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsPhysicalLinear" guid="{F559CB1E-FB1C-4067-8851-37E05B7D9F32}" />
+      <Object name="BDal.CCO.Transformation.CalibrationConstantsPhysicalTOF" guid="{279C9EC0-21C6-4a73-81F7-5D58209E4C4D}" />
+      <Object name="BDal.CCO.Transformation.CalibrationPolynomialHPC" guid="{E646946A-4E8E-4c89-B1B9-38FA75B82FEC}" />
+      <Object name="BDal.CCO.Transformation.CalibrationPolynomialLIFT1" guid="{DAA977AB-29D4-43e0-957A-436834F0BD7F}" />
+      <Object name="BDal.CCO.Transformation.CalibrationPolynomialLIFT2" guid="{954067B1-51D1-4a45-9648-697A3F23CD3E}" />
+      <Object name="BDal.CCO.Transformation.CalibrationPolynomialLIFT3" guid="{23EA04F5-40A2-4089-9AAA-8CBA3CB85BE0}" />
+      <Object name="BDal.CCO.Transformation.CalibrationPolynomialPSDClassic" guid="{41BE848E-7C07-4bec-BCD9-0ADEC99B5166}" dtoid="{C4140790-B56B-4f4a-9ACC-31ED9CA219C1}" />
+      <Object name="BDal.CCO.Transformation.CalibrationPolynomialPSDFAST" guid="{46D85F74-A6D0-44ef-B270-F06EAB308E06}" dtoid="{81BE6085-2C26-413b-8819-9D2BD20F5E6B}" />
+      <Object name="BDal.CCO.Transformation.CalibrationPolynomialSimple" guid="{5F96C402-6530-43c4-A750-714139490AB4}" dtoid="{86D511E0-0C4C-45e9-9729-F7D92E7341C8}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorEsquireLinear" guid="{488E6100-3C9A-4e6a-AA8A-251510CF02F6}" dtoid="{EE31E92A-2B24-4582-A60B-0329F73CF91C}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorEsquireQuadratic" guid="{3AF9EC2B-C691-4cfa-847A-16FD5AE1C92E}" dtoid="{6AF9AAAD-748D-47ac-BDB6-5FB2F201E51A}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorFactory" guid="{E0AF1A4D-52A3-481f-90A2-3AE9CAB5AB68}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorFactorySerialization" guid="{6F53011E-F635-45ce-98B3-AA4B69A44247}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorFTMS04" guid="{BC0AB6CD-3DED-4f58-9F87-311BDC938B3B}" dtoid="A869867B-F1E3-4449-82CA-BE749C2A100F" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorFTMS15" guid="{90E2EAAF-CC11-4625-9D72-4D0027DDC1D5}" dtoid="{866B8389-3683-486e-8A22-B7C26F120E4D}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorFTMS2" guid="{26870823-8C7F-4460-952C-80761FD6DA65}" dtoid="{F465D7FF-89E2-472b-8DDA-42FDA4863709}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorFTMS36" guid="{93C99147-1582-4369-97E3-2C1101C7226C}" dtoid="{75F39615-D1EA-4a7d-8043-B1564C0BE6E2}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorHPC" guid="{474377BB-9B16-4ca3-83B4-83DC5A2ECE16}" dtoid="{24AF4C1E-0C91-4870-9689-3121005D0367}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorIndexBoundsChecker" guid="{2C933020-4570-4274-8F09-6539C9FDD31F}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorLIFT1" guid="{7EBD098E-0D4D-4689-9128-B743D4AC877B}" dtoid="{6FD0264F-58CB-4e9b-8116-ACDDA513EC8D}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorLIFT2" guid="{537C9B66-F504-447e-A07C-60D45B4717C5}" dtoid="{8649F09A-9C10-4a1b-8087-2AFEB8C62EC8}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorLIFT3" guid="{7FB0A9AB-B511-43ac-93F7-455CBE876DDD}" dtoid="{9A435EBF-C173-4f44-9180-6951A27EE032}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorLinear" guid="{66E82AE8-C140-417e-AE32-4F9B88623994}" dtoid="{7E9DEC59-29CD-47c6-93DD-372E4DDA383D}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorPSD" guid="{D3CA8E79-AB29-43fc-8656-E8DAC73A7605}" dtoid="{0ECDB4ED-53E8-4a66-BB21-7838B52ACFF3}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorRawBoundsChecker" guid="{7F6CA5E5-0016-477c-98B9-33AE70219EF9}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorTOF2Cubic" guid="{C47E9B62-F01C-4b37-AA1B-FDD237A05586}" dtoid="{D9B567C2-4C44-435c-95CA-22C959B2ACD5}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorTOF2Linear" guid="{EA7C1DE7-F1E4-4b67-A2D1-EA3BD5A4FCA5}" dtoid="{F96AC939-F453-459b-9953-D964E1093E07}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorTOF2Quadratic" guid="{1E753690-6313-4694-805F-406D42EBFBE3}" dtoid="{5B345338-B591-43c4-983F-55B6F510A62D}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorTOFLinear" guid="{E6649D19-E890-443c-AB5F-1EA410DA22B8}" dtoid="{84FA841A-264D-47f6-9B40-6815DF10772C}" />
+      <Object name="BDal.CCO.Transformation.CalibrationTransformatorTOFQuadratic" guid="{C058EB54-E223-4c8e-BFA7-40742F226314}" dtoid="{05357BD9-BF25-46c6-9453-1C709A3F3CEE}" />
+    </Objects>
+  </Component>
+  <Component name="Utilities">
+    <NativeModule name="BDal.CCO.Utilities" version="2.1.73.0" />
+    <ManagedModule name="MBDal.CCO" version="2.1.73.0" />
+    <Objects>
+      <Object name="BDal.CCO.Utilities.CalibrationTOFUtilities" guid="{835056C9-3EA3-4763-8667-E63888C2D498}" />
+      <Object name="BDal.CCO.Utilities.CalibrationUtilities" guid="{F8685400-4C27-424a-9D4E-9F02D2EE53CA}" />
+    </Objects>
+  </Component>
+</BCOComponents>

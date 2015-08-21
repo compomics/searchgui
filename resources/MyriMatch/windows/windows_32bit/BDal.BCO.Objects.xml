@@ -1,0 +1,64 @@
+<BCOComponents>
+  <Component name="BCO">
+    <NativeModule name="BDal.BCO" version="1.0.61.0" />
+    <ManagedModule name="MBDal.BCO" version="1.0.61.0" />
+    <Objects>
+      <Object name="BDal.BCO.AutoLock" guid="{30CE7E2C-85D4-4cec-8ED4-48E5C8C364EE}" />
+      <Object name="BDal.BCO.BCOConstants" guid="{76385C9B-6AE1-47d7-B49E-A2114003238B}" />
+      <Object name="BDal.BCO.BCOInitializer" guid="{DEEFF23C-F81A-4deb-BE4C-05470326AA34}" />
+      <Object name="BDal.BCO.BCOObjectFactory" guid="{C64454B7-69DA-4231-BBAF-B13DDA63A7FB}" />
+      <Object name="BDal.BCO.BCOVersion" guid="{D8859AD3-C635-45ca-B0CE-C881125D116C}" />
+      <Object name="BDal.BCO.Bool" guid="{61E524BA-A8CE-4056-B662-8D1C0DB83C28}" />
+      <Object name="BDal.BCO.ErrorInformation" guid="{6EEFB383-F4A6-44b1-8C8B-F55B6A29EF2C}" />
+      <Object name="BDal.BCO.Exception" guid="{F8046E62-7EE2-47ab-A7B5-D4AF71FBEE29}" />
+      <Object name="BDal.BCO.Guid" guid="{5FDDD4C1-48AA-BC9B-9003-EF8104000000}" />
+      <Object name="BDal.BCO.Int16" guid="{D1BE7D8E-626F-45D0-820D-1E24E9DA6ECB}" />
+      <Object name="BDal.BCO.Int16Array" guid="{9FB124B1-B354-4D38-B6AE-D46DC52E8084}" />
+      <Object name="BDal.BCO.Int32" guid="{FA187CAB-D08C-4649-89D6-5EDDA680283C}" />
+      <Object name="BDal.BCO.Int32Array" guid="{DDF39E52-2E1A-4EA5-A757-0D638C326937}" />
+      <Object name="BDal.BCO.Int32StringPair" guid="{0920EC67-A8F7-4D27-9138-BBED06FA4EED}" />
+      <Object name="BDal.BCO.Int64" guid="{5E48470F-E2DA-46F8-B1D4-A64C87554224}" />
+      <Object name="BDal.BCO.Int64Array" guid="{97B315A6-573D-43e4-A9BE-57D85A385FFA}" />
+      <Object name="BDal.BCO.Int8" guid="{C5727048-37B5-4A94-B989-977676089C9E}" />
+      <Object name="BDal.BCO.Int8Array" guid="{2B20CA19-93CB-4D32-83AB-0D5AB4CF6ED9}" />
+      <Object name="BDal.BCO.ManagedModule" guid="{E3396AD7-CCE3-48e4-8017-4C6059A84DCE}" />
+      <Object name="BDal.BCO.MaskableTracer" guid="{7C153E8C-4C03-4d3a-A852-734D43E27D6B}" />
+      <Object name="BDal.BCO.Mutex" guid="{932E4FE2-01C7-4a44-BAD2-5A7F33563B71}" />
+      <Object name="BDal.BCO.NativeModule" guid="{2EEE97C1-92B3-47d2-A825-269DC4F33D97}" />
+      <Object name="BDal.BCO.ObjectArray" guid="{C846E2AD-16E1-4b08-AD01-FC82B937D869}" />
+      <Object name="BDal.BCO.Real32" guid="{1191AC60-CEF0-4A36-A880-D999BCA140F8}" />
+      <Object name="BDal.BCO.Real32Array" guid="{0AEE7CD0-724D-498f-8F8A-04D1F8390FFC}" />
+      <Object name="BDal.BCO.Real64" guid="{4EE920B8-3C3B-45AB-9AA8-86AD6898BB42}" />
+      <Object name="BDal.BCO.Real64Array" guid="{F75421DE-DFDB-44D0-ACAE-4FB6D7E17B9C}" />
+      <Object name="BDal.BCO.String" guid="{31106E8B-1098-4731-91D7-ED2AB1BAE798}" />
+      <Object name="BDal.BCO.StringArray" guid="{4104C7D3-429C-4a31-9CF1-8B5B7BD1E7A6}" />
+      <Object name="BDal.BCO.Timer" guid="8531A497-5764-43e1-96B5-17247A71B6FF" />
+      <Object name="BDal.BCO.TraceComponent" guid="{72E72FA6-9158-4f4e-AEB0-88B0CE88B5E9}" />
+      <Object name="BDal.BCO.Type" guid="{3DF1C8C5-DDCB-4BED-88A6-98F8409E3302}" />
+      <Object name="BDal.BCO.UInt16" guid="{614A8508-EE8C-4B8A-8955-9F77DCA3E91B}" />
+      <Object name="BDal.BCO.UInt16Array" guid="{D54CF595-8217-4040-A18E-BD718DDF5960}" />
+      <Object name="BDal.BCO.UInt32" guid="{7E1EC540-C24F-47A8-BEDF-6D69D4BE3D1B}" />
+      <Object name="BDal.BCO.UInt32Array" guid="{A5ADC5FD-47E8-489A-BAE8-CC69295E0046}" />
+      <Object name="BDal.BCO.UInt64" guid="{36FEB54B-EA62-419F-865F-64965AC25F57}" />
+      <Object name="BDal.BCO.UInt64Array" guid="{8C50A305-19DF-4770-9F1A-9BBA7F12080E}" />
+      <Object name="BDal.BCO.UInt8" guid="{6269D51C-63A5-4FA1-AABA-91F07B4BC486}" />
+      <Object name="BDal.BCO.UInt8Array" guid="{4E10E2B4-D965-4FFA-933C-1DD43F8D5B67}" />
+      <Object name="BDal.BCO.Version" guid="{F125CED9-671D-432A-9B60-E686FF426ADA}" />
+      <Object name="BDal.BCO.Collections.MapGuidToGuid" guid="dd3e3990-1553-418b-9d2f-5cd2646172c5" />
+      <Object name="BDal.BCO.Collections.MapInt32ToObject" guid="C9B4FB83-883D-4a44-A7E3-BF32BD632F0F" />
+      <Object name="BDal.BCO.Collections.MapInt32ToString" guid="ec82d458-5cfa-48e1-85ba-f800d1c31494" />
+      <Object name="BDal.BCO.Collections.MapStringToBool" guid="{A58A535B-2EAF-469a-A5AE-5E08F82CCD82}" />
+      <Object name="BDal.BCO.Collections.MapStringToUInt32" guid="16c56f6e-73a0-4d6b-9a36-673e52523b84" />
+      <Object name="BDal.BCO.Collections.ObjectCollection" guid="{FBC099A5-C07B-915C-04A0-2C35EE000000}" />
+      <Object name="BDal.BCO.Collections.ObjectMap" guid="{2C8E3CBD-349F-490F-9B5F-0596098F45A2}" />
+      <Object name="BDal.BCO.Collections.Real64ArrayCollection" guid="{91CACC83-01C6-468b-841A-9342BD46C8A5}" />
+      <Object name="BDal.BCO.Collections.Real64Collection" guid="{E74D8088-A6F2-469F-A195-530CB2043F5E}" />
+      <Object name="BDal.BCO.Collections.StringCollection" guid="{CE039962-A7A6-456B-8E0F-C36DF3F1CC94}" />
+      <Object name="BDal.BCO.Collections.UInt32Collection" guid="{1CFC9082-AA4D-448c-B128-C5BBEF4BD3F4}" />
+      <Object name="BDal.BCO.Serialization.ReadObjectFromXMLFilter" guid="7304f06e-9675-4199-9607-c77127bf88d5" />
+      <Object name="BDal.BCO.Serialization.SerializationInfoXML" guid="486e5edd-dcdd-4eb5-b153-2055e0509dbe" />
+      <Object name="BDal.BCO.Serialization.StringSerializerXML" guid="bc9ebee6-ba1f-4bea-a8a1-50a3e37b8674" />
+      <Object name="BDal.BCO.Serialization.WriteObjectAsXMLFilter" guid="c722a0ba-ac0f-41a8-8a87-3a32a20d67a2" />
+    </Objects>
+  </Component>
+</BCOComponents>

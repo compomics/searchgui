@@ -1,0 +1,29 @@
+OMSSA Location:
+Not Selected
+
+X!Tandem Location:
+Not Selected
+
+MS-GF+ Location:
+Not Selected
+
+MS Amanda Location:
+Not Selected
+
+MyriMatch Location:
+Not Selected
+
+Comet Location:
+Not Selected
+
+Tide Location:
+Not Selected
+false
+Andromeda Location:
+Not Selected
+false
+makeblastdb Location:
+Not Selected
+
+Modification use:
+Acetylation of K//Acetylation of protein N-term//Carbamidomethylation of C//Oxidation of M//Phosphorylation of S//Phosphorylation of T//Phosphorylation of Y//Arginine 13C6//Lysine 13C6//iTRAQ 4-plex of peptide N-term//iTRAQ 4-plex of K//iTRAQ 4-plex of Y//iTRAQ 8-plex of peptide N-term//iTRAQ 8-plex of K//iTRAQ 8-plex of Y//TMT 6-plex of peptide N-term//TMT 6-plex of K//TMT 10-plex of peptide N-term//TMT 10-plex of K//Pyrolidone from E//Pyrolidone from Q//Pyrolidone from carbamidomethylated C//Deamidation of N//Deamidation of Q//

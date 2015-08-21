@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <assemblyIdentity name="Interop.EDAL.SxS" version="1.0.0.0" type="win32" />
+  <file name="CompassXtractMS.dll">
+    <typelib tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" version="1.0" helpdir="" resourceid="0" flags="HASDISKIMAGE" />
+    <comClass clsid="{012a4beb-99ec-4a65-a4af-7d09a20b5034}" threadingModel="Both" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" progid="EDAL.MSAnalysis.1" description="MSAnalysis Class" />
+    <comClass clsid="{39913b26-a61d-472f-945f-932f24736ce5}" threadingModel="Both" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" progid="EDAL.MSSpectrumParameters.1" description="MSSpectrumParameterCollection Class" />
+    <comClass clsid="{510c30e5-c631-4dc6-9183-4115b59fd462}" threadingModel="Both" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" progid="EDAL.MSSpectrumParameter.1" description="MSSpectrumParameter Class" />
+  </file>
+  <comInterfaceExternalProxyStub name="IMSAnalysis" iid="{401AFF6A-C542-4B50-8723-58C14BBABE06}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSAnalysis2" iid="{E7CCD34E-A463-48D2-B2ED-8363968AB6B6}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSSpectrum" iid="{ac28c948-f617-4e6d-a31e-c1a7a4748c23}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSSpectrum2" iid="{EC59B9CC-B802-49C6-915D-E43553452D05}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSSpectrumCollection" iid="{c2da5f65-b1c7-4bb8-bfa9-4c422ddcd2f7}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSSpectrumEnumerator" iid="{1c165d71-133b-4818-a7d3-2f25de9154dd}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSSpectrumParameter" iid="{f91ce7af-a338-467d-8e5f-9d1621254f6a}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSSpectrumParameterCollection" iid="{9cc1cd9a-98d0-45b7-b8df-ca019cebd314}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+  <comInterfaceExternalProxyStub name="IMSSpectrumParameterEnumerator" iid="{c98ee3dc-f8dd-4aff-afd2-1c8d29af208e}" tlbid="{8e79b9a2-107e-4e91-a0ff-01f2591103f3}" proxyStubClsid32="{00020424-0000-0000-C000-000000000046}" />
+
+<file name="boost_date_time-vc90-mt-1_37-BDAL_20091123.dll" />
+<file name="boost_regex-vc90-mt-1_37-BDAL_20091123.dll" />
+<file name="boost_system-vc90-mt-1_37-BDAL_20091123.dll" />
+<file name="boost_thread-vc90-mt-1_37-BDAL_20091123.dll" />
+<file name="Compressor_12451AC8-3BF1-48e1-8E66-DA05BF3852A0.dll" />
+<file name="Compressor_382D5134-9727-4be6-B6F8-754F577426D6.dll" />
+<file name="Compressor_4F1EA0CB-5A6A-43ED-9562-D6D873034577.dll" />
+<file name="Compressor_6BB2E64A-27A0-4575-A66A-4E312C8B9AD7.dll" />
+<file name="Compressor_6EEE649E-09AA-4332-8E82-8188652E8AB5.dll" />
+<file name="Compressor_7F88E97F-2038-40ba-8F3A-FCA9A9719569.dll" />
+<file name="FlexVariableTable.xml" />
+<file name="ICRVariableTable.xml" />
+<file name="mkl_sequential.dll" />
+<file name="msvcr71.dll" />
+
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity type='win32' name='Interop.HSREADWRITELib.SxS' version='1.0.0.0' />
+    </dependentAssembly>
+  </dependency>
+</assembly>

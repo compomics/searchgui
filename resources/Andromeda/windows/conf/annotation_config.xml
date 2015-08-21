@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AnnotationConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <NeutralLoss>
+      <NeutralLossLib formula="NH3" />
+      <NeutralLossLib formula="H2O" />
+      <NeutralLossLib formula="CO" />
+      <NeutralLossLib formula="CO2" />
+      <NeutralLossLib formula="CH2N2" />
+      <NeutralLossLib formula="CH3NO" />
+      <NeutralLossLib formula="CH4O" />
+      <NeutralLossLib formula="CH4SO" />
+      <NeutralLossLib formula="C2H4" />
+      <NeutralLossLib formula="C2H4S" />
+      <NeutralLossLib formula="C2H5N" />
+      <NeutralLossLib formula="C2H5NO" />
+      <NeutralLossLib formula="C2H4O" />
+      <NeutralLossLib formula="C2H4O2" />
+      <NeutralLossLib formula="C3H6" />
+      <NeutralLossLib formula="C3H6S" />
+      <NeutralLossLib formula="C3H9N" />
+      <NeutralLossLib formula="C3H9N3" />
+      <NeutralLossLib formula="C3H5NO" />
+      <NeutralLossLib formula="C3H6SO" />
+      <NeutralLossLib formula="C3H8SO" />
+      <NeutralLossLib formula="C4H8" />
+      <NeutralLossLib formula="C4H9N" />
+      <NeutralLossLib formula="C4H11N" />
+      <NeutralLossLib formula="C8H7N" />
+      <NeutralLossLib formula="C9H9N" />
+      <NeutralLossLib formula="HPO3" />
+      <NeutralLossLib formula="H3PO4" />
+   </NeutralLoss>
+   <ImmoniumIon>
+      <ImmoniumIon name="IM A" name2="IM Alanine" letter="A" />
+      <ImmoniumIon name="IM R" name2="IM Arginine" letter="R" />
+      <ImmoniumIon name="IM N" name2="IM Asparagine" letter="N" />
+      <ImmoniumIon name="IM D" name2="IM Aspartic Acid" letter="D" />
+      <ImmoniumIon name="IM C" name2="IM Cysteine" letter="C" />
+      <ImmoniumIon name="IM Q" name2="IM Glutamine" letter="Q" />
+      <ImmoniumIon name="IM E" name2="IM Glutamic Acid" letter="E" />
+      <ImmoniumIon name="IM G" name2="IM Glycine" letter="G" />
+      <ImmoniumIon name="IM H" name2="IM Histidine" letter="H" />
+      <ImmoniumIon name="IM I" name2="IM Isoleucine" letter="I" />
+      <ImmoniumIon name="IM L" name2="IM Leucine" letter="L" />
+      <ImmoniumIon name="IM I/L" name2="IM IL" letter="IL" modification="" />
+      <ImmoniumIon name="IM K" name2="IM Lysine" letter="K" />
+      <ImmoniumIon name="IM M" name2="IM Methionine" letter="M" />
+      <ImmoniumIon name="IM F" name2="IM Phenylalanine" letter="F" />
+      <ImmoniumIon name="IM P" name2="IM Proline" letter="P" />
+      <ImmoniumIon name="IM S" name2="IM Serine" letter="S" />
+      <ImmoniumIon name="IM T" name2="IM Threonine" letter="T" />
+      <ImmoniumIon name="IM W" name2="IM Tryptophan" letter="W" />
+      <ImmoniumIon name="IM Y" name2="IM Tyrosine" letter="Y" />
+      <ImmoniumIon name="IM V" name2="IM Valine" letter="V" />
+      <ImmoniumIon name="IM CaC" name2="IM Carbamidomethyl" letter="C" modification="C2H3NO" />
+      <ImmoniumIon name="IM OxM" name2="IM Oxidized methionine" letter="M" modification="O" />
+      <ImmoniumIon name="IM phS" name2="IM PhosphoSerine" letter="S" modification="HPO3" />
+      <ImmoniumIon name="IM phT" name2="IM PhosphoThreonine" letter="T" modification="HPO3" />
+      <ImmoniumIon name="IM phY" name2="IM PhosphoTyrosine" letter="Y" modification="HPO3" />
+   </ImmoniumIon>
+   <SideChain>
+      <SideChain formula="C4H9N3" letter="R" charge="H+" />
+      <SideChain formula="C5H9N3" letter="R" charge="H+" />
+      <SideChain formula="C5H11N" letter="K" charge="H+" />
+      <SideChain formula="C5H9N" letter="K" charge="H+" />
+      <SideChain formula="C4H6N2" letter="N" charge="H+" />
+      <SideChain formula="C10H9N" letter="W" charge="H+" />
+      <SideChain formula="C9H9N" letter="W" charge="H+" />
+      <SideChain formula="C9H7N" letter="W" charge="H+" />
+   </SideChain>
+</AnnotationConfig>

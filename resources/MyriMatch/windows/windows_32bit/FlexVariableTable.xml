@@ -1,0 +1,2707 @@
+<?xml version="1.0"?>
+<xmass version="2.0">
+   <parameter id="32767">
+      <name>CurrSpecFile</name>
+      <displayname>CurrSpecFile</displayname>
+      <description>Current absolute file path of the spectrum</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+   </parameter>
+   <parameter id="1">
+      <displayorder>2</displayorder>
+      <name>ACQMETH</name>
+      <displayname>AcqMethod</displayname>
+      <description>Acquisition method name</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+   </parameter>
+   <parameter id="2">
+			<displayorder>1</displayorder>
+      <name>Acquver</name>
+      <displayname>AIDAVer</displayname>
+      <description>AIDA version number</description>
+      <group>Processing Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>5.1.11 </default>
+      </type>
+   </parameter>
+   <parameter id="3">
+      <name>AppTyp</name>
+      <displayname>AppType</displayname>
+      <description>Application type</description>
+      <group>Acquisition AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. general </default>
+         <value>general</value>
+         <value>digest</value>
+         <value>protein</value>
+         <value>snp</value>
+         <value>polymer</value>
+         <value>calib</value>
+      </type>
+   </parameter>
+   <parameter id="4">
+      <name>AQ_DATE</name>
+      <displayname>AcqDate</displayname>
+      <description>Date of Acquisition</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>unknown </default>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="5">
+      <name>BASLSEG</name>
+      <displayname>BaslSegNo</displayname>
+      <description>Number of segments for baseline subtraction</description>
+      <group>Processing</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>10 </default>
+      </type>
+      <displayorder>2</displayorder>
+   </parameter>
+   <parameter id="6">
+      <name>BASLSUB</name>
+      <displayname>BaslSub</displayname>
+      <description>Baseline subtraction applied</description>
+      <group>Processing</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="7">
+      <name>BTMeth</name>
+      <displayname>BTMeth</displayname>
+      <description>Biotools method</description>
+      <group>Processing AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="8">
+      <name>BYTORDA</name>
+      <displayname>BYTORDA</displayname>
+      <description>Byte order</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. little </default>
+         <value>little</value>
+         <value>big</value>
+      </type>
+   </parameter>
+   <parameter id="9">
+      <name>BYTORDP</name>
+      <displayname>BYTORDP</displayname>
+      <description>Byte order</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. little </default>
+         <value>little</value>
+         <value>big</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="10">
+      <name>CHIPNO</name>
+      <displayname>ChipNo</displayname>
+      <description>Chip number</description>
+      <group>Acquisition Target</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="11">
+      <name>CIDOn</name>
+      <displayname>CID_mode</displayname>
+      <description>CID mode</description>
+      <group>Acquisition MSMS</group>
+      <group/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="12">
+      <name>CMT1</name>
+      <displayname>Comment1</displayname>
+      <description>Comment 1</description>
+      <group>Acquisition Misc</group>
+      <group/>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>no </default>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="13">
+      <name>CMT2</name>
+      <displayname>Comment2</displayname>
+      <description>Comment 2</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>no </default>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="14">
+      <name>CMT3</name>
+      <displayname>Comment3</displayname>
+      <description>Comment 3</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+   </parameter>
+   <parameter id="15">
+      <name>DataTyp</name>
+      <displayname>DataType</displayname>
+      <description>Data type (obsolete)</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. TOF </default>
+         <value>TOF</value>
+         <value>PSD</value>
+         <value>LIFT</value>
+         <value>ISD</value>
+      </type>
+   </parameter>
+   <parameter id="16">
+      <name>DELAY</name>
+      <displayname>Delay</displayname>
+      <description>Spectrum delay</description>
+      <unit>ns</unit>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="17">
+      <name>DTATYPE</name>
+      <displayname>DTATYPE</displayname>
+      <description>Kind of data (fingerprint/psd)</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. fingerprint </default>
+         <value>fingerprint</value>
+         <value>psd</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="18">
+      <name>DW</name>
+      <displayname>SampleRate</displayname>
+      <description>SampleRate reciprocal</description>
+      <unit>ns</unit>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>8.000000E-02 </default>
+      </type>
+      <displayorder>5</displayorder>
+   </parameter>
+   <parameter id="19">
+      <name>FAMeth</name>
+      <displayname>FAMeth</displayname>
+      <description>flexAnalysis method</description>
+      <group>Acquisition AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="20">
+      <name>FASTCal</name>
+      <displayname>FASTCC</displayname>
+      <description>FAST calibration constants file</description>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+   </parameter>
+   <parameter id="21">
+      <name>FpWinHi</name>
+      <displayname>PCISHi</displayname>
+      <description>PCIS upper mass limit</description>
+      <unit>Da</unit>
+      <group>Acquisition MSMS</group>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="22">
+      <name>FpWinLo</name>
+      <displayname>PCISLow</displayname>
+      <description>PCIS lower mass limit</description>
+      <unit>Da</unit>
+      <group>Acquisition MSMS</group>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="23">
+      <name>Gelcode</name>
+      <displayname>Gelcode</displayname>
+      <description>Gel code</description>
+      <group>Acquisition Spectrum</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="24">
+      <name>GSpotId</name>
+      <displayname>GSpotId</displayname>
+      <description>Gel Spot ID in database</description>
+      <group>Acquisition Spectrum</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="25">
+      <name>ID</name>
+      <displayname>IDProcessing</displayname>
+      <description>Spectrum identifier, GUID for processed spectrum (1r)</description>
+      <group>Processing Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="26">
+      <name>IDref</name>
+      <displayname>IDref</displayname>
+      <description>Reference to a spectrum (MS/MS to MS, or calibration etc.)</description>
+      <group>Acquisition Spectrum</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>5</displayorder>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="27">
+      <name>InstrID</name>
+      <displayname>InstrID</displayname>
+      <description>Serial instrument number</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>- </default>
+      </type>
+      <displayorder>9</displayorder>
+   </parameter>
+   <parameter id="28">
+      <name>INSTRUM</name>
+      <displayname>CompName</displayname>
+      <description>Name of computer</description>
+      <group>Acquisition Misc</group>
+      <group/>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>5</displayorder>
+   </parameter>
+   <parameter id="29">
+      <name>InstTyp</name>
+      <displayname>InstType</displayname>
+      <description>Instrument type</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. autoflex </default>
+         <value>autoflex</value>
+         <value>ultraflex</value>
+         <value>ultraflexTOF/TOF</value>
+         <value>reflex</value>
+         <value>biflex</value>
+         <value>omniflex</value>
+         <value>genoflex</value>
+         <value>massarray</value>
+         <value>autoflexTOF/TOF</value>
+         <value>microflex</value>
+         <value>MT10</value>
+      </type>
+      <displayorder>10</displayorder>
+   </parameter>
+   <parameter id="30">
+      <name>Mctrlst</name>
+      <displayname>MCL</displayname>
+      <description>Mass control list defined in AXMethodEditor for background filtering</description>
+      <group>Processing</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="31">
+      <name>ML1</name>
+      <displayname>c1</displayname>
+      <displayorder>2</displayorder>
+      <description>Mass calibration Constant 1</description>
+      <group>Processing Calibration</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>2.00000000000000000E+04 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+   </parameter>
+   <parameter id="32">
+      <name>ML2</name>
+      <displayname>c0</displayname>
+      <displayorder>1</displayorder>
+      <description>Mass calibration Constant 0</description>
+      <group>Processing Calibration</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+   </parameter>
+   <parameter id="33">
+      <name>ML3</name>
+      <displayname>c2</displayname>
+      <displayorder>3</displayorder>
+      <description>Mass calibration Constant 2</description>
+      <group>Processing Calibration</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+   </parameter>
+   <parameter id="34">
+      <name>NC</name>
+      <displayname>NC</displayname>
+      <description>Data normalization constant</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="35">
+      <name>NC_proc</name>
+      <displayname>NC_Processing</displayname>
+      <description>Normalisation constant after processing</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="36">
+      <name>NTBCal</name>
+      <displayname>NTBCal</displayname>
+      <description>NTB Calibrator string</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="37">
+      <name>OpId</name>
+      <displayname>OpID</displayname>
+      <description>Operator ID or name</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>TOF </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>13</displayorder>
+   </parameter>
+   <parameter id="38">
+      <name>Parent</name>
+      <displayname>Parent</displayname>
+      <description>MSMS parent mass</description>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>1.000000E+03 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>2</displayorder>
+   </parameter>
+   <parameter id="39">
+      <name>PATCHNO</name>
+      <displayname>Position</displayname>
+      <description>Position</description>
+      <group>Acquisition Target</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>unknown </default>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="40">
+      <name>PATH</name>
+      <displayname>Path</displayname>
+      <description>Path</description>
+      <group>Processing Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>/export/home/data </default>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="41">
+      <name>PEPURL</name>
+      <displayname>PEPURL</displayname>
+      <description>URL for peptide searches</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>pep_search </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="43">
+      <name>RunGUID</name>
+      <displayname>RunGUID</displayname>
+      <description>GUID of AutoXecute run</description>
+      <group>Processing AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="44">
+      <name>SI</name>
+      <displayname>TransSize</displayname>
+      <description>Real transform size</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>8192 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="45">
+      <name>SMONUM</name>
+      <displayname>SmoothNo</displayname>
+      <description>Number of applied smoothings</description>
+      <group>Processing</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <displayorder>5</displayorder>
+   </parameter>
+   <parameter id="46">
+      <name>SMOPTS</name>
+      <displayname>SmoothPts</displayname>
+      <description>Number of points for smoothing filter</description>
+      <group>Processing</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>1</dimension>
+         <default>(0..15) 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 </default>
+      </type>
+     <spectrumtype value="MS"/>
+     <spectrumtype value="FASTSeg"/>
+     <spectrumtype value="FAST"/>
+     <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="47">
+      <name>SMPNAM</name>
+      <displayname>SampleName</displayname>
+      <description>Sample name (file name prefix)</description>
+      <group>Processing Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>TOFSample </default>
+      </type>
+      <displayorder>5</displayorder>
+   </parameter>
+   <parameter id="48">
+      <name>SNPMETH</name>
+      <displayname>SnpMeth</displayname>
+      <description>SNP method</description>
+      <group>Processing AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+   </parameter>
+   <parameter id="49">
+      <name>SPType</name>
+      <displayname>SPType</displayname>
+      <description>Spectrum type</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. TOF </default>
+         <value>TOF</value>
+         <value>PSD</value>
+         <value>LIFT</value>
+         <value>PSDSegment</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="51">
+      <name>TD</name>
+      <displayname>SpecSize</displayname>
+      <description>Spectrum size</description>
+      <unit>pts</unit>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>8192 </default>
+      </type>
+      <displayorder>6</displayorder>
+   </parameter>
+   <parameter id="52">
+      <name>TgCount</name>
+      <displayname>TargetCount</displayname>
+      <description>Target counter</description>
+      <group>Acquisition Target</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <displayorder>5</displayorder>
+   </parameter>
+   <parameter id="53">
+      <name>TgIDS</name>
+      <displayname>TargetID</displayname>
+      <description>Target identifier string</description>
+      <group>Acquisition Target</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>6</displayorder>
+   </parameter>
+   <parameter id="54">
+      <name>TgSer</name>
+      <displayname>TargetNo</displayname>
+      <description>Target serial number</description>
+      <group>Acquisition Target</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <displayorder>7</displayorder>
+   </parameter>
+   <parameter id="55">
+      <name>TgTyp</name>
+      <displayname>TargetType</displayname>
+      <description>Target type</description>
+      <group>Acquisition Target</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <displayorder>8</displayorder>
+   </parameter>
+   <parameter id="56">
+      <name>TI</name>
+      <displayname>Title</displayname>
+      <description>Title of data</description>
+      <group>Processing Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+      <displayorder>6</displayorder>
+   </parameter>
+   <parameter id="57">
+      <name>AXMeth</name>
+      <displayname>AXMeth</displayname>
+      <description>AutoXecute method</description>
+      <group>Acquisition AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>2</displayorder>
+   </parameter>
+   <parameter id="58">
+      <name>Mctrlp</name>
+      <displayname>ApplMCL</displayname>
+      <description>Mass control list used for background filtering</description>
+      <group>Processing</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="59">
+      <name>ID_raw</name>
+      <displayname>IDraw</displayname>
+      <description>Spectrum identifier, GUID for raw spectrum (fid)</description>
+      <group>Acquisition Spectrum</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="60">
+      <name>Lms2osp</name>
+      <displayname>Lms2osp</displayname>
+      <description>Last MS/MS spectrum on spot in current run</description>
+      <group>Processing AutoXecute</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="61">
+      <name>PSmeth</name>
+      <displayname>PSMeth</displayname>
+      <description>ProteinScape search method</description>
+      <group>Processing AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+   </parameter>
+   <parameter id="62">
+      <name>GSpotno</name>
+      <displayname>GelSpotNo</displayname>
+      <description>Gel Spot Number</description>
+      <group>Acquisition Spectrum</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>-1 </default>
+      </type>
+      <displayorder>2</displayorder>
+   </parameter>
+   <parameter id="63">
+      <name>EXPNO</name>
+      <displayname>EXPNO</displayname>
+      <description>Experiment Number</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>1 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="64">
+      <name>Warplc1</name>
+      <displayname>Warplc1</displayname>
+      <description>Warplc1 xml string</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="65">
+      <name>Warplc2</name>
+      <displayname>Warplc2</displayname>
+      <description>Warplc2 xml string</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="66">
+      <name>Xml1</name>
+      <displayname>Xml1</displayname>
+      <description>Xml parameter 1</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="67">
+      <name>Xml2</name>
+      <displayname>Xml2</displayname>
+      <description>Xml parameter 2</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="68">
+      <name>FCVer</name>
+      <displayname>FCVer</displayname>
+      <description>flexControl version</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>2.2</default>
+      </type>
+      <displayorder>8</displayorder>
+   </parameter>
+   <parameter id="69">
+      <name>FAVer</name>
+      <displayname>FAVer</displayname>
+      <description>flexAnalysis version</description>
+      <group>Processing Misc</group>
+      <group/>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>2.2</default>
+      </type>
+      <displayorder>2</displayorder>
+   </parameter>
+   <parameter id="70">
+      <name>BufType</name>
+      <displayname>BufType</displayname>
+      <description>Buffer type</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>1 (ord) resp. sum </default>
+         <value>single</value>
+         <value>sum</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="72">
+      <name>SEGNO</name>
+      <displayname>FAST segment number</displayname>
+      <description>FAST segment number</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>1 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+   </parameter>
+   <parameter id="73">
+      <name>Aoffs</name>
+      <displayname>Analog Offsets</displayname>
+      <description>Analog Offsets</description>
+      <unit>mV</unit>
+      <group>Acquisition Setup</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>1</dimension>
+         <default>(0..5) 0  0  0  0  0  0 </default>
+      </type>
+   </parameter>
+   <parameter id="74">
+      <name>Doffs</name>
+      <displayname>Digital Offset</displayname>
+      <description>Digital Offset</description>
+      <group>Acquisition Setup</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>1</dimension>
+         <default>(0..5) 0  0  0  0  0  0 </default>
+      </type>
+      <displayorder>2</displayorder>
+   </parameter>
+   <parameter id="75">
+      <name>Sens1</name>
+      <displayname>Electronic Gain</displayname>
+      <description>Sensitivity of digitizer</description>
+      <unit>mV/fullscale</unit>
+      <group>Acquisition Setup</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="76">
+      <name>DIGTYP</name>
+      <displayname>Digitizer Type</displayname>
+      <description>Type of digitizer</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. unknown </default>
+         <value>unknown</value>
+         <value>Lecroy LSA1000</value>
+         <value>Acqiris DP105</value>
+         <value>Acqiris DP110</value>
+         <value>Acqiris DP211</value>
+         <value>Acqiris DP240</value>
+         <value>Acqiris AP200</value>
+         <value>Acqiris AP240</value>
+         <value>Acqiris DC440</value>
+         <value>Acqiris DC282</value>
+         <value>Acqiris Unknown subtype</value>
+         <value>Gage</value>
+         <value>Simulator</value>
+         <value>Lecroy WaveRunner</value>
+         <value>Acqiris U1084A</value>
+         <value>NI 5154</value>
+         <value>LeCroy LSA2000</value>
+         <value>Acqiris DP1400</value>
+         <value>NI 5155</value>
+         <value>Bruker BD0G5</value>
+      </type>
+      <displayorder>7</displayorder>
+   </parameter>
+   <parameter id="77">
+      <name>Masserr</name>
+      <displayname>Mass error</displayname>
+      <description>Average calibration error in ppm</description>
+      <group>Processing Calibration</group>
+      <spectrumtype value="MS"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>7</displayorder>
+   </parameter>
+   <parameter id="1001">
+      <name>Acalm</name>
+      <displayname>AutoCalMeth</displayname>
+      <description>Auto calibration method name</description>
+      <group>Processing Calibration</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+   </parameter>
+   <parameter id="1002">
+      <name>Ame</name>
+      <displayname>AvCalErr</displayname>
+      <description>Average mass error from calibration</description>
+      <unit>ppm</unit>
+      <group>Processing Calibration</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+   </parameter>
+   <parameter id="1003">
+      <name>AQOP_m</name>
+      <displayname>AQOP_m</displayname>
+      <description>Acquisition operation mode</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. Linear </default>
+         <value>Linear</value>
+         <value>Reflector</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1004">
+      <name>AQ_mod</name>
+      <displayname>AQ_mod</displayname>
+      <description>Acquisition mode</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>2 (ord) resp. qseq </default>
+         <value>qf</value>
+         <value>qsim</value>
+         <value>qseq</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1005">
+      <name>ATTEN</name>
+      <displayname>LasAtten</displayname>
+      <description>LaserPower = 100% - Laser beam attenuation</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>11</displayorder>
+   </parameter>
+   <parameter id="1006">
+      <name>LasFoc</name>
+      <displayname>Laser Focus</displayname>
+      <description>Laser beam focus</description>
+      <group>Acquisition Setup</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="1008">
+      <name>Calmet</name>
+      <displayname>CalMeth</displayname>
+      <description>TOF calibration method</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. cal2 </default>
+         <value>cal2</value>
+         <value>cal3</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1009">
+      <name>CLDATE</name>
+      <displayname>CalDate</displayname>
+      <description>Date of calibration</description>
+      <group>Processing Calibration</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>unknown </default>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="1010">
+      <name>CLPTS</name>
+      <displayname>CalPNo</displayname>
+      <description>Number of points used for calibration</description>
+      <group>Processing Calibration</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+   </parameter>
+   <parameter id="1011">
+      <name>CLREFNM</name>
+      <displayname>CalRef</displayname>
+      <description>Name of spectrum used for calibration</description>
+      <group>Processing Calibration</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>unknown </default>
+      </type>
+      <displayorder>5</displayorder>      
+   </parameter>
+   <parameter id="1012">
+      <name>CLSTAT</name>
+      <displayname>CalStat</displayname>
+      <description>Calibration status of spectrum</description>
+      <group>Processing Calibration</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. ORI </default>
+         <value>ORI</value>
+         <value>KEYB</value>
+         <value>TABLE</value>
+         <value>INST</value>
+      </type>
+   </parameter>
+   <parameter id="1013">
+      <name>CalPrnt</name>
+      <displayname>CalPMass</displayname>
+      <displayorder>4</displayorder>
+      <description>Parent mass used for calibration</description>
+      <unit>m/z</unit>
+      <group>Processing Calibration</group>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+   </parameter>
+   <parameter id="1015">
+      <name>DEFLON</name>
+      <displayname>Deflection</displayname>
+      <description>Deflection on</description>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+   </parameter>
+   <parameter id="1017">
+      <name>DPCAL1</name>
+      <displayname>DPCal</displayname>
+      <description>Deflection pulser cal</description>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="1018">
+      <name>DPMASS</name>
+      <displayname>DeflMass</displayname>
+      <description>Deflection mass</description>
+      <unit>Da</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+   </parameter>
+   <parameter id="1020">
+      <name>FASTON</name>
+      <displayname>PCISOn</displayname>
+      <description>Precursor Ion Selector on</description>
+      <group>Acquisition MSMS</group>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <displayorder>5</displayorder>
+   </parameter>
+   <parameter id="1021">
+      <name>FPCAL1</name>
+      <displayname>FPCAL1</displayname>
+      <description>FAST pulser calibration constant 1</description>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>1.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1022">
+      <name>FPCAL2</name>
+      <displayname>FPCAL2</displayname>
+      <description>FAST pulser calibration constant 2</description>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1023">
+      <name>FPCAL3</name>
+      <displayname>FPCAL3</displayname>
+      <description>FAST pulser calibration constant 3</description>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1026">
+      <name>FT_mod</name>
+      <displayname>FT_mod</displayname>
+      <description>Kind of fourier transformation</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. no </default>
+         <value>no</value>
+         <value>isr</value>
+         <value>iqc</value>
+         <value>iqr</value>
+         <value>fsc</value>
+         <value>fsr</value>
+         <value>fqc</value>
+         <value>fqr</value>
+      </type>
+   </parameter>
+   <parameter id="1027">
+      <name>Flatlin</name>
+      <displayname>Flatline</displayname>
+      <description>A flat line is created if the acceptance criteria of AutoXecute are not met</description>
+      <group>Acquisition AutoXecute</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="1029">
+      <name>GDEDLY</name>
+      <displayname>GDEDLY</displayname>
+      <description>Pulser Ion extraction delay time in ns</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. short </default>
+         <value>short</value>
+         <value>medium</value>
+         <value>long</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1030">
+      <name>GDEON</name>
+      <displayname>GDEON</displayname>
+      <description>Pulsed ion extraction on/off</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1032">
+      <name>HITURBO</name>
+      <displayname>HiTurbo</displayname>
+      <description>Himass turbo mode</description>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <displayorder>2</displayorder>
+   </parameter>
+   <parameter id="1033">
+      <name>HPCal</name>
+      <displayname>HPCal</displayname>
+      <description>High precision calibration constants</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>1</dimension>
+         <default>(0..31) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1034">
+      <name>Hpcgc0</name>
+      <displayname>Hpcgc0</displayname>
+      <description>Global c0 optionally used for HPC calibration</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1035">
+      <name>Hpcgc2</name>
+      <displayname>Hpcgc2</displayname>
+      <description>Global c2 optionally used for HPC calibration</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1036">
+      <name>HPClBHi</name>
+      <displayname>HPCHi</displayname>
+      <description>Upper bound of high precision calibration constants</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1037">
+      <name>HPClBLo</name>
+      <displayname>HPCLow</displayname>
+      <description>Lower bound of high precision calibration constants</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1039">
+      <name>HPClOrd</name>
+      <displayname>HPCOrd</displayname>
+      <description>Order of high precision polynomial</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1040">
+      <name>HPClUse</name>
+      <displayname>HPCUse</displayname>
+      <description>Flag indicating HPC usage</description>
+      <group>Processing Calibration</group>
+      <spectrumtype value="MS"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <displayorder>6</displayorder>
+   </parameter>
+   <parameter id="1042">
+      <name>ISD</name>
+      <displayname>ISD</displayname>
+      <description>Flag indicating In Source Decay measurement</description>
+      <group>Acquisition Spectrum</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <displayorder>6</displayorder>
+   </parameter>
+   <parameter id="1044">
+      <name>LIFTC</name>
+      <displayname>LIFTCal</displayname>
+      <description>Lift calibration constants</description>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>1</dimension>
+         <default>(0..2) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1047">
+      <name>LftBHi</name>
+      <displayname>LIFTHi</displayname>
+      <description>Upper bound of LIFT calibration time argument</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1048">
+      <name>LftBLo</name>
+      <displayname>LIFTLow</displayname>
+      <description>Lower bound of LIFT calibration time argument</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1049">
+      <name>LftCal</name>
+      <displayname>LftCal</displayname>
+      <description>Lift calibration constants</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>1</dimension>
+         <default>(0..15) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1050">
+      <name>LftHV1</name>
+      <displayname>LftBoost</displayname>
+      <description>High voltage of lift boost</description>
+      <unit>kV</unit>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1051">
+      <name>LftHV2</name>
+      <displayname>LftHV2</displayname>
+      <description>High voltage acceleration stage</description>
+      <unit>kV</unit>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1052">
+      <name>LftOrd</name>
+      <displayname>LftOrd</displayname>
+      <description>Order of lift polynomial</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1053">
+      <name>Lift1</name>
+      <displayname>ULIFT1</displayname>
+      <description>LIFT voltage 1</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <displayorder>11</displayorder>
+   </parameter>
+   <parameter id="1054">
+      <name>Lift2</name>
+      <displayname>ULIFT2</displayname>
+      <description>LIFT voltage 2</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <displayorder>12</displayorder>
+   </parameter>
+   <parameter id="1056">
+      <name>ML1_raw</name>
+      <displayname>Cal1Raw</displayname>
+      <description>Mass calibration Constant 1 of raw dataset</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>4.00000000000000000E+05 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1057">
+      <name>ML2_raw</name>
+      <displayname>Cal2Raw</displayname>
+      <description>Mass calibration Constant 2 of raw dataset</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1058">
+      <name>ML3_raw</name>
+      <displayname>Cal3Raw</displayname>
+      <description>Mass calibration Constant 3 of raw dataset</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1059">
+      <name>MOTPOS</name>
+      <displayname>MotorPos</displayname>
+      <description>Motor position absolute in µm</description>
+      <group>Acquisition Target</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>(0.0,0.0) </default>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="1060">
+      <name>MPWCH</name>
+      <displayname>MPWCH</displayname>
+      <description>Max peak width in channels</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>1.000000E+03 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1061">
+      <name>MSDTAID</name>
+      <displayname>MSDataID</displayname>
+      <description>Primary database key of MS dataset</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>-1 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1062">
+      <name>MapMode</name>
+      <displayname>MapMode</displayname>
+      <description>Mapping mode gel/sample</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1063">
+      <name>NoSHOTS</name>
+      <displayname>NoShots</displayname>
+      <description>Number of shots</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>10 </default>
+      </type>
+      <displayorder>12</displayorder>
+   </parameter>
+   <parameter id="1064">
+      <name>OCPOrd</name>
+      <displayname>OCPOrd</displayname>
+      <description>Order of FAST calibration polynomial resulting from offset correction Procedure</description>
+      <group>Acquisition MSMS</group>
+      <spectrumtype value="FASTSeg"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+   </parameter>
+   <parameter id="1065">
+      <name>PC</name>
+      <displayname>PPSens</displayname>
+      <description>Peak sensitivity for peak picking</description>
+      <group>Processing</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>4.000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1067">
+      <name>PIEDLY</name>
+      <displayname>PIEDelay</displayname>
+      <description>PIE delay</description>
+      <unit>ns</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <displayorder>5</displayorder>
+   </parameter>
+   <parameter id="1068">
+      <name>PLMSC</name>
+      <displayname>PLMSC</displayname>
+      <description>Post Lift metastable suppressor calibration constants</description>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>1</dimension>
+         <default>(0..2) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1069">
+      <name>POLARI</name>
+      <displayname>Polarity</displayname>
+      <description>positive voltage polarity</description>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. NEG </default>
+         <value>NEG</value>
+         <value>POS</value>
+      </type>
+      <displayorder>6</displayorder>
+   </parameter>
+   <parameter id="1070">
+      <name>PROCNO</name>
+      <displayname>ProcessingNO</displayname>
+      <description>Processing number</description>
+      <group>Processing</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>1 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1071">
+      <name>PSDOCP</name>
+      <displayname>FASTOCPC</displayname>
+      <description>FAST calibration coefficients resulting from offset correction Processingedure</description>
+      <group>Processing FAST</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>1</dimension>
+         <default>(0..15) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+   </parameter>
+   <parameter id="1072">
+      <name>PSDOrd</name>
+      <displayname>PSDOrd</displayname>
+      <description>Order of FAST calibration polynomial resulting from single peak calibration</description>
+      <group>Processing FAST</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+   </parameter>
+   <parameter id="1073">
+      <name>PSDSPC</name>
+      <displayname>FASTSPCC</displayname>
+      <description>FAST calibration coefficients resulting from single peak calibration</description>
+      <group>Processing FAST</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>1</dimension>
+         <default>(0..15) 0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00  0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="FASTSeg"/>
+   </parameter>
+   <parameter id="1074">
+      <name>PsdHi</name>
+      <displayname>FASTHi</displayname>
+      <description>FAST high in in relation to parent mass</description>
+      <group>Processing FAST</group>
+      <spectrumtype value="FASTSeg"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>1.050000E+00 </default>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="1076">
+      <name>PsdLo</name>
+      <displayname>FASTLow</displayname>
+      <description>FAST low in relation to parent mass</description>
+      <group>Processing FAST</group>
+      <spectrumtype value="FASTSeg"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>8.500000E-01 </default>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="1078">
+      <name>REFLIST</name>
+      <displayname>MCList</displayname>
+      <description>Calibration mass control list used</description>
+      <group>Processing Calibration</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+      <displayorder>8</displayorder>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1079">
+      <name>REPHZ</name>
+      <displayname>RepRate</displayname>
+      <description>Laser repetition rate</description>
+      <unit>Hz</unit>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>1.000000E+00 </default>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="1081">
+      <name>RUNNM</name>
+      <displayname>RUNNM</displayname>
+      <description>Run name in AutoXecute</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+   </parameter>
+   <parameter id="1082">
+      <name>Ref2</name>
+      <displayname>URefl2</displayname>
+      <description>Reflector voltage 2</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <displayorder>14</displayorder>
+   </parameter>
+   <parameter id="1083">
+      <name>RefFull</name>
+      <displayname>URefFull</displayname>
+      <description>Full reflector energy for FAST</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1084">
+      <name>ReflE</name>
+      <displayname>ReflE</displayname>
+      <description>Reflector energy (high voltage)</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1088">
+      <name>SPCOrd</name>
+      <displayname>SPCOrd</displayname>
+      <description>FAST SinglePeakCalib order</description>
+      <group>Acquisition MSMS</group>
+      <group/>
+      <spectrumtype value="FASTSeg"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>0 </default>
+      </type>
+   </parameter>
+   <parameter id="1089">
+      <name>SPOTID</name>
+      <displayname>SpotId</displayname>
+      <description>Spot ID in database</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>-1 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1090">
+      <name>SPOTNO</name>
+      <displayname>SPOTNO</displayname>
+      <description>Spot numbers as string</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>none </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1093">
+      <name>TLft</name>
+      <displayname>TLIFT 1</displayname>
+      <description>LIFT 1 Pulser time depending on the parent mass</description>
+      <unit>ns</unit>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+      <displayorder>9</displayorder>
+   </parameter>
+   <parameter id="1094">
+      <name>TLftCor</name>
+      <displayname>TLft1Cor</displayname>
+      <description>Corrected LIFT Pulser time after SNAP of the parent mass</description>
+      <unit>ns</unit>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1095">
+      <name>TLift</name>
+      <displayname>TLIFT 2</displayname>
+      <description>LIFT 2 Pulser time</description>
+      <unit>ns</unit>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+      <displayorder>10</displayorder>
+   </parameter>
+   <parameter id="1096">
+      <name>TPLMS</name>
+      <displayname>TPLMS</displayname>
+      <description>LIFT PLMS time depending on the parent mass</description>
+      <unit>ns</unit>
+      <group>Acquisition MSMS</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="LIFT"/>
+      <displayorder>11</displayorder>
+   </parameter>
+   <parameter id="1098">
+      <name>Udefl</name>
+      <displayname>Udefl</displayname>
+      <description>Deflection voltage</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1099">
+      <name>UdetL</name>
+      <displayname>ULinDet</displayname>
+      <description>Linear detector voltage</description>
+      <unit>kV</unit>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <displayorder>8</displayorder>
+   </parameter>
+   <parameter id="1100">
+      <name>UdetR</name>
+      <displayname>URefDet</displayname>
+      <description>Reflector detector voltage</description>
+      <unit>kV</unit>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <displayorder>9</displayorder>
+   </parameter>
+   <parameter id="1101">
+      <name>Uhimass</name>
+      <displayname>Uhimass</displayname>
+      <description>Voltage of high mass detector</description>
+      <unit>kV</unit>
+      <group>Acquisition Detection</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.00000000000000000E+00 </default>
+      </type>
+      <displayorder>7</displayorder>
+   </parameter>
+   <parameter id="1102">
+      <name>Uis1</name>
+      <displayname>UIS1</displayname>
+      <description>Ion source voltage 1</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>8</displayorder>
+   </parameter>
+   <parameter id="1103">
+      <name>Uis2</name>
+      <displayname>UIS2</displayname>
+      <description>Ion source voltage 2</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>9</displayorder>
+   </parameter>
+   <parameter id="1104">
+      <name>Ulens</name>
+      <displayname>ULens</displayname>
+      <description>Lens voltage</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>10</displayorder>
+   </parameter>
+   <parameter id="1105">
+      <name>Urefl</name>
+      <displayname>URefl1</displayname>
+      <description>Reflector voltage 1</description>
+      <unit>kV</unit>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>12</displayorder>
+   </parameter>
+   <parameter id="1107">
+      <name>WEND</name>
+      <displayname>WEND</displayname>
+      <description>Display windows end index</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>1</dimension>
+         <default>(0..3) 30000  30000  30000  30000 </default>
+      </type>
+   </parameter>
+   <parameter id="1108">
+      <name>WSTART</name>
+      <displayname>WSTART</displayname>
+      <description>Display windows start index</description>
+      <group>Processing Misc</group>
+      <type>
+         <basetype>int</basetype>
+         <dimension>1</dimension>
+         <default>(0..3) 0  0  0  0 </default>
+      </type>
+   </parameter>
+   <parameter id="1109">
+      <name>XACQVS</name>
+      <displayname>XACQVS</displayname>
+      <description>XACQ version</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default>3.0 </default>
+      </type>
+   </parameter>
+   <parameter id="1111">
+      <name>HPCStr</name>
+      <displayname>HPCStr</displayname>
+      <description>High performance calibration string</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1112">
+      <name>HPCML3</name>
+      <displayname>HPCML3</displayname>
+      <description>HPC ML3 calibration constant</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1113">
+      <name>NTBCalr</name>
+      <displayname>NTBCal Raw</displayname>
+      <description>Initial NTB Calibrator string</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1114">
+      <name>GatStr</name>
+      <displayname>Gating strength</displayname>
+      <description>Gating strength</description>
+      <group>Acquisition Spectrometer</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. general </default>
+         <value>off</value>
+         <value>low</value>
+         <value>medium</value>
+         <value>high</value>
+         <value>highest</value>
+      <displayorder>2</displayorder>         
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1115">
+      <name>GatDly</name>
+      <displayname>Gating delay</displayname>
+      <description>Gating delay</description>
+      <unit>ns</unit>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+   </parameter>
+   <parameter id="1116">
+      <name>DefDly</name>
+      <displayname>Deflection delay</displayname>
+      <description>Deflection delay</description>
+      <unit>ns</unit>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+   </parameter>
+   <parameter id="1117">
+      <name>RTSmoo</name>
+      <displayname>Realtime smooth</displayname>
+      <description>Realtime smooth</description>
+      <group>Acquisition Detection</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. off </default>
+         <value>off</value>
+         <value>low</value>
+         <value>medium</value>
+         <value>high</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="1118">
+      <name>IsCalib</name>
+      <displayname>IsCalibrant</displayname>
+      <description>Shows whether the spectrum is a calibrant</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>false</value>
+         <value>true</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1119">
+      <name>Realign</name>
+      <displayname>Realigned</displayname>
+      <description>Shows whether a spectrum is realigned</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. false </default>
+         <value>no_realign</value>
+         <value>realign</value>
+         <value>excl_noise_spec</value>
+         <value>excl_no_peak_match</value>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+      <parameter id="1120">
+      <name>RetTime</name>
+      <displayname>Retention time</displayname>
+      <description>Retention time for Warp-LC</description>
+      <unit>s</unit>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <displayorder>14</displayorder>
+   </parameter>
+   <parameter id="1121">
+      <name>AOfs</name>
+      <displayname>Analog Offset</displayname>
+      <description>Analog Offset</description>
+      <unit>mV</unit>
+      <group>Acquisition Setup</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>1</displayorder>
+   </parameter>
+   <parameter id="1122">
+      <name>CalStar</name>
+      <displayname>Raw Calibration Status</displayname>
+      <description>Raw Calibration Status</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1123">
+      <name>CalStat</name>
+      <displayname>Calibration Status</displayname>
+      <description>Calibration Status</description>
+      <group>Acquisition Misc</group>
+      <type>
+         <basetype>string</basetype>
+         <dimension>0</dimension>
+         <default/>
+      </type>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+   </parameter>
+   <parameter id="1124">
+      <name>MatSup</name>
+      <displayname>Matrix suppression</displayname>
+      <description>Matrix suppression mode</description>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>enum</basetype>
+         <dimension>0</dimension>
+         <default>0 (ord) resp. off </default>
+         <value>off</value>
+         <value>deflection</value>
+         <value>gating</value>
+      </type>
+      <displayorder>3</displayorder>
+   </parameter>
+   <parameter id="1125">
+      <name>MSupMz</name>
+      <displayname>Matrix suppression mass</displayname>
+      <description>Matrix suppression cut off mass</description>
+      <group>Acquisition Spectrometer</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>double</basetype>
+         <dimension>0</dimension>
+         <default>0.000000E+00 </default>
+      </type>
+      <displayorder>4</displayorder>
+   </parameter>
+   <parameter id="1126">
+      <name>DigDep</name>
+      <displayname>Digitizer bit depth</displayname>
+      <description>Digitizer bit depth</description>
+      <group>Acquisition Misc</group>
+      <spectrumtype value="MS"/>
+      <spectrumtype value="FASTSeg"/>
+      <spectrumtype value="FAST"/>
+      <spectrumtype value="LIFT"/>
+      <type>
+         <basetype>int</basetype>
+         <dimension>0</dimension>
+         <default>8 </default>
+      </type>
+      <displayorder>6</displayorder>
+   </parameter>
+</xmass>

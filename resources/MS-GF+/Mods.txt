@@ -1,0 +1,10 @@
+#max number of modifications per peptide
+NumMods=2
+
+#fixed modifications
+57.021464,C,fix,any,Carbamidomethyl
+229.162932,*,fix,N-term,TMT6plex
+229.162932,K,fix,any,TMT6plex
+
+#variable modifications
+15.994915,M,opt,any,Oxidation

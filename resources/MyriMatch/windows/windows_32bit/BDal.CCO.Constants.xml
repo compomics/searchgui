@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BCOConstants>
+  <Constants namespace="BDal.BCO.CCO.Exception">
+    <Constant key="DivideByZero" value="DivideByZero" />
+  </Constants>
+</BCOConstants>

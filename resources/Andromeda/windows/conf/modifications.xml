@@ -1,0 +1,877 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modifications xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <modification index="0" title="4-Hydroxyloproline" description="4-Hydroxyloproline" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(5) H(9) N" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="P">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="1" title="Acetaldehyde +26" description="Acetaldehyde +26" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(2)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="2" title="Acetylation of K" description="Acetylation of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(2) O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="aceK126" shortname="aceK126" composition="C(7) H(11) N O" />
+            <diagnostic name="aceK143" shortname="aceK143" composition="C(7) H(14) N(2) O" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="3" title="Acetylation of Peptide N-terminus" description="Acetylation of Peptide N-terminus" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(2) O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="4" title="Acetylation of Protein N-terminus" description="Acetylation of Protein N-terminus" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(2) O" multi_modification="false">
+      <position>proteinNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="5" title="Amidation of the peptide C-terminus" description="Amidation of the peptide C-terminus" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H N O" multi_modification="false">
+      <position>anyCterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="6" title="Amidation of the protein C-terminus" description="Amidation of the protein C-terminus" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H N O" multi_modification="false">
+      <position>proteinCterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="7" title="Arginine 13C6" description="Arginine 13C6" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(-6) Cx(6)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="R">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="8" title="Arginine 13C6 15N4" description="Arginine 13C6 15N4" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(-6) Cx(6) N(-4) Nx(4)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="R">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="9" title="C-term 18O" description="C-term 18O" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="O(2) Ox(2)" multi_modification="false">
+      <position>anyCterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="10" title="Carbamidomethylation of C" description="Carbamidomethylation of C" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(3) N O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="C">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="11" title="Carbamilation of N-term" description="Carbamilation of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="Cx Hx Nx Ox" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site index="0" site="N">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="12" title="Deamidation of N" description="Deamidation of N" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H N O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="N">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="13" title="Deamidation of N 18O" description="Deamidation of N 18O" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H N Ox" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="N">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="14" title="Deamidation of Q" description="Deamidation of Q" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H N" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="Q">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="15" title="Diethylation of K" description="Diethylation of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(3) H(6)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="16" title="Diethylation of K" description="Diethylation of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(3) H(6)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="17" title="Diethylation of K 2H4" description="Diethylation of K 2H4" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H(-4) Hx(4)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="18" title="Diethylation of K 2H6" description="Diethylation of K 2H6" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(-2) Hx(6)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="19" title="Diethylation of R" description="Diethylation of R" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(4)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="R">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="20" title="Dioxidation of C" description="Dioxidation of C" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="O(3)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="C">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="21" title="Dioxidation of M" description="Dioxidation of M" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="O(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="M">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="22" title="Dioxidation of W" description="Dioxidation of W" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="O(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="W">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="23" title="Hex(1)NAc(1) of S" description="Hex(1)NAc(1) of S" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(14) H(23) N O(10)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="S">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="24" title="Hex(1)NAc(1) of T" description="Hex(1)NAc(1) of T" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(14) H(23) N O(10)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="T">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="25" title="Hex(5) HexNAc(4) NeuAc(2) Na of N" description="Hex(5) HexNAc(4) NeuAc(2) Na of N" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(84) H(135) N(6) O(61) S" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="N">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="26" title="Hex(5) HexNAc(4) NeuAc(2) of K" description="Hex(5) HexNAc(4) NeuAc(2) of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(84) H(136) N(6) O(61)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="N">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="27" title="HexNAc of S" description="HexNAc of S" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(8) H(13) N O(5)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="S">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="28" title="HexNAc of T" description="HexNAc of T" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(8) H(13) N O(5)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="T">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="29" title="Hexose of K" description="Hexose of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(6) H(10) O(5)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="30" title="ICAT-9" description="ICAT-9" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C Cx(9) H(17) N(3) O(3)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="C">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="31" title="ICAT-O" description="ICAT-O" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(10) H(17) N(3) O(3)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="C">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="32" title="ICPL0 of K" description="ICPL0 of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(6) H(3) N O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="33" title="ICPL0 of N-term" description="ICPL0 of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(6) H(3) N O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="34" title="ICPL10 of K" description="ICPL10 of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="Cx(6) H Hx(4) N O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="35" title="ICPL10 of N-term" description="ICPL10 of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="Cx(6) H Hx(4) N O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="36" title="ICPL4 of K" description="ICPL4 of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(6) H Hx(4) N O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="37" title="ICPL4 of N-term" description="ICPL4 of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(6) H Hx(4) N O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="38" title="ICPL6 of K" description="ICPL6 of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="Cx(6) H(3) N O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="39" title="ICPL6 of N-term" description="ICPL6 of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="Cx(6) H(3) N O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="40" title="Isoleucine 13C6 15N1" description="Isoleucine 13C6 15N1" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(-6) Cx(6) N Nx" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="I">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="41" title="Leucine 13C6 15N1" description="Leucine 13C6 15N1" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(-6) Cx(6) N Nx" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="L">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="42" title="Lysine 13C6" description="Lysine 13C6" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(-6) Cx(6)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="43" title="Lysine 13C6 15N2" description="Lysine 13C6 15N2" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(-6) Cx(6) N(-2) Nx(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="44" title="Lysine 2H4" description="Lysine 2H4" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H(-4) Hx(4)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="45" title="Methylation of E" description="Methylation of E" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C H(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="E">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="46" title="Methylation of K" description="Methylation of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C H(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="47" title="Methylation of R" description="Methylation of R" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C H(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="R">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="48" title="N-term diethylation 2H6" description="N-term diethylation 2H6" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(2) Hx(6)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="49" title="N-term diethylation 2H6 13C2" description="N-term diethylation 2H6 13C2" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="Cx(2) H(2) Hx(6)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="50" title="N-term diethylation of K" description="N-term diethylation of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(2) H(4)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="51" title="N-term diethylation of K 2H4" description="N-term diethylation of K 2H4" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="Hx(4)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="52" title="Oxidation of M" description="Oxidation of M" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="M">
+         <neutralloss_collection>
+            <neutralloss name="CH4OS" shortname="CH4OS" composition="C H(4) O S" />
+         </neutralloss_collection>
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="53" title="Oxidation of P" description="Oxidation of P" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="P">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="54" title="Phosphorylation of S" description="Phosphorylation of S" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H O(3) P" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="S">
+         <neutralloss_collection>
+            <neutralloss name="H3PO4" shortname="H3PO4" composition="H(3) O(4) P" />
+         </neutralloss_collection>
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="55" title="Phosphorylation of T" description="Phosphorylation of T" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H O(3) P" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="T">
+         <neutralloss_collection>
+            <neutralloss name="H3PO4" shortname="H3PO4" composition="H(3) O(4) P" />
+         </neutralloss_collection>
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="56" title="Phosphorylation of Y" description="Phosphorylation of Y" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H O(3) P" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="Y">
+         <neutralloss_collection>
+            <neutralloss name="HPO3" shortname="HPO3" composition="H O(3) P" />
+         </neutralloss_collection>
+         <diagnostic_collection>
+            <diagnostic name="pY" shortname="pY" composition="C(8) H(10) O(4) P" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="57" title="Proline 13C5" description="Proline 13C5" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(-5) Cx(5)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="P">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="58" title="Pyrolidone from E" description="Pyrolidone from E" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H(-2) O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site index="0" site="E">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="59" title="Pyrolidone from Q" description="Pyrolidone from Q" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H(-3) N" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site index="0" site="Q">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="60" title="Pyrolidone from carbamidomethylated C" description="Pyrolidone from carbamidomethylated C" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H(-3) N" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site index="0" site="C">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="61" title="SUMO-2/3 Q87R" description="SUMO-2/3 Q87R" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(18) H(29) N(7) O(8)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="QQ" shortname="QQ" composition="C(10) H(16) N(4) O(4)" />
+            <diagnostic name="QQ-H2O" shortname="QQ-H2O" composition="C(10) H(14) N(4) O(3)" />
+            <diagnostic name="QQT" shortname="QQT" composition="C(14) H(24) N(5) O(6)" />
+            <diagnostic name="QQT-H2O" shortname="QQT-H2O" composition="C(14) H(22) N(5) O(5)" />
+            <diagnostic name="QQTG" shortname="QQTG" composition="C(16) H(26) N(6) O(7)" />
+            <diagnostic name="QQTG-H2O" shortname="QQTG-H2O" composition="C(16) H(24) N(6) O(6)" />
+            <diagnostic name="QQTGG" shortname="QQTGG" composition="C(18) H(29) N(7) O(8)" />
+            <diagnostic name="QQTGG-H2O" shortname="QQTGG-H2O" composition="C(18) H(27) N(7) O(7)" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="62" title="Sodium adduct to D" description="Sodium adduct to D" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H S" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="D">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="63" title="Sodium adduct to E" description="Sodium adduct to E" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="H S" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="E">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="64" title="Sulfonation of S" description="Sulfonation of S" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="S" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="S">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="65" title="Sulfonation of T" description="Sulfonation of T" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="S" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="T">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="66" title="Sulfonation of Y" description="Sulfonation of Y" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="S" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="Y">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="67" title="TMT 10-plex of K" description="TMT 10-plex of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(8) Cx(4) H(20) N Nx O(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="TMT_126" shortname="TMT_126" composition="C(8) H(15) N" />
+            <diagnostic name="TMT_127C" shortname="TMT_127C" composition="C(7) Cx H(15) N" />
+            <diagnostic name="TMT_127N" shortname="TMT_127N" composition="C(8) H(15) Nx" />
+            <diagnostic name="TMT_128C" shortname="TMT_128C" composition="C(6) Cx(2) H(15) N" />
+            <diagnostic name="TMT_128N" shortname="TMT_128N" composition="C(7) Cx H(15) Nx" />
+            <diagnostic name="TMT_129C" shortname="TMT_129C" composition="C(5) Cx(3) H(15) N" />
+            <diagnostic name="TMT_129N" shortname="TMT_129N" composition="C(6) Cx(2) H(15) Nx" />
+            <diagnostic name="TMT_130C" shortname="TMT_130C" composition="C(4) Cx(4) H(15) N" />
+            <diagnostic name="TMT_130N" shortname="TMT_130N" composition="C(5) Cx(3) H(15) Nx" />
+            <diagnostic name="TMT_131" shortname="TMT_131" composition="C(4) Cx(4) H(15) Nx" />
+            <diagnostic name="TMT_126_ETD" shortname="TMT_126_ETD" composition="C(7) H(15) N" />
+            <diagnostic name="TMT_127C_ETD" shortname="TMT_127C_ETD" composition="C(7) H(15) N" />
+            <diagnostic name="TMT_127N_ETD" shortname="TMT_127N_ETD" composition="C(7) H(15) Nx" />
+            <diagnostic name="TMT_128C_ETD" shortname="TMT_128C_ETD" composition="C(5) Cx(2) H(15) N" />
+            <diagnostic name="TMT_128N_ETD" shortname="TMT_128N_ETD" composition="C(7) H(15) Nx" />
+            <diagnostic name="TMT_129C_ETD" shortname="TMT_129C_ETD" composition="C(5) Cx(2) H(15) N" />
+            <diagnostic name="TMT_129N_ETD" shortname="TMT_129N_ETD" composition="C(5) Cx(2) H(15) Nx" />
+            <diagnostic name="TMT_130C_ETD" shortname="TMT_130C_ETD" composition="C(3) Cx(4) H(15) N" />
+            <diagnostic name="TMT_130N_ETD" shortname="TMT_130N_ETD" composition="C(5) Cx(2) H(15) Nx" />
+            <diagnostic name="TMT_131_ETD" shortname="TMT_131_ETD" composition="C(3) Cx(4) H(15) Nx" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="68" title="TMT 10-plex of N-term" description="TMT 10-plex of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(8) Cx(4) H(20) N Nx O(2)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="69" title="TMT 2-plex of K (old)" description="TMT 2-plex of K (old)" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(11) Cx H(20) N(2) O(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="TMT_126" shortname="TMT_126" composition="C(8) H(15) N" />
+            <diagnostic name="TMT_127C" shortname="TMT_127C" composition="C(7) Cx H(15) N" />
+            <diagnostic name="TMT_126_ETD" shortname="TMT_126_ETD" composition="C(7) H(15) N" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="70" title="TMT 2-plex of N-term (old)" description="TMT 2-plex of N-term (old)" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(11) Cx H(20) N(2) O(2)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="71" title="TMT 6-plex of K" description="TMT 6-plex of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(8) Cx(4) H(20) N Nx O(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="TMT_126" shortname="TMT_126" composition="C(8) H(15) N" />
+            <diagnostic name="TMT_127N" shortname="TMT_127N" composition="C(8) H(15) Nx" />
+            <diagnostic name="TMT_128C" shortname="TMT_128C" composition="C(6) Cx(2) H(15) N" />
+            <diagnostic name="TMT_129N" shortname="TMT_129N" composition="C(6) Cx(2) H(15) Nx" />
+            <diagnostic name="TMT_130C" shortname="TMT_130C" composition="C(4) Cx(4) H(15) N" />
+            <diagnostic name="TMT_131" shortname="TMT_131" composition="C(4) Cx(4) H(15) Nx" />
+            <diagnostic name="TMT_126" shortname="TMT_126" composition="C(8) H(15) N" />
+            <diagnostic name="TMT_127N" shortname="TMT_127N" composition="C(8) H(15) Nx" />
+            <diagnostic name="TMT_128C" shortname="TMT_128C" composition="C(6) Cx(2) H(15) N" />
+            <diagnostic name="TMT_129N" shortname="TMT_129N" composition="C(6) Cx(2) H(15) Nx" />
+            <diagnostic name="TMT_130C" shortname="TMT_130C" composition="C(4) Cx(4) H(15) N" />
+            <diagnostic name="TMT_131" shortname="TMT_131" composition="C(4) Cx(4) H(15) Nx" />
+            <diagnostic name="TMT_126_ETD" shortname="TMT_126_ETD" composition="C(7) H(15) N" />
+            <diagnostic name="TMT_127N_ETD" shortname="TMT_127N_ETD" composition="C(7) H(15) Nx" />
+            <diagnostic name="TMT_128C_ETD" shortname="TMT_128C_ETD" composition="C(5) Cx(2) H(15) N" />
+            <diagnostic name="TMT_129N_ETD" shortname="TMT_129N_ETD" composition="C(5) Cx(2) H(15) Nx" />
+            <diagnostic name="TMT_130C_ETD" shortname="TMT_130C_ETD" composition="C(3) Cx(4) H(15) N" />
+            <diagnostic name="TMT_131_ETD" shortname="TMT_131_ETD" composition="C(3) Cx(4) H(15) Nx" />
+            <diagnostic name="TMT_126_ETD" shortname="TMT_126_ETD" composition="C(7) H(15) N" />
+            <diagnostic name="TMT_127N_ETD" shortname="TMT_127N_ETD" composition="C(7) H(15) Nx" />
+            <diagnostic name="TMT_128C_ETD" shortname="TMT_128C_ETD" composition="C(5) Cx(2) H(15) N" />
+            <diagnostic name="TMT_129N_ETD" shortname="TMT_129N_ETD" composition="C(5) Cx(2) H(15) Nx" />
+            <diagnostic name="TMT_130C_ETD" shortname="TMT_130C_ETD" composition="C(3) Cx(4) H(15) N" />
+            <diagnostic name="TMT_131_ETD" shortname="TMT_131_ETD" composition="C(3) Cx(4) H(15) Nx" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="72" title="TMT 6-plex of N-term" description="TMT 6-plex of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(8) Cx(4) H(20) N Nx O(2)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="73" title="Ubiquitination of K" description="Ubiquitination of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(4) H(6) N(2) O(2)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="74" title="iTRAQ 4-plex of K" description="iTRAQ 4-plex of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(7) H(12) Nx(2) O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="iTRAQ4Plex_114" shortname="iTRAQ4Plex_114" composition="C(5) Cx H(12) N(2)" />
+            <diagnostic name="iTRAQ4Plex_115" shortname="iTRAQ4Plex_115" composition="C(4) Cx(2) H(12) N(2)" />
+            <diagnostic name="iTRAQ4Plex_116" shortname="iTRAQ4Plex_116" composition="C(4) Cx(2) H(12) N Nx" />
+            <diagnostic name="iTRAQ4Plex_117" shortname="iTRAQ4Plex_117" composition="C(3) Cx(3) H(12) N Nx" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="75" title="iTRAQ 4-plex of N-term" description="iTRAQ 4-plex of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(7) H(12) Nx(2) O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="76" title="iTRAQ 4-plex of Y" description="iTRAQ 4-plex of Y" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(7) H(12) Nx(2) O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="Y">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="iTRAQ4Plex_114" shortname="iTRAQ4Plex_114" composition="C(5) Cx H(12) N(2)" />
+            <diagnostic name="iTRAQ4Plex_115" shortname="iTRAQ4Plex_115" composition="C(4) Cx(2) H(12) N(2)" />
+            <diagnostic name="iTRAQ4Plex_116" shortname="iTRAQ4Plex_116" composition="C(4) Cx(2) H(12) N Nx" />
+            <diagnostic name="iTRAQ4Plex_117" shortname="iTRAQ4Plex_117" composition="C(3) Cx(3) H(12) N Nx" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="77" title="iTRAQ 8-plex of K" description="iTRAQ 8-plex of K" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(14) H(24) Nx(4) O(3)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="iTRAQ8Plex_113" shortname="iTRAQ8Plex_113" composition="C(6) H(12) N(2)" />
+            <diagnostic name="iTRAQ8Plex_114" shortname="iTRAQ8Plex_114" composition="C(5) Cx H(12) N(2)" />
+            <diagnostic name="iTRAQ8Plex_115" shortname="iTRAQ8Plex_115" composition="C(4) Cx H(12) N Nx" />
+            <diagnostic name="iTRAQ8Plex_116" shortname="iTRAQ8Plex_116" composition="C(4) Cx(2) H(12) N Nx" />
+            <diagnostic name="iTRAQ8Plex_117" shortname="iTRAQ8Plex_117" composition="C(3) Cx(3) H(12) N Nx" />
+            <diagnostic name="iTRAQ8Plex_118" shortname="iTRAQ8Plex_118" composition="C(3) Cx(3) H(12) Nx(2)" />
+            <diagnostic name="iTRAQ8Plex_119" shortname="iTRAQ8Plex_119" composition="C(2) Cx(4) H(12) Nx(2)" />
+            <diagnostic name="iTRAQ8Plex_121" shortname="iTRAQ8Plex_121" composition="Cx(6) H(12) Nx(2)" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="78" title="iTRAQ 8-plex of N-term" description="iTRAQ 8-plex of N-term" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(14) H(24) Nx(4) O(3)" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="79" title="iTRAQ 8-plex of Y" description="iTRAQ 8-plex of Y" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(14) H(24) Nx(4) O(3)" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="Y">
+         <neutralloss_collection />
+         <diagnostic_collection>
+            <diagnostic name="iTRAQ8Plex_113" shortname="iTRAQ8Plex_113" composition="C(6) H(12) N(2)" />
+            <diagnostic name="iTRAQ8Plex_114" shortname="iTRAQ8Plex_114" composition="C(5) Cx H(12) N(2)" />
+            <diagnostic name="iTRAQ8Plex_115" shortname="iTRAQ8Plex_115" composition="C(4) Cx H(12) N Nx" />
+            <diagnostic name="iTRAQ8Plex_116" shortname="iTRAQ8Plex_116" composition="C(4) Cx(2) H(12) N Nx" />
+            <diagnostic name="iTRAQ8Plex_117" shortname="iTRAQ8Plex_117" composition="C(3) Cx(3) H(12) N Nx" />
+            <diagnostic name="iTRAQ8Plex_118" shortname="iTRAQ8Plex_118" composition="C(3) Cx(3) H(12) Nx(2)" />
+            <diagnostic name="iTRAQ8Plex_119" shortname="iTRAQ8Plex_119" composition="C(2) Cx(4) H(12) Nx(2)" />
+            <diagnostic name="iTRAQ8Plex_121" shortname="iTRAQ8Plex_121" composition="Cx(6) H(12) Nx(2)" />
+         </diagnostic_collection>
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="80" title="mTRAQ of 13C6 15N2" description="mTRAQ of 13C6 15N2" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C Cx(6) H(12) Nx(2) O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="81" title="mTRAQ of K 13C3 15N" description="mTRAQ of K 13C3 15N" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(4) Cx(3) H(12) N Nx O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="82" title="mTRAQ of K light" description="mTRAQ of K light" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(7) H(12) N(2) O" multi_modification="false">
+      <position>anywhere</position>
+      <modification_site index="0" site="K">
+         <neutralloss_collection />
+         <neutralloss_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="83" title="mTRAQ of N-term 13C3 15N" description="mTRAQ of N-term 13C3 15N" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(4) Cx(3) H(12) N Nx O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="84" title="mTRAQ of N-term 13C6 15N2" description="mTRAQ of N-term 13C6 15N2" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C Cx(6) H(12) Nx(2) O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+   <modification index="85" title="mTRAQ of N-term light" description="mTRAQ of N-term light" create_date="0001-01-01T00:00:00" last_modified_date="0001-01-01T00:00:00" user="SearchGUI" reporterCorrectionM2="0" reporterCorrectionM1="0" reporterCorrectionP1="0" reporterCorrectionP2="0" composition="C(7) H(12) N(2) O" multi_modification="false">
+      <position>anyNterm</position>
+      <modification_site site="-">
+         <neutralloss_collection />
+         <diagnostic_collection />
+      </modification_site>
+      <type>Standard</type>
+      <terminus_type>none</terminus_type>
+   </modification>
+</modifications>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<enzymes>
+  <enzyme>
+    <name>Trypsin</name>
+    <cleavage_sites>KR</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Arg-C</name>
+    <cleavage_sites>R</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>CNBr</name>
+    <cleavage_sites>M</cleavage_sites>
+    <position>after</position>
+  </enzyme>
+ <enzyme>
+    <name>Chymotrypsin (FYWL)</name>
+    <cleavage_sites>FYWL</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Formic Acid</name>
+    <cleavage_sites>D</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Lys-C</name>
+    <cleavage_sites>K</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>LysC, no P rule</name>
+    <cleavage_sites>K</cleavage_sites>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Pepsin A</name>
+    <cleavage_sites>FL</cleavage_sites>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Trypsin + CNBr</name>
+    <cleavage_sites>RKM</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Trypsin + Chymotrypsin (FYWLKR)</name>
+    <cleavage_sites>FYWLKR</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Trypsin, no P rule</name>
+    <cleavage_sites>KR</cleavage_sites>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Whole Protein</name>
+    <cleavage_sites></cleavage_sites>
+  </enzyme>
+  <enzyme>
+    <name>Asp-N</name>
+    <cleavage_sites>D</cleavage_sites>
+    <position>before</position>
+  </enzyme>
+  <enzyme>
+    <name>Glu-C</name>
+    <cleavage_sites>E</cleavage_sites>
+    <position>after</position>
+  </enzyme>
+  <!--<enzyme>
+    <name>Asp-N + Glu-C</name>
+    <cleavage_sites>E</cleavage_sites>
+    <position>after</position>
+  </enzyme>-->
+  <enzyme>
+    <name>Top-Down</name>
+    <cleavage_sites></cleavage_sites>
+  </enzyme>
+  <enzyme>
+    <name>Semi-Tryptic</name>
+    <cleavage_sites>KR</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Unspecific</name>
+    <cleavage_sites>X</cleavage_sites>
+  </enzyme>
+  <enzyme>
+    <name>Chymotrypsin, no P rule (FYWL)</name>
+    <cleavage_sites>FYWL</cleavage_sites>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Asp-N (DE)</name>
+    <cleavage_sites>DE</cleavage_sites>
+    <position>before</position>
+  </enzyme>
+  <enzyme>
+    <name>Glu-C (DE)</name>
+    <cleavage_sites>DE</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Lys-N (K)</name>
+    <cleavage_sites>K</cleavage_sites>
+    <position>before</position>
+  </enzyme>
+  <enzyme>
+    <name>Thermolysin, no P rule</name>
+    <cleavage_sites>AFILMV</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>before</position>
+  </enzyme>
+ <enzyme>
+    <name>Semi-Chymotrypsin (FYWL)</name>
+    <cleavage_sites>FYWL</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+  <enzyme>
+    <name>Semi-Glu-C</name>
+    <cleavage_sites>E</cleavage_sites>
+    <inhibitors>P</inhibitors>
+    <position>after</position>
+  </enzyme>
+</enzymes>
+

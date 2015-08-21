@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<!-- possible values are "a", "b", "c", "x", "y", "z", "H2O", "NH3", "IMM", "z+1", "z+2", "INT" (for internal fragments) -->
+<instruments>
+  <setting name="b, y">
+    <series>b</series>
+    <series>y</series>
+  </setting>
+  <setting name="b, y, -H2O, -NH3">
+    <series>b</series>
+    <series>y</series>
+    <series>H2O</series>
+    <series>NH3</series>
+  </setting>
+  <setting name="a, b, y, -H2O, -NH3, Imm">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>H2O</series>
+    <series>NH3</series>
+    <series>IMM</series>
+  </setting>
+  <setting name="a, b, y, -H2O, -NH3">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>H2O</series>
+    <series>NH3</series>
+  </setting>
+  <setting name="a, b, y">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+  </setting>
+  <setting name="a, b, y, Imm">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>IMM</series>
+  </setting>
+  <setting name="a, b, y, z, -H2O, -NH3, Imm">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>z</series>
+    <series>H2O</series>
+    <series>NH3</series>
+    <series>IMM</series>
+  </setting>
+  <setting name="c, y, z+1, z+2">
+    <series>c</series>
+    <series>y</series>
+    <series>z+1</series>
+    <series>z+2</series>
+  </setting>
+  <setting name="b, c, y, z+1, z+2">
+    <series>b</series>
+    <series>c</series>
+    <series>y</series>
+    <series>z+1</series>
+    <series>z+2</series>
+  </setting>
+  <setting name="b, y, INT">
+    <series>b</series>
+    <series>y</series>
+    <series>INT</series>
+  </setting>
+  <setting name="b, y, INT, Imm">
+    <series>b</series>
+    <series>y</series>
+    <series>INT</series>
+    <series>IMM</series>
+  </setting>
+  <setting name="a, b, y, INT">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>INT</series>
+  </setting>
+  <setting name="a, b, y, INT, IMM">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>INT</series>
+    <series>IMM</series>
+  </setting>
+  <setting name="a, b, y, INT, IMM, -H2O">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>INT</series>
+    <series>IMM</series>
+    <series>H2O</series>
+  </setting>
+  <setting name="a, b, y, INT, IMM, -H2O, -NH3">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>INT</series>
+    <series>IMM</series>
+    <series>H2O</series>
+    <series>NH3</series>
+  </setting>
+  <setting name="a, b, y, INT, IMM, -NH3">
+    <series>a</series>
+    <series>b</series>
+    <series>y</series>
+    <series>INT</series>
+    <series>IMM</series>
+    <series>NH3</series>
+  </setting>
+</instruments>
