@@ -14,21 +14,16 @@
 
 ----
 
-<table border#0>
-  <tr>
-    <td width#"200">[http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-windows.zip http://searchgui.googlecode.com/svn/wiki/images/download_button_windows.png]</td>
-    <td width#"140">_v1.30.1 - Windows_</td>
-<td width#"200">[http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-mac_and_linux.tar.gz http://searchgui.googlecode.com/svn/wiki/images/download_button_unix.png]</td>
-    <td width#"180">_v1.30.1 - Mac and Linux_</td>
-    <td width#"150">_[http://code.google.com/p/searchgui/wiki/ReleaseNotes ReleaseNotes]_</td>
-  </tr>
-</table> 
+|   |   |   |   |
+| :------------------------- | :---------------: | :--: | :--: |
+| [![download](https://github.com/hbarsnes/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-windows.zip) | *v1.30.1 - Windows* | [ReleaseNotes](https://github.com/hbarsnes/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/hbarsnes/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-mac_and_linux.tar.gz) | *v1.30.1 - Mac and Linux* |[ReleaseNotes](https://github.com/hbarsnes/searchgui/wiki/ReleaseNotes) | 
 
 ----
 
-[http://searchgui.googlecode.com/svn/wiki/images/TaskEditor.png http://searchgui.googlecode.com/svn/wiki/images/TaskEditor_small.png]
-[http://searchgui.googlecode.com/svn/wiki/images/ParametersEditor.png http://searchgui.googlecode.com/svn/wiki/images/ParametersEditor_small.png]
-[http://searchgui.googlecode.com/svn/wiki/images/ProgressDialog.png http://searchgui.googlecode.com/svn/wiki/images/ProgressDialog_small.png]
+[![](https://github.com/hbarsnes/searchgui/wiki/images/TaskEditor_small.png)](https://github.com/hbarsnes/searchgui/wiki/images/TaskEditor.png)
+[![](https://github.com/hbarsnes/searchgui/wiki/images/ParametersEditor_small.png)](https://github.com/hbarsnes/searchgui/wiki/images/ParametersEditor.png)
+[![](https://github.com/hbarsnes/searchgui/wiki/images/ProgressDialog_small.png)](https://github.com/hbarsnes/searchgui/wiki/images/ProgressDialog.png)
 
 (Click on figure to see the full size version)
 
