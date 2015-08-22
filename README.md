@@ -15,7 +15,7 @@
 ----
 
 |   |   |   |   |
-| :------------------------- | :---------------: | :--: | :--: |
+| :------------------------- | :--------------- | :--: | :--: |
 | [![download](https://github.com/hbarsnes/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-windows.zip) | *v1.30.1 - Windows* | [ReleaseNotes](https://github.com/hbarsnes/searchgui/wiki/ReleaseNotes) | 
 | [![download](https://github.com/hbarsnes/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-mac_and_linux.tar.gz) | *v1.30.1 - Mac and Linux* |[ReleaseNotes](https://github.com/hbarsnes/searchgui/wiki/ReleaseNotes) | 
 
@@ -46,8 +46,8 @@ For developer access to the search results we recommend the use of [compomics-ut
 ## Read Me
  
  * [From the Command Line](#from-the-command-line)
- * [Database Help](#database-help)
- * [User Defined Modifications](#user-defined.modifications)
+ * [Database Help](https://github.com/hbarsnes/searchgui/wiki/DatabaseHelp)
+ * [User Defined Modifications](#user-defined-modifications)
  * [Converting Spectrum Data](#converting-spectrum-data)
  * [Result Analysis](#result-analysis)
 
