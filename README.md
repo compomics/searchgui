@@ -16,14 +16,14 @@
 
 |   |   |   |   |
 | :------------------------- | :--------------- | :--: | :--: |
-| [![download](https://github.com/hbarsnes/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-windows.zip) | *v1.30.1 - Windows* | [ReleaseNotes](https://github.com/hbarsnes/searchgui/wiki/ReleaseNotes) | 
-| [![download](https://github.com/hbarsnes/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-mac_and_linux.tar.gz) | *v1.30.1 - Mac and Linux* |[ReleaseNotes](https://github.com/hbarsnes/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-windows.zip) | *v1.30.1 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/1.30.1/SearchGUI-1.30.1-mac_and_linux.tar.gz) | *v1.30.1 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
 
 ----
 
-[![](https://github.com/hbarsnes/searchgui/wiki/images/TaskEditor_small.png)](https://github.com/hbarsnes/searchgui/wiki/images/TaskEditor.png)
-[![](https://github.com/hbarsnes/searchgui/wiki/images/ParametersEditor_small.png)](https://github.com/hbarsnes/searchgui/wiki/images/ParametersEditor.png)
-[![](https://github.com/hbarsnes/searchgui/wiki/images/ProgressDialog_small.png)](https://github.com/hbarsnes/searchgui/wiki/images/ProgressDialog.png)
+[![](https://github.com/compomics/searchgui/wiki/images/TaskEditor_small.png)](https://github.com/compomics/searchgui/wiki/images/TaskEditor.png)
+[![](https://github.com/compomics/searchgui/wiki/images/ParametersEditor_small.png)](https://github.com/compomics/searchgui/wiki/images/ParametersEditor.png)
+[![](https://github.com/compomics/searchgui/wiki/images/ProgressDialog_small.png)](https://github.com/compomics/searchgui/wiki/images/ProgressDialog.png)
 
 (Click on figure to see the full size version)
 
@@ -46,7 +46,7 @@ For developer access to the search results we recommend the use of [compomics-ut
 ## Read Me
  
  * [From the Command Line](#from-the-command-line)
- * [Database Help](https://github.com/hbarsnes/searchgui/wiki/DatabaseHelp)
+ * [Database Help](https://github.com/compomics/searchgui/wiki/DatabaseHelp)
  * [User Defined Modifications](#user-defined-modifications)
  * [Converting Spectrum Data](#converting-spectrum-data)
  * [Result Analysis](#result-analysis)
@@ -61,7 +61,7 @@ To start identifying peptides and proteins using SearchGUI, download the latest 
 
 The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. We believe that a graphical user interface would be the best choice for most users, and therefore made SearchGUI with a graphical user interface. However, it can sometimes be easier to perform a search from the command line. For example when incorporating the search into some sort of pipeline. With this in mind we have therefore included the option of using SearchGUI as a command line tool.
 
-For details about the command line see: [SearchCLI](https://github.com/hbarsnes/searchgui/wiki/SearchCLI).
+For details about the command line see: [SearchCLI](https://github.com/compomics/searchgui/wiki/SearchCLI).
 
 [Go to top of page](#searchgui)
 
@@ -123,7 +123,7 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
  * **32 bits vs 64 bits** - Please make sure that your using versions of the search engines that are compatible with your OS. Note that the latest releases of OMSSA are only available in 64 bits versions. For older versions of OMSSA see the [OMSSA archive](ftp://ftp.ncbi.nlm.nih.gov/pub/lewisg/omssa). However, it is always recommended to use the latest version if possible. Also note that OMSSA versions up until version 2.1.9 does not support precursor mass tolerance in ppm.
 
- * **Problem Not Solved? Or Problem Not List?** - Contact the developers of SearchGUI by setting up an [issue](https://github.com/hbarsnes/searchgui/issues) describing the problem. If the issue is related to the installation of the search engines, please contact the search engine developers directly.
+ * **Problem Not Solved? Or Problem Not List?** - Contact the developers of SearchGUI by setting up an [issue](https://github.com/compomics/searchgui/issues) describing the problem. If the issue is related to the installation of the search engines, please contact the search engine developers directly.
 
 [Go to top of page](#searchgui)
 
