@@ -105,9 +105,7 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
  * **X!Tandem XML Syntax Error** - If X!Tandem gives the error "Syntax error parsing XML", the problems is most likely that the path to your database or mgf files contains special characters not supported on your operating system. If this happens try renaming the folders containing the special characters or move the files to folders not containing special characters.
 
- * **OMSSA on Windows** - Windows users might encounter issues starting OMSSA, due to missing libraries. Do solve this do the following:
-  * First, apply the following [update](http://www.microsoft.com/downloads/details.aspx?FamilyID#200b2fd9-ae1a-4a14-984d-389c36f85647&displaylang#en http://www.microsoft.com/downloads/details.aspx?FamilyID#200b2fd9-ae1a-4a14-984d-389c36f85647&displaylang#en).
-  * Then apply the [security patch](http://www.microsoft.com/downloads/details.aspx?familyid#766a6af7-ec73-40ff-b072-9112bab119c2&displaylang#en http://www.microsoft.com/downloads/details.aspx?familyid#766a6af7-ec73-40ff-b072-9112bab119c2&displaylang#en).
+ * **OMSSA on Windows** - Windows users might encounter issues starting OMSSA, due to missing libraries. Do solve this do the following: First, apply the following [update](http://www.microsoft.com/downloads/details.aspx?FamilyID#200b2fd9-ae1a-4a14-984d-389c36f85647&displaylang#en http://www.microsoft.com/downloads/details.aspx?FamilyID#200b2fd9-ae1a-4a14-984d-389c36f85647&displaylang#en), then apply this [security patch](http://www.microsoft.com/downloads/details.aspx?familyid#766a6af7-ec73-40ff-b072-9112bab119c2&displaylang#en http://www.microsoft.com/downloads/details.aspx?familyid#766a6af7-ec73-40ff-b072-9112bab119c2&displaylang#en).
 
  * **Linux Support** - Users wanting to use SearchGUI on Linux may have to install the search engines first, see the tools web pages for available search engine versions. *Important:* Please verify that the search engines are working outside of SearchGUI before using them inside SearchGUI.
 
