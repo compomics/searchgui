@@ -21,9 +21,9 @@
 
 ----
 
-[![](https://github.com/compomics/searchgui/wiki/images/TaskEditor_small.png)](https://github.com/compomics/searchgui/wiki/images/TaskEditor.png)
-[![](https://github.com/compomics/searchgui/wiki/images/ParametersEditor_small.png)](https://github.com/compomics/searchgui/wiki/images/ParametersEditor.png)
-[![](https://github.com/compomics/searchgui/wiki/images/ProgressDialog_small.png)](https://github.com/compomics/searchgui/wiki/images/ProgressDialog.png)
+|  |  |  |
+|:--:|:--:|:--:|
+| [![](https://github.com/compomics/searchgui/wiki/images/TaskEditor_small.png)](https://github.com/compomics/searchgui/wiki/images/TaskEditor.png) | [![](https://github.com/compomics/searchgui/wiki/images/ParametersEditor_small.png)](https://github.com/compomics/searchgui/wiki/images/ParametersEditor.png) | [![](https://github.com/compomics/searchgui/wiki/images/ProgressDialog_small.png)](https://github.com/compomics/searchgui/wiki/images/ProgressDialog.png) |
 
 (Click on figure to see the full size version)
 
