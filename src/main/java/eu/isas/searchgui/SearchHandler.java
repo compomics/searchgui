@@ -74,7 +74,7 @@ public class SearchHandler {
     /**
      * Output parameters file.
      */
-    private final static String PARAMETERS_OUTPUT_FILE = "SearchGUI.parameters";
+    private final static String PARAMETERS_OUTPUT_FILE = "SearchGUI.par";
     /**
      * Folder where the output is stored before packaging.
      */
@@ -147,7 +147,7 @@ public class SearchHandler {
     /**
      * If true, Andromeda will be used.
      */
-    private boolean enableAndromeda = false; // @TODO: update when andromeda is added!
+    private boolean enableAndromeda = false;
     /**
      * If true, PeptideShaker will be used.
      */
@@ -422,7 +422,7 @@ public class SearchHandler {
         this.enableMyriMatch = searchMyriMatch;
         this.enableComet = searchComet;
         this.enableTide = searchTide;
-        //this.enableAndromeda = searchAndromeda; // @TODO: update when andromeda is added!
+        this.enableAndromeda = searchAndromeda;
 
         this.nThreads = nThreads;
         this.generateProteinTree = generateProteinTree;
@@ -472,7 +472,7 @@ public class SearchHandler {
         if (andromedaFolder != null) {
             this.andromedaLocation = andromedaFolder;
         } else {
-            loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false); // try to use the default // @TODO: update when andromeda is added!
+            loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false); // try to use the default
         }
 
         if (makeblastdbFolder != null) {
@@ -891,7 +891,7 @@ public class SearchHandler {
             } catch (IOException ioe) {
                 ioe.printStackTrace(); // @TODO: this exception should be thrown to the GUI!
                 JOptionPane.showMessageDialog(null, "An error occurred when trying to load the modifications preferences.",
-                        "Configuration import Error", JOptionPane.ERROR_MESSAGE);
+                        "Configuration Import Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         return result;
@@ -1850,9 +1850,6 @@ public class SearchHandler {
                         parametersOutputFile = new File(outputTempFolder, PARAMETERS_OUTPUT_FILE);
                     } else {
                         String name = searchParameters.getParametersFile().getName();
-                        if (name.endsWith(".properties")) {
-                            name = name.substring(0, name.lastIndexOf(".")) + ".parameters";
-                        }
                         parametersOutputFile = new File(outputTempFolder, name);
                     }
                     SearchParameters.saveIdentificationParameters(searchParameters, parametersOutputFile);
@@ -2122,7 +2119,7 @@ public class SearchHandler {
                                 try {
                                     tempResultFile.delete();
                                 } catch (Exception e) {
-                                    waitingHandler.appendReport("An error occurred when attmpting to delete " + tempResultFile.getName() + ".", true, true);
+                                    waitingHandler.appendReport("An error occurred when attempting to delete " + tempResultFile.getName() + ".", true, true);
                                 }
                                 HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                                 if (runIdentificationFiles == null) {
@@ -2172,7 +2169,7 @@ public class SearchHandler {
                     // organize the output files
                     waitingHandler.appendReport("Zipping output files.", true, true);
                     waitingHandler.appendReportEndLine();
-                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, parametersOutputFile, includeDateInOutputName); // @TODO: use the waiting handler to show actual progress!
+                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, parametersOutputFile, includeDateInOutputName);
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 

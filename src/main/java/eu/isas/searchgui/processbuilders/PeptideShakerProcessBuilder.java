@@ -174,7 +174,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             if (searchParameters.getParametersFile() != null && searchParameters.getParametersFile().exists()) {
                 parametersFile = searchParameters.getParametersFile();
             } else {
-                parametersFile = new File(cpsFile.getParent(), "PS_CLI.parameters");
+                parametersFile = new File(cpsFile.getParent(), "PS_CLI.par");
                 SearchParameters.saveIdentificationParameters(searchParameters, parametersFile);
             }
 

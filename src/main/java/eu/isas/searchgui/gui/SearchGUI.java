@@ -456,7 +456,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 searchHandler.setExperimentLabel(experimentLabel);
                 searchHandler.setSampleLabel(experimentLabel);
-                searchHandler.setPeptideShakerFile(new File(tempFiles.get(0).getParentFile(), experimentLabel + ".cps"));
+                searchHandler.setPeptideShakerFile(new File(tempFiles.get(0).getParentFile(), experimentLabel + ".cpsx"));
                 peptideShakerCheckBox.setSelected(true);
             }
 
@@ -2492,7 +2492,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
                 true, true, searchHandler.getConfigurationFile(), lastSelectedFolder, true);
-        setSearchParameters(searchSettingsDialog.getSearchParameters());
+        if (!searchSettingsDialog.isCanceled()) {
+            setSearchParameters(searchSettingsDialog.getSearchParameters());
+        }
     }//GEN-LAST:event_viewConfigurationsButtonActionPerformed
 
     /**
@@ -2515,14 +2517,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             @Override
             public boolean accept(File myFile) {
 
-                return myFile.getName().toLowerCase().endsWith(".properties")
-                        || myFile.getName().toLowerCase().endsWith(".parameters")
-                        || myFile.isDirectory();
+                return myFile.getName().toLowerCase().endsWith(".par") || myFile.isDirectory();
             }
 
             @Override
             public String getDescription() {
-                return "SearchGUI settings file (.parameters)";
+                return "SearchGUI settings file (.par)";
             }
         };
         fc.setFileFilter(filter);
@@ -2532,7 +2532,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             String fileName = file.getName();
             lastSelectedFolder.setLastSelectedFolder(file.getAbsolutePath());
 
-            if (fileName.endsWith(".parameters") || fileName.endsWith(".properties")) {
+            if (fileName.endsWith(".par")) {
 
                 try {
                     searchParameters = SearchParameters.getIdentificationParameters(file);
@@ -2561,7 +2561,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 validateInput(false);
             } else {
-                JOptionPane.showMessageDialog(this, "Please select a valid search settings file (.paramaters).", "File Error", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please select a valid search settings file (.par).", "File Error", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }//GEN-LAST:event_loadConfigurationsButtonActionPerformed
