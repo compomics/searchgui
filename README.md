@@ -35,9 +35,9 @@ SearchGUI is a user-friendly open-source graphical user interface for configurin
 
 To start using SearchGUI, unzip the downloaded file, and double-click the `SearchGUI-X.Y.Z.jar file`. No additional installation required!
 
-To visualize and analyze the search results we recommend [PeptideShaker](http://peptide-shaker.googlecode.com).
+To visualize and analyze the search results we recommend [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html).
 
-For developer access to the search results we recommend the use of [compomics-utilities](http://compomics-utilities.googlecode.com).
+For developer access to the search results we recommend the use of [compomics-utilities](http://compomics.github.io/projects/compomics-utilities.html).
 
 [Go to top of page](#searchgui)
 
@@ -69,7 +69,7 @@ For details about the command line see: [SearchCLI](https://github.com/compomics
 
 ### User Defined Modifications
 
-It is straightforward to add/edit modifications via the graphical user interface. Modifications will be available in other instances of SearchGUI and [PeptideShaker](http://peptide-shaker.googlecode.com) for the same user/computer. Not all modifications are correctly handled by the search engines. For example, X!Tandem is not compatible with modifications at termini on specific amino acids. Using such a modification will result in nonsense matches which can be filtered out afterwards. This functionality is available by default in [PeptideShaker](http://peptide-shaker.googlecode.com).
+It is straightforward to add/edit modifications via the graphical user interface. Modifications will be available in other instances of SearchGUI and [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html) for the same user/computer. Not all modifications are correctly handled by the search engines. For example, X!Tandem is not compatible with modifications at termini on specific amino acids. Using such a modification will result in nonsense matches which can be filtered out afterwards. This functionality is available by default in [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html).
 
 [Go to top of page](#searchgui)
 
@@ -85,7 +85,7 @@ SearchGUI currently only supports mgf files as the input format for the spectra.
 
 ### Result Analysis
 
-To visualize and analyze the SearchGUI results we recommend the use of [PeptideShaker](http://peptide-shaker.googlecode.com). PeptideShaker is a search engine independent platform for visualization of peptide and protein identification results from multiple search engines.
+To visualize and analyze the SearchGUI results we recommend the use of [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html). PeptideShaker is a search engine independent platform for visualization of peptide and protein identification results from multiple search engines.
 
 [Go to top of page](#searchgui)
 
