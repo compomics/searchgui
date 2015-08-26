@@ -149,7 +149,7 @@ public class FastaCLI {
         return System.getProperty("line.separator")
                 + "FastaCLI takes a fasta file as input, generates general information about the database and allows operations on the fasta file." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
-                + "For further help see http://searchgui.googlecode.com and http://code.google.com/p/searchgui/wiki/SearchCLI." + System.getProperty("line.separator")
+                + "For further help see http://compomics.github.io/projects/searchgui.html and http://compomics.github.io/searchgui/wiki/searchcli.html." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
                 + "Or contact the developers at https://groups.google.com/group/peptide-shaker." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")

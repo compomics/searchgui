@@ -94,7 +94,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="reporterLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;Reporter - &lt;a href=&quot;http://reporter.googlecode.com&quot;&gt;Quantify the Reporter Ions in Reporter&lt;/a&gt;&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;Reporter - &lt;a href=&quot;http://compomics.github.io/projects/reporter.html&quot;&gt;Quantify the Reporter Ions in Reporter&lt;/a&gt;&lt;/html&gt;"/>
             <Property name="toolTipText" type="java.lang.String" value="Open the Reporter web page"/>
           </Properties>
           <Events>
@@ -1043,7 +1043,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="andromedaLinkLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a href=http://www.andromeda-search.org&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a href=&quot;http://www.andromeda-search.org&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the Andromeda web page"/>
               </Properties>
               <Events>
@@ -1350,7 +1350,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="peptideShakerLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a href=&quot;http://peptide-shaker.googlecode.com&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a href=&quot;http://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the PeptideShaker web page"/>
               </Properties>
               <Events>

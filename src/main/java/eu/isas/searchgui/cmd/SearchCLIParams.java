@@ -13,7 +13,7 @@ public enum SearchCLIParams {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // IMPORTANT: Any change here must be reported in the wiki: 
-    // http://code.google.com/p/searchgui/wiki/SearchCLI.
+    // https://github.com/compomics/searchgui/wiki/SearchCLI.
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     SPECTRUM_FILES("spectrum_files", "Spectrum files (mgf format), comma separated list or an entire folder.", true),
     OUTPUT_FOLDER("output_folder", "The output folder.", true),

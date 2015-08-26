@@ -2515,7 +2515,7 @@ public class SearchHandler {
                     proteinTreeWaitingHandler.appendReport("Warning: SearchGUI cannot load your FASTA file entirely into memory. This will slow down the processing. "
                             + "Note that using large large databases also induces random hits efficiency. "
                             + "Try to either (i) use a smaller database, (ii) increase the memory provided to DeNovoGUI, or (iii) improve the reading speed by using an SSD disc. "
-                            + "(See also http://code.google.com/p/compomics-utilities/wiki/ProteinInference.)", true, true);
+                            + "(See also http://compomics.github.io/compomics-utilities/wiki/proteininference.html.)", true, true);
                 }
                 int cacheSize = (int) availableCachSize;
                 sequenceFactory.setnCache(cacheSize);
