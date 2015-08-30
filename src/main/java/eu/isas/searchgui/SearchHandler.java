@@ -490,6 +490,8 @@ public class SearchHandler {
             utilitiesUserPreferences.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
             UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
         }
+        
+        searchDuration = new Duration();
     }
 
     /**
