@@ -1007,7 +1007,7 @@ public class SearchHandler {
      * @return the name of the MS Amanda result file
      */
     public static String getMsAmandaFileName(String spectrumFileName) {
-        return Util.removeExtension(spectrumFileName) + ".csv";
+        return Util.removeExtension(spectrumFileName) + ".ms-amanda.csv";
     }
 
     /**
@@ -1949,7 +1949,7 @@ public class SearchHandler {
                     }
 
                     if (enableMsAmanda && !waitingHandler.isRunCanceled()) {
-                        File msAmandaOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".csv");
+                        File msAmandaOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".ms-amanda.csv");
                         String filePath = msAmandaOutputFile.getAbsolutePath();
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(msAmandaLocation,
                                 spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, nThreads);
