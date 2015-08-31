@@ -35,10 +35,6 @@ public class SearchCLI implements Callable {
      */
     private SearchCLIInputBean searchCLIInputBean;
     /**
-     * The post translational modifications factory.
-     */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
-    /**
      * The enzyme factory.
      */
     private EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
