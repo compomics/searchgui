@@ -112,10 +112,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private ArrayList<File> rawFiles = new ArrayList<File>();
     /**
-     * The parameter file.
-     */
-    private File parametersFile = null;
-    /**
      * The post translational modifications factory.
      */
     private PTMFactory ptmFactory;
@@ -2532,26 +2528,23 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 try {
                     searchParameters = SearchParameters.getIdentificationParameters(file);
                     loadModifications(searchParameters);
+                    configurationFileTxtSearchTab_parameters.setText(file.getName());
+
+                    SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, searchParameters,
+                            Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                            Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
+                            false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, true);
+                    boolean valid = settingsDialog.validateParametersInput(false);
+
+                    if (!valid) {
+                        settingsDialog.validateParametersInput(true);
+                        settingsDialog.setVisible(true);
+                        setSearchParameters(settingsDialog.getSearchParameters());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(null, "Error occurred while reading " + file + ". Please verify the search paramters.", "File Error", JOptionPane.ERROR_MESSAGE);
                     return;
-                }
-
-                parametersFile = file;
-                searchParameters.setParametersFile(parametersFile);
-                configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
-
-                SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, searchParameters,
-                        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                        false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, true);
-                boolean valid = settingsDialog.validateParametersInput(false);
-
-                if (!valid) {
-                    settingsDialog.validateParametersInput(true);
-                    settingsDialog.setVisible(true);
-                    setSearchParameters(settingsDialog.getSearchParameters());
                 }
 
                 validateInput(false);
@@ -3115,8 +3108,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(xtandemSettingsDialog, searchParameters, Advocate.xtandem, newXtandemParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
                             searchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
                         }
                         xtandemParametersSet = true;
@@ -3156,8 +3148,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(omssaParametersDialog, searchParameters, Advocate.omssa, newOmssaParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
                         }
                         omssaParametersSet = true;
                     } else {
@@ -3287,8 +3278,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(msgfParametersDialog, searchParameters, Advocate.msgf, newMsgfParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
                         }
                         msgfParametersSet = true;
                     } else {
@@ -3397,8 +3387,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(msAmandaParametersDialog, searchParameters, Advocate.msAmanda, newMsAmandaParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
                         }
                         msAmandaParametersSet = true;
                     } else {
@@ -3534,8 +3523,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(myriMatchParametersDialog, searchParameters, Advocate.myriMatch, newMyriMatchParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
                         }
                         myriMatchParametersSet = true;
                     } else {
@@ -3663,8 +3651,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(cometSettingsDialog, searchParameters, Advocate.comet, newCometParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
 
                         }
                         cometParametersSet = true;
@@ -3822,8 +3809,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(tideParametersDialog, searchParameters, Advocate.tide, newTideParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
                         }
                         tideParametersSet = true;
                     } else {
@@ -3953,8 +3939,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters tempSearchParameters = SearchSettingsDialog.saveSearchParameters(andromedaParametersDialog, searchParameters, Advocate.andromeda, newAndromedaParameters, lastSelectedFolder);
                     if (tempSearchParameters != null) {
                         if (tempSearchParameters.getParametersFile() != null) {
-                            parametersFile = tempSearchParameters.getParametersFile();
-                            configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
+                            configurationFileTxtSearchTab_parameters.setText(tempSearchParameters.getParametersFile().getName());
                         }
                         andromedaParametersSet = true;
                     } else {
@@ -4438,15 +4423,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         return valid;
-    }
-
-    /**
-     * Returns the parameters file used.
-     *
-     * @return the parameters file used
-     */
-    public File getParametersFile() {
-        return parametersFile;
     }
 
     /**
@@ -5304,7 +5280,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public void setSearchParameters(SearchParameters searchParameters) {
         this.searchParameters = searchParameters;
-        parametersFile = searchParameters.getParametersFile();
+        File parametersFile = searchParameters.getParametersFile();
         if (parametersFile != null) {
             configurationFileTxtSearchTab_parameters.setText(parametersFile.getName());
         } else {
