@@ -1721,7 +1721,7 @@ public class SearchHandler {
 
                 File dbFile = searchParameters.getFastaFile();
 
-                if (isOmssaEnabled()) {
+                if (enableOmssa) {
                     // call Makeblastdb class, check if run before and then start process
                     MakeblastdbProcessBuilder fpb = new MakeblastdbProcessBuilder(getJarFilePath(), dbFile, makeblastdbLocation, waitingHandler);
 
@@ -1760,7 +1760,7 @@ public class SearchHandler {
                     Util.copyFile(userModsXmlFile, destinationFile);
                 }
 
-                if (isAndromedaEnabled()) {
+                if (enableAndromeda) {
                     if (!useCommandLine) {
                         waitingHandler.setWaitingText("Andromeda configuration.");
                     }
@@ -2097,7 +2097,7 @@ public class SearchHandler {
                     }
 
                     File aplFile = null;
-                    if ((enableAndromeda) && !waitingHandler.isRunCanceled()) {
+                    if (enableAndromeda && !waitingHandler.isRunCanceled()) {
                         waitingHandler.appendReport("Converting spectrum file " + spectrumFileName + " for Andromeda.", true, true);
                         aplFile = new File(getPeakListFolder(getJarFilePath()), Util.removeExtension(spectrumFileName) + ".apl");
                         AndromedaParameters andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
