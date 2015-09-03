@@ -1709,7 +1709,7 @@ public class SearchHandler {
                     try {
                         outputTempFolder = new File(outputFolder, outputTempFolderName);
                         if (outputTempFolder.exists()) {
-                            Util.deleteDir(outputFolder);
+                            Util.deleteDir(outputTempFolder);
                         }
                         outputTempFolder.mkdirs();
                         TempFilesManager.registerTempFolder(outputTempFolder);
