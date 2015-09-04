@@ -490,7 +490,7 @@ public class SearchHandler {
             utilitiesUserPreferences.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
             UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
         }
-        
+
         searchDuration = new Duration();
     }
 
@@ -2137,6 +2137,11 @@ public class SearchHandler {
                             }
                             waitingHandler.increasePrimaryProgressCounter();
                         }
+
+                        File andromedaTempFolder = new File(AndromedaProcessBuilder.getTempFolderPath());
+                        if (andromedaTempFolder.exists()) {
+                            Util.emptyDir(andromedaTempFolder);
+                        }
                     }
 
                     if (aplFile != null) {
@@ -2310,7 +2315,7 @@ public class SearchHandler {
                         }
                     }
                 }
-                
+
                 Util.deleteDir(outputTempFolder);
 
                 finished = true;
