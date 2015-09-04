@@ -2316,7 +2316,9 @@ public class SearchHandler {
                     }
                 }
 
-                Util.deleteDir(outputTempFolder);
+                if (!outputFolder.getAbsolutePath().equals(outputTempFolder.getAbsolutePath())) {
+                    Util.deleteDir(outputTempFolder);
+                }
 
                 finished = true;
                 if (!waitingHandler.isRunCanceled()) {
