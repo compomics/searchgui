@@ -17,6 +17,7 @@ import com.compomics.util.experiment.identification.identification_parameters.Se
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.gui.filehandling.TempFilesManager;
 import com.compomics.util.protein.Header;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
@@ -41,7 +42,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The temp folder for Andromeda files.
      */
-    private static String andromedaTempFolderPath;
+    private static String andromedaTempFolderPath = null;
     /**
      * The name of the temp sub folder for Andromeda files.
      */
@@ -94,6 +95,10 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         if (andromedaTempFolderPath == null) {
             andromedaTempFolderPath = andromedaFolder.getAbsolutePath() + File.separator + andromedaTempSubFolderName;
         }
+        File andromedaTempFolder = new File(andromedaTempFolderPath);
+        if (!andromedaTempFolder.exists()) {
+            andromedaTempFolder.mkdirs();
+        }
 
         // make sure that the andromeda file is executable
         File andromeda = new File(andromedaFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
@@ -114,7 +119,6 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(parametersFile.getAbsolutePath());
 
         // the working folder
-        File andromedaTempFolder = new File(andromedaTempFolderPath);
         process_name_array.add("-f");
         process_name_array.add(andromedaTempFolder.getAbsolutePath());
 
@@ -559,9 +563,6 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     private File createParametersFile() throws IOException {
 
         File andromedaTempFolder = new File(andromedaTempFolderPath);
-        if (!andromedaTempFolder.exists()) {
-            andromedaTempFolder.mkdirs();
-        }
 
         String fileName;
         try {
