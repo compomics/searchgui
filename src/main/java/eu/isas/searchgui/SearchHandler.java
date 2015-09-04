@@ -1699,10 +1699,9 @@ public class SearchHandler {
         protected Object doInBackground() {
 
             try {
-
                 File outputFolder = getResultsFolder();
-
                 File outputTempFolder;
+
                 if (outputOption == OutputOption.no_zip) {
                     outputTempFolder = outputFolder;
                 } else {
