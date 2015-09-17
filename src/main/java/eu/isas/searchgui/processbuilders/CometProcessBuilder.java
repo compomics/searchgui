@@ -99,9 +99,8 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
         // link to the parameter file
         if (cometTempFolderPath != null && !cometFolder.getAbsolutePath().equalsIgnoreCase(cometTempFolderPath)) {
-            process_name_array.add("-P");
             String path = new File(cometTempFolderPath, "comet.params").getPath();
-            process_name_array.add(path);
+            process_name_array.add("-P" + path);
         }
 
         // link to the input file
