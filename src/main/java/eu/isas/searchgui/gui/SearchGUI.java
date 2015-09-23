@@ -725,7 +725,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         msgfSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        msgfSettingsButton.setToolTipText("Edit Advanced MS-GF+ Settings");
+        msgfSettingsButton.setToolTipText("Edit MS-GF+ Advanced Settings");
         msgfSettingsButton.setBorder(null);
         msgfSettingsButton.setBorderPainted(false);
         msgfSettingsButton.setContentAreaFilled(false);
@@ -785,7 +785,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         xtandemSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        xtandemSettingsButton.setToolTipText("Edit Advanced X!Tandem Settings");
+        xtandemSettingsButton.setToolTipText("Edit X!Tandem Advanced Settings");
         xtandemSettingsButton.setBorder(null);
         xtandemSettingsButton.setBorderPainted(false);
         xtandemSettingsButton.setContentAreaFilled(false);
@@ -845,7 +845,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         omssaSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        omssaSettingsButton.setToolTipText("Edit Advanced OMSSA Settings");
+        omssaSettingsButton.setToolTipText("Edit OMSSA Advanced Settings");
         omssaSettingsButton.setBorder(null);
         omssaSettingsButton.setBorderPainted(false);
         omssaSettingsButton.setContentAreaFilled(false);
@@ -905,7 +905,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         msAmandaSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        msAmandaSettingsButton.setToolTipText("Edit Advanced MS Amanda Settings");
+        msAmandaSettingsButton.setToolTipText("Edit MS Amanda Advanced Settings");
         msAmandaSettingsButton.setBorder(null);
         msAmandaSettingsButton.setBorderPainted(false);
         msAmandaSettingsButton.setContentAreaFilled(false);
@@ -965,7 +965,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         myriMatchSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        myriMatchSettingsButton.setToolTipText("Edit Advanced MyriMatch Settings");
+        myriMatchSettingsButton.setToolTipText("Edit MyriMatch Advanced Settings");
         myriMatchSettingsButton.setBorder(null);
         myriMatchSettingsButton.setBorderPainted(false);
         myriMatchSettingsButton.setContentAreaFilled(false);
@@ -1055,7 +1055,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         cometSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        cometSettingsButton.setToolTipText("Edit Advanced Comet Settings");
+        cometSettingsButton.setToolTipText("Edit Comet Advanced Settings");
         cometSettingsButton.setBorder(null);
         cometSettingsButton.setBorderPainted(false);
         cometSettingsButton.setContentAreaFilled(false);
@@ -1120,7 +1120,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         tideSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        tideSettingsButton.setToolTipText("Edit Advanced Tide Settings");
+        tideSettingsButton.setToolTipText("Edit Tide Advanced Settings");
         tideSettingsButton.setBorder(null);
         tideSettingsButton.setBorderPainted(false);
         tideSettingsButton.setContentAreaFilled(false);
@@ -1184,7 +1184,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         andromedaSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        andromedaSettingsButton.setToolTipText("Edit Advanced Andromeda Settings");
+        andromedaSettingsButton.setToolTipText("Edit Andromeda Advanced Settings");
         andromedaSettingsButton.setBorder(null);
         andromedaSettingsButton.setBorderPainted(false);
         andromedaSettingsButton.setContentAreaFilled(false);
@@ -1639,7 +1639,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msconvertButton.setContentAreaFilled(false);
 
         msconvertSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        msconvertSettingsButton.setToolTipText("Edit PeptideShaker Settings");
+        msconvertSettingsButton.setToolTipText("Edit msConvert Settings");
         msconvertSettingsButton.setBorder(null);
         msconvertSettingsButton.setBorderPainted(false);
         msconvertSettingsButton.setContentAreaFilled(false);
@@ -1656,8 +1656,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msconvertSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        msconvertSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        msconvertSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_only_gray.png"))); // NOI18N
+        msconvertSupportButton.setToolTipText("Supported on Windows");
         msconvertSupportButton.setBorderPainted(false);
         msconvertSupportButton.setContentAreaFilled(false);
 

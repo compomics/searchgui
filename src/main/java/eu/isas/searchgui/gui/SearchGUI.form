@@ -558,7 +558,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced MS-GF+ Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit MS-GF+ Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -618,7 +618,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced X!Tandem Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit X!Tandem Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -678,7 +678,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced OMSSA Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit OMSSA Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -738,7 +738,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced MS Amanda Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit MS Amanda Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -798,7 +798,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced MyriMatch Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit MyriMatch Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -918,7 +918,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced Comet Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit Comet Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -988,7 +988,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced Tide Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit Tide Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -1057,7 +1057,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Advanced Andromeda Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit Andromeda Advanced Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -1492,7 +1492,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit PeptideShaker Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit msConvert Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -1511,9 +1511,9 @@
             <Component class="javax.swing.JButton" name="msconvertSupportButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/all_platforms_gray.png"/>
+                  <Image iconType="3" name="/icons/windows_only_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Supported on Windows, Mac and Linux"/>
+                <Property name="toolTipText" type="java.lang.String" value="Supported on Windows"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
               </Properties>
