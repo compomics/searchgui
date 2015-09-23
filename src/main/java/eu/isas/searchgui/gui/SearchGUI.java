@@ -359,14 +359,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // set the search settings to default
                 searchParameters = new SearchParameters();
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), new OmssaParameters());
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), new XtandemParameters());
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), new MsgfParameters());
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), new MsAmandaParameters());
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), new MyriMatchParameters());
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), new CometParameters());
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), new TideParameters());
-                searchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), new AndromedaParameters());
 
                 // label the configs as default.
                 setDefaultConfigsLoaded(true);
