@@ -41,12 +41,12 @@ public enum SearchCLIParams {
     MISSING_TITLE_HANDLING("missing_titles", "Add missing spectrum titles. (0: no correction, 1: add missing spectrum titles, default is '0').", false),
     SPECIES("species", "The species to use for the gene annotation. Supported species are listed in the GUI.", false),
     SPECIES_TYPE("species_type", "The species type to use for the gene annotation. Supported species types are listed in the GUI.", false),
-    PROTEIN_INDEX("protein_index", "Turn the FASTA file indexing on/off. (1: on, 0: off, default is '0').", false),
     OUTPUT_OPTION("output_option", "Optional result file compression (" + OutputOption.getCommandLineOptions() + "), default is '0'.", false),
     OUTPUT_DATA("output_data", "Include mgf and FASTA file in zipped output (0: no, 1: yes, default is '0').", false),
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
     MAKEBLASTDB_LOCATION("makeblastdb_folder", "The folder where makeblastdb is installed, defaults to the provided version for the given OS.", false),
-    FASTA_FILE("fasta", "Optional path to the database to search, the value in the search parameters will be overridden.", false);
+    PROTEIN_INDEX("protein_index", "Turn the FASTA file indexing on/off. (1: on, 0: off, default is '0').", false),
+    FASTA_FILE("fasta", "Optional path to the database to search. The value in the search parameters will be overridden.", false);
 
     /**
      * Short Id for the CLI parameter.

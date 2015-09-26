@@ -177,18 +177,22 @@ public class SearchCLIInputBean {
         String spectrumFilesTxt = aLine.getOptionValue(SearchCLIParams.SPECTRUM_FILES.id);
         spectrumFiles = getSpectrumFiles(spectrumFilesTxt);
 
-        // Output folder
+        // output folder
         String arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
         outputFolder = new File(arg);
 
-        // Identification parameters
+        // identification parameters
         String fileTxt = aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id);
         searchParameters = SearchParameters.getIdentificationParameters(new File(fileTxt));
+
+        // override the fasta file location
         if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
             String newPath = aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id);
             File fastaFile = new File(newPath);
             searchParameters.setFastaFile(fastaFile);
         }
+
+        // load the fasta file
         sequenceFactory.loadFastaFile(searchParameters.getFastaFile(), null);
 
         // get the mgf splitting limits
@@ -686,7 +690,7 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
             File file = new File(((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)));
             if (!file.exists()) {
-                System.out.println(System.getProperty("line.separator") + "Fasta file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
+                System.out.println(System.getProperty("line.separator") + "FASTA file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
                 return false;
             }
         }
