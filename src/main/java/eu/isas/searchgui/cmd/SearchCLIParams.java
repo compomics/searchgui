@@ -45,7 +45,8 @@ public enum SearchCLIParams {
     OUTPUT_OPTION("output_option", "Optional result file compression (" + OutputOption.getCommandLineOptions() + "), default is '0'.", false),
     OUTPUT_DATA("output_data", "Include mgf and FASTA file in zipped output (0: no, 1: yes, default is '0').", false),
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
-    MAKEBLASTDB_LOCATION("makeblastdb_folder", "The folder where makeblastdb is installed, defaults to the provided version for the given OS.", false);
+    MAKEBLASTDB_LOCATION("makeblastdb_folder", "The folder where makeblastdb is installed, defaults to the provided version for the given OS.", false),
+    FASTA_FILE("fasta", "Optional path to the database to search, the value in the search parameters will be overridden.", false);
 
     /**
      * Short Id for the CLI parameter.
@@ -135,6 +136,7 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, OUTPUT_DATA.id) + OUTPUT_DATA.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATE.id) + OUTPUT_DATE.description + "\n";
         output += "-" + String.format(formatter, PROTEIN_INDEX.id) + PROTEIN_INDEX.description + "\n";
+        output += "-" + String.format(formatter, FASTA_FILE.id) + FASTA_FILE.description + "\n";
 
         output += "\n\nOptional temporary folder:\n\n";
         output += "-" + String.format(formatter, PathSettingsCLIParams.ALL.id) + PathSettingsCLIParams.ALL.description + "\n";

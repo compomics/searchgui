@@ -4,6 +4,7 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
 import com.compomics.software.settings.UtilitiesPathPreferences;
 import com.compomics.util.experiment.biology.*;
+import com.compomics.util.experiment.identification.search_parameters_cli.IdentificationParametersInputBean;
 import com.compomics.util.experiment.io.massspectrometry.MgfIndex;
 import com.compomics.util.experiment.io.massspectrometry.MgfReader;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;

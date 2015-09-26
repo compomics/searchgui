@@ -164,8 +164,8 @@ public class SearchCLIInputBean {
      * Takes all the arguments from a command line.
      *
      * @param aLine the command line
-     * @throws FileNotFoundException thrown if the spectrum, search parameter or FASTA
-     * files are not found
+     * @throws FileNotFoundException thrown if the spectrum, search parameter or
+     * FASTA files are not found
      * @throws IOException thrown if an error occurred while reading the FASTA
      * file
      * @throws ClassNotFoundException thrown if the search parameters cannot be
@@ -176,11 +176,19 @@ public class SearchCLIInputBean {
         // get the files needed for the search
         String spectrumFilesTxt = aLine.getOptionValue(SearchCLIParams.SPECTRUM_FILES.id);
         spectrumFiles = getSpectrumFiles(spectrumFilesTxt);
-        
+
+        // Output folder
         String arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
         outputFolder = new File(arg);
+
+        // Identification parameters
         String fileTxt = aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id);
         searchParameters = SearchParameters.getIdentificationParameters(new File(fileTxt));
+        if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
+            String newPath = aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id);
+            File fastaFile = new File(newPath);
+            searchParameters.setFastaFile(fastaFile);
+        }
         sequenceFactory.loadFastaFile(searchParameters.getFastaFile(), null);
 
         // get the mgf splitting limits
@@ -444,7 +452,7 @@ public class SearchCLIInputBean {
     public boolean isCometEnabled() {
         return cometEnabled;
     }
-    
+
     /**
      * Returns true if Tide is to be used.
      *
@@ -453,7 +461,7 @@ public class SearchCLIInputBean {
     public boolean isTideEnabled() {
         return tideEnabled;
     }
-    
+
     /**
      * Returns true if Andromeda is to be used.
      *
@@ -516,7 +524,7 @@ public class SearchCLIInputBean {
     public File getCometLocation() {
         return cometLocation;
     }
-    
+
     /**
      * Returns the Tide location.
      *
@@ -525,7 +533,7 @@ public class SearchCLIInputBean {
     public File getTideLocation() {
         return tideLocation;
     }
-    
+
     /**
      * Returns the Andromeda location.
      *
@@ -670,6 +678,15 @@ public class SearchCLIInputBean {
             File file = new File(((String) aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id)));
             if (!file.exists()) {
                 System.out.println(System.getProperty("line.separator") + "Output folder \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+
+        // check the optional fasta
+        if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
+            File file = new File(((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)));
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "Fasta file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
                 return false;
             }
         }
