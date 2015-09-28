@@ -17,7 +17,6 @@ import com.compomics.util.experiment.identification.identification_parameters.Se
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
-import com.compomics.util.gui.filehandling.TempFilesManager;
 import com.compomics.util.protein.Header;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
@@ -159,8 +158,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      */
     public static void createDatabaseFile(File andromedaFolder, SearchParameters searchParameters) throws IOException {
 
-        File databaseFile = new File(andromedaFolder, "conf");
-        databaseFile = new File(databaseFile, "databases.xml");
+        File databaseFolder = new File(andromedaFolder, "conf");
+        File databaseFile = new File(databaseFolder, "databases.xml");
         BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFile));
         String dbName = searchParameters.getFastaFile().getName();
         FastaIndex fastaIndex = SequenceFactory.getFastaIndex(searchParameters.getFastaFile(), false, null);
