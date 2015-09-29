@@ -49,7 +49,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      */
     private SearchParameters searchParameters;
     /**
-     * The cps file.
+     * The cpsx file.
      */
     private File cpsFile;
     /**
@@ -92,7 +92,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param replicate the replicate number
      * @param spectrumFiles the spectrum files
      * @param searchParameters the search parameters
-     * @param cpsFile the cps file
+     * @param cpsFile the cpsx file
      * @param identificationFiles the search engines result files
      * @param showGuiProgress a boolean indicating whether the progress shall be
      * displayed in a GUI
