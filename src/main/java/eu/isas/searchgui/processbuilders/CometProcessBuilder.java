@@ -45,7 +45,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2015.02 rev. 0"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2015.02 rev. 1"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -137,7 +137,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             cometTempFolder = new File(cometTempFolderPath);
         }
-        
+
         // create the temp folder if it doesn't exist
         if (!cometTempFolder.exists()) {
             cometTempFolder.mkdirs();
@@ -357,7 +357,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
         StringBuilder result = new StringBuilder("#" + System.getProperty("line.separator")
                 + "# Up to 9 variable modifications are supported" + System.getProperty("line.separator")
-                + "# format:  <mass> <residues> <0=variable/1=binary> <max_mods_per_peptide> <term_distance> <n/c-term> <required>" + System.getProperty("line.separator")
+                + "# format:  <mass> <residues> <0=variable/1=binary set> <max_mods_per_peptide> <term_distance> <n/c-term> <required>" + System.getProperty("line.separator")
                 + "#     e.g. 79.966331 STY 0 3 -1 0 0" + System.getProperty("line.separator")
                 + "#" + System.getProperty("line.separator"));
 
@@ -400,8 +400,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 result.append(ptmCometPattern);
             }
 
-            // add variable ptm tag
-            result.append(" 0 ");
+            // add variable ptm tag:
+            //      0 = variable modification analyzes all permutations of modified and unmodified residues
+            //      non-zero value = a binary modification analyzes peptides where all residues are either modified or all residues are not modified
+            result.append(" 0 "); // @TODO: add support for binary modification sets?
 
             // add max copies of this ptm per peptide
             if (ptm.isNTerm() || ptm.isCTerm()) {
