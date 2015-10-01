@@ -1348,7 +1348,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(searchEnginesScrollPane)
-                .addGap(20, 20, 20))
+                .addGap(24, 24, 24))
         );
         searchEnginesLocationPanelLayout.setVerticalGroup(
             searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
