@@ -286,6 +286,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         if (!newVersion) {
+            
+            if (searchParameters == null) {
+
+                // set the search settings to default
+                searchParameters = new SearchParameters();
+
+                // label the configs as default.
+                setDefaultConfigsLoaded(true);
+
+                // label the configs as default
+                setDefaultParameters();
+
+            } else {
+                loadModifications(searchParameters);
+                configurationFileTxtSearchTab_parameters.setText(searchParameters.getParametersFile().getName());
+            }
+
+            this.searchParameters = searchParameters;
 
             searchHandler = new SearchHandler(searchParameters, outputFolder, spectrumFiles, rawFiles, Runtime.getRuntime().availableProcessors(), false, exceptionHandler);
 
@@ -354,24 +372,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             msConvertParameters = new MsConvertParameters();
             msConvertParameters.setMsFormat(MsFormat.mgf);
             msConvertParameters.addFilter(ProteoWizardFilter.peakPicking.number, "");
-
-            if (searchParameters == null) {
-
-                // set the search settings to default
-                searchParameters = new SearchParameters();
-
-                // label the configs as default.
-                setDefaultConfigsLoaded(true);
-
-                // label the configs as default
-                setDefaultParameters();
-
-            } else {
-                loadModifications(searchParameters);
-                configurationFileTxtSearchTab_parameters.setText(searchParameters.getParametersFile().getName());
-            }
-
-            this.searchParameters = searchParameters;
 
             // set the results folder
             if (outputFolder != null && outputFolder.exists()) {

@@ -67,7 +67,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(searchParameters.getFastaFile().getAbsolutePath());
 
         // the name of the index file
-        process_name_array.add(tideParameters.getFastIndexFolderName());
+        process_name_array.add(tideParameters.getFastIndexFolderName()); // @TODO: put in the user temp folder instead?
 
         // overwrite existing files
         process_name_array.add("--overwrite");
@@ -111,7 +111,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("" + searchParameters.getnMissedCleavages());
 
         // set the output directory
-        process_name_array.add("--output-dir"); // @TODO: delete the index automatically when done?
+        process_name_array.add("--output-dir");
         process_name_array.add(tideParameters.getOutputFolderName());
 
         // create peptide list
