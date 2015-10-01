@@ -486,46 +486,48 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         reporterLabel = new javax.swing.JLabel();
         taskEditorPanel = new javax.swing.JPanel();
         searchEnginesLocationPanel = new javax.swing.JPanel();
-        enableMsgfJCheckBox = new javax.swing.JCheckBox();
-        msgfButton = new javax.swing.JButton();
-        msgfLinkLabel = new javax.swing.JLabel();
-        msgfSettingsButton = new javax.swing.JButton();
-        enableXTandemJCheckBox = new javax.swing.JCheckBox();
-        xtandemButton = new javax.swing.JButton();
-        xtandemLinkLabel = new javax.swing.JLabel();
-        xtandemSettingsButton = new javax.swing.JButton();
-        enableOmssaJCheckBox = new javax.swing.JCheckBox();
+        searchEnginesScrollPane = new javax.swing.JScrollPane();
+        searchEnginesPanel = new javax.swing.JPanel();
         omssaButton = new javax.swing.JButton();
-        omssaLinkLabel = new javax.swing.JLabel();
-        omssaSettingsButton = new javax.swing.JButton();
-        enableMsAmandaJCheckBox = new javax.swing.JCheckBox();
-        msAmandaButton = new javax.swing.JButton();
-        msAmandaLinkLabel = new javax.swing.JLabel();
-        msAmandaSettingsButton = new javax.swing.JButton();
-        enableMyriMatchJCheckBox = new javax.swing.JCheckBox();
-        myriMatchButton = new javax.swing.JButton();
-        myriMatchLinkLabel = new javax.swing.JLabel();
-        myriMatchSettingsButton = new javax.swing.JButton();
-        msgfSupportButton = new javax.swing.JButton();
-        myrimatchSupportButton = new javax.swing.JButton();
-        msAmandaSupportButton = new javax.swing.JButton();
-        xtandemSupportButton = new javax.swing.JButton();
-        omssaSupportButton = new javax.swing.JButton();
-        enableCometJCheckBox = new javax.swing.JCheckBox();
-        cometButton = new javax.swing.JButton();
-        cometSupportButton = new javax.swing.JButton();
-        cometLinkLabel = new javax.swing.JLabel();
-        cometSettingsButton = new javax.swing.JButton();
+        msgfSettingsButton = new javax.swing.JButton();
         enableTideJCheckBox = new javax.swing.JCheckBox();
-        tiideButton = new javax.swing.JButton();
-        tideSupportButton = new javax.swing.JButton();
-        tideLinkLabel = new javax.swing.JLabel();
-        tideSettingsButton = new javax.swing.JButton();
-        enableAndromedaJCheckBox = new javax.swing.JCheckBox();
-        andromedaButton = new javax.swing.JButton();
-        andromedaSupportButton = new javax.swing.JButton();
+        msAmandaSettingsButton = new javax.swing.JButton();
+        myrimatchSupportButton = new javax.swing.JButton();
+        myriMatchLinkLabel = new javax.swing.JLabel();
         andromedaLinkLabel = new javax.swing.JLabel();
+        andromedaButton = new javax.swing.JButton();
+        tideLinkLabel = new javax.swing.JLabel();
+        xtandemSettingsButton = new javax.swing.JButton();
+        tiideButton = new javax.swing.JButton();
+        msgfSupportButton = new javax.swing.JButton();
+        enableCometJCheckBox = new javax.swing.JCheckBox();
+        cometLinkLabel = new javax.swing.JLabel();
+        enableMyriMatchJCheckBox = new javax.swing.JCheckBox();
+        omssaSupportButton = new javax.swing.JButton();
+        enableMsAmandaJCheckBox = new javax.swing.JCheckBox();
+        xtandemLinkLabel = new javax.swing.JLabel();
+        xtandemSupportButton = new javax.swing.JButton();
+        myriMatchSettingsButton = new javax.swing.JButton();
+        enableMsgfJCheckBox = new javax.swing.JCheckBox();
+        xtandemButton = new javax.swing.JButton();
+        msAmandaSupportButton = new javax.swing.JButton();
+        omssaLinkLabel = new javax.swing.JLabel();
+        myriMatchButton = new javax.swing.JButton();
+        andromedaSupportButton = new javax.swing.JButton();
+        msAmandaLinkLabel = new javax.swing.JLabel();
+        enableXTandemJCheckBox = new javax.swing.JCheckBox();
+        cometSettingsButton = new javax.swing.JButton();
+        msAmandaButton = new javax.swing.JButton();
         andromedaSettingsButton = new javax.swing.JButton();
+        omssaSettingsButton = new javax.swing.JButton();
+        enableAndromedaJCheckBox = new javax.swing.JCheckBox();
+        tideSettingsButton = new javax.swing.JButton();
+        msgfLinkLabel = new javax.swing.JLabel();
+        tideSupportButton = new javax.swing.JButton();
+        cometSupportButton = new javax.swing.JButton();
+        msgfButton = new javax.swing.JButton();
+        enableOmssaJCheckBox = new javax.swing.JCheckBox();
+        cometButton = new javax.swing.JButton();
         inputFilesPanel = new javax.swing.JPanel();
         spectraFilesLabel = new javax.swing.JLabel();
         clearSpectraButton = new javax.swing.JButton();
@@ -661,8 +663,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SearchGUI");
-        setMinimumSize(new java.awt.Dimension(800, 220));
-        setResizable(false);
+        setMinimumSize(new java.awt.Dimension(775, 600));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -674,45 +675,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchEnginesLocationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search Engines"));
         searchEnginesLocationPanel.setOpaque(false);
 
-        enableMsgfJCheckBox.setSelected(true);
-        enableMsgfJCheckBox.setToolTipText("Enable MS-GF+");
-        enableMsgfJCheckBox.setOpaque(false);
-        enableMsgfJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableMsgfJCheckBoxActionPerformed(evt);
-            }
-        });
+        searchEnginesScrollPane.setBorder(null);
+        searchEnginesScrollPane.setOpaque(false);
 
-        msgfButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/msgf.png"))); // NOI18N
-        msgfButton.setToolTipText("Enable MS-GF+");
-        msgfButton.setBorder(null);
-        msgfButton.setBorderPainted(false);
-        msgfButton.setContentAreaFilled(false);
-        msgfButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        searchEnginesPanel.setBackground(new java.awt.Color(230, 230, 230));
+
+        omssaButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/omssa.png"))); // NOI18N
+        omssaButton.setToolTipText("Enable OMSSA");
+        omssaButton.setBorder(null);
+        omssaButton.setBorderPainted(false);
+        omssaButton.setContentAreaFilled(false);
+        omssaButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                msgfButtonMouseEntered(evt);
+                omssaButtonMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                msgfButtonMouseExited(evt);
+                omssaButtonMouseExited(evt);
             }
         });
-        msgfButton.addActionListener(new java.awt.event.ActionListener() {
+        omssaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                msgfButtonActionPerformed(evt);
-            }
-        });
-
-        msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a href=\"http://proteomics.ucsd.edu/Software/MSGFPlus\">MS-GF+ web page</a></html> ");
-        msgfLinkLabel.setToolTipText("Open the MS-GF+ web page");
-        msgfLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                msgfLinkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                msgfLinkLabelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                msgfLinkLabelMouseExited(evt);
+                omssaButtonActionPerformed(evt);
             }
         });
 
@@ -734,165 +717,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        enableXTandemJCheckBox.setSelected(true);
-        enableXTandemJCheckBox.setToolTipText("Enable X!Tandem");
-        enableXTandemJCheckBox.setOpaque(false);
-        enableXTandemJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+        enableTideJCheckBox.setSelected(true);
+        enableTideJCheckBox.setToolTipText("Enable Tide");
+        enableTideJCheckBox.setOpaque(false);
+        enableTideJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableXTandemJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        xtandemButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/xtandem.png"))); // NOI18N
-        xtandemButton.setToolTipText("Enable X!Tandem");
-        xtandemButton.setBorder(null);
-        xtandemButton.setBorderPainted(false);
-        xtandemButton.setContentAreaFilled(false);
-        xtandemButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                xtandemButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                xtandemButtonMouseExited(evt);
-            }
-        });
-        xtandemButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xtandemButtonActionPerformed(evt);
-            }
-        });
-
-        xtandemLinkLabel.setText("<html>X!Tandem Search Algorithm - <a href=\"http://www.thegpm.org/tandem\">X!Tandem web page</a></html>\n");
-        xtandemLinkLabel.setToolTipText("Open the X!Tandem web page");
-        xtandemLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                xtandemLinkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                xtandemLinkLabelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                xtandemLinkLabelMouseExited(evt);
-            }
-        });
-
-        xtandemSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        xtandemSettingsButton.setToolTipText("Edit X!Tandem Advanced Settings");
-        xtandemSettingsButton.setBorder(null);
-        xtandemSettingsButton.setBorderPainted(false);
-        xtandemSettingsButton.setContentAreaFilled(false);
-        xtandemSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
-        xtandemSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                xtandemSettingsButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                xtandemSettingsButtonMouseExited(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                xtandemSettingsButtonMouseReleased(evt);
-            }
-        });
-
-        enableOmssaJCheckBox.setSelected(true);
-        enableOmssaJCheckBox.setToolTipText("Enable OMSSA");
-        enableOmssaJCheckBox.setOpaque(false);
-        enableOmssaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableOmssaJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        omssaButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/omssa.png"))); // NOI18N
-        omssaButton.setToolTipText("Enable OMSSA");
-        omssaButton.setBorder(null);
-        omssaButton.setBorderPainted(false);
-        omssaButton.setContentAreaFilled(false);
-        omssaButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                omssaButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                omssaButtonMouseExited(evt);
-            }
-        });
-        omssaButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                omssaButtonActionPerformed(evt);
-            }
-        });
-
-        omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
-        omssaLinkLabel.setToolTipText("Open the OMSSA web page");
-        omssaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                omssaLinkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                omssaLinkLabelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                omssaLinkLabelMouseExited(evt);
-            }
-        });
-
-        omssaSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        omssaSettingsButton.setToolTipText("Edit OMSSA Advanced Settings");
-        omssaSettingsButton.setBorder(null);
-        omssaSettingsButton.setBorderPainted(false);
-        omssaSettingsButton.setContentAreaFilled(false);
-        omssaSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
-        omssaSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                omssaSettingsButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                omssaSettingsButtonMouseExited(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                omssaSettingsButtonMouseReleased(evt);
-            }
-        });
-
-        enableMsAmandaJCheckBox.setSelected(true);
-        enableMsAmandaJCheckBox.setToolTipText("Enable MS Amanda");
-        enableMsAmandaJCheckBox.setOpaque(false);
-        enableMsAmandaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableMsAmandaJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        msAmandaButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ms_amanda.png"))); // NOI18N
-        msAmandaButton.setToolTipText("Enable MS Amanda");
-        msAmandaButton.setBorder(null);
-        msAmandaButton.setBorderPainted(false);
-        msAmandaButton.setContentAreaFilled(false);
-        msAmandaButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                msAmandaButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                msAmandaButtonMouseExited(evt);
-            }
-        });
-        msAmandaButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                msAmandaButtonActionPerformed(evt);
-            }
-        });
-
-        msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a href=\"http://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
-        msAmandaLinkLabel.setToolTipText("Open the MS Amanda web page");
-        msAmandaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                msAmandaLinkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                msAmandaLinkLabelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                msAmandaLinkLabelMouseExited(evt);
+                enableTideJCheckBoxActionPerformed(evt);
             }
         });
 
@@ -914,33 +744,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        enableMyriMatchJCheckBox.setSelected(true);
-        enableMyriMatchJCheckBox.setToolTipText("Enable MyriMatch");
-        enableMyriMatchJCheckBox.setOpaque(false);
-        enableMyriMatchJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableMyriMatchJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        myriMatchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/myrimatch.png"))); // NOI18N
-        myriMatchButton.setToolTipText("Enable MyriMatch");
-        myriMatchButton.setBorder(null);
-        myriMatchButton.setBorderPainted(false);
-        myriMatchButton.setContentAreaFilled(false);
-        myriMatchButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                myriMatchButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                myriMatchButtonMouseExited(evt);
-            }
-        });
-        myriMatchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                myriMatchButtonActionPerformed(evt);
-            }
-        });
+        myrimatchSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
+        myrimatchSupportButton.setToolTipText("Supported on Windows and Linux");
+        myrimatchSupportButton.setBorderPainted(false);
+        myrimatchSupportButton.setContentAreaFilled(false);
 
         myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/myrimatch/\">MyriMatch web page</a></html> ");
         myriMatchLinkLabel.setToolTipText("Open the MyriMatch web page");
@@ -956,184 +763,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        myriMatchSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        myriMatchSettingsButton.setToolTipText("Edit MyriMatch Advanced Settings");
-        myriMatchSettingsButton.setBorder(null);
-        myriMatchSettingsButton.setBorderPainted(false);
-        myriMatchSettingsButton.setContentAreaFilled(false);
-        myriMatchSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
-        myriMatchSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                myriMatchSettingsButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                myriMatchSettingsButtonMouseExited(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                myriMatchSettingsButtonMouseReleased(evt);
-            }
-        });
-
-        msgfSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        msgfSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
-        msgfSupportButton.setBorderPainted(false);
-        msgfSupportButton.setContentAreaFilled(false);
-
-        myrimatchSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
-        myrimatchSupportButton.setToolTipText("Supported on Windows and Linux");
-        myrimatchSupportButton.setBorderPainted(false);
-        myrimatchSupportButton.setContentAreaFilled(false);
-
-        msAmandaSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        msAmandaSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
-        msAmandaSupportButton.setBorderPainted(false);
-        msAmandaSupportButton.setContentAreaFilled(false);
-
-        xtandemSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        xtandemSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
-        xtandemSupportButton.setBorderPainted(false);
-        xtandemSupportButton.setContentAreaFilled(false);
-
-        omssaSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        omssaSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
-        omssaSupportButton.setBorderPainted(false);
-        omssaSupportButton.setContentAreaFilled(false);
-
-        enableCometJCheckBox.setSelected(true);
-        enableCometJCheckBox.setToolTipText("Enable Comet");
-        enableCometJCheckBox.setOpaque(false);
-        enableCometJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableCometJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        cometButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/comet.png"))); // NOI18N
-        cometButton.setToolTipText("Enable Comet");
-        cometButton.setBorder(null);
-        cometButton.setBorderPainted(false);
-        cometButton.setContentAreaFilled(false);
-        cometButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                cometButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                cometButtonMouseExited(evt);
-            }
-        });
-        cometButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cometButtonActionPerformed(evt);
-            }
-        });
-
-        cometSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
-        cometSupportButton.setToolTipText("Supported on Windows and Linux");
-        cometSupportButton.setBorderPainted(false);
-        cometSupportButton.setContentAreaFilled(false);
-
-        cometLinkLabel.setText("<html>Comet Search Algorithm - <a href=http://comet-ms.sourceforge.net\">Comet web page</a></html> ");
-        cometLinkLabel.setToolTipText("Open the Comet web page");
-        cometLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a href=\"http://www.andromeda-search.org\">Andromeda web page</a></html> ");
+        andromedaLinkLabel.setToolTipText("Open the Andromeda web page");
+        andromedaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                cometLinkLabelMouseClicked(evt);
+                andromedaLinkLabelMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                cometLinkLabelMouseEntered(evt);
+                andromedaLinkLabelMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                cometLinkLabelMouseExited(evt);
-            }
-        });
-
-        cometSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        cometSettingsButton.setToolTipText("Edit Comet Advanced Settings");
-        cometSettingsButton.setBorder(null);
-        cometSettingsButton.setBorderPainted(false);
-        cometSettingsButton.setContentAreaFilled(false);
-        cometSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
-        cometSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                cometSettingsButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                cometSettingsButtonMouseExited(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                cometSettingsButtonMouseReleased(evt);
-            }
-        });
-
-        enableTideJCheckBox.setSelected(true);
-        enableTideJCheckBox.setToolTipText("Enable Tide");
-        enableTideJCheckBox.setOpaque(false);
-        enableTideJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableTideJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        tiideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/tide.png"))); // NOI18N
-        tiideButton.setToolTipText("Enable Tide");
-        tiideButton.setBorder(null);
-        tiideButton.setBorderPainted(false);
-        tiideButton.setContentAreaFilled(false);
-        tiideButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                tiideButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                tiideButtonMouseExited(evt);
-            }
-        });
-        tiideButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tiideButtonActionPerformed(evt);
-            }
-        });
-
-        tideSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        tideSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
-        tideSupportButton.setBorderPainted(false);
-        tideSupportButton.setContentAreaFilled(false);
-
-        tideLinkLabel.setText("<html>Tide Search Algorithm - <a href=http://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
-        tideLinkLabel.setToolTipText("Open the Tide web page");
-        tideLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tideLinkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                tideLinkLabelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                tideLinkLabelMouseExited(evt);
-            }
-        });
-
-        tideSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        tideSettingsButton.setToolTipText("Edit Tide Advanced Settings");
-        tideSettingsButton.setBorder(null);
-        tideSettingsButton.setBorderPainted(false);
-        tideSettingsButton.setContentAreaFilled(false);
-        tideSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
-        tideSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                tideSettingsButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                tideSettingsButtonMouseExited(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tideSettingsButtonMouseReleased(evt);
-            }
-        });
-
-        enableAndromedaJCheckBox.setToolTipText("Enable Andromeda");
-        enableAndromedaJCheckBox.setOpaque(false);
-        enableAndromedaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableAndromedaJCheckBoxActionPerformed(evt);
+                andromedaLinkLabelMouseExited(evt);
             }
         });
 
@@ -1156,22 +796,273 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
+        tideLinkLabel.setText("<html>Tide Search Algorithm - <a href=http://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
+        tideLinkLabel.setToolTipText("Open the Tide web page");
+        tideLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tideLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tideLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tideLinkLabelMouseExited(evt);
+            }
+        });
+
+        xtandemSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        xtandemSettingsButton.setToolTipText("Edit X!Tandem Advanced Settings");
+        xtandemSettingsButton.setBorder(null);
+        xtandemSettingsButton.setBorderPainted(false);
+        xtandemSettingsButton.setContentAreaFilled(false);
+        xtandemSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        xtandemSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                xtandemSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                xtandemSettingsButtonMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                xtandemSettingsButtonMouseReleased(evt);
+            }
+        });
+
+        tiideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/tide.png"))); // NOI18N
+        tiideButton.setToolTipText("Enable Tide");
+        tiideButton.setBorder(null);
+        tiideButton.setBorderPainted(false);
+        tiideButton.setContentAreaFilled(false);
+        tiideButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tiideButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tiideButtonMouseExited(evt);
+            }
+        });
+        tiideButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tiideButtonActionPerformed(evt);
+            }
+        });
+
+        msgfSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        msgfSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        msgfSupportButton.setBorderPainted(false);
+        msgfSupportButton.setContentAreaFilled(false);
+
+        enableCometJCheckBox.setSelected(true);
+        enableCometJCheckBox.setToolTipText("Enable Comet");
+        enableCometJCheckBox.setOpaque(false);
+        enableCometJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableCometJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        cometLinkLabel.setText("<html>Comet Search Algorithm - <a href=http://comet-ms.sourceforge.net\">Comet web page</a></html> ");
+        cometLinkLabel.setToolTipText("Open the Comet web page");
+        cometLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cometLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                cometLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                cometLinkLabelMouseExited(evt);
+            }
+        });
+
+        enableMyriMatchJCheckBox.setSelected(true);
+        enableMyriMatchJCheckBox.setToolTipText("Enable MyriMatch");
+        enableMyriMatchJCheckBox.setOpaque(false);
+        enableMyriMatchJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableMyriMatchJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        omssaSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        omssaSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        omssaSupportButton.setBorderPainted(false);
+        omssaSupportButton.setContentAreaFilled(false);
+
+        enableMsAmandaJCheckBox.setSelected(true);
+        enableMsAmandaJCheckBox.setToolTipText("Enable MS Amanda");
+        enableMsAmandaJCheckBox.setOpaque(false);
+        enableMsAmandaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableMsAmandaJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        xtandemLinkLabel.setText("<html>X!Tandem Search Algorithm - <a href=\"http://www.thegpm.org/tandem\">X!Tandem web page</a></html>\n");
+        xtandemLinkLabel.setToolTipText("Open the X!Tandem web page");
+        xtandemLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                xtandemLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                xtandemLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                xtandemLinkLabelMouseExited(evt);
+            }
+        });
+
+        xtandemSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        xtandemSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        xtandemSupportButton.setBorderPainted(false);
+        xtandemSupportButton.setContentAreaFilled(false);
+
+        myriMatchSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        myriMatchSettingsButton.setToolTipText("Edit MyriMatch Advanced Settings");
+        myriMatchSettingsButton.setBorder(null);
+        myriMatchSettingsButton.setBorderPainted(false);
+        myriMatchSettingsButton.setContentAreaFilled(false);
+        myriMatchSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        myriMatchSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                myriMatchSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                myriMatchSettingsButtonMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                myriMatchSettingsButtonMouseReleased(evt);
+            }
+        });
+
+        enableMsgfJCheckBox.setSelected(true);
+        enableMsgfJCheckBox.setToolTipText("Enable MS-GF+");
+        enableMsgfJCheckBox.setOpaque(false);
+        enableMsgfJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableMsgfJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        xtandemButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/xtandem.png"))); // NOI18N
+        xtandemButton.setToolTipText("Enable X!Tandem");
+        xtandemButton.setBorder(null);
+        xtandemButton.setBorderPainted(false);
+        xtandemButton.setContentAreaFilled(false);
+        xtandemButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                xtandemButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                xtandemButtonMouseExited(evt);
+            }
+        });
+        xtandemButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xtandemButtonActionPerformed(evt);
+            }
+        });
+
+        msAmandaSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        msAmandaSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        msAmandaSupportButton.setBorderPainted(false);
+        msAmandaSupportButton.setContentAreaFilled(false);
+
+        omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
+        omssaLinkLabel.setToolTipText("Open the OMSSA web page");
+        omssaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                omssaLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                omssaLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                omssaLinkLabelMouseExited(evt);
+            }
+        });
+
+        myriMatchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/myrimatch.png"))); // NOI18N
+        myriMatchButton.setToolTipText("Enable MyriMatch");
+        myriMatchButton.setBorder(null);
+        myriMatchButton.setBorderPainted(false);
+        myriMatchButton.setContentAreaFilled(false);
+        myriMatchButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                myriMatchButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                myriMatchButtonMouseExited(evt);
+            }
+        });
+        myriMatchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myriMatchButtonActionPerformed(evt);
+            }
+        });
+
         andromedaSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_only_gray.png"))); // NOI18N
         andromedaSupportButton.setToolTipText("Supported on Windows");
         andromedaSupportButton.setBorderPainted(false);
         andromedaSupportButton.setContentAreaFilled(false);
 
-        andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a href=\"http://www.andromeda-search.org\">Andromeda web page</a></html> ");
-        andromedaLinkLabel.setToolTipText("Open the Andromeda web page");
-        andromedaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+        msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a href=\"http://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
+        msAmandaLinkLabel.setToolTipText("Open the MS Amanda web page");
+        msAmandaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                andromedaLinkLabelMouseClicked(evt);
+                msAmandaLinkLabelMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                andromedaLinkLabelMouseEntered(evt);
+                msAmandaLinkLabelMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                andromedaLinkLabelMouseExited(evt);
+                msAmandaLinkLabelMouseExited(evt);
+            }
+        });
+
+        enableXTandemJCheckBox.setSelected(true);
+        enableXTandemJCheckBox.setToolTipText("Enable X!Tandem");
+        enableXTandemJCheckBox.setOpaque(false);
+        enableXTandemJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableXTandemJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        cometSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        cometSettingsButton.setToolTipText("Edit Comet Advanced Settings");
+        cometSettingsButton.setBorder(null);
+        cometSettingsButton.setBorderPainted(false);
+        cometSettingsButton.setContentAreaFilled(false);
+        cometSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        cometSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                cometSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                cometSettingsButtonMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                cometSettingsButtonMouseReleased(evt);
+            }
+        });
+
+        msAmandaButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ms_amanda.png"))); // NOI18N
+        msAmandaButton.setToolTipText("Enable MS Amanda");
+        msAmandaButton.setBorder(null);
+        msAmandaButton.setBorderPainted(false);
+        msAmandaButton.setContentAreaFilled(false);
+        msAmandaButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                msAmandaButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                msAmandaButtonMouseExited(evt);
+            }
+        });
+        msAmandaButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msAmandaButtonActionPerformed(evt);
             }
         });
 
@@ -1193,51 +1084,166 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        javax.swing.GroupLayout searchEnginesLocationPanelLayout = new javax.swing.GroupLayout(searchEnginesLocationPanel);
-        searchEnginesLocationPanel.setLayout(searchEnginesLocationPanelLayout);
-        searchEnginesLocationPanelLayout.setHorizontalGroup(
-            searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+        omssaSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        omssaSettingsButton.setToolTipText("Edit OMSSA Advanced Settings");
+        omssaSettingsButton.setBorder(null);
+        omssaSettingsButton.setBorderPainted(false);
+        omssaSettingsButton.setContentAreaFilled(false);
+        omssaSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        omssaSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                omssaSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                omssaSettingsButtonMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                omssaSettingsButtonMouseReleased(evt);
+            }
+        });
+
+        enableAndromedaJCheckBox.setToolTipText("Enable Andromeda");
+        enableAndromedaJCheckBox.setOpaque(false);
+        enableAndromedaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableAndromedaJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        tideSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        tideSettingsButton.setToolTipText("Edit Tide Advanced Settings");
+        tideSettingsButton.setBorder(null);
+        tideSettingsButton.setBorderPainted(false);
+        tideSettingsButton.setContentAreaFilled(false);
+        tideSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        tideSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tideSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tideSettingsButtonMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tideSettingsButtonMouseReleased(evt);
+            }
+        });
+
+        msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a href=\"http://proteomics.ucsd.edu/Software/MSGFPlus\">MS-GF+ web page</a></html> ");
+        msgfLinkLabel.setToolTipText("Open the MS-GF+ web page");
+        msgfLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                msgfLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                msgfLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                msgfLinkLabelMouseExited(evt);
+            }
+        });
+
+        tideSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        tideSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        tideSupportButton.setBorderPainted(false);
+        tideSupportButton.setContentAreaFilled(false);
+
+        cometSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
+        cometSupportButton.setToolTipText("Supported on Windows and Linux");
+        cometSupportButton.setBorderPainted(false);
+        cometSupportButton.setContentAreaFilled(false);
+
+        msgfButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/msgf.png"))); // NOI18N
+        msgfButton.setToolTipText("Enable MS-GF+");
+        msgfButton.setBorder(null);
+        msgfButton.setBorderPainted(false);
+        msgfButton.setContentAreaFilled(false);
+        msgfButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                msgfButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                msgfButtonMouseExited(evt);
+            }
+        });
+        msgfButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msgfButtonActionPerformed(evt);
+            }
+        });
+
+        enableOmssaJCheckBox.setSelected(true);
+        enableOmssaJCheckBox.setToolTipText("Enable OMSSA");
+        enableOmssaJCheckBox.setOpaque(false);
+        enableOmssaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableOmssaJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        cometButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/comet.png"))); // NOI18N
+        cometButton.setToolTipText("Enable Comet");
+        cometButton.setBorder(null);
+        cometButton.setBorderPainted(false);
+        cometButton.setContentAreaFilled(false);
+        cometButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                cometButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                cometButtonMouseExited(evt);
+            }
+        });
+        cometButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cometButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout searchEnginesPanelLayout = new javax.swing.GroupLayout(searchEnginesPanel);
+        searchEnginesPanel.setLayout(searchEnginesPanelLayout);
+        searchEnginesPanelLayout.setHorizontalGroup(
+            searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchEnginesPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                             .addComponent(enableXTandemJCheckBox)
                             .addGap(63, 63, 63)
                             .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                             .addGap(81, 81, 81)
                             .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                             .addComponent(enableMyriMatchJCheckBox)
                             .addGap(63, 63, 63)
                             .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(enableMsAmandaJCheckBox)
-                        .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                             .addComponent(enableCometJCheckBox)
                             .addGap(63, 63, 63)
                             .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesLocationPanelLayout.createSequentialGroup()
-                            .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesPanelLayout.createSequentialGroup()
+                            .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(enableTideJCheckBox)
                                 .addComponent(enableAndromedaJCheckBox))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                            .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(andromedaButton)
                                 .addComponent(tiideButton))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                    .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
-                        .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                    .addGroup(searchEnginesPanelLayout.createSequentialGroup()
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                                 .addComponent(enableMsgfJCheckBox)
                                 .addGap(45, 45, 45)
                                 .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                            .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                                 .addComponent(enableOmssaJCheckBox)
                                 .addGap(62, 62, 62)
                                 .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(34, 34, 34)))
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tideSupportButton)
                     .addComponent(xtandemSupportButton)
                     .addComponent(myrimatchSupportButton)
@@ -1247,7 +1253,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(omssaSupportButton)
                     .addComponent(andromedaSupportButton))
                 .addGap(18, 18, 18)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(myriMatchLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1256,8 +1262,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(omssaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(129, 129, 129)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1266,71 +1272,89 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(cometSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaSettingsButton))
-                .addGap(29, 29, 29))
+                .addContainerGap())
         );
 
-        searchEnginesLocationPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {msgfButton, xtandemButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {msgfButton, xtandemButton});
 
-        searchEnginesLocationPanelLayout.setVerticalGroup(
-            searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+        searchEnginesPanelLayout.setVerticalGroup(
+            searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchEnginesPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableXTandemJCheckBox)
                     .addComponent(xtandemButton)
                     .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xtandemSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xtandemSupportButton))
                 .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableMyriMatchJCheckBox)
                     .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myrimatchSupportButton)
                     .addComponent(myriMatchLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableMsAmandaJCheckBox)
                     .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaSupportButton))
                 .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableMsgfJCheckBox)
                     .addComponent(msgfButton)
                     .addComponent(msgfLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfSupportButton))
                 .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableOmssaJCheckBox)
                     .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaSupportButton))
                 .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableCometJCheckBox)
                     .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometSupportButton))
                 .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableTideJCheckBox)
                     .addComponent(tiideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSupportButton))
                 .addGap(0, 0, 0)
-                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableAndromedaJCheckBox)
                     .addComponent(andromedaButton)
                     .addComponent(andromedaSupportButton)
                     .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaSettingsButton))
-                .addGap(0, 0, 0))
+                .addContainerGap())
+        );
+
+        searchEnginesScrollPane.setViewportView(searchEnginesPanel);
+
+        javax.swing.GroupLayout searchEnginesLocationPanelLayout = new javax.swing.GroupLayout(searchEnginesLocationPanel);
+        searchEnginesLocationPanel.setLayout(searchEnginesLocationPanelLayout);
+        searchEnginesLocationPanelLayout.setHorizontalGroup(
+            searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(searchEnginesScrollPane)
+                .addGap(20, 20, 20))
+        );
+        searchEnginesLocationPanelLayout.setVerticalGroup(
+            searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesLocationPanelLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(searchEnginesScrollPane))
         );
 
         inputFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input & Output"));
@@ -1582,7 +1606,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addComponent(peptideShakerSupportButton)
                 .addGap(20, 20, 20)
                 .addComponent(peptideShakerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
                 .addComponent(peptideShakerSettingsButton)
                 .addGap(33, 33, 33))
         );
@@ -4102,6 +4126,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JLabel resultFolderLbl;
     private javax.swing.JButton searchButton;
     private javax.swing.JPanel searchEnginesLocationPanel;
+    private javax.swing.JPanel searchEnginesPanel;
+    private javax.swing.JScrollPane searchEnginesScrollPane;
     private javax.swing.JLabel searchGUIPublicationLabel;
     private javax.swing.JMenuItem settingsMenuItem;
     private javax.swing.JLabel spectraFilesLabel;
