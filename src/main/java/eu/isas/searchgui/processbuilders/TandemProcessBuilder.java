@@ -227,7 +227,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                 }
                 if (newModification) {
                     PTM ptm = ptmFactory.getPTM(ptmName);
-                    if (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1) {
+                    if (ptm.getPattern() == null || (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1)) {
                         variableMod.add(ptmName);
                     } else {
                         variableModMotifs.add(ptmName);

@@ -1821,7 +1821,7 @@ public class SearchHandler {
                 }
 
                 // Convert raw files
-                for (int i = 0; i < getRawFiles().size() && !waitingHandler.isRunCanceled(); i++) {
+                for (int i = 0; i < getRawFiles().size() && !waitingHandler.isRunCanceled(); i++) { // @TODO: use parallel processing?
                     File rawFile = getRawFiles().get(i);
                     String rawFileName = rawFile.getName();
                     File folder = rawFile.getParentFile();

@@ -4523,7 +4523,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     MgfReader.addMissingSpectrumTitles(currentSpectrumFile, waitingHandler);
                     spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
                 } else {
-                    // do nothing with the titles
+                    // don't use the file
                     this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
                     return false;
                 }
@@ -4551,6 +4551,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     spectrumFactory.closeFiles();
                     MgfReader.removeZeroes(currentSpectrumFile, waitingHandler);
                     spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
+                } else {
+                    // don't use the file
+                    this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                    return false;
                 }
 
                 this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));

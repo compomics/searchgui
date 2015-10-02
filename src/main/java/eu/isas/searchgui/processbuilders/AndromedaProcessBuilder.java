@@ -340,8 +340,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         bw.newLine();
         int siteIndex = 0;
         AminoAcidPattern aminoAcidPattern = ptm.getPattern();
-        if (aminoAcidPattern != null && !ptm.getPattern().getAminoAcidsAtTarget().isEmpty()) {
-            for (Character aa : ptm.getPattern().getAminoAcidsAtTarget()) {
+        if (aminoAcidPattern != null && !aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
+            for (Character aa : aminoAcidPattern.getAminoAcidsAtTarget()) {
                 bw.write("      <modification_site index=\"" + siteIndex + "\" site=\"" + aa + "\">");
                 bw.newLine();
                 siteIndex++;
