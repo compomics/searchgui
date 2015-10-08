@@ -2152,11 +2152,6 @@ public class SearchHandler {
                             }
                             waitingHandler.increasePrimaryProgressCounter();
                         }
-
-                        File andromedaTempFolder = new File(AndromedaProcessBuilder.getTempFolderPath());
-                        if (andromedaTempFolder.exists()) {
-                            Util.emptyDir(andromedaTempFolder);
-                        }
                     }
 
                     if (aplFile != null) {
@@ -2333,6 +2328,13 @@ public class SearchHandler {
 
                 if (!outputFolder.getAbsolutePath().equals(outputTempFolder.getAbsolutePath())) {
                     Util.deleteDir(outputTempFolder);
+                }
+
+                if (enableAndromeda) {
+                    File andromedaTempFolder = new File(AndromedaProcessBuilder.getTempFolderPath());
+                    if (andromedaTempFolder.exists()) {
+                        Util.emptyDir(andromedaTempFolder);
+                    }
                 }
 
                 finished = true;
