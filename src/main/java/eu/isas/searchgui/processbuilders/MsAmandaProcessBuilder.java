@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.CommandLineUtils;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -140,106 +141,104 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @param outputPath path where to output the results
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use (note: cannot be used)
-     * @throws IllegalArgumentException thrown if more than one fixed PTM has
-     * the same target
+     * 
+     * @throws SecurityException
      */
     public MsAmandaProcessBuilder(File msAmandaDirectory, String mgfPath, String outputPath,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, int nThreads) throws IllegalArgumentException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws SecurityException {
 
-        try {
-            this.waitingHandler = waitingHandler;
-            msAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
+        this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
+        msAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
 
-            // set the paths
-            msAmandaFolder = msAmandaDirectory;
-            spectrumFilePath = mgfPath;
-            database = searchParameters.getFastaFile().getAbsoluteFile();
-            //msAmandTempFolder = ""; @TODO: allow the user to set the temp folder
+        // set the paths
+        msAmandaFolder = msAmandaDirectory;
+        spectrumFilePath = mgfPath;
+        database = searchParameters.getFastaFile().getAbsoluteFile();
+        //msAmandTempFolder = ""; @TODO: allow the user to set the temp folder
 
-            maxRank = msAmandaParameters.getMaxRank();
-            generateDecoys = msAmandaParameters.generateDecoy();
-            lowMemoryMode = msAmandaParameters.isLowMemoryMode();
-            monoisotopic = msAmandaParameters.isMonoIsotopic();
+        maxRank = msAmandaParameters.getMaxRank();
+        generateDecoys = msAmandaParameters.generateDecoy();
+        lowMemoryMode = msAmandaParameters.isLowMemoryMode();
+        monoisotopic = msAmandaParameters.isMonoIsotopic();
 
-            // set the mass accuracies
-            fragmentMassError = searchParameters.getFragmentIonAccuracy();
-            precursorMassError = searchParameters.getPrecursorAccuracy();
-            if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
-                precursorUnit = "ppm";
-            } else if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
-                precursorUnit = "Da";
-            }
-            if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
-                fragmentUnit = "ppm";
-            } else if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
-                fragmentUnit = "Da";
-            }
-
-            // set the charge range
-            minCharge = searchParameters.getMinChargeSearched().value;
-            maxCharge = searchParameters.getMaxChargeSearched().value;
-
-            // set the enzyme
-            Enzyme enzyme = searchParameters.getEnzyme();
-            enzymeName = searchParameters.getEnzyme().getName(); // @TODO: support SEMI(N) and SEMI(C)?
-            if (enzymeName.equalsIgnoreCase("No Enzyme")) {
-                enzymeName = "Unspecific"; // backwards compatibility
-            }
-            if (enzyme.isSemiSpecific()) {
-                enzymeSpecificity = "SEMI";
-            } else {
-                enzymeSpecificity = "FULL";
-            }
-            missedCleavages = searchParameters.getnMissedCleavages();
-
-            // set the modifications
-            modificationsAsString = getModificationsAsString(searchParameters.getPtmSettings());
-            instrument = msAmandaParameters.getInstrumentID();
-
-            // create the settings xml file
-            createSettingsFile();
-
-            // make sure that the ms amanda exe file is executable
-            File msAmanda = new File(msAmandaFolder.getAbsolutePath() + File.separator + executableFileName);
-            msAmanda.setExecutable(true);
-
-            // full path to executable
-            String operatingSystem = System.getProperty("os.name").toLowerCase();
-            if (!operatingSystem.contains("windows")) {
-                process_name_array.add("mono");
-            }
-            process_name_array.add(msAmanda.getAbsolutePath());
-
-            // add the spectrum file
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(spectrumFilePath)));
-
-            // add database file
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(database));
-
-            // add the settings file
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(msAmandaFolder, SETTINGS_FILE)));
-
-            // add the output file
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(outputPath)));
-
-            process_name_array.trimToSize();
-
-            // print the command to the log file
-            System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "ms amanda command: ");
-            for (Object processElement : process_name_array) {
-                System.out.print(processElement + " ");
-            }
-            System.out.println(System.getProperty("line.separator"));
-
-            pb = new ProcessBuilder(process_name_array);
-            pb.directory(msAmandaDirectory);
-
-            // set error out and std out to same stream
-            pb.redirectErrorStream(true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
+        // set the mass accuracies
+        fragmentMassError = searchParameters.getFragmentIonAccuracy();
+        precursorMassError = searchParameters.getPrecursorAccuracy();
+        if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
+            precursorUnit = "ppm";
+        } else if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
+            precursorUnit = "Da";
         }
+        if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
+            fragmentUnit = "ppm";
+        } else if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
+            fragmentUnit = "Da";
+        }
+
+        // set the charge range
+        minCharge = searchParameters.getMinChargeSearched().value;
+        maxCharge = searchParameters.getMaxChargeSearched().value;
+
+        // set the enzyme
+        Enzyme enzyme = searchParameters.getEnzyme();
+        enzymeName = searchParameters.getEnzyme().getName(); // @TODO: support SEMI(N) and SEMI(C)?
+        if (enzymeName.equalsIgnoreCase("No Enzyme")) {
+            enzymeName = "Unspecific"; // backwards compatibility
+        }
+        if (enzyme.isSemiSpecific()) {
+            enzymeSpecificity = "SEMI";
+        } else {
+            enzymeSpecificity = "FULL";
+        }
+        missedCleavages = searchParameters.getnMissedCleavages();
+
+        // set the modifications
+        modificationsAsString = getModificationsAsString(searchParameters.getPtmSettings());
+        instrument = msAmandaParameters.getInstrumentID();
+
+        // create the settings xml file
+        createSettingsFile();
+
+        // make sure that the ms amanda exe file is executable
+        File msAmanda = new File(msAmandaFolder.getAbsolutePath() + File.separator + executableFileName);
+        msAmanda.setExecutable(true);
+
+        // full path to executable
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+        if (!operatingSystem.contains("windows")) {
+            process_name_array.add("mono");
+        }
+        process_name_array.add(msAmanda.getAbsolutePath());
+
+        // add the spectrum file
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(spectrumFilePath)));
+
+        // add database file
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(database));
+
+        // add the settings file
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(msAmandaFolder, SETTINGS_FILE)));
+
+        // add the output file
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(outputPath)));
+
+        process_name_array.trimToSize();
+
+        // print the command to the log file
+        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "ms amanda command: ");
+        for (Object processElement : process_name_array) {
+            System.out.print(processElement + " ");
+        }
+        System.out.println(System.getProperty("line.separator"));
+
+        pb = new ProcessBuilder(process_name_array);
+        pb.directory(msAmandaDirectory);
+
+        // set error out and std out to same stream
+        pb.redirectErrorStream(true);
     }
 
     /**

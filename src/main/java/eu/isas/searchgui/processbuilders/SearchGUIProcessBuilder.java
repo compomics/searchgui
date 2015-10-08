@@ -1,5 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.waiting.Duration;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedReader;
@@ -17,7 +18,7 @@ import java.util.Scanner;
  * @author Marc Vaudel
  * @author Harald Barsnes
  */
-public abstract class SearchGUIProcessBuilder {
+public abstract class SearchGUIProcessBuilder implements Runnable {
 
     /**
      * The process to be executed as array.
@@ -35,23 +36,39 @@ public abstract class SearchGUIProcessBuilder {
      * The waiting handler to display the feedback.
      */
     protected WaitingHandler waitingHandler;
+    /**
+     * The exception handler to manage exception.
+     */
+    protected ExceptionHandler exceptionHandler;
 
     /**
-     * Trivial constructor.
+     * Empty constructor.
      */
     public SearchGUIProcessBuilder() {
+    }
+
+    @Override
+    public void run() {
+        try {
+            startProcess();
+        } catch (Exception e) {
+            exceptionHandler.catchException(e);
+        }
     }
 
     /**
      * Starts the process of a process builder, gets the input stream from the
      * process and shows it in a JEditorPane supporting HTML. Does not close
      * until the process is completed.
+     *
+     * @throws java.io.IOException Exception thrown whenever an error occurred
+     * while reading the progress stream
      */
-    public void startProcess() {
-        
+    public void startProcess() throws IOException {
+
         Duration processDuration = new Duration();
         processDuration.start();
-        
+
         p = null;
         try {
             p = pb.start();
@@ -133,29 +150,28 @@ public abstract class SearchGUIProcessBuilder {
 
             inputStream.close();
             bufferedReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } finally {
 
-        // check if the user has cancelled the process or not
-        if (waitingHandler.isRunCanceled()) {
-            if (p != null) {
-                p.destroy();
-            }
-        } else {
-            
-            processDuration.end();
-            waitingHandler.appendReportEndLine();
-            waitingHandler.appendReportEndLine();
-            waitingHandler.appendReport(getType() + " Finished (" + processDuration.toString() + ").", true, true);
-            waitingHandler.appendReportEndLine();
-
-            // wait for process to terminate before exiting
-            try {
-                p.waitFor();
-            } catch (InterruptedException e) {
+            // check if the user has cancelled the process or not
+            if (waitingHandler.isRunCanceled()) {
                 if (p != null) {
                     p.destroy();
+                }
+            } else {
+
+                processDuration.end();
+                waitingHandler.appendReportEndLine();
+                waitingHandler.appendReportEndLine();
+                waitingHandler.appendReport(getType() + " Finished (" + processDuration.toString() + ").", true, true);
+                waitingHandler.appendReportEndLine();
+
+                // wait for process to terminate before exiting
+                try {
+                    p.waitFor();
+                } catch (InterruptedException e) {
+                    if (p != null) {
+                        p.destroy();
+                    }
                 }
             }
         }

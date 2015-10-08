@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.Util;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.AminoAcid;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.AtomChain;
@@ -78,14 +79,17 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads
      *
      * @throws IOException thrown whenever an error occurred while reading or
      * writing a file.
+     * @throws SecurityException
      */
-    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, int nThreads) throws IOException {
+    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, SecurityException {
 
         this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
         this.andromedaFolder = andromedaFolder;
         this.searchParameters = searchParameters;
         andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());

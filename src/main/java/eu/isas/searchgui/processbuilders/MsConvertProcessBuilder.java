@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.CommandLineUtils;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.massspectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.massspectrometry.proteowizard.MsFormat;
 import com.compomics.util.experiment.massspectrometry.proteowizard.ProteoWizardFilter;
@@ -42,15 +43,18 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
      * @param rawFile the raw file to convert
      * @param destinationFolder the destination folder
      * @param msConvertParameters the msconvert parameters
+     * @param exceptionHandler the handler of exceptions
      *
      * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
+     * @throws SecurityException
      */
-    public MsConvertProcessBuilder(WaitingHandler waitingHandler, File rawFile, File destinationFolder, MsConvertParameters msConvertParameters)
-            throws FileNotFoundException, IOException, ClassNotFoundException {
+    public MsConvertProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, File rawFile, File destinationFolder, MsConvertParameters msConvertParameters)
+            throws FileNotFoundException, IOException, ClassNotFoundException, SecurityException {
 
         this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
         this.rawFile = rawFile;
         this.destinationFolder = destinationFolder;
         this.msConvertParameters = msConvertParameters;
@@ -64,66 +68,72 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
      * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
+     * @throws SecurityException
      */
-    private void setUpProcessBuilder() throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void setUpProcessBuilder() throws FileNotFoundException, IOException, ClassNotFoundException, SecurityException {
 
-        try {
-            UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-            String proteoWizardPath = utilitiesUserPreferences.getProteoWizardPath();
-            
-            if (proteoWizardPath == null) {
-                throw new IllegalArgumentException("ProteoWizard path not set.");
-            }
-            
-            File proteoWizardFolder = new File(proteoWizardPath, "msconvert");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(proteoWizardFolder));
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(rawFile));
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        String proteoWizardPath = utilitiesUserPreferences.getProteoWizardPath();
 
-            process_name_array.add("-o");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(destinationFolder));
-
-            MsFormat msFormat = msConvertParameters.getMsFormat();
-            if (msFormat == null) {
-                msFormat = MsFormat.mgf;
-            }
-            process_name_array.add("--" + msFormat.commandLineOption);
-
-            if (displayProgress) {
-                process_name_array.add("-v");
-            }
-            for (Integer filterId : msConvertParameters.getFilters()) {
-                ProteoWizardFilter proteoWizardFilter = ProteoWizardFilter.getFilter(filterId);
-                if (proteoWizardFilter == null) {
-                    throw new IllegalArgumentException("Filter of index " + filterId + " not recognized.");
-                }
-                String commandLine = "\"" + proteoWizardFilter.name;
-                String value = msConvertParameters.getValue(filterId);
-                if (value != null) {
-                    commandLine += " " + value;
-                }
-                commandLine += "\"";
-                process_name_array.add("--filter");
-                process_name_array.add(commandLine);
-            }
-
-            process_name_array.trimToSize();
-
-            // print the command to the log file
-            System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "msconvert command: ");
-
-            for (Object current_entry : process_name_array) {
-                System.out.print(current_entry + " ");
-            }
-
-            System.out.println(System.getProperty("line.separator"));
-
-            pb = new ProcessBuilder(process_name_array);
-
-            // set error out and std out to same stream
-            pb.redirectErrorStream(true);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (proteoWizardPath == null) {
+            throw new IllegalArgumentException("ProteoWizard path not set.");
         }
+
+        File proteoWizardFolder = new File(proteoWizardPath, "msconvert");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(proteoWizardFolder));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(rawFile));
+
+        process_name_array.add("-o");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(destinationFolder));
+
+        MsFormat msFormat = msConvertParameters.getMsFormat();
+        if (msFormat == null) {
+            msFormat = MsFormat.mgf;
+        }
+        process_name_array.add("--" + msFormat.commandLineOption);
+
+        if (displayProgress) {
+            process_name_array.add("-v");
+        }
+        for (Integer filterId : msConvertParameters.getFilters()) {
+            ProteoWizardFilter proteoWizardFilter = ProteoWizardFilter.getFilter(filterId);
+            if (proteoWizardFilter == null) {
+                throw new IllegalArgumentException("Filter of index " + filterId + " not recognized.");
+            }
+            String commandLine = "\"" + proteoWizardFilter.name;
+            String value = msConvertParameters.getValue(filterId);
+            if (value != null) {
+                commandLine += " " + value;
+            }
+            commandLine += "\"";
+            process_name_array.add("--filter");
+            process_name_array.add(commandLine);
+        }
+
+        process_name_array.trimToSize();
+
+        // print the command to the log file
+        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "msconvert command: ");
+
+        for (Object current_entry : process_name_array) {
+            System.out.print(current_entry + " ");
+        }
+
+        System.out.println(System.getProperty("line.separator"));
+
+        pb = new ProcessBuilder(process_name_array);
+
+        // set error out and std out to same stream
+        pb.redirectErrorStream(true);
+    }
+
+    @Override
+    public void startProcess() throws IOException {
+
+        waitingHandler.appendReport("Converting " + rawFile.getName() + ".", true, true);
+        waitingHandler.appendReportEndLine();
+        super.startProcess();
+        
     }
 
     @Override

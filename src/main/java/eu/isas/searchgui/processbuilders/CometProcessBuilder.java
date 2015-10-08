@@ -1,5 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.EnzymeFactory;
@@ -74,14 +75,17 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads
      *
      * @throws IOException thrown if there are problems creating the Comet
      * parameter file
+     * @throws SecurityException
      */
-    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, int nThreads) throws IOException {
+    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, SecurityException {
 
         this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
         this.cometFolder = cometFolder;
         this.searchParameters = searchParameters;
         cometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());

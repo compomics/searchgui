@@ -1,5 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
@@ -165,17 +166,18 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @param outputPath path where to output the results
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
-     * @throws IllegalArgumentException thrown if more than one fixed PTM has
-     * the same target
+     * 
+     * @throws SecurityException 
      */
     public TandemProcessBuilder(File xTandem_directory, String mgfFile, String outputPath,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, int nThreads) throws IllegalArgumentException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws SecurityException {
 
-        try {
             xtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
 
             this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
             xTandemFile = xTandem_directory;
             nProcessors = nThreads;
             spectrumFile = mgfFile;
@@ -310,9 +312,6 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             pb.directory(xTandem_directory);
             // set error out and std out to same stream
             pb.redirectErrorStream(true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

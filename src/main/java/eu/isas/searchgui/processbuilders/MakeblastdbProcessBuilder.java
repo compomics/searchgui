@@ -1,7 +1,9 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * This class takes care of starting the Makeblastdb Process. Mandatory when
@@ -50,9 +52,14 @@ public class MakeblastdbProcessBuilder extends SearchGUIProcessBuilder {
      * @param aDatabaseFile File with the DB file to be formatted
      * @param makeblastdbLocation the location of makeblastdb
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
+     * 
+     * @throws SecurityException
      */
-    public MakeblastdbProcessBuilder(String pathToJarFile, File aDatabaseFile, File makeblastdbLocation, WaitingHandler waitingHandler) {
+    public MakeblastdbProcessBuilder(String pathToJarFile, File aDatabaseFile, File makeblastdbLocation, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws SecurityException {
+        
         this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
 
         File makeBlastDb;
 
@@ -162,8 +169,11 @@ public class MakeblastdbProcessBuilder extends SearchGUIProcessBuilder {
      * Starts the process of a process builder, gets the input stream from the
      * process and shows it in a JTextArea. Does not close until the process is
      * completed.
+     *
+     * @throws java.io.IOException Exception thrown whenever an error occurred
+     * while reading the progress stream
      */
-    public void startProcess() {
+    public void startProcess() throws IOException {
         super.startProcess();
         if (isCanceled) {
             // remove incomplete db index files.

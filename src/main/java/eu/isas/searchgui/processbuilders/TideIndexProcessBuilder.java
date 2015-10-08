@@ -1,5 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -45,12 +46,16 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      * @param tideFolder the Tide folder
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
+     *
      * @throws IOException thrown of there are problems creating the Tide
      * parameter file
+     * @throws SecurityException
      */
-    public TideIndexProcessBuilder(File tideFolder, SearchParameters searchParameters, WaitingHandler waitingHandler) throws IOException {
+    public TideIndexProcessBuilder(File tideFolder, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException, SecurityException {
 
         this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
         this.searchParameters = searchParameters;
         tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         this.fastaFile = searchParameters.getFastaFile();

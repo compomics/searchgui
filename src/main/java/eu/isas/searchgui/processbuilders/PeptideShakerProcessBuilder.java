@@ -3,6 +3,7 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.software.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.preferences.GenePreferences;
@@ -103,18 +104,20 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param genePreferences the gene preferences
      * @param includeData Indicates whether the mgf and FASTA file should be
      * included in the output
+     * @param exceptionHandler the handler of exceptions
      *
      * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, String experiment, String sample, Integer replicate,
+    public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String experiment, String sample, Integer replicate,
             ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, SearchParameters searchParameters,
             File cpsFile, boolean showGuiProgress, PeptideAssumptionFilter idFilter,
             PSProcessingPreferences processingPreferences, PTMScoringPreferences ptmScoringPreferences, IdMatchValidationPreferences idMatchValidationPreferences, GenePreferences genePreferences, boolean includeData)
             throws FileNotFoundException, IOException, ClassNotFoundException {
 
         this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
         this.experiment = experiment;
         this.sample = sample;
         this.replicate = replicate;

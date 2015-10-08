@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.CommandLineUtils;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.NeutralLoss;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -50,6 +51,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * results file
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
      *
      * @throws java.io.IOException exception thrown whenever an error occurred
@@ -57,9 +59,8 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters, WaitingHandler waitingHandler, int nThreads) throws IOException, ClassNotFoundException {
+    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, ClassNotFoundException, SecurityException {
 
-        try {
             this.spectraFile = spectraFile;
             this.waitingHandler = waitingHandler;
             this.modificationProfile = searchParameters.getPtmSettings();
@@ -328,10 +329,6 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
             // set error out and std out to same stream
             pb.redirectErrorStream(true);
-
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

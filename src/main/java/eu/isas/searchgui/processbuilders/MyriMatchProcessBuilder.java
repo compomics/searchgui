@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.CommandLineUtils;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
@@ -51,16 +52,17 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      * @param mgfFile name of the file containing the spectra
      * @param outputFolder folder where to output the results
      * @param searchParameters the search parameters
+     * @param exceptionHandler the handler of exceptions
      * @param waitingHandler the waiting handler
      * @param nThreads the number of threads to use
-     * @throws IllegalArgumentException thrown if more than one fixed PTM has
-     * the same target
+     * 
+     * @throws SecurityException 
      */
     public MyriMatchProcessBuilder(File myriMatchDirectory, String mgfFile, File outputFolder,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, int nThreads) throws IllegalArgumentException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws SecurityException {
 
-        try {
             this.searchParameters = searchParameters;
+        this.exceptionHandler = exceptionHandler;
             myriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
 
             this.waitingHandler = waitingHandler;
@@ -275,11 +277,6 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
             pb.directory(myriMatchDirectory);
             // set error out and std out to same stream
             pb.redirectErrorStream(true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

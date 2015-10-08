@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.Util;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.TideParameters;
@@ -35,12 +36,16 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
+     *
      * @throws IOException thrown of there are problems creating the Tide
      * parameter file
+     * @throws SecurityException
      */
-    public TideSearchProcessBuilder(File tideFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler) throws IOException {
+    public TideSearchProcessBuilder(File tideFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException, SecurityException {
 
         this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
         tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         this.spectrumFile = spectrumFile;
 
@@ -59,7 +64,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             process_name_array.add("F");
         }
-        
+
         // link to the spectrum file
         process_name_array.add(spectrumFile.getAbsolutePath());
 
@@ -83,7 +88,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             process_name_array.add("ppm");
         }
-        
+
         // add the mgf file to the result file name
         process_name_array.add("--fileroot");
         process_name_array.add(Util.removeExtension(spectrumFile.getName()));

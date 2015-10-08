@@ -2,6 +2,7 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
+import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
@@ -13,6 +14,7 @@ import com.compomics.util.waiting.WaitingHandler;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -64,19 +66,23 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @param outputFile the output file
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
      * @param isCommandLine true if run from the command line, false if GUI
-     * @throws IllegalArgumentException thrown if more than one fixed PTM has
-     * the same target
+     * 
+     * @throws java.io.IOException exception thrown whenever an error occurred while getting the java home
+     * @throws java.io.FileNotFoundException exception thrown whenever an error occurred while getting the java home
+     * @throws java.lang.ClassNotFoundException exception thrown whenever an error occurred while getting the SearchGUI path
+     * @throws java.lang.SecurityException
      */
     public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, int nThreads, boolean isCommandLine) throws IllegalArgumentException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine) throws IOException, FileNotFoundException, ClassNotFoundException, SecurityException {
 
-        try {
             this.searchParameters = searchParameters;
             msgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
 
             this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
             this.spectrumFile = mgfFile;
 
             // make sure that the msgf+ jar file is executable
@@ -218,15 +224,6 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
             pb.directory(msgfDirectory);
             // set error out and std out to same stream
             pb.redirectErrorStream(true);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
