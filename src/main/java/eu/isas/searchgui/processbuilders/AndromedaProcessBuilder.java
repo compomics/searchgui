@@ -67,10 +67,6 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * The advanced Andromeda parameters.
      */
     private AndromedaParameters andromedaParameters;
-    /**
-     * The compomics PTM factory.
-     */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
 
     /**
      * Constructor.
@@ -84,9 +80,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @throws IOException thrown whenever an error occurred while reading or
      * writing a file.
-     * @throws SecurityException
      */
-    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, SecurityException {
+    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;

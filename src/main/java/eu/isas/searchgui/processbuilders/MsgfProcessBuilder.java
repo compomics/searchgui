@@ -69,161 +69,163 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
      * @param isCommandLine true if run from the command line, false if GUI
-     * 
-     * @throws java.io.IOException exception thrown whenever an error occurred while getting the java home
-     * @throws java.io.FileNotFoundException exception thrown whenever an error occurred while getting the java home
-     * @throws java.lang.ClassNotFoundException exception thrown whenever an error occurred while getting the SearchGUI path
-     * @throws java.lang.SecurityException
+     *
+     * @throws java.io.IOException exception thrown whenever an error occurred
+     * while getting the java home
+     * @throws java.io.FileNotFoundException exception thrown whenever an error
+     * occurred while getting the java home
+     * @throws java.lang.ClassNotFoundException exception thrown whenever an
+     * error occurred while getting the SearchGUI path
      */
     public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine) throws IOException, FileNotFoundException, ClassNotFoundException, SecurityException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine) throws IOException, FileNotFoundException, ClassNotFoundException {
 
-            this.searchParameters = searchParameters;
-            msgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
+        this.searchParameters = searchParameters;
+        msgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
 
-            this.waitingHandler = waitingHandler;
+        this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
-            this.spectrumFile = mgfFile;
+        this.spectrumFile = mgfFile;
 
-            // make sure that the msgf+ jar file is executable
-            File msgfExecutable = new File(msgfDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
-            msgfExecutable.setExecutable(true);
+        // make sure that the msgf+ jar file is executable
+        File msgfExecutable = new File(msgfDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+        msgfExecutable.setExecutable(true);
 
-            // create the ms-gf+ modification file
-            msgfModFile = new File(msgfDirectory, MOD_FILE);
-            createModificationsFile();
+        // create the ms-gf+ modification file
+        msgfModFile = new File(msgfDirectory, MOD_FILE);
+        createModificationsFile();
 
-            // set java home
-            UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-            CompomicsWrapper wrapper = new CompomicsWrapper();
-            ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserPreferences.getSearchGuiPath());
-            process_name_array.add(javaHomeAndOptions.get(0)); // set java home
+        // set java home
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        CompomicsWrapper wrapper = new CompomicsWrapper();
+        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserPreferences.getSearchGuiPath());
+        process_name_array.add(javaHomeAndOptions.get(0)); // set java home
 
-            // set java options
-            if (!isCommandLine) {
-                for (int i = 1; i < javaHomeAndOptions.size(); i++) {
-                    process_name_array.add(javaHomeAndOptions.get(i));
-                }
-            } else {
-                // add the jvm arguments for searchgui to ms-gf+
-                RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
-                List<String> aList = bean.getInputArguments();
-                for (String element : aList) {
-                    process_name_array.add(element);
-                }
+        // set java options
+        if (!isCommandLine) {
+            for (int i = 1; i < javaHomeAndOptions.size(); i++) {
+                process_name_array.add(javaHomeAndOptions.get(i));
             }
-
-            // add the MSGFPlus.jar
-            process_name_array.add("-jar");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(msgfDirectory, EXECUTABLE_FILE_NAME)));
-
-            // add the spectrum file
-            process_name_array.add("-s");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));
-
-            // add the database
-            process_name_array.add("-d");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParameters.getFastaFile()));
-
-            // set the output file
-            process_name_array.add("-o");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(outputFile));
-
-            // set the precursor mass tolerance
-            Double precursorMassError = searchParameters.getPrecursorAccuracy();
-            String precursorMassErrorUnit = "ppm";
-            if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
-                precursorMassErrorUnit = "Da";
+        } else {
+            // add the jvm arguments for searchgui to ms-gf+
+            RuntimeMXBean bean = ManagementFactory.getRuntimeMXBean();
+            List<String> aList = bean.getInputArguments();
+            for (String element : aList) {
+                process_name_array.add(element);
             }
-            process_name_array.add("-t");
-            process_name_array.add(precursorMassError + precursorMassErrorUnit);
+        }
 
-            // enable/disable the msgf+ decoy search
-            process_name_array.add("-tda");
-            if (msgfParameters.searchDecoyDatabase()) {
-                process_name_array.add("1");
-            } else {
-                process_name_array.add("0");
-            }
+        // add the MSGFPlus.jar
+        process_name_array.add("-jar");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(msgfDirectory, EXECUTABLE_FILE_NAME)));
 
-            // link to the msgf+ modifications file
-            process_name_array.add("-mod");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(msgfModFile));
+        // add the spectrum file
+        process_name_array.add("-s");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));
 
-            // add min/max precursor charge
-            process_name_array.add("-minCharge");
-            process_name_array.add("" + searchParameters.getMinChargeSearched().value);
-            process_name_array.add("-maxCharge");
-            process_name_array.add("" + searchParameters.getMaxChargeSearched().value);
+        // add the database
+        process_name_array.add("-d");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParameters.getFastaFile()));
 
-            // set the instrument type
-            process_name_array.add("-inst");
-            process_name_array.add("" + msgfParameters.getInstrumentID());
+        // set the output file
+        process_name_array.add("-o");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(outputFile));
 
-            // set the number of threads to use
-            process_name_array.add("-thread");
-            process_name_array.add("" + nThreads);
+        // set the precursor mass tolerance
+        Double precursorMassError = searchParameters.getPrecursorAccuracy();
+        String precursorMassErrorUnit = "ppm";
+        if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
+            precursorMassErrorUnit = "Da";
+        }
+        process_name_array.add("-t");
+        process_name_array.add(precursorMassError + precursorMassErrorUnit);
 
-            // set the fragmentation method
-            process_name_array.add("-m");
-            process_name_array.add("" + msgfParameters.getFragmentationType());
+        // enable/disable the msgf+ decoy search
+        process_name_array.add("-tda");
+        if (msgfParameters.searchDecoyDatabase()) {
+            process_name_array.add("1");
+        } else {
+            process_name_array.add("0");
+        }
 
-            // set the enzyme
-            String msgfEnzyme = MsgfParameters.enzymeMapping(searchParameters.getEnzyme());
-            if (msgfEnzyme != null) {
-                process_name_array.add("-e");
-                process_name_array.add(msgfEnzyme);
-            }
+        // link to the msgf+ modifications file
+        process_name_array.add("-mod");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(msgfModFile));
 
-            // set the protocol
-            process_name_array.add("-protocol");
-            process_name_array.add("" + msgfParameters.getProtocol());
+        // add min/max precursor charge
+        process_name_array.add("-minCharge");
+        process_name_array.add("" + searchParameters.getMinChargeSearched().value);
+        process_name_array.add("-maxCharge");
+        process_name_array.add("" + searchParameters.getMaxChargeSearched().value);
 
-            // set the number of tolerable termini
-            process_name_array.add("-ntt");
-            process_name_array.add("" + msgfParameters.getNumberTolerableTermini());
+        // set the instrument type
+        process_name_array.add("-inst");
+        process_name_array.add("" + msgfParameters.getInstrumentID());
 
-            // set the min/max peptide lengths
-            process_name_array.add("-minLength");
-            process_name_array.add("" + msgfParameters.getMinPeptideLength());
-            process_name_array.add("-maxLength");
-            process_name_array.add("" + msgfParameters.getMaxPeptideLength());
+        // set the number of threads to use
+        process_name_array.add("-thread");
+        process_name_array.add("" + nThreads);
 
-            // set the number of matches per spectrum
-            process_name_array.add("-n");
-            process_name_array.add("" + msgfParameters.getNumberOfSpectrumMatches());
+        // set the fragmentation method
+        process_name_array.add("-m");
+        process_name_array.add("" + msgfParameters.getFragmentationType());
 
-            // provide additional output
-            process_name_array.add("-addFeatures");
-            if (msgfParameters.isAdditionalOutput()) {
-                process_name_array.add("1");
-            } else {
-                process_name_array.add("0");
-            }
+        // set the enzyme
+        String msgfEnzyme = MsgfParameters.enzymeMapping(searchParameters.getEnzyme());
+        if (msgfEnzyme != null) {
+            process_name_array.add("-e");
+            process_name_array.add(msgfEnzyme);
+        }
 
-            // set the range of allowed isotope peak errors
-            process_name_array.add("-ti");
-            process_name_array.add(CommandLineUtils.getQuoteType()
-                    + msgfParameters.getLowerIsotopeErrorRange()
-                    + "," + msgfParameters.getUpperIsotopeErrorRange()
-                    + CommandLineUtils.getQuoteType());
+        // set the protocol
+        process_name_array.add("-protocol");
+        process_name_array.add("" + msgfParameters.getProtocol());
 
-            process_name_array.trimToSize();
+        // set the number of tolerable termini
+        process_name_array.add("-ntt");
+        process_name_array.add("" + msgfParameters.getNumberTolerableTermini());
 
-            // print the command to the log file
-            System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "ms-gf+ command: ");
+        // set the min/max peptide lengths
+        process_name_array.add("-minLength");
+        process_name_array.add("" + msgfParameters.getMinPeptideLength());
+        process_name_array.add("-maxLength");
+        process_name_array.add("" + msgfParameters.getMaxPeptideLength());
 
-            for (Object element : process_name_array) {
-                System.out.print(element + " ");
-            }
+        // set the number of matches per spectrum
+        process_name_array.add("-n");
+        process_name_array.add("" + msgfParameters.getNumberOfSpectrumMatches());
 
-            System.out.println(System.getProperty("line.separator"));
+        // provide additional output
+        process_name_array.add("-addFeatures");
+        if (msgfParameters.isAdditionalOutput()) {
+            process_name_array.add("1");
+        } else {
+            process_name_array.add("0");
+        }
 
-            pb = new ProcessBuilder(process_name_array);
+        // set the range of allowed isotope peak errors
+        process_name_array.add("-ti");
+        process_name_array.add(CommandLineUtils.getQuoteType()
+                + msgfParameters.getLowerIsotopeErrorRange()
+                + "," + msgfParameters.getUpperIsotopeErrorRange()
+                + CommandLineUtils.getQuoteType());
 
-            pb.directory(msgfDirectory);
-            // set error out and std out to same stream
-            pb.redirectErrorStream(true);
+        process_name_array.trimToSize();
+
+        // print the command to the log file
+        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "ms-gf+ command: ");
+
+        for (Object element : process_name_array) {
+            System.out.print(element + " ");
+        }
+
+        System.out.println(System.getProperty("line.separator"));
+
+        pb = new ProcessBuilder(process_name_array);
+
+        pb.directory(msgfDirectory);
+        // set error out and std out to same stream
+        pb.redirectErrorStream(true);
     }
 
     /**
@@ -308,7 +310,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
                 position = "N-term";
                 break;
         }
-        
+
         // use unimod name if possible
         String ptmCvTermName = ptmName;
         CvTerm cvTerm = tempPtm.getCvTerm();

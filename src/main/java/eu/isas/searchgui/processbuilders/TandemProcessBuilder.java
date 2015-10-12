@@ -168,150 +168,148 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
-     * 
-     * @throws SecurityException 
      */
     public TandemProcessBuilder(File xTandem_directory, String mgfFile, String outputPath,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws SecurityException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
-            xtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
+        xtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
 
-            this.waitingHandler = waitingHandler;
+        this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
-            xTandemFile = xTandem_directory;
-            nProcessors = nThreads;
-            spectrumFile = mgfFile;
-            dataBase = searchParameters.getFastaFile().getAbsoluteFile();
-            this.outputPath = outputPath;
-            fragmentMassError = searchParameters.getFragmentIonAccuracy();
-            precursorMassError = searchParameters.getPrecursorAccuracy();
-            if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
-                precursorUnit = "ppm";
-            } else if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
-                precursorUnit = "Daltons";
-            }
-            if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
-                fragmentUnit = "ppm";
-            } else if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
-                fragmentUnit = "Daltons";
-            }
-            maxCharge = searchParameters.getMaxChargeSearched().value;
-            fixedMod = new ArrayList<String>();
-            PtmSettings modificationProfile = searchParameters.getPtmSettings();
-            boolean sameFixed = modificationProfile.getFixedModifications().size() == modificationProfile.getRefinementFixedModifications().size();
-            for (String ptmName : modificationProfile.getFixedModifications()) {
-                PTM ptm = ptmFactory.getPTM(ptmName);
-                if (ptm.getType() == PTM.MODN) {
-                    fixedNtermProteinMod += ptm.getRoundedMass();
-                } else if (ptm.getType() == PTM.MODC) {
-                    fixedCtermProteinMod += ptm.getRoundedMass();
-                } else {
-                    fixedMod.add(ptmName);
-                }
-                if (sameFixed && !modificationProfile.getRefinementFixedModifications().contains(ptmName)) {
-                    sameFixed = false;
-                }
-            }
-            if (!sameFixed) {
-                refinementFixedMod = modificationProfile.getRefinementFixedModifications();
-            }
-            variableMod = new ArrayList<String>();
-            variableModMotifs = new ArrayList<String>();
-            for (String ptmName : searchParameters.getPtmSettings().getVariableModifications()) {
-                // Exclude PTMs triggered by the quick options
-                boolean newModification = true;
-                if (xtandemParameters.isProteinQuickAcetyl() && ptmName.equals("Acetylation of protein N-term")) {
-                    newModification = false;
-                }
-                if (newModification && xtandemParameters.isQuickPyrolidone()
-                        && (ptmName.equals("Pyrolidone from E") || ptmName.equals("Pyrolidone from Q") || ptmName.equals("Pyrolidone from carbamidomethylated C"))) {
-                    newModification = false;
-                }
-                if (newModification) {
-                    PTM ptm = ptmFactory.getPTM(ptmName);
-                    if (ptm.getPattern() == null || (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1)) {
-                        variableMod.add(ptmName);
-                    } else {
-                        variableModMotifs.add(ptmName);
-                    }
-                }
-            }
-            refinementVariableMod = new ArrayList<String>();
-            refinementVariableModMotif = new ArrayList<String>();
-            refinementVariableCTermMod = new ArrayList<String>();
-            refinementVariableNTermMod = new ArrayList<String>();
-            for (String ptmName : modificationProfile.getRefinementVariableModifications()) {
-                // Exclude PTMs triggered by the quick options
-                boolean newModification = true;
-                if (xtandemParameters.isProteinQuickAcetyl() && ptmName.equals("Acetylation of protein N-term")) {
-                    newModification = false;
-                }
-                if (newModification && xtandemParameters.isQuickPyrolidone()
-                        && (ptmName.equals("Pyrolidone from E") || ptmName.equals("Pyrolidone from Q") || ptmName.equals("Pyrolidone from carbamidomethylated C"))) {
-                    newModification = false;
-                }
-                if (newModification) {
-                    PTM ptm = ptmFactory.getPTM(ptmName);
-                    if (ptm.getType() == PTM.MODC
-                            || ptm.getType() == PTM.MODCAA
-                            || ptm.getType() == PTM.MODCP
-                            || ptm.getType() == PTM.MODCPAA) {
-                        refinementVariableCTermMod.add(ptmName);
-                    } else if (ptm.getType() == PTM.MODN
-                            || ptm.getType() == PTM.MODNAA
-                            || ptm.getType() == PTM.MODNP
-                            || ptm.getType() == PTM.MODNPAA) {
-                        refinementVariableNTermMod.add(ptmName);
-                    } else if (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1) {
-                        refinementVariableMod.add(ptmName);
-                    } else {
-                        refinementVariableModMotif.add(ptmName);
-                    }
-                }
-            }
-            enzymeCleaveSiteAsText = searchParameters.getEnzyme().getXTandemFormat();
-            if (searchParameters.getEnzyme().isSemiSpecific()) {
-                enzymeIsSemiSpecific = "yes";
+        xTandemFile = xTandem_directory;
+        nProcessors = nThreads;
+        spectrumFile = mgfFile;
+        dataBase = searchParameters.getFastaFile().getAbsoluteFile();
+        this.outputPath = outputPath;
+        fragmentMassError = searchParameters.getFragmentIonAccuracy();
+        precursorMassError = searchParameters.getPrecursorAccuracy();
+        if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
+            precursorUnit = "ppm";
+        } else if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
+            precursorUnit = "Daltons";
+        }
+        if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
+            fragmentUnit = "ppm";
+        } else if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
+            fragmentUnit = "Daltons";
+        }
+        maxCharge = searchParameters.getMaxChargeSearched().value;
+        fixedMod = new ArrayList<String>();
+        PtmSettings modificationProfile = searchParameters.getPtmSettings();
+        boolean sameFixed = modificationProfile.getFixedModifications().size() == modificationProfile.getRefinementFixedModifications().size();
+        for (String ptmName : modificationProfile.getFixedModifications()) {
+            PTM ptm = ptmFactory.getPTM(ptmName);
+            if (ptm.getType() == PTM.MODN) {
+                fixedNtermProteinMod += ptm.getRoundedMass();
+            } else if (ptm.getType() == PTM.MODC) {
+                fixedCtermProteinMod += ptm.getRoundedMass();
             } else {
-                enzymeIsSemiSpecific = "no";
+                fixedMod.add(ptmName);
             }
-            missedCleavages = searchParameters.getnMissedCleavages();
-            if (searchParameters.getEnzyme().isUnspecific()) { // unspecific cleavage
-                missedCleavages = 50;
+            if (sameFixed && !modificationProfile.getRefinementFixedModifications().contains(ptmName)) {
+                sameFixed = false;
             }
-            ion1 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched1());
-            ion2 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched2());
-
-            createInputFile();
-            createTaxonomyFile();
-            createParameterFile();
-
-            // make sure that the tandem file is executable
-            File xTandem = new File(xTandemFile.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
-            xTandem.setExecutable(true);
-
-            // full path to executable
-            process_name_array.add(xTandemFile.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
-
-            // Link to the input file
-            process_name_array.add(inputFile.getAbsolutePath());
-
-            process_name_array.trimToSize();
-
-            // print the command to the log file
-            System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "xtandem command: ");
-
-            for (Object element : process_name_array) {
-                System.out.print(element + " ");
+        }
+        if (!sameFixed) {
+            refinementFixedMod = modificationProfile.getRefinementFixedModifications();
+        }
+        variableMod = new ArrayList<String>();
+        variableModMotifs = new ArrayList<String>();
+        for (String ptmName : searchParameters.getPtmSettings().getVariableModifications()) {
+            // Exclude PTMs triggered by the quick options
+            boolean newModification = true;
+            if (xtandemParameters.isProteinQuickAcetyl() && ptmName.equals("Acetylation of protein N-term")) {
+                newModification = false;
             }
+            if (newModification && xtandemParameters.isQuickPyrolidone()
+                    && (ptmName.equals("Pyrolidone from E") || ptmName.equals("Pyrolidone from Q") || ptmName.equals("Pyrolidone from carbamidomethylated C"))) {
+                newModification = false;
+            }
+            if (newModification) {
+                PTM ptm = ptmFactory.getPTM(ptmName);
+                if (ptm.getPattern() == null || (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1)) {
+                    variableMod.add(ptmName);
+                } else {
+                    variableModMotifs.add(ptmName);
+                }
+            }
+        }
+        refinementVariableMod = new ArrayList<String>();
+        refinementVariableModMotif = new ArrayList<String>();
+        refinementVariableCTermMod = new ArrayList<String>();
+        refinementVariableNTermMod = new ArrayList<String>();
+        for (String ptmName : modificationProfile.getRefinementVariableModifications()) {
+            // Exclude PTMs triggered by the quick options
+            boolean newModification = true;
+            if (xtandemParameters.isProteinQuickAcetyl() && ptmName.equals("Acetylation of protein N-term")) {
+                newModification = false;
+            }
+            if (newModification && xtandemParameters.isQuickPyrolidone()
+                    && (ptmName.equals("Pyrolidone from E") || ptmName.equals("Pyrolidone from Q") || ptmName.equals("Pyrolidone from carbamidomethylated C"))) {
+                newModification = false;
+            }
+            if (newModification) {
+                PTM ptm = ptmFactory.getPTM(ptmName);
+                if (ptm.getType() == PTM.MODC
+                        || ptm.getType() == PTM.MODCAA
+                        || ptm.getType() == PTM.MODCP
+                        || ptm.getType() == PTM.MODCPAA) {
+                    refinementVariableCTermMod.add(ptmName);
+                } else if (ptm.getType() == PTM.MODN
+                        || ptm.getType() == PTM.MODNAA
+                        || ptm.getType() == PTM.MODNP
+                        || ptm.getType() == PTM.MODNPAA) {
+                    refinementVariableNTermMod.add(ptmName);
+                } else if (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1) {
+                    refinementVariableMod.add(ptmName);
+                } else {
+                    refinementVariableModMotif.add(ptmName);
+                }
+            }
+        }
+        enzymeCleaveSiteAsText = searchParameters.getEnzyme().getXTandemFormat();
+        if (searchParameters.getEnzyme().isSemiSpecific()) {
+            enzymeIsSemiSpecific = "yes";
+        } else {
+            enzymeIsSemiSpecific = "no";
+        }
+        missedCleavages = searchParameters.getnMissedCleavages();
+        if (searchParameters.getEnzyme().isUnspecific()) { // unspecific cleavage
+            missedCleavages = 50;
+        }
+        ion1 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched1());
+        ion2 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched2());
 
-            System.out.println(System.getProperty("line.separator"));
+        createInputFile();
+        createTaxonomyFile();
+        createParameterFile();
 
-            pb = new ProcessBuilder(process_name_array);
+        // make sure that the tandem file is executable
+        File xTandem = new File(xTandemFile.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+        xTandem.setExecutable(true);
 
-            pb.directory(xTandem_directory);
-            // set error out and std out to same stream
-            pb.redirectErrorStream(true);
+        // full path to executable
+        process_name_array.add(xTandemFile.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+
+        // Link to the input file
+        process_name_array.add(inputFile.getAbsolutePath());
+
+        process_name_array.trimToSize();
+
+        // print the command to the log file
+        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "xtandem command: ");
+
+        for (Object element : process_name_array) {
+            System.out.print(element + " ");
+        }
+
+        System.out.println(System.getProperty("line.separator"));
+
+        pb = new ProcessBuilder(process_name_array);
+
+        pb.directory(xTandem_directory);
+        // set error out and std out to same stream
+        pb.redirectErrorStream(true);
     }
 
     /**

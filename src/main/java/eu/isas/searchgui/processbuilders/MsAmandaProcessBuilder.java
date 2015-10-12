@@ -143,11 +143,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use (note: cannot be used)
-     * 
-     * @throws SecurityException
      */
     public MsAmandaProcessBuilder(File msAmandaDirectory, String mgfPath, String outputPath,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws SecurityException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;

@@ -48,10 +48,9 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
      * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
-     * @throws SecurityException
      */
     public MsConvertProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, File rawFile, File destinationFolder, MsConvertParameters msConvertParameters)
-            throws FileNotFoundException, IOException, ClassNotFoundException, SecurityException {
+            throws FileNotFoundException, IOException, ClassNotFoundException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -68,9 +67,8 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
      * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
-     * @throws SecurityException
      */
-    private void setUpProcessBuilder() throws FileNotFoundException, IOException, ClassNotFoundException, SecurityException {
+    private void setUpProcessBuilder() throws FileNotFoundException, IOException, ClassNotFoundException {
 
         UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
         String proteoWizardPath = utilitiesUserPreferences.getProteoWizardPath();
@@ -129,11 +127,9 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public void startProcess() throws IOException {
-
         waitingHandler.appendReport("Converting " + rawFile.getName() + ".", true, true);
         waitingHandler.appendReportEndLine();
         super.startProcess();
-        
     }
 
     @Override

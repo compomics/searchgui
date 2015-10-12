@@ -53,11 +53,9 @@ public class MakeblastdbProcessBuilder extends SearchGUIProcessBuilder {
      * @param makeblastdbLocation the location of makeblastdb
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
-     * 
-     * @throws SecurityException
      */
-    public MakeblastdbProcessBuilder(String pathToJarFile, File aDatabaseFile, File makeblastdbLocation, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws SecurityException {
-        
+    public MakeblastdbProcessBuilder(String pathToJarFile, File aDatabaseFile, File makeblastdbLocation, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) {
+
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
 
@@ -90,12 +88,11 @@ public class MakeblastdbProcessBuilder extends SearchGUIProcessBuilder {
         // parse the sequence ids
 //        process_name_array.add("-parse_seqids"); // @TODO: make this into an option in the gui?
 //        process_name_array.trimToSize();
-
         // print the command to the log file
         System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "makeblastdb command: ");
 
-        for (int i = 0; i < process_name_array.size(); i++) {
-            System.out.print(process_name_array.get(i) + " ");
+        for (Object element : process_name_array) {
+            System.out.print(element + " ");
         }
 
         System.out.println(System.getProperty("line.separator"));

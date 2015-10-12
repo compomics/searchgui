@@ -80,9 +80,8 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @throws IOException thrown if there are problems creating the Comet
      * parameter file
-     * @throws SecurityException
      */
-    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, SecurityException {
+    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;

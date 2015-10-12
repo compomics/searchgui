@@ -55,228 +55,226 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      * @param exceptionHandler the handler of exceptions
      * @param waitingHandler the waiting handler
      * @param nThreads the number of threads to use
-     * 
-     * @throws SecurityException 
      */
     public MyriMatchProcessBuilder(File myriMatchDirectory, String mgfFile, File outputFolder,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws SecurityException {
+            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
-            this.searchParameters = searchParameters;
+        this.searchParameters = searchParameters;
         this.exceptionHandler = exceptionHandler;
-            myriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
+        myriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
 
-            this.waitingHandler = waitingHandler;
-            this.spectrumFile = mgfFile;
+        this.waitingHandler = waitingHandler;
+        this.spectrumFile = mgfFile;
 
-            // make sure that the myrimatch file is executable
-            File myriMatchExecutable = new File(myriMatchDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
-            myriMatchExecutable.setExecutable(true);
+        // make sure that the myrimatch file is executable
+        File myriMatchExecutable = new File(myriMatchDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+        myriMatchExecutable.setExecutable(true);
 
-            // add the myrimatch executable
-            process_name_array.add(myriMatchDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+        // add the myrimatch executable
+        process_name_array.add(myriMatchDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
 
-            // set the number of threads to use
-            process_name_array.add("-cpus");
-            process_name_array.add(Integer.toString(nThreads));
+        // set the number of threads to use
+        process_name_array.add("-cpus");
+        process_name_array.add(Integer.toString(nThreads));
 
-            // add the database
-            process_name_array.add("-ProteinDatabase");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParameters.getFastaFile()));
+        // add the database
+        process_name_array.add("-ProteinDatabase");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParameters.getFastaFile()));
 
-            // add the spectrum file
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));
+        // add the spectrum file
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));
 
-            // set the output format to mzIdentML
-            process_name_array.add("-OutputFormat");
-            if (myriMatchParameters.getOutputFormat().equalsIgnoreCase("mzIdentML")) {
-                process_name_array.add("mzIdentML");
+        // set the output format to mzIdentML
+        process_name_array.add("-OutputFormat");
+        if (myriMatchParameters.getOutputFormat().equalsIgnoreCase("mzIdentML")) {
+            process_name_array.add("mzIdentML");
+        } else {
+            process_name_array.add("pepXML");
+        }
+
+        // set the output folder
+        process_name_array.add("-workdir");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(outputFolder));
+
+        // add an suffix to be able to recognize the output files
+        process_name_array.add("-OutputSuffix");
+        process_name_array.add(".myrimatch");
+
+        // switch of the creation of decoys
+        process_name_array.add("-DecoyPrefix");
+        process_name_array.add("\"\"");
+
+        // set the min/max peptide lengths
+        process_name_array.add("-MinPeptideLength");
+        process_name_array.add("" + myriMatchParameters.getMinPeptideLength());
+        process_name_array.add("-MaxPeptideLength");
+        process_name_array.add("" + myriMatchParameters.getMaxPeptideLength());
+
+        // set the number of matches per spectrum
+        process_name_array.add("-MaxResultRank");
+        process_name_array.add("" + myriMatchParameters.getNumberOfSpectrumMatches());
+
+        // remove the peak peaking, as mgfs are already peak picked
+        process_name_array.add("-SpectrumListFilters");
+        process_name_array.add("\"\"");
+
+        // set the fragment ion tolerance
+        process_name_array.add("-FragmentMzTolerance");
+        process_name_array.add("\"" + searchParameters.getFragmentIonAccuracy() + " daltons" + "\""); // @TODO: support ppm as well? means changing the search settings dialog
+
+        // set the mono precursor tolerance
+        process_name_array.add("-MonoPrecursorMzTolerance");
+        String precursorTolerance = searchParameters.getPrecursorAccuracy().toString();
+        if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
+            precursorTolerance += " daltons";
+        } else {
+            precursorTolerance += " ppm";
+        }
+        process_name_array.add("\"" + precursorTolerance + "\""); // note: the tolerance is used for +1 spectra
+
+        // set the precusor accuracy to mono
+        process_name_array.add("-PrecursorMzToleranceRule");
+        process_name_array.add("\"" + "mono" + "\"");
+
+        // filter the modifications and convert fixed to variable if needed
+        HashMap<String, ArrayList<String>> filteredPtms = filterFixedPtms();
+
+        // set the fixed modifications
+        if (!filteredPtms.get("Fixed").isEmpty()) {
+            process_name_array.add("-StaticMods");
+            process_name_array.add(getFixedModificationsAsString(filteredPtms.get("Fixed")));
+        }
+
+        // set the variable modifications
+        if (!filteredPtms.get("Variable").isEmpty()) {
+            process_name_array.add("-DynamicMods");
+            process_name_array.add(getVariableModificationsAsString(filteredPtms.get("Variable")));
+        }
+
+        // set the maximum number of variable modifications
+        process_name_array.add("-MaxDynamicMods");
+        process_name_array.add("" + myriMatchParameters.getMaxDynamicMods());
+
+        // reduce the status update frequency
+        process_name_array.add("-StatusUpdateFrequency");
+        process_name_array.add("" + statusUpdateFrecuencyInSeconds);
+
+        // set the maximum number of charges
+        process_name_array.add("-NumChargeStates");
+        process_name_array.add("" + searchParameters.getMaxChargeSearched()); // note that it is not possible to set the min charge
+
+        // set the TicCutoffPercentage
+        process_name_array.add("-TicCutoffPercentage");
+        process_name_array.add("" + myriMatchParameters.getTicCutoffPercentage());
+
+        // set the minimum precursor mass
+        process_name_array.add("-MinPeptideMass");
+        process_name_array.add("" + myriMatchParameters.getMinPrecursorMass());
+
+        // set the maximum precursor mass
+        process_name_array.add("-MaxPeptideMass");
+        process_name_array.add("" + myriMatchParameters.getMaxPrecursorMass());
+
+        // set the use of the smart plus three model
+        process_name_array.add("-UseSmartPlusThreeModel");
+        process_name_array.add("" + myriMatchParameters.getUseSmartPlusThreeModel());
+
+        // set if a Sequest-like cross correlation (xcorr) score will be calculated 
+        process_name_array.add("-ComputeXCorr");
+        process_name_array.add("" + myriMatchParameters.getComputeXCorr());
+
+        // set the number of intensity classes
+        process_name_array.add("-NumIntensityClasses");
+        process_name_array.add("" + myriMatchParameters.getNumIntensityClasses());
+
+        // set the intensity class size multiplier
+        process_name_array.add("-ClassSizeMultiplier");
+        process_name_array.add("" + myriMatchParameters.getClassSizeMultiplier());
+
+        // set the nubmer of batches per node
+        process_name_array.add("-NumBatches");
+        process_name_array.add("" + myriMatchParameters.getNumberOfBatches());
+
+        // set the max peak count
+        process_name_array.add("-MaxPeakCount");
+        process_name_array.add("" + myriMatchParameters.getMaxPeakCount());
+
+        // set the isotope correction range
+        process_name_array.add("-MonoisotopeAdjustmentSet");
+        boolean precursorsToleranceWide = false;
+        if ((searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA
+                && searchParameters.getPrecursorAccuracy() >= 0.2)
+                || (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM
+                && searchParameters.getPrecursorAccuracy() >= 200)) {
+            precursorsToleranceWide = true;
+        }
+        if (precursorsToleranceWide) {
+            process_name_array.add("0"); // MonoisotopeAdjustmentSet should be set to 0 when the MonoPrecursorMzTolerance is wide
+        } else {
+            process_name_array.add("[" + myriMatchParameters.getLowerIsotopeCorrectionRange()
+                    + "," + myriMatchParameters.getUpperIsotopeCorrectionRange() + "]");
+        }
+
+        // set the fragmention rules
+        process_name_array.add("-FragmentationAutoRule");
+        process_name_array.add("false");
+        process_name_array.add("-FragmentationRule"); // options: cid (b, y), etd (c, z*) or manual (a comma-separated list of [abcxyz] or z* (z+1), e.g. manual:b,y,z)
+        if (myriMatchParameters.getFragmentationRule().equalsIgnoreCase("HCD")) {
+            process_name_array.add("\"" + "manual:b,y" + "\""); // note: same ions as for cid
+        } else {
+            process_name_array.add("\"" + myriMatchParameters.getFragmentationRule().toLowerCase() + "\"");
+        }
+
+        // set the enzyme
+        String myriMatchEnzyme = MyriMatchParameters.enzymeMapping(searchParameters.getEnzyme());
+        if (myriMatchEnzyme != null) {
+            process_name_array.add("-CleavageRules");
+            if (myriMatchEnzyme.equalsIgnoreCase("unspecific cleavage")) {
+                process_name_array.add("\"" + "Trypsin" + "\""); // trick to support unspecific cleavage, MinTerminiCleavages is set to 0 below instead
             } else {
-                process_name_array.add("pepXML");
+                process_name_array.add("\"" + myriMatchEnzyme + "\"");
             }
+        }
 
-            // set the output folder
-            process_name_array.add("-workdir");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(outputFolder));
-
-            // add an suffix to be able to recognize the output files
-            process_name_array.add("-OutputSuffix");
-            process_name_array.add(".myrimatch");
-
-            // switch of the creation of decoys
-            process_name_array.add("-DecoyPrefix");
-            process_name_array.add("\"\"");
-
-            // set the min/max peptide lengths
-            process_name_array.add("-MinPeptideLength");
-            process_name_array.add("" + myriMatchParameters.getMinPeptideLength());
-            process_name_array.add("-MaxPeptideLength");
-            process_name_array.add("" + myriMatchParameters.getMaxPeptideLength());
-
-            // set the number of matches per spectrum
-            process_name_array.add("-MaxResultRank");
-            process_name_array.add("" + myriMatchParameters.getNumberOfSpectrumMatches());
-
-            // remove the peak peaking, as mgfs are already peak picked
-            process_name_array.add("-SpectrumListFilters");
-            process_name_array.add("\"\"");
-
-            // set the fragment ion tolerance
-            process_name_array.add("-FragmentMzTolerance");
-            process_name_array.add("\"" + searchParameters.getFragmentIonAccuracy() + " daltons" + "\""); // @TODO: support ppm as well? means changing the search settings dialog
-
-            // set the mono precursor tolerance
-            process_name_array.add("-MonoPrecursorMzTolerance");
-            String precursorTolerance = searchParameters.getPrecursorAccuracy().toString();
-            if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
-                precursorTolerance += " daltons";
+        // set the minimum termini cleavages
+        process_name_array.add("-MinTerminiCleavages");
+        if (myriMatchEnzyme != null && myriMatchEnzyme.equalsIgnoreCase("unspecific cleavage")) {
+            process_name_array.add("0");
+        } else {
+            if (searchParameters.getEnzyme().isSemiSpecific()) {
+                process_name_array.add("1"); // note that this overrides the MinTerminiCleavages setting from the user 
             } else {
-                precursorTolerance += " ppm";
+                process_name_array.add("" + myriMatchParameters.getMinTerminiCleavages());
             }
-            process_name_array.add("\"" + precursorTolerance + "\""); // note: the tolerance is used for +1 spectra
+        }
 
-            // set the precusor accuracy to mono
-            process_name_array.add("-PrecursorMzToleranceRule");
-            process_name_array.add("\"" + "mono" + "\"");
-
-            // filter the modifications and convert fixed to variable if needed
-            HashMap<String, ArrayList<String>> filteredPtms = filterFixedPtms();
-
-            // set the fixed modifications
-            if (!filteredPtms.get("Fixed").isEmpty()) {
-                process_name_array.add("-StaticMods");
-                process_name_array.add(getFixedModificationsAsString(filteredPtms.get("Fixed")));
-            }
-
-            // set the variable modifications
-            if (!filteredPtms.get("Variable").isEmpty()) {
-                process_name_array.add("-DynamicMods");
-                process_name_array.add(getVariableModificationsAsString(filteredPtms.get("Variable")));
-            }
-
-            // set the maximum number of variable modifications
-            process_name_array.add("-MaxDynamicMods");
-            process_name_array.add("" + myriMatchParameters.getMaxDynamicMods());
-
-            // reduce the status update frequency
-            process_name_array.add("-StatusUpdateFrequency");
-            process_name_array.add("" + statusUpdateFrecuencyInSeconds);
-
-            // set the maximum number of charges
-            process_name_array.add("-NumChargeStates");
-            process_name_array.add("" + searchParameters.getMaxChargeSearched()); // note that it is not possible to set the min charge
-
-            // set the TicCutoffPercentage
-            process_name_array.add("-TicCutoffPercentage");
-            process_name_array.add("" + myriMatchParameters.getTicCutoffPercentage());
-
-            // set the minimum precursor mass
-            process_name_array.add("-MinPeptideMass");
-            process_name_array.add("" + myriMatchParameters.getMinPrecursorMass());
-
-            // set the maximum precursor mass
-            process_name_array.add("-MaxPeptideMass");
-            process_name_array.add("" + myriMatchParameters.getMaxPrecursorMass());
-
-            // set the use of the smart plus three model
-            process_name_array.add("-UseSmartPlusThreeModel");
-            process_name_array.add("" + myriMatchParameters.getUseSmartPlusThreeModel());
-
-            // set if a Sequest-like cross correlation (xcorr) score will be calculated 
-            process_name_array.add("-ComputeXCorr");
-            process_name_array.add("" + myriMatchParameters.getComputeXCorr());
-
-            // set the number of intensity classes
-            process_name_array.add("-NumIntensityClasses");
-            process_name_array.add("" + myriMatchParameters.getNumIntensityClasses());
-
-            // set the intensity class size multiplier
-            process_name_array.add("-ClassSizeMultiplier");
-            process_name_array.add("" + myriMatchParameters.getClassSizeMultiplier());
-
-            // set the nubmer of batches per node
-            process_name_array.add("-NumBatches");
-            process_name_array.add("" + myriMatchParameters.getNumberOfBatches());
-
-            // set the max peak count
-            process_name_array.add("-MaxPeakCount");
-            process_name_array.add("" + myriMatchParameters.getMaxPeakCount());
-
-            // set the isotope correction range
-            process_name_array.add("-MonoisotopeAdjustmentSet");
-            boolean precursorsToleranceWide = false;
-            if ((searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA
-                    && searchParameters.getPrecursorAccuracy() >= 0.2)
-                    || (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM
-                    && searchParameters.getPrecursorAccuracy() >= 200)) {
-                precursorsToleranceWide = true;
-            }
-            if (precursorsToleranceWide) {
-                process_name_array.add("0"); // MonoisotopeAdjustmentSet should be set to 0 when the MonoPrecursorMzTolerance is wide
-            } else {
-                process_name_array.add("[" + myriMatchParameters.getLowerIsotopeCorrectionRange()
-                        + "," + myriMatchParameters.getUpperIsotopeCorrectionRange() + "]");
-            }
-
-            // set the fragmention rules
-            process_name_array.add("-FragmentationAutoRule");
-            process_name_array.add("false");
-            process_name_array.add("-FragmentationRule"); // options: cid (b, y), etd (c, z*) or manual (a comma-separated list of [abcxyz] or z* (z+1), e.g. manual:b,y,z)
-            if (myriMatchParameters.getFragmentationRule().equalsIgnoreCase("HCD")) {
-                process_name_array.add("\"" + "manual:b,y" + "\""); // note: same ions as for cid
-            } else {
-                process_name_array.add("\"" + myriMatchParameters.getFragmentationRule().toLowerCase() + "\"");
-            }
-
-            // set the enzyme
-            String myriMatchEnzyme = MyriMatchParameters.enzymeMapping(searchParameters.getEnzyme());
-            if (myriMatchEnzyme != null) {
-                process_name_array.add("-CleavageRules");
-                if (myriMatchEnzyme.equalsIgnoreCase("unspecific cleavage")) {
-                    process_name_array.add("\"" + "Trypsin" + "\""); // trick to support unspecific cleavage, MinTerminiCleavages is set to 0 below instead
-                } else {
-                    process_name_array.add("\"" + myriMatchEnzyme + "\"");
-                }
-            }
-
-            // set the minimum termini cleavages
-            process_name_array.add("-MinTerminiCleavages");
-            if (myriMatchEnzyme != null && myriMatchEnzyme.equalsIgnoreCase("unspecific cleavage")) {
-                process_name_array.add("0");
-            } else {
-                if (searchParameters.getEnzyme().isSemiSpecific()) {
-                    process_name_array.add("1"); // note that this overrides the MinTerminiCleavages setting from the user 
-                } else {
-                    process_name_array.add("" + myriMatchParameters.getMinTerminiCleavages());
-                }
-            }
-
-            // set the maximum missed cleavages
-            process_name_array.add("-MaxMissedCleavages");
-            process_name_array.add("" + searchParameters.getnMissedCleavages());
+        // set the maximum missed cleavages
+        process_name_array.add("-MaxMissedCleavages");
+        process_name_array.add("" + searchParameters.getnMissedCleavages());
             // advanced settings not used:
-            //  ProteinSampleSize
-            //  FragmentationAutoRule - automatically choose the fragmentation rule based on the activation type of each MSn spectrum
-            //  ThreadCountMultiplier - multithreading database search setting
-            //  UseMultipleProcessors - if true, each process will use all the processing units available on the system it is running on   
-            //  SpectrumListFilters - filters applied to spectra as it is read in
-            //      plus some more from the -dump option...
-            //
-            process_name_array.trimToSize();
+        //  ProteinSampleSize
+        //  FragmentationAutoRule - automatically choose the fragmentation rule based on the activation type of each MSn spectrum
+        //  ThreadCountMultiplier - multithreading database search setting
+        //  UseMultipleProcessors - if true, each process will use all the processing units available on the system it is running on   
+        //  SpectrumListFilters - filters applied to spectra as it is read in
+        //      plus some more from the -dump option...
+        //
+        process_name_array.trimToSize();
 
-            // print the command to the log file
-            System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "myrimatch command: ");
+        // print the command to the log file
+        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "myrimatch command: ");
 
-            for (Object element : process_name_array) {
-                System.out.print(element + " ");
-            }
+        for (Object element : process_name_array) {
+            System.out.print(element + " ");
+        }
 
-            System.out.println(System.getProperty("line.separator"));
+        System.out.println(System.getProperty("line.separator"));
 
-            pb = new ProcessBuilder(process_name_array);
+        pb = new ProcessBuilder(process_name_array);
 
-            pb.directory(myriMatchDirectory);
-            // set error out and std out to same stream
-            pb.redirectErrorStream(true);
+        pb.directory(myriMatchDirectory);
+        // set error out and std out to same stream
+        pb.redirectErrorStream(true);
     }
 
     /**

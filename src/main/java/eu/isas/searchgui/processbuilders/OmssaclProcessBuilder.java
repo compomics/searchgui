@@ -59,276 +59,276 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, ClassNotFoundException, SecurityException {
+    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, ClassNotFoundException {
 
-            this.spectraFile = spectraFile;
-            this.waitingHandler = waitingHandler;
-            this.modificationProfile = searchParameters.getPtmSettings();
+        this.spectraFile = spectraFile;
+        this.waitingHandler = waitingHandler;
+        this.modificationProfile = searchParameters.getPtmSettings();
 
-            OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
+        OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
 
-            // The database file path and name.
-            File seqDBFile = searchParameters.getFastaFile();
-            File dbFilePath = seqDBFile.getParentFile();
+        // The database file path and name.
+        File seqDBFile = searchParameters.getFastaFile();
+        File dbFilePath = seqDBFile.getParentFile();
 
-            // make sure that the omssacl file is executable
-            File omssaFile = new File(omssacl_directory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
-            omssaFile.setExecutable(true);
+        // make sure that the omssacl file is executable
+        File omssaFile = new File(omssacl_directory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+        omssaFile.setExecutable(true);
 
-            // full path to executable
-            process_name_array.add(omssacl_directory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+        // full path to executable
+        process_name_array.add(omssacl_directory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
 
-            // always ask for spectra and search settings to be included in results file
-            process_name_array.add("-w"); // @TODO: find a way of being able to turn this off. would require a new parser...
+        // always ask for spectra and search settings to be included in results file
+        process_name_array.add("-w"); // @TODO: find a way of being able to turn this off. would require a new parser...
 
-            // check if set by user (that is, if not defaults) and then add to array
-            process_name_array.add("-to");
-            process_name_array.add(searchParameters.getFragmentIonAccuracy() + "");
-            process_name_array.add("-te");
-            process_name_array.add(searchParameters.getPrecursorAccuracy() + "");
-            if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
-                process_name_array.add("-teppm");
-            }
-            if (searchParameters.getEnzyme().getId() != -1) {
-                process_name_array.add("-e");
-                process_name_array.add(Integer.toString(searchParameters.getEnzyme().getId()));
-            }
-            if (searchParameters.getMinChargeSearched() != null) {
-                process_name_array.add("-zl");
-                process_name_array.add(Integer.toString(searchParameters.getMinChargeSearched().value));
-            }
-            if (searchParameters.getMaxChargeSearched() != null) {
-                process_name_array.add("-zh");
-                process_name_array.add(Integer.toString(searchParameters.getMaxChargeSearched().value));
-            }
-            if (omssaParameters.getMinimalChargeForMultipleChargedFragments() != null) {
-                process_name_array.add("-zt");
-                process_name_array.add(Integer.toString(omssaParameters.getMinimalChargeForMultipleChargedFragments().value));
-            }
-            if (omssaParameters.isMemoryMappedSequenceLibraries() != null && omssaParameters.isMemoryMappedSequenceLibraries()) {
-                process_name_array.add("-umm");
-            }
-            if (omssaParameters.getNumberOfItotopicPeaks() != null && omssaParameters.getNumberOfItotopicPeaks() > 0) {
-                process_name_array.add("-ti");
-                process_name_array.add(Integer.toString(omssaParameters.getNumberOfItotopicPeaks()));
-            }
-            if (omssaParameters.getNeutronThreshold() != null) {
-                process_name_array.add("-tex");
-                process_name_array.add(Double.toString(omssaParameters.getNeutronThreshold()));
-            }
-            if (omssaParameters.getLowIntensityCutOff() != null) {
-                process_name_array.add("-cl");
-                process_name_array.add(Double.toString(omssaParameters.getLowIntensityCutOff()));
-            }
-            if (omssaParameters.getHighIntensityCutOff() != null) {
-                process_name_array.add("-ch");
-                process_name_array.add(Double.toString(omssaParameters.getHighIntensityCutOff()));
-            }
-            if (omssaParameters.getIntensityCutOffIncrement() != null) {
-                process_name_array.add("-ci");
-                process_name_array.add(Double.toString(omssaParameters.getIntensityCutOffIncrement()));
-            }
-            if (omssaParameters.getSingleChargeWindow() != null) {
-                process_name_array.add("-w1");
-                process_name_array.add(Integer.toString(omssaParameters.getSingleChargeWindow()));
-            }
-            if (omssaParameters.getDoubleChargeWindow() != null) {
-                process_name_array.add("-w2");
-                process_name_array.add(Integer.toString(omssaParameters.getDoubleChargeWindow()));
-            }
-            if (omssaParameters.getnPeaksInSingleChargeWindow() != null) {
-                process_name_array.add("-h1");
-                process_name_array.add(Integer.toString(omssaParameters.getnPeaksInSingleChargeWindow()));
-            }
-            if (omssaParameters.getnPeaksInDoubleChargeWindow() != null) {
-                process_name_array.add("-h2");
-                process_name_array.add(Integer.toString(omssaParameters.getnPeaksInDoubleChargeWindow()));
-            }
-            if (omssaParameters.getMaxHitsPerSpectrumPerCharge() != null) {
-                process_name_array.add("-hl");
-                process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
-            }
-            if (omssaParameters.getHitListLength() != null && omssaParameters.getHitListLength() > 0) {
-                process_name_array.add("-hc");
-                process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
-            }
-            if (omssaParameters.getMinAnnotatedPeaks() != null) {
-                process_name_array.add("-hm");
-                process_name_array.add(Integer.toString(omssaParameters.getMinAnnotatedPeaks()));
-            }
-            if (omssaParameters.getMinPeaks() != null) {
-                process_name_array.add("-hs");
-                process_name_array.add(Integer.toString(omssaParameters.getMinPeaks()));
-            }
-            if (omssaParameters.getnAnnotatedMostIntensePeaks() != null) {
-                process_name_array.add("-ht");
-                process_name_array.add(Integer.toString(omssaParameters.getnAnnotatedMostIntensePeaks()));
-            }
-            if (omssaParameters.isCleaveNterMethionine() != null && !omssaParameters.isCleaveNterMethionine()) {
-                process_name_array.add("-mnm");
-            }
-            if (omssaParameters.getMaxMzLadders() != null) {
-                process_name_array.add("-mm");
-                process_name_array.add(Integer.toString(omssaParameters.getMaxMzLadders()));
-            }
-            if (omssaParameters.getMaxFragmentCharge() != null) {
-                process_name_array.add("-zoh");
-                process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentCharge()));
-            }
-            if (omssaParameters.getFractionOfPeaksForChargeEstimation() != null) {
-                process_name_array.add("-z1");
-                process_name_array.add(Double.toString(omssaParameters.getFractionOfPeaksForChargeEstimation()));
-            }
-            if (omssaParameters.isDetermineChargePlusOneAlgorithmically() != null && !omssaParameters.isDetermineChargePlusOneAlgorithmically()) {
-                process_name_array.add("-zc");
-                process_name_array.add(Integer.toString(0));
-            }
-            if (omssaParameters.isSearchPositiveIons() != null && !omssaParameters.isSearchPositiveIons()) {
-                process_name_array.add("-zn");
-                process_name_array.add(Integer.toString(-1));
-            }
-            if (omssaParameters.getMinPrecPerSpectrum() != null) {
-                process_name_array.add("-pc");
-                process_name_array.add(Integer.toString(omssaParameters.getMinPrecPerSpectrum()));
-            }
-            if (omssaParameters.isSearchForwardFragmentFirst() != null && !omssaParameters.isSearchForwardFragmentFirst()) {
-                process_name_array.add("-sb1");
-                process_name_array.add(Integer.toString(0));
-            }
-            if (omssaParameters.isSearchRewindFragments() != null && !omssaParameters.isSearchRewindFragments()) {
-                process_name_array.add("-sct");
-                process_name_array.add(Integer.toString(1));
-            }
-            if (omssaParameters.getMaxFragmentPerSeries() != null) {
-                process_name_array.add("-sp");
-                process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentPerSeries()));
-            }
-            if (omssaParameters.isUseCorrelationCorrectionScore() != null && !omssaParameters.isUseCorrelationCorrectionScore()) {
-                process_name_array.add("-scorr");
-                process_name_array.add(Integer.toString(1));
-            }
-            if (omssaParameters.getConsecutiveIonProbability() != null) {
-                process_name_array.add("-scorp");
-                process_name_array.add(Double.toString(omssaParameters.getConsecutiveIonProbability()));
-            }
-            if (omssaParameters.getIterativeSequenceEvalue() != null) {
-                process_name_array.add("-is");
-                process_name_array.add(Double.toString(omssaParameters.getIterativeSequenceEvalue()));
-            }
-            if (omssaParameters.getIterativeReplaceEvalue() != null) {
-                process_name_array.add("-ir");
-                process_name_array.add(Double.toString(omssaParameters.getIterativeReplaceEvalue()));
-            }
-            if (omssaParameters.getIterativeSpectrumEvalue() != null) {
-                process_name_array.add("-ii");
-                process_name_array.add(Double.toString(omssaParameters.getIterativeSpectrumEvalue()));
-            }
-            process_name_array.add("-v");
-            process_name_array.add(Integer.toString(searchParameters.getnMissedCleavages()));
-            process_name_array.add("-he");
-            process_name_array.add(Double.toString(omssaParameters.getMaxEValue()));
-            process_name_array.add("-tez");
-            if (omssaParameters.isScalePrecursor()) {
-                process_name_array.add("1");
-            } else {
-                process_name_array.add("0");
-            }
-            process_name_array.add("-zcc");
-            if (omssaParameters.isEstimateCharge()) {
-                process_name_array.add("2");
-            } else {
-                process_name_array.add("1");
-            }
-            process_name_array.add("-cp");
-            if (omssaParameters.isRemovePrecursor()) {
-                process_name_array.add("1");
-            } else {
-                process_name_array.add("0");
-            }
-            if (omssaParameters.getMinPeptideLength() != null) { // @TODO: these have to to be set if using no-enzyme or semi-enyzyme searches!!
-                process_name_array.add("-no");
-                process_name_array.add(omssaParameters.getMinPeptideLength().toString());
-            }
-            if (omssaParameters.getMaxPeptideLength() != null) {
-                process_name_array.add("-nox");
-                process_name_array.add(omssaParameters.getMaxPeptideLength().toString());
-            }
-
-            // look for monoisotopic peaks
-            process_name_array.add("-tom");
+        // check if set by user (that is, if not defaults) and then add to array
+        process_name_array.add("-to");
+        process_name_array.add(searchParameters.getFragmentIonAccuracy() + "");
+        process_name_array.add("-te");
+        process_name_array.add(searchParameters.getPrecursorAccuracy() + "");
+        if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
+            process_name_array.add("-teppm");
+        }
+        if (searchParameters.getEnzyme().getId() != -1) {
+            process_name_array.add("-e");
+            process_name_array.add(Integer.toString(searchParameters.getEnzyme().getId()));
+        }
+        if (searchParameters.getMinChargeSearched() != null) {
+            process_name_array.add("-zl");
+            process_name_array.add(Integer.toString(searchParameters.getMinChargeSearched().value));
+        }
+        if (searchParameters.getMaxChargeSearched() != null) {
+            process_name_array.add("-zh");
+            process_name_array.add(Integer.toString(searchParameters.getMaxChargeSearched().value));
+        }
+        if (omssaParameters.getMinimalChargeForMultipleChargedFragments() != null) {
+            process_name_array.add("-zt");
+            process_name_array.add(Integer.toString(omssaParameters.getMinimalChargeForMultipleChargedFragments().value));
+        }
+        if (omssaParameters.isMemoryMappedSequenceLibraries() != null && omssaParameters.isMemoryMappedSequenceLibraries()) {
+            process_name_array.add("-umm");
+        }
+        if (omssaParameters.getNumberOfItotopicPeaks() != null && omssaParameters.getNumberOfItotopicPeaks() > 0) {
+            process_name_array.add("-ti");
+            process_name_array.add(Integer.toString(omssaParameters.getNumberOfItotopicPeaks()));
+        }
+        if (omssaParameters.getNeutronThreshold() != null) {
+            process_name_array.add("-tex");
+            process_name_array.add(Double.toString(omssaParameters.getNeutronThreshold()));
+        }
+        if (omssaParameters.getLowIntensityCutOff() != null) {
+            process_name_array.add("-cl");
+            process_name_array.add(Double.toString(omssaParameters.getLowIntensityCutOff()));
+        }
+        if (omssaParameters.getHighIntensityCutOff() != null) {
+            process_name_array.add("-ch");
+            process_name_array.add(Double.toString(omssaParameters.getHighIntensityCutOff()));
+        }
+        if (omssaParameters.getIntensityCutOffIncrement() != null) {
+            process_name_array.add("-ci");
+            process_name_array.add(Double.toString(omssaParameters.getIntensityCutOffIncrement()));
+        }
+        if (omssaParameters.getSingleChargeWindow() != null) {
+            process_name_array.add("-w1");
+            process_name_array.add(Integer.toString(omssaParameters.getSingleChargeWindow()));
+        }
+        if (omssaParameters.getDoubleChargeWindow() != null) {
+            process_name_array.add("-w2");
+            process_name_array.add(Integer.toString(omssaParameters.getDoubleChargeWindow()));
+        }
+        if (omssaParameters.getnPeaksInSingleChargeWindow() != null) {
+            process_name_array.add("-h1");
+            process_name_array.add(Integer.toString(omssaParameters.getnPeaksInSingleChargeWindow()));
+        }
+        if (omssaParameters.getnPeaksInDoubleChargeWindow() != null) {
+            process_name_array.add("-h2");
+            process_name_array.add(Integer.toString(omssaParameters.getnPeaksInDoubleChargeWindow()));
+        }
+        if (omssaParameters.getMaxHitsPerSpectrumPerCharge() != null) {
+            process_name_array.add("-hl");
+            process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
+        }
+        if (omssaParameters.getHitListLength() != null && omssaParameters.getHitListLength() > 0) {
+            process_name_array.add("-hc");
+            process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
+        }
+        if (omssaParameters.getMinAnnotatedPeaks() != null) {
+            process_name_array.add("-hm");
+            process_name_array.add(Integer.toString(omssaParameters.getMinAnnotatedPeaks()));
+        }
+        if (omssaParameters.getMinPeaks() != null) {
+            process_name_array.add("-hs");
+            process_name_array.add(Integer.toString(omssaParameters.getMinPeaks()));
+        }
+        if (omssaParameters.getnAnnotatedMostIntensePeaks() != null) {
+            process_name_array.add("-ht");
+            process_name_array.add(Integer.toString(omssaParameters.getnAnnotatedMostIntensePeaks()));
+        }
+        if (omssaParameters.isCleaveNterMethionine() != null && !omssaParameters.isCleaveNterMethionine()) {
+            process_name_array.add("-mnm");
+        }
+        if (omssaParameters.getMaxMzLadders() != null) {
+            process_name_array.add("-mm");
+            process_name_array.add(Integer.toString(omssaParameters.getMaxMzLadders()));
+        }
+        if (omssaParameters.getMaxFragmentCharge() != null) {
+            process_name_array.add("-zoh");
+            process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentCharge()));
+        }
+        if (omssaParameters.getFractionOfPeaksForChargeEstimation() != null) {
+            process_name_array.add("-z1");
+            process_name_array.add(Double.toString(omssaParameters.getFractionOfPeaksForChargeEstimation()));
+        }
+        if (omssaParameters.isDetermineChargePlusOneAlgorithmically() != null && !omssaParameters.isDetermineChargePlusOneAlgorithmically()) {
+            process_name_array.add("-zc");
+            process_name_array.add(Integer.toString(0));
+        }
+        if (omssaParameters.isSearchPositiveIons() != null && !omssaParameters.isSearchPositiveIons()) {
+            process_name_array.add("-zn");
+            process_name_array.add(Integer.toString(-1));
+        }
+        if (omssaParameters.getMinPrecPerSpectrum() != null) {
+            process_name_array.add("-pc");
+            process_name_array.add(Integer.toString(omssaParameters.getMinPrecPerSpectrum()));
+        }
+        if (omssaParameters.isSearchForwardFragmentFirst() != null && !omssaParameters.isSearchForwardFragmentFirst()) {
+            process_name_array.add("-sb1");
+            process_name_array.add(Integer.toString(0));
+        }
+        if (omssaParameters.isSearchRewindFragments() != null && !omssaParameters.isSearchRewindFragments()) {
+            process_name_array.add("-sct");
+            process_name_array.add(Integer.toString(1));
+        }
+        if (omssaParameters.getMaxFragmentPerSeries() != null) {
+            process_name_array.add("-sp");
+            process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentPerSeries()));
+        }
+        if (omssaParameters.isUseCorrelationCorrectionScore() != null && !omssaParameters.isUseCorrelationCorrectionScore()) {
+            process_name_array.add("-scorr");
+            process_name_array.add(Integer.toString(1));
+        }
+        if (omssaParameters.getConsecutiveIonProbability() != null) {
+            process_name_array.add("-scorp");
+            process_name_array.add(Double.toString(omssaParameters.getConsecutiveIonProbability()));
+        }
+        if (omssaParameters.getIterativeSequenceEvalue() != null) {
+            process_name_array.add("-is");
+            process_name_array.add(Double.toString(omssaParameters.getIterativeSequenceEvalue()));
+        }
+        if (omssaParameters.getIterativeReplaceEvalue() != null) {
+            process_name_array.add("-ir");
+            process_name_array.add(Double.toString(omssaParameters.getIterativeReplaceEvalue()));
+        }
+        if (omssaParameters.getIterativeSpectrumEvalue() != null) {
+            process_name_array.add("-ii");
+            process_name_array.add(Double.toString(omssaParameters.getIterativeSpectrumEvalue()));
+        }
+        process_name_array.add("-v");
+        process_name_array.add(Integer.toString(searchParameters.getnMissedCleavages()));
+        process_name_array.add("-he");
+        process_name_array.add(Double.toString(omssaParameters.getMaxEValue()));
+        process_name_array.add("-tez");
+        if (omssaParameters.isScalePrecursor()) {
+            process_name_array.add("1");
+        } else {
             process_name_array.add("0");
-            process_name_array.add("-tem");
+        }
+        process_name_array.add("-zcc");
+        if (omssaParameters.isEstimateCharge()) {
+            process_name_array.add("2");
+        } else {
+            process_name_array.add("1");
+        }
+        process_name_array.add("-cp");
+        if (omssaParameters.isRemovePrecursor()) {
+            process_name_array.add("1");
+        } else {
             process_name_array.add("0");
-            // look for b and y ions
-            process_name_array.add("-i");
-            process_name_array.add(getIonId(PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched1())) + ","
-                    + getIonId(PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched2()))); // @TODO: add support for more ion types...
+        }
+        if (omssaParameters.getMinPeptideLength() != null) { // @TODO: these have to to be set if using no-enzyme or semi-enyzyme searches!!
+            process_name_array.add("-no");
+            process_name_array.add(omssaParameters.getMinPeptideLength().toString());
+        }
+        if (omssaParameters.getMaxPeptideLength() != null) {
+            process_name_array.add("-nox");
+            process_name_array.add(omssaParameters.getMaxPeptideLength().toString());
+        }
 
-            String modificationIndexes = "";
-            for (Integer index : getSearchedModificationsIds(modificationProfile.getFixedModifications(), omssaParameters)) {
-                if (!modificationIndexes.equals("")) {
-                    modificationIndexes += ",";
-                }
-                modificationIndexes += index;
-            }
+        // look for monoisotopic peaks
+        process_name_array.add("-tom");
+        process_name_array.add("0");
+        process_name_array.add("-tem");
+        process_name_array.add("0");
+        // look for b and y ions
+        process_name_array.add("-i");
+        process_name_array.add(getIonId(PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched1())) + ","
+                + getIonId(PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched2()))); // @TODO: add support for more ion types...
+
+        String modificationIndexes = "";
+        for (Integer index : getSearchedModificationsIds(modificationProfile.getFixedModifications(), omssaParameters)) {
             if (!modificationIndexes.equals("")) {
-                process_name_array.add("-mf");
-                process_name_array.add(modificationIndexes);
+                modificationIndexes += ",";
             }
-            modificationIndexes = "";
-            for (Integer index : getSearchedModificationsIds(modificationProfile.getVariableModifications(), omssaParameters)) {
-                if (!modificationIndexes.equals("")) {
-                    modificationIndexes += ",";
-                }
-                modificationIndexes += index;
-            }
+            modificationIndexes += index;
+        }
+        if (!modificationIndexes.equals("")) {
+            process_name_array.add("-mf");
+            process_name_array.add(modificationIndexes);
+        }
+        modificationIndexes = "";
+        for (Integer index : getSearchedModificationsIds(modificationProfile.getVariableModifications(), omssaParameters)) {
             if (!modificationIndexes.equals("")) {
-                process_name_array.add("-mv");
-                process_name_array.add(modificationIndexes);
+                modificationIndexes += ",";
             }
-            process_name_array.add("-d");
-            process_name_array.add(seqDBFile.getName());
-            if (spectraFile != null) {
-                if (spectraFile.toLowerCase().endsWith(".mgf")) {
-                    process_name_array.add("-fm");
-                } else if (spectraFile.toLowerCase().endsWith(".pkl")) {
-                    process_name_array.add("-fp");
-                } else if (spectraFile.toLowerCase().endsWith(".dta")) {
-                    process_name_array.add("-f");
-                }
-                process_name_array.add(spectraFile);
+            modificationIndexes += index;
+        }
+        if (!modificationIndexes.equals("")) {
+            process_name_array.add("-mv");
+            process_name_array.add(modificationIndexes);
+        }
+        process_name_array.add("-d");
+        process_name_array.add(seqDBFile.getName());
+        if (spectraFile != null) {
+            if (spectraFile.toLowerCase().endsWith(".mgf")) {
+                process_name_array.add("-fm");
+            } else if (spectraFile.toLowerCase().endsWith(".pkl")) {
+                process_name_array.add("-fp");
+            } else if (spectraFile.toLowerCase().endsWith(".dta")) {
+                process_name_array.add("-f");
             }
-            if (outputFile != null) {
-                if (omssaParameters.getSelectedOutput().equals("OMX")) {
-                    process_name_array.add("-ox");
-                } else if (omssaParameters.getSelectedOutput().equals("CSV")) {
-                    process_name_array.add("-oc");
-                } else {
-                    process_name_array.add("-op");
-                }
-                process_name_array.add(CommandLineUtils.getCommandLineArgument(outputFile));
+            process_name_array.add(spectraFile);
+        }
+        if (outputFile != null) {
+            if (omssaParameters.getSelectedOutput().equals("OMX")) {
+                process_name_array.add("-ox");
+            } else if (omssaParameters.getSelectedOutput().equals("CSV")) {
+                process_name_array.add("-oc");
+            } else {
+                process_name_array.add("-op");
             }
+            process_name_array.add(CommandLineUtils.getCommandLineArgument(outputFile));
+        }
 
-            process_name_array.add("-nt");
-            process_name_array.add(Integer.toString(nThreads));
+        process_name_array.add("-nt");
+        process_name_array.add(Integer.toString(nThreads));
 
-            process_name_array.trimToSize();
+        process_name_array.trimToSize();
 
-            // print the command to the log file
-            System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "omssa command: ");
+        // print the command to the log file
+        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "omssa command: ");
 
-            for (int i = 0; i < process_name_array.size(); i++) {
-                System.out.print(process_name_array.get(i) + " ");
-            }
+        for (int i = 0; i < process_name_array.size(); i++) {
+            System.out.print(process_name_array.get(i) + " ");
+        }
 
-            System.out.println(System.getProperty("line.separator"));
+        System.out.println(System.getProperty("line.separator"));
 
-            pb = new ProcessBuilder(process_name_array);
+        pb = new ProcessBuilder(process_name_array);
 
-            pb.directory(dbFilePath);
+        pb.directory(dbFilePath);
 
-            // set error out and std out to same stream
-            pb.redirectErrorStream(true);
+        // set error out and std out to same stream
+        pb.redirectErrorStream(true);
     }
 
     @Override
@@ -370,7 +370,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * modification names.
      *
      * @param modificationsNames the modification names
-     * @param omssaParameters the omssa parameters
+     * @param omssaParameters the OMSSA parameters
      *
      * @return the corresponding list of OMSSA modification indexes
      */

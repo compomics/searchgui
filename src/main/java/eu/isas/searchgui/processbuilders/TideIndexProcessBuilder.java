@@ -50,9 +50,8 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @throws IOException thrown of there are problems creating the Tide
      * parameter file
-     * @throws SecurityException
      */
-    public TideIndexProcessBuilder(File tideFolder, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException, SecurityException {
+    public TideIndexProcessBuilder(File tideFolder, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
