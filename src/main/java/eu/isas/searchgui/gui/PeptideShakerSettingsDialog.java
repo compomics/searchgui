@@ -643,7 +643,8 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             searchGUI.getLastSelectedFolder().setLastSelectedFolder(new File(outputFileTextField.getText()).getParentFile().getAbsolutePath());
         }
 
-        File selectedFile = Util.getUserSelectedFile(this, ".cpsx", "Compomics Peptide Shaker format (*.cpsx)", "Select PeptideShaker Output", searchGUI.getLastSelectedFolder().getLastSelectedFolder(), false);
+        File selectedFile = Util.getUserSelectedFile(this, ".cpsx", "Compomics Peptide Shaker format (*.cpsx)", "Select PeptideShaker Output", 
+                searchGUI.getLastSelectedFolder().getLastSelectedFolder(), "PeptideShaker_output.cpsx", false);
 
         if (selectedFile != null) {
             if (!selectedFile.getName().endsWith(".cpsx")) {
