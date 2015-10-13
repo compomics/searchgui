@@ -735,7 +735,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getType() {
-        return "Comet Process";
+        return "Comet";
     }
 
     @Override

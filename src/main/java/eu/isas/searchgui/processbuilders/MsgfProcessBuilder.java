@@ -334,7 +334,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @return the type of the process
      */
     public String getType() {
-        return "MS-GF+ Process";
+        return "MS-GF+";
     }
 
     /**

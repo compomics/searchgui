@@ -383,7 +383,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      * @return the type of the process
      */
     public String getType() {
-        return "MyriMatch Process";
+        return "MyriMatch";
     }
 
     /**

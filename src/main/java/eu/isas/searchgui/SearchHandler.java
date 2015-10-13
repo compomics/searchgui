@@ -232,6 +232,10 @@ public class SearchHandler {
      */
     private MsConvertProcessBuilder msConvertProcessBuilder = null;
     /**
+     * The makeblastdb process.
+     */
+    private MakeblastdbProcessBuilder makeblastdbProcessBuilder = null;
+    /**
      * The OMSSA process.
      */
     private OmssaclProcessBuilder omssaProcessBuilder = null;
@@ -1661,6 +1665,15 @@ public class SearchHandler {
             if (currentProcess != null) {
                 currentProcess.endProcess();
             }
+            
+            // stop makeblastdb and ms convert
+            if (msConvertProcessBuilder != null) {
+                msConvertProcessBuilder.endProcess();
+            }
+            if (makeblastdbProcessBuilder != null) {
+                msConvertProcessBuilder.endProcess();
+            }
+            
             // stop the search engines and peptide shaker
             if (omssaProcessBuilder != null) {
                 omssaProcessBuilder.endProcess();
@@ -1692,6 +1705,7 @@ public class SearchHandler {
             if (peptideShakerProcessBuilder != null) {
                 peptideShakerProcessBuilder.endProcess();
             }
+            
             // stop the building of the tree
             if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
                 proteinTreeWorker.cancelBuild();
@@ -1725,24 +1739,24 @@ public class SearchHandler {
 
                 if (enableOmssa) {
                     // call Makeblastdb class, check if run before and then start process
-                    MakeblastdbProcessBuilder fpb = new MakeblastdbProcessBuilder(getJarFilePath(), dbFile, makeblastdbLocation, waitingHandler, exceptionHandler);
+                    makeblastdbProcessBuilder = new MakeblastdbProcessBuilder(getJarFilePath(), dbFile, makeblastdbLocation, waitingHandler, exceptionHandler);
 
-                    if (fpb.needsFormatting()) {
+                    if (makeblastdbProcessBuilder.needsFormatting()) {
 
                         // @TODO: should the MS-GF+ database formatting be done here as well..?
                         if (waitingHandler != null) {
                             if (!useCommandLine) {
-                                waitingHandler.setWaitingText("Formatting " + fpb.getCurrentlyProcessedFileName() + " for OMSSA.");
+                                waitingHandler.setWaitingText("Formatting " + makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " for OMSSA.");
                             }
-                            waitingHandler.appendReport("Formatting " + fpb.getCurrentlyProcessedFileName() + " for OMSSA.", true, true);
+                            waitingHandler.appendReport("Formatting " + makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " for OMSSA.", true, true);
                             waitingHandler.appendReportEndLine();
                         }
 
-                        currentProcess = fpb;
-                        fpb.startProcess();
+                        currentProcess = makeblastdbProcessBuilder;
+                        makeblastdbProcessBuilder.startProcess();
 
                         if (waitingHandler != null) {
-                            waitingHandler.appendReport(fpb.getCurrentlyProcessedFileName() + " formatted for OMSSA.", true, true);
+                            waitingHandler.appendReport(makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " formatted for OMSSA.", true, true);
                             waitingHandler.appendReportEndLine();
                         }
                     }
@@ -1823,9 +1837,12 @@ public class SearchHandler {
                     tideIndexProcessBuilder.startProcess();
                 }
 
-                // Convert raw files
-                ExecutorService pool = Executors.newFixedThreadPool(1); // @TODO: use line below for parallel processing
-//                ExecutorService pool = Executors.newFixedThreadPool(nThreads);
+                // convert raw files
+                ExecutorService pool = Executors.newFixedThreadPool(nThreads);
+                
+                waitingHandler.resetSecondaryProgressCounter();
+                waitingHandler.setMaxSecondaryProgressCounter(getRawFiles().size() * 100);
+                
                 for (int i = 0; i < getRawFiles().size() && !waitingHandler.isRunCanceled(); i++) {
                     File rawFile = getRawFiles().get(i);
                     String rawFileName = rawFile.getName();
@@ -1835,9 +1852,7 @@ public class SearchHandler {
                     if (!mgfFile.exists()) {
                         msConvertProcessBuilder = new MsConvertProcessBuilder(waitingHandler, exceptionHandler, rawFile, folder, getMsConvertParameters());
                         currentProcess = msConvertProcessBuilder;
-
                         pool.submit(msConvertProcessBuilder);
-
                         // @TODO: validate the mgf file!
                     } else {
                         waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
@@ -1846,18 +1861,28 @@ public class SearchHandler {
                     mgfFiles.add(mgfFile);
                 }
                 if (waitingHandler != null && waitingHandler.isRunCanceled()) {
-                    pool.shutdownNow();
+                    pool.shutdownNow(); // @TODO: this does not shut down the external processes, only the thread itself...
                 } else {
                     pool.shutdown();
                     if (!pool.awaitTermination(7, TimeUnit.DAYS)) {
                         throw new InterruptedException("PSM validation timed out. Please contact the developers.");
                     }
                 }
+                
+                waitingHandler.setSecondaryProgressCounterIndeterminate(true);
+                
+                // indexing the spectrum files
+                waitingHandler.appendReportEndLine();
+                waitingHandler.appendReport("Indexing spectrum files.", true, true);
                 SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
                 for (File mgfFile : mgfFiles) {
                     spectrumFactory.addSpectra(mgfFile);
                 }
 
+                // indexing the spectrum files
+                waitingHandler.appendReport("Extracting search settings.", true, true);
+                waitingHandler.appendReportEndLine();
+                
                 File parametersOutputFile = null;
 
                 if (!waitingHandler.isRunCanceled()) {

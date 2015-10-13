@@ -877,7 +877,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return the type of the process
      */
     public String getType() {
-        return "X!Tandem Process";
+        return "X!Tandem";
     }
 
     /**

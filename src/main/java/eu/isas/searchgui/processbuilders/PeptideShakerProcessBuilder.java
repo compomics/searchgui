@@ -273,7 +273,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getType() {
-        return "PeptideShaker Process";
+        return "PeptideShaker";
     }
 
     @Override

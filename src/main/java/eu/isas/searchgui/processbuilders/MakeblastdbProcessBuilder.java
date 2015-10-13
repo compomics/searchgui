@@ -217,7 +217,7 @@ public class MakeblastdbProcessBuilder extends SearchGUIProcessBuilder {
      * @return the type of the process
      */
     public String getType() {
-        return "Database Formating Process";
+        return "Database Formating";
     }
 
     /**

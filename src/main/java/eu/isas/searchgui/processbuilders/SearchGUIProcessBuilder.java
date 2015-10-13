@@ -83,7 +83,7 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-            if (getType().equalsIgnoreCase("Comet Process")) {
+            if (getType().equalsIgnoreCase("Comet")) {
 
                 Scanner scan = new Scanner(inputStream);
                 scan.useDelimiter("\n|\b ");
@@ -97,7 +97,7 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                     }
                     lastString = temp;
                 }
-            } else if (getType().equalsIgnoreCase("msConvert Process")) {
+            } else if (getType().equalsIgnoreCase("msconvert")) {
 
                 boolean progressOutputStarted = false;
 
@@ -106,29 +106,37 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                 // get input from stream
                 while ((line = bufferedReader.readLine()) != null) {
 
-                    if (progressOutputStarted && line.lastIndexOf("/") != -1) {
+                    if (line.startsWith("processing file:") || line.startsWith("writing output file:")) {
+                        waitingHandler.appendReport(line, false, true);
 
-                        String[] progress = line.split("/");
-
-                        if (waitingHandler.getMaxSecondaryProgressCounter() != Integer.parseInt(progress[1].trim())) {
-                            waitingHandler.setMaxSecondaryProgressCounter(Integer.parseInt(progress[1].trim()));
+                        if (line.startsWith("writing output file:")) {
+                            progressOutputStarted = true;
+                            waitingHandler.setSecondaryProgressCounterIndeterminate(false);
                         }
 
-                        waitingHandler.setSecondaryProgressCounter(Integer.parseInt(progress[0].trim()));
-
                     } else {
-                        waitingHandler.appendReport(line, false, true);
-                    }
 
-                    if (line.startsWith("writing output file:")) {
-                        progressOutputStarted = true;
-                        waitingHandler.resetSecondaryProgressCounter();
-                        waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                        if (progressOutputStarted && line.lastIndexOf("/") != -1) {
+
+                            String[] progress = line.split("/");
+
+                            try {
+                                int currentValue = Integer.parseInt(progress[0].trim());
+                                int maxValue = Integer.parseInt(progress[1].trim());
+                                int msConvertProgressFrequency = 100;
+
+                                int previousProgressPercentage = (int) Math.floor(((((double) (currentValue - msConvertProgressFrequency)) / maxValue) * 100));
+                                int currentProgressPercentage = (int) Math.floor(((((double) currentValue) / maxValue) * 100));
+
+                                if (currentValue != 1 && previousProgressPercentage != currentProgressPercentage) {
+                                    waitingHandler.increaseSecondaryProgressCounter();
+                                }
+                            } catch (NumberFormatException e) {
+                                // ignore
+                            }
+                        }
                     }
                 }
-
-                waitingHandler.setSecondaryProgressCounterIndeterminate(true);
-
             } else {
                 String line;
 
@@ -162,7 +170,7 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                 processDuration.end();
                 waitingHandler.appendReportEndLine();
                 waitingHandler.appendReportEndLine();
-                waitingHandler.appendReport(getType() + " Finished (" + processDuration.toString() + ").", true, true);
+                waitingHandler.appendReport(getType() + " finished for " + getCurrentlyProcessedFileName() +  " (" + processDuration.toString() + ").", true, true);
                 waitingHandler.appendReportEndLine();
 
                 // wait for process to terminate before exiting

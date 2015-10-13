@@ -1496,7 +1496,7 @@
           <SubComponents>
             <Component class="javax.swing.JCheckBox" name="msconvertCheckBox">
               <Properties>
-                <Property name="toolTipText" type="java.lang.String" value="Enable MSConvert"/>
+                <Property name="toolTipText" type="java.lang.String" value="Enable msconvert"/>
                 <Property name="iconTextGap" type="int" value="15"/>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
@@ -1506,7 +1506,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="msconvertLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;msConvert File Conversion - &lt;a href=&quot;http://proteowizard.sourceforge.net/downloads.shtml&quot;&gt;ProteoWizard web page&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;msconvert File Conversion - &lt;a href=&quot;http://proteowizard.sourceforge.net/downloads.shtml&quot;&gt;ProteoWizard web page&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the ProteoWizard web page"/>
               </Properties>
               <Events>
@@ -1532,7 +1532,7 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit msConvert Settings"/>
+                <Property name="toolTipText" type="java.lang.String" value="Edit msconvert Settings"/>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>

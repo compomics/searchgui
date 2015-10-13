@@ -333,7 +333,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getType() {
-        return "OMSSA Process";
+        return "OMSSA";
     }
 
     @Override

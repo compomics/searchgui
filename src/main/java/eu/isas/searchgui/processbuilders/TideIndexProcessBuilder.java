@@ -367,7 +367,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getType() {
-        return "Tide Indexing Process";
+        return "Tide Indexing";
     }
 
     @Override

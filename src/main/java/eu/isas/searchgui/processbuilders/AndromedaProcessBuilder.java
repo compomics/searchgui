@@ -716,7 +716,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getType() {
-        return "Andromeda Process";
+        return "Andromeda";
     }
 
     @Override

@@ -1626,7 +1626,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         preProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Pre Processing (beta)"));
         preProcessingPanel.setOpaque(false);
 
-        msconvertCheckBox.setToolTipText("Enable MSConvert");
+        msconvertCheckBox.setToolTipText("Enable msconvert");
         msconvertCheckBox.setIconTextGap(15);
         msconvertCheckBox.setOpaque(false);
         msconvertCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -1635,7 +1635,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msconvertLabel.setText("<html>msConvert File Conversion - <a href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
+        msconvertLabel.setText("<html>msconvert File Conversion - <a href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
         msconvertLabel.setToolTipText("Open the ProteoWizard web page");
         msconvertLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1655,7 +1655,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msconvertButton.setContentAreaFilled(false);
 
         msconvertSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        msconvertSettingsButton.setToolTipText("Edit msConvert Settings");
+        msconvertSettingsButton.setToolTipText("Edit msconvert Settings");
         msconvertSettingsButton.setBorder(null);
         msconvertSettingsButton.setBorderPainted(false);
         msconvertSettingsButton.setContentAreaFilled(false);
@@ -2132,14 +2132,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (!rawFiles.isEmpty() && msConvertParameters.getMsFormat() != MsFormat.mgf) {
             JOptionPane.showMessageDialog(this,
                     "Mgf is the only spectrum format compatible with SearchGUI.\n\n"
-                    + "Please change the output format for msConvert.",
+                    + "Please change the output format for msconvert.",
                     "Output Format Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 //        if (!rawFiles.isEmpty() && peptideShakerCheckBox.isSelected() && msConvertParameters.getMsFormat() != MsFormat.mgf) {
 //            JOptionPane.showMessageDialog(this,
 //                    "Mgf is the only spectrum format compatible with PeptideShaker.\n\n"
-//                    + "Please change the output for msConvert or disable PeptideShaker.",
+//                    + "Please change the output for msconvert or disable PeptideShaker.",
 //                    "Output Format Warning", JOptionPane.WARNING_MESSAGE);
 //            return;
 //        }

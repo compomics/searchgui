@@ -287,7 +287,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @return the type of the process
      */
     public String getType() {
-        return "MS Amanda Process";
+        return "MS Amanda";
     }
 
     /**
