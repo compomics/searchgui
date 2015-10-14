@@ -127,9 +127,11 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public void startProcess() throws IOException {
-        waitingHandler.appendReport("Processing " + rawFile.getName() + " with msconvert.", true, true);
-        waitingHandler.appendReportEndLine();
-        super.startProcess();
+        if (!waitingHandler.isRunCanceled()) {
+            waitingHandler.appendReport("Processing " + rawFile.getName() + " with msconvert.", true, true);
+            waitingHandler.appendReportEndLine();
+            super.startProcess();
+        }
     }
 
     @Override

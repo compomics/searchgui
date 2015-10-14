@@ -50,7 +50,9 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
     @Override
     public void run() {
         try {
-            startProcess();
+            if (waitingHandler == null || !waitingHandler.isRunCanceled()) {
+                startProcess();
+            }
         } catch (Exception e) {
             exceptionHandler.catchException(e);
         }
@@ -66,119 +68,121 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
      */
     public void startProcess() throws IOException {
 
-        Duration processDuration = new Duration();
-        processDuration.start();
+        if (waitingHandler == null || !waitingHandler.isRunCanceled()) {
+            Duration processDuration = new Duration();
+            processDuration.start();
 
-        p = null;
-        try {
-            p = pb.start();
-        } catch (IOException ioe) {
-            System.out.println(ioe.getMessage());
-            ioe.printStackTrace();
-        }
+            p = null;
+            try {
+                p = pb.start();
+            } catch (IOException ioe) {
+                System.out.println(ioe.getMessage());
+                ioe.printStackTrace();
+            }
 
-        // get inputstream from process
-        InputStream inputStream = p.getInputStream();
+            // get inputstream from process
+            InputStream inputStream = p.getInputStream();
 
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-            if (getType().equalsIgnoreCase("Comet")) {
+                if (getType().equalsIgnoreCase("Comet")) {
 
-                Scanner scan = new Scanner(inputStream);
-                scan.useDelimiter("\n|\b ");
-                String lastString = "";
+                    Scanner scan = new Scanner(inputStream);
+                    scan.useDelimiter("\n|\b ");
+                    String lastString = "";
 
-                // get input from scanner, send to std out and text box
-                while (scan.hasNext() && !waitingHandler.isRunCanceled()) {
-                    String temp = scan.next();
-                    if (!lastString.contains(temp)) {
-                        waitingHandler.appendReport(temp + " ", false, temp.lastIndexOf("%") == -1 || temp.lastIndexOf("100%") != -1);
-                    }
-                    lastString = temp;
-                }
-            } else if (getType().equalsIgnoreCase("msconvert")) {
-
-                boolean progressOutputStarted = false;
-
-                String line;
-
-                // get input from stream
-                while ((line = bufferedReader.readLine()) != null) {
-
-                    if (line.startsWith("processing file:") || line.startsWith("writing output file:")) {
-                        waitingHandler.appendReport(line, false, true);
-
-                        if (line.startsWith("writing output file:")) {
-                            progressOutputStarted = true;
-                            waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                    // get input from scanner, send to std out and text box
+                    while (scan.hasNext() && !waitingHandler.isRunCanceled()) {
+                        String temp = scan.next();
+                        if (!lastString.contains(temp)) {
+                            waitingHandler.appendReport(temp + " ", false, temp.lastIndexOf("%") == -1 || temp.lastIndexOf("100%") != -1);
                         }
+                        lastString = temp;
+                    }
+                } else if (getType().equalsIgnoreCase("msconvert")) {
 
-                    } else {
+                    boolean progressOutputStarted = false;
 
-                        if (progressOutputStarted && line.lastIndexOf("/") != -1) {
+                    String line;
 
-                            String[] progress = line.split("/");
+                    // get input from stream
+                    while ((line = bufferedReader.readLine()) != null) {
 
-                            try {
-                                int currentValue = Integer.parseInt(progress[0].trim());
-                                int maxValue = Integer.parseInt(progress[1].trim());
-                                int msConvertProgressFrequency = 100;
+                        if (line.startsWith("processing file:") || line.startsWith("writing output file:")) {
+                            waitingHandler.appendReport(line, false, true);
 
-                                int previousProgressPercentage = (int) Math.floor(((((double) (currentValue - msConvertProgressFrequency)) / maxValue) * 100));
-                                int currentProgressPercentage = (int) Math.floor(((((double) currentValue) / maxValue) * 100));
+                            if (line.startsWith("writing output file:")) {
+                                progressOutputStarted = true;
+                                waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                            }
 
-                                if (currentValue != 1 && previousProgressPercentage != currentProgressPercentage) {
-                                    waitingHandler.increaseSecondaryProgressCounter();
+                        } else {
+
+                            if (progressOutputStarted && line.lastIndexOf("/") != -1) {
+
+                                String[] progress = line.split("/");
+
+                                try {
+                                    int currentValue = Integer.parseInt(progress[0].trim());
+                                    int maxValue = Integer.parseInt(progress[1].trim());
+                                    int msConvertProgressFrequency = 100;
+
+                                    int previousProgressPercentage = (int) Math.floor(((((double) (currentValue - msConvertProgressFrequency)) / maxValue) * 100));
+                                    int currentProgressPercentage = (int) Math.floor(((((double) currentValue) / maxValue) * 100));
+
+                                    if (currentValue != 1 && previousProgressPercentage != currentProgressPercentage) {
+                                        waitingHandler.increaseSecondaryProgressCounter();
+                                    }
+                                } catch (NumberFormatException e) {
+                                    // ignore
                                 }
-                            } catch (NumberFormatException e) {
-                                // ignore
                             }
                         }
                     }
-                }
-            } else {
-                String line;
+                } else {
+                    String line;
 
-                // get input from stream and check for errors
-                while ((line = bufferedReader.readLine()) != null) {
+                    // get input from stream and check for errors
+                    while ((line = bufferedReader.readLine()) != null) {
 
-                    line += System.getProperty("line.separator");
+                        line += System.getProperty("line.separator");
 
-                    if (line.lastIndexOf("<CompomicsError>") != -1) {
-                        waitingHandler.appendReportEndLine();
-                        line = line.substring("<CompomicsError>".length(), line.length() - ("</CompomicsError>".length() + 2));
-                        waitingHandler.appendReport(line, true, true);
-                        waitingHandler.setRunCanceled();
-                    } else {
-                        waitingHandler.appendReport(line, false, false);
+                        if (line.lastIndexOf("<CompomicsError>") != -1) {
+                            waitingHandler.appendReportEndLine();
+                            line = line.substring("<CompomicsError>".length(), line.length() - ("</CompomicsError>".length() + 2));
+                            waitingHandler.appendReport(line, true, true);
+                            waitingHandler.setRunCanceled();
+                        } else {
+                            waitingHandler.appendReport(line, false, false);
+                        }
                     }
                 }
-            }
 
-            inputStream.close();
-            bufferedReader.close();
-        } finally {
+                inputStream.close();
+                bufferedReader.close();
+            } finally {
 
-            // check if the user has cancelled the process or not
-            if (waitingHandler.isRunCanceled()) {
-                if (p != null) {
-                    p.destroy();
-                }
-            } else {
-
-                processDuration.end();
-                waitingHandler.appendReportEndLine();
-                waitingHandler.appendReportEndLine();
-                waitingHandler.appendReport(getType() + " finished for " + getCurrentlyProcessedFileName() +  " (" + processDuration.toString() + ").", true, true);
-                waitingHandler.appendReportEndLine();
-
-                // wait for process to terminate before exiting
-                try {
-                    p.waitFor();
-                } catch (InterruptedException e) {
+                // check if the user has cancelled the process or not
+                if (waitingHandler.isRunCanceled()) {
                     if (p != null) {
                         p.destroy();
+                    }
+                } else {
+
+                    processDuration.end();
+                    waitingHandler.appendReportEndLine();
+                    waitingHandler.appendReportEndLine();
+                    waitingHandler.appendReport(getType() + " finished for " + getCurrentlyProcessedFileName() + " (" + processDuration.toString() + ").", true, true);
+                    waitingHandler.appendReportEndLine();
+
+                    // wait for process to terminate before exiting
+                    try {
+                        p.waitFor();
+                    } catch (InterruptedException e) {
+                        if (p != null) {
+                            p.destroy();
+                        }
                     }
                 }
             }
