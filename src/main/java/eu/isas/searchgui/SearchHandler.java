@@ -1712,7 +1712,6 @@ public class SearchHandler {
         protected Object doInBackground() {
 
             try {
-
                 File outputFolder = getResultsFolder();
                 File outputTempFolder;
 
@@ -1836,7 +1835,7 @@ public class SearchHandler {
 
                 ArrayList<File> rawFiles = getRawFiles();
 
-                if (!rawFiles.isEmpty()) {
+                if (!rawFiles.isEmpty() && !waitingHandler.isRunCanceled()) {
 
                     waitingHandler.resetSecondaryProgressCounter();
                     waitingHandler.setMaxSecondaryProgressCounter(rawFiles.size() * 100);
@@ -1867,33 +1866,37 @@ public class SearchHandler {
                         }
                         mgfFiles.add(mgfFile);
                     }
-                    if (waitingHandler != null && waitingHandler.isRunCanceled()) {
-                        pool.shutdownNow(); // @TODO: this does not shut down the external processes, only the thread itself...
+
+                    if (waitingHandler.isRunCanceled()) {
+                        pool.shutdownNow();
                     } else {
                         pool.shutdown();
                         if (!pool.awaitTermination(1 * rawFiles.size(), TimeUnit.DAYS)) {
                             throw new InterruptedException("Conversion timed out. Please contact the developers.");
                         }
+
+                        if (rawFiles.size() > 1) {
+                            conversionDuration.end();
+                            waitingHandler.appendReport("Raw files conversion completed (" + conversionDuration.toString() + ").", true, true);
+                        }
                     }
-                    if (rawFiles.size() > 1) {
-                        conversionDuration.end();
-                        waitingHandler.appendReport("Raw files conversion completed (" + conversionDuration.toString() + ").", true, true);
-                    }
+
                     waitingHandler.setSecondaryProgressCounterIndeterminate(true);
-
                 }
 
-                // indexing the spectrum files
-                waitingHandler.appendReportEndLine();
-                waitingHandler.appendReport("Indexing spectrum files.", true, true);
-                SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
-                for (File mgfFile : mgfFiles) {
-                    spectrumFactory.addSpectra(mgfFile);
-                }
+                if (!waitingHandler.isRunCanceled()) {
+                    // indexing the spectrum files
+                    waitingHandler.appendReportEndLine();
+                    waitingHandler.appendReport("Indexing spectrum files.", true, true);
+                    SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+                    for (File mgfFile : mgfFiles) {
+                        spectrumFactory.addSpectra(mgfFile);
+                    }
 
-                // indexing the spectrum files
-                waitingHandler.appendReport("Extracting search settings.", true, true);
-                waitingHandler.appendReportEndLine();
+                    // indexing the spectrum files
+                    waitingHandler.appendReport("Extracting search settings.", true, true);
+                    waitingHandler.appendReportEndLine();
+                }
 
                 File parametersOutputFile = null;
 
@@ -1920,7 +1923,7 @@ public class SearchHandler {
                 // Keep track of the identification files created in a map: spectrum file name -> algorithm index -> identification file
                 HashMap<String, HashMap<Integer, File>> identificationFiles = new HashMap<String, HashMap<Integer, File>>(mgfFiles.size());
 
-                for (int i = 0; i < getMgfFiles().size(); i++) {
+                for (int i = 0; i < getMgfFiles().size() && !waitingHandler.isRunCanceled(); i++) {
 
                     File spectrumFile = getMgfFiles().get(i);
 
