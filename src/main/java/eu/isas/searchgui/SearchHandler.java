@@ -1875,7 +1875,7 @@ public class SearchHandler {
                             throw new InterruptedException("Conversion timed out. Please contact the developers.");
                         }
 
-                        if (rawFiles.size() > 1) {
+                        if (!waitingHandler.isRunCanceled() && rawFiles.size() > 1) {
                             conversionDuration.end();
                             waitingHandler.appendReport("Raw files conversion completed (" + conversionDuration.toString() + ").", true, true);
                         }
