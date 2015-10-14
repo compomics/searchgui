@@ -230,7 +230,7 @@ public class SearchHandler {
     /**
      * The msconvert process.
      */
-    private MsConvertProcessBuilder msConvertProcessBuilder = null;
+    private ArrayList<MsConvertProcessBuilder> msConvertProcessBuilders = null;
     /**
      * The makeblastdb process.
      */
@@ -1628,10 +1628,6 @@ public class SearchHandler {
     private class SearchWorker extends SwingWorker {
 
         /**
-         * The current process.
-         */
-        private SearchGUIProcessBuilder currentProcess = null;
-        /**
          * The waiting dialog.
          */
         private WaitingHandler waitingHandler;
@@ -1658,22 +1654,22 @@ public class SearchHandler {
          * Cancel the search.
          */
         public void cancelRun() {
+
             // start the cancelling of the process
             if (waitingHandler != null) {
                 waitingHandler.setWaitingText("Canceling");
             }
-            if (currentProcess != null) {
-                currentProcess.endProcess();
-            }
-            
+
             // stop makeblastdb and ms convert
-            if (msConvertProcessBuilder != null) {
-                msConvertProcessBuilder.endProcess();
-            }
             if (makeblastdbProcessBuilder != null) {
-                msConvertProcessBuilder.endProcess();
+                makeblastdbProcessBuilder.endProcess();
             }
-            
+            if (msConvertProcessBuilders != null) {
+                for (MsConvertProcessBuilder msConvertProcessBuilder : msConvertProcessBuilders) {
+                    msConvertProcessBuilder.endProcess();
+                }
+            }
+
             // stop the search engines and peptide shaker
             if (omssaProcessBuilder != null) {
                 omssaProcessBuilder.endProcess();
@@ -1705,7 +1701,7 @@ public class SearchHandler {
             if (peptideShakerProcessBuilder != null) {
                 peptideShakerProcessBuilder.endProcess();
             }
-            
+
             // stop the building of the tree
             if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
                 proteinTreeWorker.cancelBuild();
@@ -1716,6 +1712,7 @@ public class SearchHandler {
         protected Object doInBackground() {
 
             try {
+
                 File outputFolder = getResultsFolder();
                 File outputTempFolder;
 
@@ -1751,8 +1748,6 @@ public class SearchHandler {
                             waitingHandler.appendReport("Formatting " + makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " for OMSSA.", true, true);
                             waitingHandler.appendReportEndLine();
                         }
-
-                        currentProcess = makeblastdbProcessBuilder;
                         makeblastdbProcessBuilder.startProcess();
 
                         if (waitingHandler != null) {
@@ -1831,7 +1826,6 @@ public class SearchHandler {
                 if (enableTide && !waitingHandler.isRunCanceled()) {
                     // create the tide index
                     tideIndexProcessBuilder = new TideIndexProcessBuilder(tideLocation, searchParameters, waitingHandler, exceptionHandler);
-                    currentProcess = tideIndexProcessBuilder;
                     waitingHandler.appendReport("Indexing " + searchParameters.getFastaFile().getName() + " for Tide.", true, true);
                     waitingHandler.appendReportEndLine();
                     tideIndexProcessBuilder.startProcess();
@@ -1839,38 +1833,56 @@ public class SearchHandler {
 
                 // convert raw files
                 ExecutorService pool = Executors.newFixedThreadPool(nThreads);
-                
-                waitingHandler.resetSecondaryProgressCounter();
-                waitingHandler.setMaxSecondaryProgressCounter(getRawFiles().size() * 100);
-                
-                for (int i = 0; i < getRawFiles().size() && !waitingHandler.isRunCanceled(); i++) {
-                    File rawFile = getRawFiles().get(i);
-                    String rawFileName = rawFile.getName();
-                    File folder = rawFile.getParentFile();
-                    String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
-                    File mgfFile = new File(folder, mgfFileName);
-                    if (!mgfFile.exists()) {
-                        msConvertProcessBuilder = new MsConvertProcessBuilder(waitingHandler, exceptionHandler, rawFile, folder, getMsConvertParameters());
-                        currentProcess = msConvertProcessBuilder;
-                        pool.submit(msConvertProcessBuilder);
-                        // @TODO: validate the mgf file!
+
+                ArrayList<File> rawFiles = getRawFiles();
+
+                if (!rawFiles.isEmpty()) {
+
+                    waitingHandler.resetSecondaryProgressCounter();
+                    waitingHandler.setMaxSecondaryProgressCounter(rawFiles.size() * 100);
+
+                    msConvertProcessBuilders = new ArrayList<MsConvertProcessBuilder>();
+
+                    Duration conversionDuration = new Duration();
+                    if (rawFiles.size() > 1) {
+                        conversionDuration.start();
+                        waitingHandler.appendReport("Converting raw files.", true, true);
+                    }
+
+                    for (int i = 0; i < rawFiles.size() && !waitingHandler.isRunCanceled(); i++) {
+
+                        File rawFile = rawFiles.get(i);
+                        String rawFileName = rawFile.getName();
+                        File folder = rawFile.getParentFile();
+                        String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
+                        File mgfFile = new File(folder, mgfFileName);
+                        if (!mgfFile.exists()) {
+                            MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(waitingHandler, exceptionHandler, rawFile, folder, getMsConvertParameters());
+                            msConvertProcessBuilders.add(msConvertProcessBuilder);
+                            pool.submit(msConvertProcessBuilder);
+                            // @TODO: validate the mgf file!
+                        } else {
+                            waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
+                            waitingHandler.appendReportEndLine();
+                        }
+                        mgfFiles.add(mgfFile);
+                    }
+                    if (waitingHandler != null && waitingHandler.isRunCanceled()) {
+                        pool.shutdownNow(); // @TODO: this does not shut down the external processes, only the thread itself...
                     } else {
-                        waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
-                        waitingHandler.appendReportEndLine();
+                        pool.shutdown();
+                        if (!pool.awaitTermination(1 * rawFiles.size(), TimeUnit.DAYS)) {
+                            throw new InterruptedException("Conversion timed out. Please contact the developers.");
+                        }
                     }
-                    mgfFiles.add(mgfFile);
-                }
-                if (waitingHandler != null && waitingHandler.isRunCanceled()) {
-                    pool.shutdownNow(); // @TODO: this does not shut down the external processes, only the thread itself...
-                } else {
-                    pool.shutdown();
-                    if (!pool.awaitTermination(7, TimeUnit.DAYS)) {
-                        throw new InterruptedException("PSM validation timed out. Please contact the developers.");
+                    if (rawFiles.size() > 1) {
+                        conversionDuration.end();
+                        waitingHandler.appendReport("Raw files conversion completed (" + conversionDuration.toString() + ").", true, true);
                     }
+                    waitingHandler.setSecondaryProgressCounterIndeterminate(true);
+
                 }
-                
-                waitingHandler.setSecondaryProgressCounterIndeterminate(true);
-                
+
                 // indexing the spectrum files
                 waitingHandler.appendReportEndLine();
                 waitingHandler.appendReport("Indexing spectrum files.", true, true);
@@ -1882,7 +1894,7 @@ public class SearchHandler {
                 // indexing the spectrum files
                 waitingHandler.appendReport("Extracting search settings.", true, true);
                 waitingHandler.appendReportEndLine();
-                
+
                 File parametersOutputFile = null;
 
                 if (!waitingHandler.isRunCanceled()) {
@@ -1926,7 +1938,6 @@ public class SearchHandler {
                                 spectrumFile.getAbsolutePath(), xTandemOutputFile.getAbsolutePath(),
                                 searchParameters, waitingHandler, exceptionHandler, nThreads);
 
-                        currentProcess = xTandemProcessBuilder;
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.xtandem.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         xTandemProcessBuilder.startProcess();
@@ -1966,7 +1977,6 @@ public class SearchHandler {
                         File myriMatchOutputFile = new File(outputTempFolder, getMyriMatchFileName(spectrumFileName));
                         myriMatchProcessBuilder = new MyriMatchProcessBuilder(myriMatchLocation,
                                 spectrumFile.getAbsolutePath(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler, nThreads);
-                        currentProcess = myriMatchProcessBuilder;
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.myriMatch.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         myriMatchProcessBuilder.startProcess();
@@ -1992,7 +2002,6 @@ public class SearchHandler {
                         String filePath = msAmandaOutputFile.getAbsolutePath();
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(msAmandaLocation,
                                 spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, exceptionHandler, nThreads);
-                        currentProcess = msAmandaProcessBuilder;
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msAmanda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msAmandaProcessBuilder.startProcess();
@@ -2016,7 +2025,6 @@ public class SearchHandler {
                         File msgfOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".msgf.mzid");
                         msgfProcessBuilder = new MsgfProcessBuilder(msgfLocation,
                                 spectrumFile.getAbsolutePath(), msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, nThreads, useCommandLine);
-                        currentProcess = msgfProcessBuilder;
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msgfProcessBuilder.startProcess();
@@ -2040,7 +2048,6 @@ public class SearchHandler {
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
                         omssaProcessBuilder = new OmssaclProcessBuilder(omssaLocation,
                                 spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler, nThreads);
-                        currentProcess = omssaProcessBuilder;
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         omssaProcessBuilder.startProcess();
@@ -2075,7 +2082,6 @@ public class SearchHandler {
                             cometOutputFile.delete();
                         }
                         cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, ms2File, waitingHandler, exceptionHandler, nThreads);
-                        currentProcess = cometProcessBuilder;
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         cometProcessBuilder.startProcess();
@@ -2107,7 +2113,6 @@ public class SearchHandler {
                         // perform the tide search
                         if (!waitingHandler.isRunCanceled()) {
                             tideSearchProcessBuilder = new TideSearchProcessBuilder(tideLocation, searchParameters, ms2File, waitingHandler, exceptionHandler);
-                            currentProcess = tideSearchProcessBuilder;
                             waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.tide.getName() + ".", true, true);
                             waitingHandler.appendReportEndLine();
                             tideSearchProcessBuilder.startProcess();
@@ -2147,7 +2152,6 @@ public class SearchHandler {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
                         andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, aplFile, waitingHandler, exceptionHandler, nThreads);
-                        currentProcess = andromedaProcessBuilder;
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         andromedaProcessBuilder.startProcess();
@@ -2320,7 +2324,6 @@ public class SearchHandler {
                             peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                     waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
                                     searchParameters, peptideShakerFile, true, idFilter, processingPreferences, ptmScoringPreferences, idMatchValidationPreferences, genePreferences, outputData);
-                            currentProcess = peptideShakerProcessBuilder;
                             waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
                             // cancel the protein tree if not done
