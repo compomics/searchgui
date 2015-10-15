@@ -4697,7 +4697,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         final SearchGUI finalRef = this;
 
-        final ArrayList<File> mgfFiles = files;
+        final ArrayList<File> originalMgfFiles = new ArrayList<File>(files);
 
         new Thread(new Runnable() {
             public void run() {
@@ -4712,7 +4712,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         new Thread("SplitThread") {
             @Override
             public void run() {
-                for (File originalFile : mgfFiles) {
+                for (File originalFile : originalMgfFiles) {
 
                     if (progressDialog.isRunCanceled()) {
                         break;
