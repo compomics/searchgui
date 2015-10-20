@@ -17,8 +17,8 @@ import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.PTMScoringPreferences;
 import com.compomics.util.preferences.PSProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
-import com.compomics.util.preferences.gui.ImportSettingsDialog;
-import com.compomics.util.preferences.gui.ProcessingPreferencesDialog;
+import com.compomics.util.gui.parameters.ProcessingPreferencesDialog;
+import com.compomics.util.gui.parameters.identification_parameters.MatchesImportFiltersDialog;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.File;
@@ -131,7 +131,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
                             JOptionPane.YES_NO_CANCEL_OPTION);
                     if (option == JOptionPane.YES_OPTION) {
                         boolean success = downloadPeptideShaker();
-                        
+
                         if (success) {
                             utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
                             peptideShakerInstallationJTextField.setText(utilitiesUserPreferences.getPeptideShakerPath());
@@ -643,7 +643,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             searchGUI.getLastSelectedFolder().setLastSelectedFolder(new File(outputFileTextField.getText()).getParentFile().getAbsolutePath());
         }
 
-        File selectedFile = Util.getUserSelectedFile(this, ".cpsx", "Compomics Peptide Shaker format (*.cpsx)", "Select PeptideShaker Output", 
+        File selectedFile = Util.getUserSelectedFile(this, ".cpsx", "Compomics Peptide Shaker format (*.cpsx)", "Select PeptideShaker Output",
                 searchGUI.getLastSelectedFolder().getLastSelectedFolder(), "PeptideShaker_output.cpsx", false);
 
         if (selectedFile != null) {
@@ -787,7 +787,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void editImportFilterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editImportFilterButtonActionPerformed
-        ImportSettingsDialog importSettingsDialog = new ImportSettingsDialog(this, searchGUI.getSearchHandler().getIdFilter(), true);
+        MatchesImportFiltersDialog importSettingsDialog = new MatchesImportFiltersDialog(searchGUI, searchGUI.getSearchHandler().getIdFilter(), true);
         PeptideAssumptionFilter tempFilter = importSettingsDialog.getFilter();
         if (tempFilter != null) {
             setIdFilter(tempFilter);
@@ -803,8 +803,10 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
     private void editPreferencesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesButtonActionPerformed
         IdentificationParameters identificationParameters = new IdentificationParameters();
         identificationParameters.setPtmScoringPreferences(searchGUI.getSearchHandler().getPtmScoringPreferences()); // @TODO: identificationParameters should be used at the searchgui level
-        new ProcessingPreferencesDialog(searchGUI, true, identificationParameters, searchGUI.getSearchHandler().getProcessingPreferences());
-        updateFiltersAndPreferencesTexts();
+        ProcessingPreferencesDialog processingPreferencesDialog = new ProcessingPreferencesDialog(searchGUI, true, identificationParameters, searchGUI.getSearchHandler().getProcessingPreferences());
+        if (!processingPreferencesDialog.isCanceled()) {
+            updateFiltersAndPreferencesTexts();
+        }
     }//GEN-LAST:event_editPreferencesButtonActionPerformed
 
     /**
@@ -1043,9 +1045,9 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * Update the text shown in the filter and preferences text fields.
      */
     private void updateFiltersAndPreferencesTexts() {
-        if (searchGUI.getSearchHandler().getIdMatchValidationPreferences().getDefaultProteinFDR()!= 1
-                || searchGUI.getSearchHandler().getIdMatchValidationPreferences().getDefaultPeptideFDR()!= 1
-                || searchGUI.getSearchHandler().getIdMatchValidationPreferences().getDefaultPsmFDR()!= 1
+        if (searchGUI.getSearchHandler().getIdMatchValidationPreferences().getDefaultProteinFDR() != 1
+                || searchGUI.getSearchHandler().getIdMatchValidationPreferences().getDefaultPeptideFDR() != 1
+                || searchGUI.getSearchHandler().getIdMatchValidationPreferences().getDefaultPsmFDR() != 1
                 || searchGUI.getSearchHandler().getPtmScoringPreferences().getFlrThreshold() != 1
                 || searchGUI.getSearchHandler().getPtmScoringPreferences().isProbabilisticScoreNeutralLosses()) {
             preferencesTxt.setText("User Defined");
@@ -1114,9 +1116,9 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             firstTimeInstall = false;
             downloadFolder = new File(installPath);
         }
-        
+
         final boolean finalFirstTimeInstall = firstTimeInstall;
-        
+
         if (downloadFolder != null) {
 
             progressDialog = new ProgressDialogX(searchGUI,
@@ -1144,8 +1146,8 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
                         URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
                         if (finalFirstTimeInstall) {
                             downloadLatestZipFromRepo(downloadFolder, "PeptideShaker", "eu.isas.peptideshaker", "PeptideShaker", "peptide-shaker.ico",
-                                null, jarRepository, false, true, new GUIFileDAO(), progressDialog);
-                        } else {                            
+                                    null, jarRepository, false, true, new GUIFileDAO(), progressDialog);
+                        } else {
                             downloadLatestZipFromRepo(new File(searchGUI.getUtilitiesUserPreferences().getPeptideShakerPath()).toURI().toURL(), "PeptideShaker", false,
                                     "peptide-shaker.ico", null, jarRepository, false, true, new GUIFileDAO(), progressDialog);
                         }
