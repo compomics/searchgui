@@ -17,7 +17,7 @@ import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.PTMScoringPreferences;
 import com.compomics.util.preferences.PSProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
-import com.compomics.util.gui.parameters.ProcessingPreferencesDialog;
+import com.compomics.util.gui.parameters.OldProcessingPreferencesDialog;
 import com.compomics.util.gui.parameters.identification_parameters.MatchesImportFiltersDialog;
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -803,7 +803,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
     private void editPreferencesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesButtonActionPerformed
         IdentificationParameters identificationParameters = new IdentificationParameters();
         identificationParameters.setPtmScoringPreferences(searchGUI.getSearchHandler().getPtmScoringPreferences()); // @TODO: identificationParameters should be used at the searchgui level
-        ProcessingPreferencesDialog processingPreferencesDialog = new ProcessingPreferencesDialog(searchGUI, true, identificationParameters, searchGUI.getSearchHandler().getProcessingPreferences());
+        OldProcessingPreferencesDialog processingPreferencesDialog = new OldProcessingPreferencesDialog(searchGUI, true, identificationParameters, searchGUI.getSearchHandler().getProcessingPreferences());
         if (!processingPreferencesDialog.isCanceled()) {
             updateFiltersAndPreferencesTexts();
         }
