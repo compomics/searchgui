@@ -52,6 +52,7 @@ import javax.swing.filechooser.FileFilter;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.filehandling.FileDisplayDialog;
 import com.compomics.util.gui.filehandling.TempFilesManager;
+import com.compomics.util.gui.parameters.IdentificationParametersSelectionDialog;
 import com.compomics.util.gui.ptm.ModificationsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.SearchSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.AndromedaSettingsDialog;
@@ -66,6 +67,7 @@ import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.preferences.GenePreferences;
+import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.LastSelectedFolder;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import eu.isas.searchgui.SearchGUIWrapper;
@@ -286,7 +288,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         if (!newVersion) {
-            
+
             if (searchParameters == null) {
 
                 // set the search settings to default
@@ -3110,7 +3112,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void xtandemSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonMouseReleased
         XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
-        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy());
+        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy(), true);
 
         boolean xtandemParametersSet = false;
 
@@ -3129,7 +3131,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         xtandemParametersSet = true;
                     } else {
-                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy());
+                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy(), true);
                     }
                 } else {
                     xtandemParametersSet = true;
@@ -3150,7 +3152,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldOmssaParameters == null) { //backward compatibility check
             oldOmssaParameters = new OmssaParameters();
         }
-        OmssaSettingsDialog omssaParametersDialog = new OmssaSettingsDialog(this, oldOmssaParameters);
+        OmssaSettingsDialog omssaParametersDialog = new OmssaSettingsDialog(this, oldOmssaParameters, true);
 
         boolean omssaParametersSet = false;
 
@@ -3168,7 +3170,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         omssaParametersSet = true;
                     } else {
-                        omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters);
+                        omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters, true);
                     }
                 } else {
                     omssaParametersSet = true;
@@ -3280,7 +3282,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldMsgfParameters == null) { //backward compatibility check
             oldMsgfParameters = new MsgfParameters();
         }
-        MsgfSettingsDialog msgfParametersDialog = new MsgfSettingsDialog(this, oldMsgfParameters);
+        MsgfSettingsDialog msgfParametersDialog = new MsgfSettingsDialog(this, oldMsgfParameters, true);
 
         boolean msgfParametersSet = false;
 
@@ -3298,7 +3300,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         msgfParametersSet = true;
                     } else {
-                        msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters);
+                        msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters, true);
                     }
                 } else {
                     msgfParametersSet = true;
@@ -3389,7 +3391,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void msAmandaSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msAmandaSettingsButtonMouseReleased
         MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
-        MsAmandaSettingsDialog msAmandaParametersDialog = new MsAmandaSettingsDialog(this, oldMsAmandaParameters);
+        MsAmandaSettingsDialog msAmandaParametersDialog = new MsAmandaSettingsDialog(this, oldMsAmandaParameters, true);
 
         boolean msAmandaParametersSet = false;
 
@@ -3407,7 +3409,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         msAmandaParametersSet = true;
                     } else {
-                        msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters);
+                        msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters, true);
                     }
                 } else {
                     msAmandaParametersSet = true;
@@ -3525,7 +3527,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void myriMatchSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_myriMatchSettingsButtonMouseReleased
         MyriMatchParameters oldMyriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
-        MyriMatchSettingsDialog myriMatchParametersDialog = new MyriMatchSettingsDialog(this, oldMyriMatchParameters);
+        MyriMatchSettingsDialog myriMatchParametersDialog = new MyriMatchSettingsDialog(this, oldMyriMatchParameters, true);
 
         boolean myriMatchParametersSet = false;
 
@@ -3543,7 +3545,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         myriMatchParametersSet = true;
                     } else {
-                        myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters);
+                        myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters, true);
                     }
                 } else {
                     myriMatchParametersSet = true;
@@ -3653,7 +3655,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void cometSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cometSettingsButtonMouseReleased
 
         CometParameters oldCometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
-        CometSettingsDialog cometSettingsDialog = new CometSettingsDialog(this, oldCometParameters);
+        CometSettingsDialog cometSettingsDialog = new CometSettingsDialog(this, oldCometParameters, true);
 
         boolean cometParametersSet = false;
 
@@ -3672,7 +3674,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         cometParametersSet = true;
                     } else {
-                        cometSettingsDialog = new CometSettingsDialog(this, newCometParameters);
+                        cometSettingsDialog = new CometSettingsDialog(this, newCometParameters, true);
                     }
                 } else {
                     cometParametersSet = true;
@@ -3811,7 +3813,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldTideParameters == null) { //backward compatibility check
             oldTideParameters = new TideParameters();
         }
-        TideSettingsDialog tideParametersDialog = new TideSettingsDialog(this, oldTideParameters);
+        TideSettingsDialog tideParametersDialog = new TideSettingsDialog(this, oldTideParameters, true);
 
         boolean tideParametersSet = false;
 
@@ -3829,7 +3831,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         tideParametersSet = true;
                     } else {
-                        tideParametersDialog = new TideSettingsDialog(this, newTideParameters);
+                        tideParametersDialog = new TideSettingsDialog(this, newTideParameters, true);
                     }
                 } else {
                     tideParametersSet = true;
@@ -3941,7 +3943,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldAndromedaParameters == null) { //backward compatibility check
             oldAndromedaParameters = new AndromedaParameters();
         }
-        AndromedaSettingsDialog andromedaParametersDialog = new AndromedaSettingsDialog(this, oldAndromedaParameters);
+        AndromedaSettingsDialog andromedaParametersDialog = new AndromedaSettingsDialog(this, oldAndromedaParameters, true);
 
         boolean andromedaParametersSet = false;
 
@@ -3959,7 +3961,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                         andromedaParametersSet = true;
                     } else {
-                        andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters);
+                        andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters, true);
                     }
                 } else {
                     andromedaParametersSet = true;
