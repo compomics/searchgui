@@ -16,6 +16,7 @@ import com.compomics.util.db.DerbyUtil;
 import com.compomics.util.examples.BareBonesBrowserLaunch;
 import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
 import com.compomics.util.experiment.biology.EnzymeFactory;
+import com.compomics.util.experiment.biology.NeutralLoss;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
@@ -537,8 +538,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         spectraFilesTxt = new javax.swing.JTextField();
         configurationFileLbl = new javax.swing.JLabel();
         configurationFileTxtSearchTab_parameters = new javax.swing.JTextField();
-        viewConfigurationsButton = new javax.swing.JButton();
-        loadConfigurationsButton = new javax.swing.JButton();
+        editSettingsButton = new javax.swing.JButton();
+        loadSettingsButton = new javax.swing.JButton();
         resultFolderLbl = new javax.swing.JLabel();
         outputFolderTxt = new javax.swing.JTextField();
         resultFolderBrowseButton = new javax.swing.JButton();
@@ -1393,17 +1394,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         configurationFileTxtSearchTab_parameters.setEditable(false);
         configurationFileTxtSearchTab_parameters.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        viewConfigurationsButton.setText("Edit");
-        viewConfigurationsButton.addActionListener(new java.awt.event.ActionListener() {
+        editSettingsButton.setText("Edit");
+        editSettingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewConfigurationsButtonActionPerformed(evt);
+                editSettingsButtonActionPerformed(evt);
             }
         });
 
-        loadConfigurationsButton.setText("Load");
-        loadConfigurationsButton.addActionListener(new java.awt.event.ActionListener() {
+        loadSettingsButton.setText("Load");
+        loadSettingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadConfigurationsButtonActionPerformed(evt);
+                loadSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -1437,7 +1438,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             .addComponent(outputFolderTxt))
                         .addGap(10, 10, 10)
                         .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(viewConfigurationsButton)
+                            .addComponent(editSettingsButton)
                             .addComponent(resultFolderBrowseButton)))
                     .addGroup(inputFilesPanelLayout.createSequentialGroup()
                         .addComponent(spectraFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1448,11 +1449,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(7, 7, 7)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(clearSpectraButton, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
-                    .addComponent(loadConfigurationsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(loadSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSpectraButton, clearSpectraButton, loadConfigurationsButton, resultFolderBrowseButton, viewConfigurationsButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSpectraButton, clearSpectraButton, editSettingsButton, loadSettingsButton, resultFolderBrowseButton});
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {configurationFileLbl, resultFolderLbl, spectraFilesLabel});
 
@@ -1469,8 +1470,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(configurationFileLbl)
                     .addComponent(configurationFileTxtSearchTab_parameters, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(viewConfigurationsButton)
-                    .addComponent(loadConfigurationsButton))
+                    .addComponent(editSettingsButton)
+                    .addComponent(loadSettingsButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resultFolderLbl)
@@ -1479,7 +1480,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSpectraButton, clearSpectraButton, loadConfigurationsButton, resultFolderBrowseButton, viewConfigurationsButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSpectraButton, clearSpectraButton, editSettingsButton, loadSettingsButton, resultFolderBrowseButton});
 
         searchButton.setBackground(new java.awt.Color(0, 153, 0));
         searchButton.setFont(searchButton.getFont().deriveFont(searchButton.getFont().getStyle() | java.awt.Font.BOLD));
@@ -2496,7 +2497,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the action event
      */
-    private void viewConfigurationsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewConfigurationsButtonActionPerformed
+    private void editSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSettingsButtonActionPerformed
         SearchSettingsDialog searchSettingsDialog = new SearchSettingsDialog(this, searchParameters,
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
@@ -2504,14 +2505,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (!searchSettingsDialog.isCanceled()) {
             setSearchParameters(searchSettingsDialog.getSearchParameters());
         }
-    }//GEN-LAST:event_viewConfigurationsButtonActionPerformed
+//        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, useLogFile);
+    }//GEN-LAST:event_editSettingsButtonActionPerformed
 
     /**
      * Load search parameters from a file.
      *
      * @param evt the action event
      */
-    private void loadConfigurationsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadConfigurationsButtonActionPerformed
+    private void loadSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSettingsButtonActionPerformed
         // First check whether a file has already been selected.
         // If so, start from that file's parent.
         File startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
@@ -2570,7 +2572,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 JOptionPane.showMessageDialog(this, "Please select a valid search settings file (.par).", "File Error", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-    }//GEN-LAST:event_loadConfigurationsButtonActionPerformed
+    }//GEN-LAST:event_loadSettingsButtonActionPerformed
 
     /**
      * Open the ModificationsDialog.
@@ -4067,6 +4069,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JMenuItem editModificationsMenuItem;
     private javax.swing.JLabel editReporterSettingsLabel;
     private javax.swing.JMenuItem editSearchEngineLocationsMenuItem;
+    private javax.swing.JButton editSettingsButton;
     private javax.swing.JCheckBox enableAndromedaJCheckBox;
     private javax.swing.JCheckBox enableCometJCheckBox;
     private javax.swing.JCheckBox enableMsAmandaJCheckBox;
@@ -4085,7 +4088,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JPopupMenu.Separator jSeparator17;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenuItem javaSettingsJMenuItem;
-    private javax.swing.JButton loadConfigurationsButton;
+    private javax.swing.JButton loadSettingsButton;
     private javax.swing.JMenuItem logReportMenu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPopupMenu modificationOptionsPopupMenu;
@@ -4139,7 +4142,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JButton tideSettingsButton;
     private javax.swing.JButton tideSupportButton;
     private javax.swing.JButton tiideButton;
-    private javax.swing.JButton viewConfigurationsButton;
     private javax.swing.JButton xtandemButton;
     private javax.swing.JLabel xtandemLinkLabel;
     private javax.swing.JButton xtandemSettingsButton;
