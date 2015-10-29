@@ -32,6 +32,10 @@ public class SearchCLIInputBean {
      */
     private SearchParameters searchParameters;
     /**
+     * The search parameters file.
+     */
+    private File searchParametersFile;
+    /**
      * The sequence factory.
      */
     private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
@@ -183,7 +187,8 @@ public class SearchCLIInputBean {
 
         // identification parameters
         String fileTxt = aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id);
-        searchParameters = SearchParameters.getIdentificationParameters(new File(fileTxt));
+        searchParametersFile = new File(fileTxt);
+        searchParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
 
         // override the fasta file location
         if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
@@ -386,6 +391,15 @@ public class SearchCLIInputBean {
      */
     public SearchParameters getSearchParameters() {
         return searchParameters;
+    }
+
+    /**
+     * Returns the search parameters file.
+     *
+     * @return the search parameters file
+     */
+    public File getSearchParametersFile() {
+        return searchParametersFile;
     }
 
     /**

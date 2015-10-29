@@ -801,12 +801,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void editPreferencesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editPreferencesButtonActionPerformed
-        IdentificationParameters identificationParameters = new IdentificationParameters();
-        identificationParameters.setPtmScoringPreferences(searchGUI.getSearchHandler().getPtmScoringPreferences()); // @TODO: identificationParameters should be used at the searchgui level
-        OldProcessingPreferencesDialog processingPreferencesDialog = new OldProcessingPreferencesDialog(searchGUI, true, identificationParameters, searchGUI.getSearchHandler().getProcessingPreferences());
-        if (!processingPreferencesDialog.isCanceled()) {
-            updateFiltersAndPreferencesTexts();
-        }
+        
     }//GEN-LAST:event_editPreferencesButtonActionPerformed
 
     /**
@@ -852,10 +847,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void defaultPreferencesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_defaultPreferencesButtonActionPerformed
-        searchGUI.getSearchHandler().setProcessingPreferences(new PSProcessingPreferences());
-        searchGUI.getSearchHandler().setPtmScoringPreferences(new PTMScoringPreferences());
-        searchGUI.getSearchHandler().setGenePreferences(new GenePreferences());
-        updateFiltersAndPreferencesTexts();
+        
     }//GEN-LAST:event_defaultPreferencesButtonActionPerformed
 
     /**

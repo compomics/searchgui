@@ -32,6 +32,11 @@ public class PathSettingsCLI {
         this.pathSettingsCLIInputBean = pathSettingsCLIInputBean;
     }
 
+    /**
+     * Sets the path settings and returns null.
+     * 
+     * @return null
+     */
     public Object call() {
         setPathSettings();
         return null;

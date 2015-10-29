@@ -10,7 +10,7 @@ import com.compomics.util.preferences.GenePreferences;
 import com.compomics.util.experiment.identification.filtering.PeptideAssumptionFilter;
 import com.compomics.util.preferences.IdMatchValidationPreferences;
 import com.compomics.util.preferences.PTMScoringPreferences;
-import com.compomics.util.preferences.PSProcessingPreferences;
+import com.compomics.util.preferences.ProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,6 +50,10 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      */
     private SearchParameters searchParameters;
     /**
+     * The file where to store the search parameters.
+     */
+    private File searchParametersFile;
+    /**
      * The cpsx file.
      */
     private File cpsFile;
@@ -65,7 +69,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The processing preferences.
      */
-    private PSProcessingPreferences processingPreferences;
+    private ProcessingPreferences processingPreferences;
     /**
      * The PTM scoring preferences.
      */
@@ -105,15 +109,16 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param includeData Indicates whether the mgf and FASTA file should be
      * included in the output
      * @param exceptionHandler the handler of exceptions
+     * @param searchParametersFile the file where to save the search parameters
      *
      * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String experiment, String sample, Integer replicate,
-            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, SearchParameters searchParameters,
+            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, SearchParameters searchParameters, File searchParametersFile, 
             File cpsFile, boolean showGuiProgress, PeptideAssumptionFilter idFilter,
-            PSProcessingPreferences processingPreferences, PTMScoringPreferences ptmScoringPreferences, IdMatchValidationPreferences idMatchValidationPreferences, GenePreferences genePreferences, boolean includeData)
+            ProcessingPreferences processingPreferences, PTMScoringPreferences ptmScoringPreferences, IdMatchValidationPreferences idMatchValidationPreferences, GenePreferences genePreferences, boolean includeData)
             throws FileNotFoundException, IOException, ClassNotFoundException {
 
         this.waitingHandler = waitingHandler;
@@ -123,6 +128,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
         this.replicate = replicate;
         this.spectrumFiles = spectrumFiles;
         this.searchParameters = searchParameters;
+        this.searchParametersFile = searchParametersFile;
         this.identificationFiles = identificationFiles;
         this.cpsFile = cpsFile;
         this.showGuiProgress = showGuiProgress;
@@ -173,16 +179,8 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-spectrum_files");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFiles));
 
-            File parametersFile;
-            if (searchParameters.getParametersFile() != null && searchParameters.getParametersFile().exists()) {
-                parametersFile = searchParameters.getParametersFile();
-            } else {
-                parametersFile = new File(cpsFile.getParent(), "PS_CLI.par");
-                SearchParameters.saveIdentificationParameters(searchParameters, parametersFile);
-            }
-
             process_name_array.add("-id_params");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(parametersFile));
+            process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParametersFile));
             process_name_array.add("-out");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(cpsFile));
             if (includeData) {
@@ -216,7 +214,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
 
             // protein fraction mw confidence
             process_name_array.add("-protein_fraction_mw_confidence");
-            process_name_array.add("" + processingPreferences.getProteinConfidenceMwPlots());
+//            process_name_array.add("" + processingPreferences.getProteinConfidenceMwPlots());
 
             // add the gene preferences
             if (genePreferences.getCurrentSpecies() != null) {

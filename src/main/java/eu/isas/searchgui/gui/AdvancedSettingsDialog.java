@@ -33,11 +33,10 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         this.searchGUI = searchGUI;
 
         SearchHandler currentSearchHandler = searchGUI.getSearchHandler();
-        
+
         fastaSuffixTxt.setText(SequenceFactory.getTargetDecoyFileNameTag());
         mgfMaxSizeTxt.setText(searchGUI.getMgfMaxSize() + "");
         mgfReducedSizeTxt.setText(searchGUI.getMgfNSpectra() + "");
-        numberOfThreadsSpinner.setModel(new javax.swing.SpinnerNumberModel(currentSearchHandler.getNThreads(), 1, Runtime.getRuntime().availableProcessors(), 1));
         if (currentSearchHandler.renameXTandemFile()) {
             renameCmb.setSelectedIndex(0);
         } else {
@@ -102,9 +101,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         maxSpectraPerFileLabel = new javax.swing.JLabel();
         mgfMaxSizeTxt = new javax.swing.JTextField();
         mgfReducedSizeTxt = new javax.swing.JTextField();
-        parallelProcessingPanel = new javax.swing.JPanel();
-        numberOfThreadsLabel = new javax.swing.JLabel();
-        numberOfThreadsSpinner = new javax.swing.JSpinner();
         openDialogHelpJButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
@@ -262,34 +258,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        parallelProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Parallel Processing"));
-        parallelProcessingPanel.setOpaque(false);
-
-        numberOfThreadsLabel.setText("Number of Threads");
-
-        numberOfThreadsSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(1), null, Integer.valueOf(1)));
-
-        javax.swing.GroupLayout parallelProcessingPanelLayout = new javax.swing.GroupLayout(parallelProcessingPanel);
-        parallelProcessingPanel.setLayout(parallelProcessingPanelLayout);
-        parallelProcessingPanelLayout.setHorizontalGroup(
-            parallelProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parallelProcessingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(numberOfThreadsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(numberOfThreadsSpinner)
-                .addContainerGap())
-        );
-        parallelProcessingPanelLayout.setVerticalGroup(
-            parallelProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parallelProcessingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(parallelProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(numberOfThreadsLabel)
-                    .addComponent(numberOfThreadsSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         openDialogHelpJButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/help.GIF"))); // NOI18N
         openDialogHelpJButton.setToolTipText("Help");
         openDialogHelpJButton.setBorder(null);
@@ -424,7 +392,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(closeButton))
                     .addComponent(fileProcessingPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(parallelProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(outputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(proteinTreePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -436,14 +403,12 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(advancedParamatersPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(parallelProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spectrumProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(fileProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(outputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(proteinTreePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -474,8 +439,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (validateAdvancedParametersInput(true)) {
-        SearchHandler currentSearchHandler = searchGUI.getSearchHandler();
-            currentSearchHandler.setNThreads((Integer) numberOfThreadsSpinner.getValue());
+            SearchHandler currentSearchHandler = searchGUI.getSearchHandler();
             currentSearchHandler.setRenameXTandemFile(renameCmb.getSelectedIndex() == 0);
             searchGUI.setCheckPeakPicking(peakPickingComboBox.getSelectedIndex() == 0);
             searchGUI.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
@@ -505,9 +469,9 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private void openDialogHelpJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openDialogHelpJButtonActionPerformed
         setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         new HelpDialog(this, getClass().getResource("/helpFiles/AdvancedSettingsDialog.html"),
-            Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/help.GIF")),
-            Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-            "SearchGUI - Help", 500, 50);
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/help.GIF")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                "SearchGUI - Help", 500, 50);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_openDialogHelpJButtonActionPerformed
 
@@ -548,7 +512,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             searchGUI.setMgfNSpectra(new Integer(mgfReducedSizeTxt.getText().trim()));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Maximum amount of spectra could not be parsed.",
-                "Input Error", JOptionPane.WARNING_MESSAGE);
+                    "Input Error", JOptionPane.WARNING_MESSAGE);
             mgfReducedSizeTxt.setText(mgfReducedSizeTxt.getText());
         }
     }//GEN-LAST:event_mgfReducedSizeTxtActionPerformed
@@ -572,7 +536,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             searchGUI.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Maximum MGF file size could not be parsed.",
-                "Input Error", JOptionPane.WARNING_MESSAGE);
+                    "Input Error", JOptionPane.WARNING_MESSAGE);
             mgfMaxSizeTxt.setText(mgfMaxSizeTxt.getText());
         }
     }//GEN-LAST:event_mgfMaxSizeTxtActionPerformed
@@ -613,12 +577,9 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel maxSpectraPerFileLabel;
     private javax.swing.JTextField mgfMaxSizeTxt;
     private javax.swing.JTextField mgfReducedSizeTxt;
-    private javax.swing.JLabel numberOfThreadsLabel;
-    private javax.swing.JSpinner numberOfThreadsSpinner;
     private javax.swing.JButton okButton;
     private javax.swing.JButton openDialogHelpJButton;
     private javax.swing.JPanel outputPanel;
-    private javax.swing.JPanel parallelProcessingPanel;
     private javax.swing.JComboBox peakPickingComboBox;
     private javax.swing.JLabel peakPickingLabel;
     private javax.swing.JComboBox proteinTreeComboBox;

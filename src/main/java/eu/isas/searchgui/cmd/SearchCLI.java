@@ -10,6 +10,7 @@ import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import com.compomics.util.gui.filehandling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.searchgui.SearchHandler;
 import eu.isas.searchgui.preferences.OutputOption;
 import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
@@ -211,9 +212,14 @@ public class SearchCLI implements Callable {
                 }
             }
 
+            // Processing
+            ProcessingPreferences processingPreferences = new ProcessingPreferences();
+            processingPreferences.setnThreads(searchCLIInputBean.getNThreads());
+
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(searchCLIInputBean.getSearchParameters(),
-                    searchCLIInputBean.getOutputFile(), spectrumFiles, new ArrayList<File>(),
+                    searchCLIInputBean.getOutputFile(), spectrumFiles,
+                    new ArrayList<File>(), searchCLIInputBean.getSearchParametersFile(),
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),
@@ -223,7 +229,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getMyriMatchLocation(), searchCLIInputBean.getCometLocation(),
                     searchCLIInputBean.getTideLocation(), searchCLIInputBean.getAndromedaLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
-                    searchCLIInputBean.getNThreads(),
+                    processingPreferences,
                     searchCLIInputBean.isGenerateProteinTree());
 
             OutputOption outputOption = searchCLIInputBean.getOutputOption();

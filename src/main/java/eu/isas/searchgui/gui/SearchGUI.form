@@ -105,6 +105,11 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JMenuItem" name="jMenuItem1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="jMenuItem1"/>
+      </Properties>
+    </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="fileMenu">
@@ -144,6 +149,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="advancedSettingsMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="processingMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Processing Settings"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="processingMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator1">
@@ -1133,12 +1146,12 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="configurationFileLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="searchSettingsLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                                   <Component id="resultFolderLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="configurationFileTxtSearchTab_parameters" max="32767" attributes="0"/>
+                                  <Component id="searchSettingsTxt" max="32767" attributes="0"/>
                                   <Component id="outputFolderTxt" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
@@ -1176,8 +1189,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="configurationFileLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="configurationFileTxtSearchTab_parameters" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="searchSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="searchSettingsTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="editSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="loadSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -1226,7 +1239,7 @@
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="spectraFilesTxtMouseClicked"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="configurationFileLbl">
+            <Component class="javax.swing.JLabel" name="searchSettingsLbl">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="ff" type="rgb"/>
@@ -1234,7 +1247,7 @@
                 <Property name="text" type="java.lang.String" value="Search Settings"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="configurationFileTxtSearchTab_parameters">
+            <Component class="javax.swing.JTextField" name="searchSettingsTxt">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="horizontalAlignment" type="int" value="0"/>

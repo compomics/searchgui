@@ -28,6 +28,7 @@ import com.compomics.util.experiment.identification.filtering.PeptideAssumptionF
 import com.compomics.util.preferences.IdMatchValidationPreferences;
 import com.compomics.util.preferences.PTMScoringPreferences;
 import com.compomics.util.preferences.PSProcessingPreferences;
+import com.compomics.util.preferences.ProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.compomics.util.waiting.Duration;
 import eu.isas.searchgui.preferences.OutputOption;
@@ -164,6 +165,10 @@ public class SearchHandler {
      */
     private SearchParameters searchParameters;
     /**
+     * The file where to store the search parameters.
+     */
+    private File searchParametersFile;
+    /**
      * The raw files.
      */
     private ArrayList<File> rawFiles;
@@ -282,7 +287,7 @@ public class SearchHandler {
     /**
      * The processing preferences.
      */
-    private PSProcessingPreferences processingPreferences = new PSProcessingPreferences();
+    private ProcessingPreferences processingPreferences = new ProcessingPreferences();
     /**
      * The PTM scoring preferences.
      */
@@ -299,10 +304,6 @@ public class SearchHandler {
      * The gene preferences.
      */
     private GenePreferences genePreferences = new GenePreferences();
-    /**
-     * The number of threads to use.
-     */
-    private int nThreads;
     /**
      * The way output files should be exported.
      */
@@ -351,11 +352,12 @@ public class SearchHandler {
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
-     * @param nThreads the number of threads to use
+     * @param searchParametersFile the search parameters file
+     * @param processingPreferences the processing preferences
      * @param generateProteinTree if true, the protein tree will be generated
      * @param exceptionHandler a handler for exceptions
      */
-    public SearchHandler(SearchParameters searchParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, int nThreads, boolean generateProteinTree, ExceptionHandler exceptionHandler) {
+    public SearchHandler(SearchParameters searchParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile, ProcessingPreferences processingPreferences, boolean generateProteinTree, ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -370,7 +372,8 @@ public class SearchHandler {
         enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, false, false, true);
         enableAndromeda = loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false);
         loadSearchEngineLocation(null, false, true, true, true, false, false, true);
-        this.nThreads = nThreads;
+        this.searchParametersFile = searchParametersFile;
+        this.processingPreferences = processingPreferences;
         this.generateProteinTree = generateProteinTree;
         this.searchParameters = searchParameters;
         searchDuration = new Duration();
@@ -385,6 +388,7 @@ public class SearchHandler {
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
+     * @param searchParametersFile the search parameters file
      * @param searchOmssa if true the OMSSA search is enabled
      * @param searchXTandem if true the XTandem search is enabled
      * @param searchMsgf if true the MS-GF+ search is enabled
@@ -411,13 +415,13 @@ public class SearchHandler {
      * the default location is used
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
-     * @param nThreads the number of threads to use
+     * @param processingPreferences the processing preferences
      * @param generateProteinTree if true, the protein tree will be generated
      */
-    public SearchHandler(SearchParameters searchParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles,
+    public SearchHandler(SearchParameters searchParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder, File makeblastdbFolder,
-            int nThreads, boolean generateProteinTree) {
+            ProcessingPreferences processingPreferences, boolean generateProteinTree) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -431,7 +435,8 @@ public class SearchHandler {
         this.enableTide = searchTide;
         this.enableAndromeda = searchAndromeda;
 
-        this.nThreads = nThreads;
+        this.searchParametersFile = searchParametersFile;
+        this.processingPreferences = processingPreferences;
         this.generateProteinTree = generateProteinTree;
 
         if (omssaFolder != null) {
@@ -1761,7 +1766,7 @@ public class SearchHandler {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
                     }
                     File userModsXmlFile = new File(omssaLocation, "usermods.xml");
-                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, searchParameters);
+                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, searchParameters, searchParametersFile);
 
                     // Copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
@@ -1781,7 +1786,7 @@ public class SearchHandler {
                     // write Andromeda enzyme configuration file
                     AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
-                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, searchParameters);
+                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, searchParameters, searchParametersFile);
                 }
 
                 int nRawFiles = getRawFiles().size();
@@ -1831,7 +1836,7 @@ public class SearchHandler {
                 }
 
                 // convert raw files
-                ExecutorService pool = Executors.newFixedThreadPool(nThreads);
+                ExecutorService pool = Executors.newFixedThreadPool(processingPreferences.getnThreads());
 
                 ArrayList<File> rawFiles = getRawFiles();
 
@@ -1902,13 +1907,6 @@ public class SearchHandler {
 
                 if (!waitingHandler.isRunCanceled()) {
 
-                    if (searchParameters == null || searchParameters.getParametersFile() == null) {
-                        parametersOutputFile = new File(outputTempFolder, PARAMETERS_OUTPUT_FILE);
-                    } else {
-                        String name = searchParameters.getParametersFile().getName();
-                        parametersOutputFile = new File(outputTempFolder, name);
-                    }
-                    SearchParameters.saveIdentificationParameters(searchParameters, parametersOutputFile);
                     saveInputFile(outputTempFolder);
 
                     // load database in parallel of the search (Note: apparently needs to be done after completion of makeblastdb)
@@ -1939,7 +1937,7 @@ public class SearchHandler {
                         File xTandemOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".t.xml");
                         xTandemProcessBuilder = new TandemProcessBuilder(xtandemLocation,
                                 spectrumFile.getAbsolutePath(), xTandemOutputFile.getAbsolutePath(),
-                                searchParameters, waitingHandler, exceptionHandler, nThreads);
+                                searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
 
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.xtandem.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
@@ -1979,7 +1977,7 @@ public class SearchHandler {
                     if (enableMyriMatch && !waitingHandler.isRunCanceled()) {
                         File myriMatchOutputFile = new File(outputTempFolder, getMyriMatchFileName(spectrumFileName));
                         myriMatchProcessBuilder = new MyriMatchProcessBuilder(myriMatchLocation,
-                                spectrumFile.getAbsolutePath(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler, nThreads);
+                                spectrumFile.getAbsolutePath(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.myriMatch.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         myriMatchProcessBuilder.startProcess();
@@ -2004,7 +2002,7 @@ public class SearchHandler {
                         File msAmandaOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".ms-amanda.csv");
                         String filePath = msAmandaOutputFile.getAbsolutePath();
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(msAmandaLocation,
-                                spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, exceptionHandler, nThreads);
+                                spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msAmanda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msAmandaProcessBuilder.startProcess();
@@ -2027,7 +2025,7 @@ public class SearchHandler {
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
                         File msgfOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".msgf.mzid");
                         msgfProcessBuilder = new MsgfProcessBuilder(msgfLocation,
-                                spectrumFile.getAbsolutePath(), msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, nThreads, useCommandLine);
+                                spectrumFile.getAbsolutePath(), msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads(), useCommandLine);
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msgfProcessBuilder.startProcess();
@@ -2050,7 +2048,7 @@ public class SearchHandler {
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
                         omssaProcessBuilder = new OmssaclProcessBuilder(omssaLocation,
-                                spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler, nThreads);
+                                spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         omssaProcessBuilder.startProcess();
@@ -2084,7 +2082,7 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
-                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, ms2File, waitingHandler, exceptionHandler, nThreads);
+                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, ms2File, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         cometProcessBuilder.startProcess();
@@ -2154,7 +2152,7 @@ public class SearchHandler {
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, aplFile, waitingHandler, exceptionHandler, nThreads);
+                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, aplFile, searchParametersFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         andromedaProcessBuilder.startProcess();
@@ -2326,7 +2324,7 @@ public class SearchHandler {
                         if (!identificationFiles.isEmpty()) {
                             peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                     waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
-                                    searchParameters, peptideShakerFile, true, idFilter, processingPreferences, ptmScoringPreferences, idMatchValidationPreferences, genePreferences, outputData);
+                                    searchParameters, searchParametersFile, peptideShakerFile, true, idFilter, processingPreferences, ptmScoringPreferences, idMatchValidationPreferences, genePreferences, outputData);
                             waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
                             // cancel the protein tree if not done
@@ -2575,7 +2573,7 @@ public class SearchHandler {
                 }
                 int cacheSize = (int) availableCachSize;
                 sequenceFactory.setnCache(cacheSize);
-                sequenceFactory.getDefaultProteinTree(nThreads, proteinTreeWaitingHandler, exceptionHandler, true);
+                sequenceFactory.getDefaultProteinTree(processingPreferences.getnThreads(), proteinTreeWaitingHandler, exceptionHandler, true);
                 if (!proteinTreeWaitingHandler.isRunCanceled()) {
                     indexingTime.end();
                     proteinTreeWaitingHandler.appendReport("Importing " + sequenceFactory.getFileName() + " finished (" + indexingTime.toString() + ").", true, true);
@@ -2637,6 +2635,15 @@ public class SearchHandler {
     }
 
     /**
+     * Set the search parameters file.
+     *
+     * @param searchParametersFile the search parameters file
+     */
+    public void setSearchParametersFile(File searchParametersFile) {
+        this.searchParametersFile = searchParametersFile;
+    }
+
+    /**
      * Sets the mascot files.
      *
      * @param mascotFiles the mascot files
@@ -2677,7 +2684,7 @@ public class SearchHandler {
      *
      * @return the processingPreferences
      */
-    public PSProcessingPreferences getProcessingPreferences() {
+    public ProcessingPreferences getProcessingPreferences() {
         return processingPreferences;
     }
 
@@ -2686,7 +2693,7 @@ public class SearchHandler {
      *
      * @param processingPreferences the processingPreferences to set
      */
-    public void setProcessingPreferences(PSProcessingPreferences processingPreferences) {
+    public void setProcessingPreferences(ProcessingPreferences processingPreferences) {
         this.processingPreferences = processingPreferences;
     }
 
@@ -2760,24 +2767,6 @@ public class SearchHandler {
      */
     public void setGenePreferences(GenePreferences genePreferences) {
         this.genePreferences = genePreferences;
-    }
-
-    /**
-     * Get the number of threads to use for the processing.
-     *
-     * @return the mgfNSpectra
-     */
-    public int getNThreads() {
-        return nThreads;
-    }
-
-    /**
-     * Set the number of threads to use.
-     *
-     * @param nThreads the nThreads to set
-     */
-    public void setNThreads(int nThreads) {
-        this.nThreads = nThreads;
     }
 
     /**

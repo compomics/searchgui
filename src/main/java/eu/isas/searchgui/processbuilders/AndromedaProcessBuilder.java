@@ -73,6 +73,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param andromedaFolder the Andromeda folder
      * @param searchParameters the search parameters
+     * @param searchParametersFile the file where to save the search parameters
      * @param spectrumFile the spectrum file
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
@@ -81,7 +82,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown whenever an error occurred while reading or
      * writing a file.
      */
-    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
+    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File searchParametersFile, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -103,7 +104,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         andromeda.setExecutable(true);
 
         // Create parameters file
-        File parametersFile = createParametersFile();
+        File andromedaParametersFile = createParametersFile(searchParametersFile);
 
         // full path to executable
         process_name_array.add(andromeda.getAbsolutePath());
@@ -114,7 +115,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         // the parameters file
         process_name_array.add("-p");
-        process_name_array.add(parametersFile.getAbsolutePath());
+        process_name_array.add(andromedaParametersFile.getAbsolutePath());
 
         // the working folder
         process_name_array.add("-f");
@@ -256,13 +257,14 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param andromedaFolder the Andromeda installation folder
      * @param searchParameters the search parameters
+     * @param searchParametersFile the file where to save the search parameters
      *
      * @throws IOException exception thrown whenever an error occurs while
      * writing to the file.
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public static void createPtmFile(File andromedaFolder, SearchParameters searchParameters) throws IOException, ClassNotFoundException {
+    public static void createPtmFile(File andromedaFolder, SearchParameters searchParameters, File searchParametersFile) throws IOException, ClassNotFoundException {
 
         File file = new File(andromedaFolder, "conf");
         file = new File(file, "modifications.xml");
@@ -290,7 +292,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.close();
         }
 
-        SearchParameters.saveIdentificationParameters(searchParameters, searchParameters.getParametersFile());
+        SearchParameters.saveIdentificationParameters(searchParameters, searchParametersFile);
     }
 
     /**
@@ -552,19 +554,21 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Create the parameters file.
+     * 
+     * @param searchParametersFile the file where to save the search parameters
      *
      * @return the parameters file
      *
      * @throws IOException exception thrown whenever an error occurred while
      * writing the configuration file
      */
-    private File createParametersFile() throws IOException {
+    private File createParametersFile(File searchParametersFile) throws IOException {
 
         File andromedaTempFolder = new File(andromedaTempFolderPath);
 
         String fileName;
         try {
-            fileName = Util.removeExtension(searchParameters.getParametersFile().getName()) + ".apar";
+            fileName = Util.removeExtension(searchParametersFile.getName()) + ".apar";
         } catch (Exception e) {
             fileName = "SearchGUI.apar";
         }

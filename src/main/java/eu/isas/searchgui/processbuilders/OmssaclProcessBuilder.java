@@ -394,28 +394,29 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * the factory in the given file. Stores the PTM indexes in the OMSSA
      * specific parameters.
      *
-     * @param file the file
+     * @param omssaFile the file where to write the omssa modification files
      * @param searchParameters the search parameters
+     * @param searchParametersFile the file where to save the search parameters
      *
      * @throws IOException exception thrown whenever an error occurred while
      * writing the file
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public static void writeOmssaUserModificationsFile(File file, SearchParameters searchParameters) throws IOException, ClassNotFoundException {
+    public static void writeOmssaUserModificationsFile(File omssaFile, SearchParameters searchParameters, File searchParametersFile) throws IOException, ClassNotFoundException {
 
         PTMFactory ptmFactory = PTMFactory.getInstance();
 
         PtmSettings modificationProfile = searchParameters.getPtmSettings();
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
         omssaParameters.setPtmIndexes(modificationProfile);
-        SearchParameters.saveIdentificationParameters(searchParameters, searchParameters.getParametersFile());
+        SearchParameters.saveIdentificationParameters(searchParameters, searchParametersFile);
 
         HashMap<Integer, String> ptmIndexes = omssaParameters.getPtmIndexes();
         ArrayList<Integer> indexes = new ArrayList<Integer>(ptmIndexes.keySet());
         Collections.sort(indexes);
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(omssaFile));
         try {
             String toWrite = "<?xml version=\"1.0\"?>\n<MSModSpecSet\n"
                     + "xmlns=\"http://www.ncbi.nlm.nih.gov\"\n"
