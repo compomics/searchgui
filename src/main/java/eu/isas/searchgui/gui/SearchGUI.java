@@ -2498,14 +2498,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void editSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSettingsButtonActionPerformed
-        SearchSettingsDialog searchSettingsDialog = new SearchSettingsDialog(this, searchParameters,
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                true, true, searchHandler.getConfigurationFile(), lastSelectedFolder, true);
-        if (!searchSettingsDialog.isCanceled()) {
-            setSearchParameters(searchSettingsDialog.getSearchParameters());
+        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, useLogFile);
+        if (!identificationParametersSelectionDialog.isCanceled()) {
+            IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
+            setSearchParameters(identificationParameters.getSearchParameters());
         }
-//        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, useLogFile);
     }//GEN-LAST:event_editSettingsButtonActionPerformed
 
     /**
