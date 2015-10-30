@@ -23,11 +23,7 @@ import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.io.ConfigurationFile;
 import com.compomics.util.io.compression.ZipUtils;
-import com.compomics.util.preferences.GenePreferences;
-import com.compomics.util.experiment.identification.filtering.PeptideAssumptionFilter;
-import com.compomics.util.preferences.IdMatchValidationPreferences;
-import com.compomics.util.preferences.PTMScoringPreferences;
-import com.compomics.util.preferences.PSProcessingPreferences;
+import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.compomics.util.waiting.Duration;
@@ -161,13 +157,13 @@ public class SearchHandler {
      */
     private boolean enableReporter = true;
     /**
-     * The search parameters.
+     * The identification parameters.
      */
-    private SearchParameters searchParameters;
+    private IdentificationParameters identificationParameters;
     /**
-     * The file where to store the search parameters.
+     * The file where to store the identification parameters.
      */
-    private File searchParametersFile;
+    private File identificationParametersFile;
     /**
      * The raw files.
      */
@@ -281,29 +277,13 @@ public class SearchHandler {
      */
     private PeptideShakerProcessBuilder peptideShakerProcessBuilder = null;
     /**
-     * The identification filter used for this project.
-     */
-    private PeptideAssumptionFilter idFilter = new PeptideAssumptionFilter();
-    /**
      * The processing preferences.
      */
     private ProcessingPreferences processingPreferences = new ProcessingPreferences();
     /**
-     * The PTM scoring preferences.
-     */
-    private PTMScoringPreferences ptmScoringPreferences = new PTMScoringPreferences();
-    /**
-     * The id match validation preferences.
-     */
-    private IdMatchValidationPreferences idMatchValidationPreferences = new IdMatchValidationPreferences();
-    /**
      * The msconvert parameters.
      */
     private MsConvertParameters msConvertParameters;
-    /**
-     * The gene preferences.
-     */
-    private GenePreferences genePreferences = new GenePreferences();
     /**
      * The way output files should be exported.
      */
@@ -348,7 +328,7 @@ public class SearchHandler {
      * engine locations and which search engines that are enabled. Mainly for
      * use via the graphical UI.
      *
-     * @param searchParameters the search parameters
+     * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
@@ -357,7 +337,7 @@ public class SearchHandler {
      * @param generateProteinTree if true, the protein tree will be generated
      * @param exceptionHandler a handler for exceptions
      */
-    public SearchHandler(SearchParameters searchParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile, ProcessingPreferences processingPreferences, boolean generateProteinTree, ExceptionHandler exceptionHandler) {
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile, ProcessingPreferences processingPreferences, boolean generateProteinTree, ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -372,10 +352,10 @@ public class SearchHandler {
         enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, false, false, true);
         enableAndromeda = loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false);
         loadSearchEngineLocation(null, false, true, true, true, false, false, true);
-        this.searchParametersFile = searchParametersFile;
+        this.identificationParametersFile = searchParametersFile;
         this.processingPreferences = processingPreferences;
         this.generateProteinTree = generateProteinTree;
-        this.searchParameters = searchParameters;
+        this.identificationParameters = identificationParameters;
         searchDuration = new Duration();
     }
 
@@ -384,7 +364,7 @@ public class SearchHandler {
      * engines folders are set to null the default search engine locations are
      * used.
      *
-     * @param searchParameters the search parameters
+     * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
@@ -418,7 +398,7 @@ public class SearchHandler {
      * @param processingPreferences the processing preferences
      * @param generateProteinTree if true, the protein tree will be generated
      */
-    public SearchHandler(SearchParameters searchParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile,
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder, File makeblastdbFolder,
             ProcessingPreferences processingPreferences, boolean generateProteinTree) {
@@ -435,7 +415,7 @@ public class SearchHandler {
         this.enableTide = searchTide;
         this.enableAndromeda = searchAndromeda;
 
-        this.searchParametersFile = searchParametersFile;
+        this.identificationParameters = identificationParameters;
         this.processingPreferences = processingPreferences;
         this.generateProteinTree = generateProteinTree;
 
@@ -492,8 +472,6 @@ public class SearchHandler {
         } else {
             loadSearchEngineLocation(null, false, true, true, true, false, false, true); // try to use the default
         }
-
-        this.searchParameters = searchParameters;
 
         // set this version as the default SearchGUI version
         if (!getJarFilePath().equalsIgnoreCase(".")) {
@@ -684,7 +662,7 @@ public class SearchHandler {
         }
 
         // append the search parameters
-        report += searchParameters.toString(true);
+        report += identificationParameters.getSearchParameters().toString(true);
         report = "<html>" + report + "</html>";
 
         try {
@@ -940,7 +918,7 @@ public class SearchHandler {
      * @return the name of the Tide result file
      */
     public String getTideFileName(String spectrumFileName) {
-        TideParameters tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
+        TideParameters tideParameters = (TideParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         return getTideFileName(spectrumFileName, tideParameters);
     }
 
@@ -984,7 +962,7 @@ public class SearchHandler {
      * @return the name of the OMSSA result file
      */
     public String getOMSSAFileName(String spectrumFileName) {
-        OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
+        OmssaParameters omssaParameters = (OmssaParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
         return getOMSSAFileName(spectrumFileName, omssaParameters);
     }
 
@@ -1029,7 +1007,7 @@ public class SearchHandler {
      * @return the name of the MyriMatch result file
      */
     public String getMyriMatchFileName(String spectrumFileName) {
-        MyriMatchParameters myriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
+        MyriMatchParameters myriMatchParameters = (MyriMatchParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
         return getMyriMatchFileName(spectrumFileName, myriMatchParameters);
     }
 
@@ -1736,11 +1714,13 @@ public class SearchHandler {
                     }
                 }
 
-                File dbFile = searchParameters.getFastaFile();
+                SearchParameters searchParameters = identificationParameters.getSearchParameters();
+
+                File fastaFile = searchParameters.getFastaFile();
 
                 if (enableOmssa) {
                     // call Makeblastdb class, check if run before and then start process
-                    makeblastdbProcessBuilder = new MakeblastdbProcessBuilder(getJarFilePath(), dbFile, makeblastdbLocation, waitingHandler, exceptionHandler);
+                    makeblastdbProcessBuilder = new MakeblastdbProcessBuilder(getJarFilePath(), fastaFile, makeblastdbLocation, waitingHandler, exceptionHandler);
 
                     if (makeblastdbProcessBuilder.needsFormatting()) {
 
@@ -1766,7 +1746,7 @@ public class SearchHandler {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
                     }
                     File userModsXmlFile = new File(omssaLocation, "usermods.xml");
-                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, searchParameters, searchParametersFile);
+                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, searchParameters, identificationParametersFile);
 
                     // Copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
@@ -1786,7 +1766,7 @@ public class SearchHandler {
                     // write Andromeda enzyme configuration file
                     AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
-                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, searchParameters, searchParametersFile);
+                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, searchParameters, identificationParametersFile);
                 }
 
                 int nRawFiles = getRawFiles().size();
@@ -1830,7 +1810,7 @@ public class SearchHandler {
                 if (enableTide && !waitingHandler.isRunCanceled()) {
                     // create the tide index
                     tideIndexProcessBuilder = new TideIndexProcessBuilder(tideLocation, searchParameters, waitingHandler, exceptionHandler);
-                    waitingHandler.appendReport("Indexing " + searchParameters.getFastaFile().getName() + " for Tide.", true, true);
+                    waitingHandler.appendReport("Indexing " + fastaFile.getName() + " for Tide.", true, true);
                     waitingHandler.appendReportEndLine();
                     tideIndexProcessBuilder.startProcess();
                 }
@@ -1902,8 +1882,6 @@ public class SearchHandler {
                     waitingHandler.appendReport("Extracting search settings.", true, true);
                     waitingHandler.appendReportEndLine();
                 }
-
-                File parametersOutputFile = null;
 
                 if (!waitingHandler.isRunCanceled()) {
 
@@ -2152,7 +2130,7 @@ public class SearchHandler {
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, aplFile, searchParametersFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, aplFile, identificationParametersFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         andromedaProcessBuilder.startProcess();
@@ -2215,7 +2193,7 @@ public class SearchHandler {
                     // organize the output files
                     waitingHandler.appendReport("Zipping output files.", true, true);
                     waitingHandler.appendReportEndLine();
-                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, parametersOutputFile, includeDateInOutputName);
+                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, includeDateInOutputName);
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
@@ -2324,7 +2302,7 @@ public class SearchHandler {
                         if (!identificationFiles.isEmpty()) {
                             peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                     waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
-                                    searchParameters, searchParametersFile, peptideShakerFile, true, idFilter, processingPreferences, ptmScoringPreferences, idMatchValidationPreferences, genePreferences, outputData);
+                                    identificationParameters, identificationParametersFile, peptideShakerFile, true, processingPreferences, outputData);
                             waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
                             // cancel the protein tree if not done
@@ -2478,7 +2456,7 @@ public class SearchHandler {
         @Override
         protected Object doInBackground() throws Exception {
 
-            File fastaFile = searchParameters.getFastaFile();
+            File fastaFile = identificationParameters.getSearchParameters().getFastaFile();
             File indexFile = new File(fastaFile.getParent(), fastaFile.getName() + ".cui");
 
             if (!indexFile.exists()) {
@@ -2626,21 +2604,21 @@ public class SearchHandler {
     }
 
     /**
-     * Set the search parameters.
+     * Set the identification parameters.
      *
-     * @param searchParameters the search parameters
+     * @param identificationParameters the identification parameters
      */
-    public void setSearchParameters(SearchParameters searchParameters) {
-        this.searchParameters = searchParameters;
+    public void setIdentificationParameters(IdentificationParameters identificationParameters) {
+        this.identificationParameters = identificationParameters;
     }
 
     /**
-     * Set the search parameters file.
+     * Set the identification parameters file.
      *
-     * @param searchParametersFile the search parameters file
+     * @param identificationParametersFile the identification parameters file
      */
-    public void setSearchParametersFile(File searchParametersFile) {
-        this.searchParametersFile = searchParametersFile;
+    public void setIdentificationParametersFile(File identificationParametersFile) {
+        this.identificationParametersFile = identificationParametersFile;
     }
 
     /**
@@ -2662,24 +2640,6 @@ public class SearchHandler {
     }
 
     /**
-     * Return the ID filter.
-     *
-     * @return the ID filter
-     */
-    public PeptideAssumptionFilter getIdFilter() {
-        return idFilter;
-    }
-
-    /**
-     * Set the ID filter.
-     *
-     * @param idFilter the ID filder
-     */
-    public void setIdFilter(PeptideAssumptionFilter idFilter) {
-        this.idFilter = idFilter;
-    }
-
-    /**
      * Returns the processing preferences.
      *
      * @return the processingPreferences
@@ -2698,42 +2658,6 @@ public class SearchHandler {
     }
 
     /**
-     * Returns the PTM scoring preferences.
-     *
-     * @return the ptmScoringPreferences
-     */
-    public PTMScoringPreferences getPtmScoringPreferences() {
-        return ptmScoringPreferences;
-    }
-
-    /**
-     * Set the PTM scoring preferences.
-     *
-     * @param ptmScoringPreferences the ptmScoringPreferences to set
-     */
-    public void setPtmScoringPreferences(PTMScoringPreferences ptmScoringPreferences) {
-        this.ptmScoringPreferences = ptmScoringPreferences;
-    }
-
-    /**
-     * Returns the id match validation preferences.
-     *
-     * @return the id match validation preferences
-     */
-    public IdMatchValidationPreferences getIdMatchValidationPreferences() {
-        return idMatchValidationPreferences;
-    }
-
-    /**
-     * Sets the id match validation preferences.
-     *
-     * @param idMatchValidationPreferences the id match validation preferences
-     */
-    public void setIdMatchValidationPreferences(IdMatchValidationPreferences idMatchValidationPreferences) {
-        this.idMatchValidationPreferences = idMatchValidationPreferences;
-    }
-
-    /**
      * Returns the msconvert parameters.
      *
      * @return the msconvert parameters
@@ -2749,24 +2673,6 @@ public class SearchHandler {
      */
     public void setMsConvertParameters(MsConvertParameters msConvertParameters) {
         this.msConvertParameters = msConvertParameters;
-    }
-
-    /**
-     * Returns the gene preferences.
-     *
-     * @return the ptmScoringPreferences
-     */
-    public GenePreferences getGenePreferences() {
-        return genePreferences;
-    }
-
-    /**
-     * Set the gene preferences.
-     *
-     * @param genePreferences the genePreferences to set
-     */
-    public void setGenePreferences(GenePreferences genePreferences) {
-        this.genePreferences = genePreferences;
     }
 
     /**
@@ -3105,13 +3011,18 @@ public class SearchHandler {
 
             default: // no zipping
 
+                File copiedParametersFile = new File(outputFolder, identificationParametersFile.getName());
+                if (!copiedParametersFile.exists()) {
+                    Util.copyFile(identificationParametersFile, copiedParametersFile);
+                }
+
                 // add data files if needed
                 if (outputData) {
                     // create the data folder
                     File dataFolder = new File(outputFolder, defaultDataFolder);
                     dataFolder.mkdir();
 
-                    File dbFile = searchParameters.getFastaFile();
+                    File dbFile = identificationParameters.getSearchParameters().getFastaFile();
                     Util.copyFile(dbFile, new File(dataFolder, dbFile.getName()));
 
                     for (File spectrumFile : getMgfFiles()) {
@@ -3137,7 +3048,7 @@ public class SearchHandler {
         // create the data folder in the zip file
         ZipUtils.addFolderToZip(defaultDataFolder, out);
 
-        File dbFile = searchParameters.getFastaFile();
+        File dbFile = identificationParameters.getSearchParameters().getFastaFile();
         ZipUtils.addFileToZip(defaultDataFolder, dbFile, out, waitingHandler, totalUncompressedSize);
 
         for (File spectrumFile : getMgfFiles()) {
@@ -3296,7 +3207,7 @@ public class SearchHandler {
      */
     private long getTotalUncompressedSizeOfData() {
 
-        long totalUncompressedSize = searchParameters.getFastaFile().length();
+        long totalUncompressedSize = identificationParameters.getSearchParameters().getFastaFile().length();
         for (File spectrumFile : getMgfFiles()) {
             totalUncompressedSize += spectrumFile.length();
         }

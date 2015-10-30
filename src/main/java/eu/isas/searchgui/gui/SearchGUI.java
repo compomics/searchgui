@@ -15,9 +15,11 @@ import com.compomics.util.Util;
 import com.compomics.util.db.DerbyUtil;
 import com.compomics.util.examples.BareBonesBrowserLaunch;
 import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
@@ -67,7 +69,6 @@ import com.compomics.util.gui.parameters.identification_parameters.algorithm_set
 import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
-import com.compomics.util.preferences.GenePreferences;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.LastSelectedFolder;
 import com.compomics.util.preferences.ProcessingPreferences;
@@ -92,6 +93,7 @@ import net.jimmc.jshortcut.JShellLink;
  * The main frame of SearchGUI.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDialogParent {
 
@@ -150,10 +152,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public static final String userSettingsTxt = "[user settings]";
     /**
-     * Set to true when the default configurations have been loaded.
-     */
-    private boolean defaultConfigsLoaded = false;
-    /**
      * If an mgf file exceeds this limit, the user will be asked for a split.
      */
     private double mgfMaxSize = 1000; // @TODO: should be moved to user preferences?
@@ -173,11 +171,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * The search parameters file.
      */
-    private File searchParametersFile;
+    private File identificationParametersFile;
     /**
      * The search parameters.
      */
-    private SearchParameters searchParameters;
+    private IdentificationParameters identificationParameters;
     /**
      * The processing preferences.
      */
@@ -299,56 +297,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         if (!newVersion) {
 
-            if (searchParametersFile == null) {
-
-                // set the search settings to default
-                searchParameters = new SearchParameters();
-
-                // label the configs as default.
-                setDefaultConfigsLoaded(true);
-
-                // label the configs as default
-                setDefaultParameters();
-
-            } else {
-
-                this.searchParametersFile = searchParametersFile;
-
-                try {
-                    searchParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
-                    loadModifications(searchParameters);
-                    searchSettingsTxt.setText(searchParametersFile.getName());
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,
-                            "Failed to import search parameters from: " + searchParametersFile.getAbsolutePath() + ".", "Search Parameters",
-                            JOptionPane.WARNING_MESSAGE);
-                    e.printStackTrace();
-
-                    // set the search settings to default
-                    searchParameters = new SearchParameters();
-
-                    // label the configs as default.
-                    setDefaultConfigsLoaded(true);
-
-                    // label the configs as default
-                    setDefaultParameters();
-                }
-            }
-
-            processingPreferences = new ProcessingPreferences();
-            processingPreferences.setnThreads(Runtime.getRuntime().availableProcessors());
-
-            searchHandler = new SearchHandler(searchParameters, outputFolder, spectrumFiles, rawFiles, searchParametersFile, processingPreferences, false, exceptionHandler);
-
-            enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
-            enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());
-            enableMsgfJCheckBox.setSelected(searchHandler.isMsgfEnabled());
-            enableMsAmandaJCheckBox.setSelected(searchHandler.isMsAmandaEnabled());
-            enableMyriMatchJCheckBox.setSelected(searchHandler.isMyriMatchEnabled());
-            enableCometJCheckBox.setSelected(searchHandler.isCometEnabled());
-            enableTideJCheckBox.setSelected(searchHandler.isTideEnabled());
-            enableAndromedaJCheckBox.setSelected(searchHandler.isAndromedaEnabled());
-
             // load enzymes
             try {
                 enzymeFactory.importEnzymes(SearchHandler.getEnzymesFile(getJarFilePath()));
@@ -364,17 +312,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
             }
 
-            // load the gene mappings
-            boolean genesLoaded = searchHandler.getGenePreferences().loadGeneMappings(getJarFilePath(), progressDialog);
-            if (!genesLoaded) {
-                JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                // set the gene preferences
-                if (species != null && speciesType != null) {
-                    searchHandler.getGenePreferences().setCurrentSpecies(species);
-                    searchHandler.getGenePreferences().setCurrentSpeciesType(speciesType);
-                }
-            }
+            // Set the processing preferences
+            processingPreferences = new ProcessingPreferences();
+            processingPreferences.setnThreads(Runtime.getRuntime().availableProcessors());
+
+            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, searchParametersFile, processingPreferences, false, exceptionHandler);
+
+            enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
+            enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());
+            enableMsgfJCheckBox.setSelected(searchHandler.isMsgfEnabled());
+            enableMsAmandaJCheckBox.setSelected(searchHandler.isMsAmandaEnabled());
+            enableMyriMatchJCheckBox.setSelected(searchHandler.isMyriMatchEnabled());
+            enableCometJCheckBox.setSelected(searchHandler.isCometEnabled());
+            enableTideJCheckBox.setSelected(searchHandler.isTideEnabled());
+            enableAndromedaJCheckBox.setSelected(searchHandler.isAndromedaEnabled());
 
             // add desktop shortcut?
             if (!getJarFilePath().equalsIgnoreCase(".")
@@ -405,11 +356,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             msConvertParameters = new MsConvertParameters();
             msConvertParameters.setMsFormat(MsFormat.mgf);
             msConvertParameters.addFilter(ProteoWizardFilter.peakPicking.number, "");
-
-            // set the results folder
-            if (outputFolder != null && outputFolder.exists()) {
-                setOutputFolder(outputFolder);
-            }
 
             // set the font color for the titled borders, looks better than the default black
             UIManager.put("TitledBorder.titleColor", new Color(59, 59, 59));
@@ -451,9 +397,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 cometLinkLabel.setEnabled(false);
                 searchHandler.setCometEnabled(false);
             }
-
-            setLocationRelativeTo(null);
-            setVisible(true);
+            validateSearchEngines(true);
 
             // set the spectra files
             if ((spectrumFiles != null && !spectrumFiles.isEmpty()) || (rawFiles != null && !rawFiles.isEmpty())) {
@@ -481,13 +425,53 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 peptideShakerCheckBox.setSelected(true);
             }
 
+            // Set the search parameters
+            if (searchParametersFile != null) {
+                this.identificationParametersFile = searchParametersFile;
+                try {
+                    SearchParameters searchParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
+                    identificationParameters = new IdentificationParameters(searchParameters);
+                    loadModifications(searchParameters);
+                    searchSettingsTxt.setText(searchParametersFile.getName());
+
+                    // load the gene mappings
+                    boolean genesLoaded = identificationParameters.getGenePreferences().loadGeneMappings(getJarFilePath(), progressDialog);
+                    if (!genesLoaded) {
+                        JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        // set the gene preferences
+                        if (species != null && speciesType != null) {
+                            identificationParameters.getGenePreferences().setCurrentSpecies(species);
+                            identificationParameters.getGenePreferences().setCurrentSpeciesType(speciesType);
+                        }
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Failed to import search parameters from: " + searchParametersFile.getAbsolutePath() + ".", "Search Parameters",
+                            JOptionPane.WARNING_MESSAGE);
+                    e.printStackTrace();
+
+                    // set the search settings to default
+                    identificationParameters = null;
+                    identificationParametersFile = null;
+                    searchSettingsTxt.setText("");
+                }
+            }
+
+            // set the results folder
+            if (outputFolder != null && outputFolder.exists()) {
+                setOutputFolder(outputFolder);
+            }
+
             if (rawFiles != null && !rawFiles.isEmpty()) {
                 checkProteoWizard();
                 msconvertCheckBox.setSelected(!rawFiles.isEmpty());
             }
 
             validateInput(false);
-            validateSearchEngines(true);
+
+            setLocationRelativeTo(null);
+            setVisible(true);
         }
     }
 
@@ -2181,17 +2165,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     "Output Format Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
-//        if (!rawFiles.isEmpty() && peptideShakerCheckBox.isSelected() && msConvertParameters.getMsFormat() != MsFormat.mgf) {
-//            JOptionPane.showMessageDialog(this,
-//                    "Mgf is the only spectrum format compatible with PeptideShaker.\n\n"
-//                    + "Please change the output for msconvert or disable PeptideShaker.",
-//                    "Output Format Warning", JOptionPane.WARNING_MESSAGE);
-//            return;
-//        }
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        Enzyme enzyme = searchParameters.getEnzyme();
 
         // check if the choosen enzyme is valid for ms-gf+
-        if (enableMsgfJCheckBox.isSelected() && searchParameters.getEnzyme() != null) {
-            String msgfEnzyme = MsgfParameters.enzymeMapping(searchParameters.getEnzyme());
+        if (enableMsgfJCheckBox.isSelected() && enzyme != null) {
+            String msgfEnzyme = MsgfParameters.enzymeMapping(enzyme);
             if (msgfEnzyme == null) {
                 JOptionPane.showMessageDialog(this,
                         "The selected enzyme is not supported for MS-GF+.\n\n"
@@ -2203,9 +2183,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         // check if the choosen enzyme is valid for ms amanda
-        if (enableMsAmandaJCheckBox.isSelected() && searchParameters.getEnzyme() != null) {
+        if (enableMsAmandaJCheckBox.isSelected() && enzyme != null) {
 
-            String enzymeName = searchParameters.getEnzyme().getName();
+            String enzymeName = enzyme.getName();
 
             if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
                 JOptionPane.showMessageDialog(this,
@@ -2217,8 +2197,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         // check if the choosen enzyme is valid for myrimatch
-        if (enableMyriMatchJCheckBox.isSelected() && searchParameters.getEnzyme() != null) {
-            if (MyriMatchParameters.enzymeMapping(searchParameters.getEnzyme()) == null) { // enzymes not supported: Trypsin + CNBr, Asp-N + Glu-C, Lys-N (K), Thermolysin, no P rule
+        if (enableMyriMatchJCheckBox.isSelected() && enzyme != null) {
+            if (MyriMatchParameters.enzymeMapping(enzyme) == null) { // enzymes not supported: Trypsin + CNBr, Asp-N + Glu-C, Lys-N (K), Thermolysin, no P rule
                 JOptionPane.showMessageDialog(this,
                         "The selected enzyme is not yet supported for MyriMatch.\n\n"
                         + "Please choose a different enzyme or disable MyriMatch.",
@@ -2228,8 +2208,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         // check if the choosen enzyme is valid for tide
-        if (enableTideJCheckBox.isSelected() && searchParameters.getEnzyme() != null) {
-            String enzymeName = searchParameters.getEnzyme().getName();
+        if (enableTideJCheckBox.isSelected() && enzyme != null) {
+            String enzymeName = enzyme.getName();
 
             if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
                 JOptionPane.showMessageDialog(this,
@@ -2240,20 +2220,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         }
 
-        // check if the choosen ptms are supported for myrimatch
-//        if (enableMyriMatchJCheckBox.isSelected()) {
-//            for (String fixedPtm : searchParameters.getModificationProfile().getFixedModifications()) {
-//                PTM tempPTM = ptmFactory.getPTM(fixedPtm);
-//
-//                if (tempPTM.getType() != PTM.MODAA) { // @TODO: verify that this is correct!!
-//                    JOptionPane.showMessageDialog(this,
-//                            "Fixed terminal modifications are not supported for MyriMatch.\n\n"
-//                            + "Please unselect \'" + fixedPtm + "\' or disable MyriMatch.",
-//                            "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//            }
-//        }
         // check if the file paths for xtandem are xml compatible
         if (enableXTandemJCheckBox.isSelected()) {
             for (File tempFile : mgfFiles) {
@@ -2496,8 +2462,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         saveConfigurationFile(); // save the search engine locations and ptms used
-        searchHandler.setSearchParameters(searchParameters);
-        searchHandler.setSearchParametersFile(searchParametersFile);
+        searchHandler.setIdentificationParameters(identificationParameters);
+        searchHandler.setIdentificationParametersFile(identificationParametersFile);
         searchHandler.setProcessingPreferences(processingPreferences);
         searchHandler.setMgfFiles(mgfFiles);
         searchHandler.setRawFiles(rawFiles);
@@ -2542,11 +2508,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void editSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSettingsButtonActionPerformed
-        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, true);
-        if (!identificationParametersSelectionDialog.isCanceled()) {
-            IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
-            setSearchParameters(identificationParameters.getSearchParameters());
-        }
+        editIdentificationParameters();
     }//GEN-LAST:event_editSettingsButtonActionPerformed
 
     /**
@@ -2558,10 +2520,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         // First check whether a file has already been selected.
         // If so, start from that file's parent.
         File startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
-        if (searchParametersFile != null && !searchSettingsTxt.getText().trim().equals("")
+        if (identificationParametersFile != null && !searchSettingsTxt.getText().trim().equals("")
                 && !searchSettingsTxt.getText().trim().equals(defaultSettingsTxt)
                 && !searchSettingsTxt.getText().trim().equals(userSettingsTxt)) {
-            startLocation = searchParametersFile.getParentFile();
+            startLocation = identificationParametersFile.getParentFile();
         }
         JFileChooser fc = new JFileChooser(startLocation);
 
@@ -2587,13 +2549,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (fileName.endsWith(".par")) {
 
                 try {
-                    searchParameters = SearchParameters.getIdentificationParameters(file);
+                    SearchParameters searchParameters = SearchParameters.getIdentificationParameters(file);
+                    identificationParameters = new IdentificationParameters(searchParameters);
                     loadModifications(searchParameters);
-                    searchSettingsTxt.setText(file.getName());
+                    searchSettingsTxt.setText(fileName);
 
                     String parametersName = null;
-                    if (searchParametersFile != null) {
-                        parametersName = searchParametersFile.getName();
+                    if (identificationParametersFile != null) {
+                        parametersName = identificationParametersFile.getName();
                     }
                     SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, searchParameters,
                             Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
@@ -2603,8 +2566,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     if (!valid) {
                         settingsDialog.validateParametersInput(true);
-                        settingsDialog.setVisible(true);
-                        setSearchParameters(settingsDialog.getSearchParameters());
+                        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, settingsDialog);
+                        if (!identificationParametersSelectionDialog.isCanceled()) {
+                            IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
+                            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
+                            setIdentificationParameters(identificationParameters);
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -3027,15 +2994,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void settingsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsMenuItemActionPerformed
-        String parametersName = null;
-        if (searchParametersFile != null) {
-            parametersName = searchParametersFile.getName();
-        }
-        SearchSettingsDialog searchSettingsDialog = new SearchSettingsDialog(this, searchParameters,
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                true, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
-        setSearchParameters(searchSettingsDialog.getSearchParameters());
+        editIdentificationParameters();
     }//GEN-LAST:event_settingsMenuItemActionPerformed
 
     /**
@@ -3162,6 +3121,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void xtandemSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonMouseReleased
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
         XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy(), true);
 
@@ -3177,14 +3138,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
                     newSearchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(xtandemSettingsDialog, newSearchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(xtandemSettingsDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         xtandemParametersSet = true;
                     } else {
-                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy(), true);
+                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, newSearchParameters.getPtmSettings(), newSearchParameters.getFragmentIonAccuracy(), true);
                     }
                 } else {
                     xtandemParametersSet = true;
@@ -3201,6 +3162,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void omssaSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_omssaSettingsButtonMouseReleased
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         OmssaParameters oldOmssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
         if (oldOmssaParameters == null) { //backward compatibility check
             oldOmssaParameters = new OmssaParameters();
@@ -3218,10 +3181,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldOmssaParameters.equals(newOmssaParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(omssaParametersDialog, newSearchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(omssaParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         omssaParametersSet = true;
                     } else {
@@ -3333,6 +3296,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void msgfSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msgfSettingsButtonMouseReleased
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MsgfParameters oldMsgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
         if (oldMsgfParameters == null) { //backward compatibility check
             oldMsgfParameters = new MsgfParameters();
@@ -3350,10 +3315,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldMsgfParameters.equals(newMsgfParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msgfParametersDialog, newSearchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msgfParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         msgfParametersSet = true;
                     } else {
@@ -3447,6 +3412,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void msAmandaSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msAmandaSettingsButtonMouseReleased
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
         MsAmandaSettingsDialog msAmandaParametersDialog = new MsAmandaSettingsDialog(this, oldMsAmandaParameters, true);
 
@@ -3461,10 +3428,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldMsAmandaParameters.equals(newMsAmandaParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msAmandaParametersDialog, searchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msAmandaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         msAmandaParametersSet = true;
                     } else {
@@ -3585,6 +3552,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void myriMatchSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_myriMatchSettingsButtonMouseReleased
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MyriMatchParameters oldMyriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
         MyriMatchSettingsDialog myriMatchParametersDialog = new MyriMatchSettingsDialog(this, oldMyriMatchParameters, true);
 
@@ -3599,10 +3568,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldMyriMatchParameters.equals(newMyriMatchParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(myriMatchParametersDialog, searchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(myriMatchParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         myriMatchParametersSet = true;
                     } else {
@@ -3715,6 +3684,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void cometSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cometSettingsButtonMouseReleased
 
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         CometParameters oldCometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
         CometSettingsDialog cometSettingsDialog = new CometSettingsDialog(this, oldCometParameters, true);
 
@@ -3729,10 +3699,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldCometParameters.equals(newCometParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(cometSettingsDialog, searchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(cometSettingsDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         cometParametersSet = true;
                     } else {
@@ -3871,6 +3841,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void tideSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tideSettingsButtonMouseReleased
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         TideParameters oldTideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         if (oldTideParameters == null) { //backward compatibility check
             oldTideParameters = new TideParameters();
@@ -3888,10 +3860,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldTideParameters.equals(newTideParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(tideParametersDialog, searchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(tideParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         tideParametersSet = true;
                     } else {
@@ -4003,6 +3975,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void andromedaSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_andromedaSettingsButtonMouseReleased
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         AndromedaParameters oldAndromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
         if (oldAndromedaParameters == null) { //backward compatibility check
             oldAndromedaParameters = new AndromedaParameters();
@@ -4020,10 +3994,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldAndromedaParameters.equals(newAndromedaParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(andromedaParametersDialog, searchParameters, searchParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(andromedaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
-                        searchParameters = newSearchParameters;
-                        searchParametersFile = newSearchParametersFile;
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
                         searchSettingsTxt.setText(newSearchParametersFile.getName());
                         andromedaParametersSet = true;
                     } else {
@@ -4222,6 +4196,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     // End of variables declaration//GEN-END:variables
 
     /**
+     * Edits the identification parameters
+     */
+    private void editIdentificationParameters() {
+        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, identificationParameters, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
+        if (!identificationParametersSelectionDialog.isCanceled()) {
+            IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
+            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
+            setIdentificationParameters(identificationParameters);
+        }
+    }
+
+    /**
      * Opens a dialog allowing the setting of paths.
      */
     public void editPathSettings() {
@@ -4265,13 +4251,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Opens a dialog allowing the user to edit the PeptideShaker settings.
      */
     private void editPeptideShakerSettings() {
-        PeptideShakerSettingsDialog psSettingsDialog = new PeptideShakerSettingsDialog(this, true, searchHandler.getMascotFiles());
 
-        if (searchHandler.getPeptideShakerFile() == null || psSettingsDialog.isCanceled()) {
-            peptideShakerCheckBox.setSelected(false); // @TODO: do more advanced tests for if PS is going to work or not?
-        }
+        PeptideShakerSettingsDialog psSettingsDialog = new PeptideShakerSettingsDialog(this, identificationParameters, identificationParametersFile, true, searchHandler.getMascotFiles());
         if (!psSettingsDialog.isCanceled()) {
+            searchHandler.setExperimentLabel(psSettingsDialog.getProjectName());
+            searchHandler.setSampleLabel(psSettingsDialog.getSampleName());
+            searchHandler.setReplicateNumber(psSettingsDialog.getReplicateNumber());
+            searchHandler.setPeptideShakerFile(psSettingsDialog.getPeptideShakerOutputFile());
             searchHandler.setMascotFiles(psSettingsDialog.getMascotFiles());
+            identificationParameters = psSettingsDialog.getIdentificationParameters();
+            identificationParametersFile = psSettingsDialog.getIdentificationParametersFile();
         }
     }
 
@@ -4497,11 +4486,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public boolean validateParametersInput(boolean showMessage) {
 
-        String parametersName = null;
-        if (searchParametersFile != null) {
-            parametersName = searchParametersFile.getName();
+        if (identificationParameters == null || identificationParametersFile == null) {
+            return false;
         }
-        SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, searchParameters,
+
+        String parametersName = identificationParameters.getName();
+        if (parametersName == null) {
+            parametersName = Util.removeExtension(identificationParametersFile.getName());
+        }
+        SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, identificationParameters.getSearchParameters(),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
                 false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
@@ -4510,8 +4503,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (!valid) {
             if (showMessage) {
                 settingsDialog.validateParametersInput(true);
-                settingsDialog.setVisible(true);
-                setSearchParameters(settingsDialog.getSearchParameters());
+                IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, settingsDialog);
+                if (!identificationParametersSelectionDialog.isCanceled()) {
+                    IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
+                    identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
+                    setIdentificationParameters(identificationParameters);
+                }
             } else {
                 searchSettingsLbl.setForeground(Color.RED);
                 searchSettingsLbl.setToolTipText("Please check the search settings");
@@ -4881,13 +4878,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Shows the user that these are default settings.
-     */
-    private void setDefaultParameters() {
-        searchSettingsTxt.setText(defaultSettingsTxt);
-    }
-
-    /**
      * Returns true if the settings tab has been displayed.
      *
      * @return true if the settings tab has been displayed
@@ -4913,24 +4903,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public void setSettingsTabHasBeenDisplayed(boolean settingsDisplayed) {
         this.settingsTabDisplayed = settingsDisplayed;
-    }
-
-    /**
-     * Returns true if the default configurations have been loaded.
-     *
-     * @return the defaultConfigsLoaded
-     */
-    public boolean isDefaultConfigsLoaded() {
-        return defaultConfigsLoaded;
-    }
-
-    /**
-     * Set if the default configurations have been loaded.
-     *
-     * @param defaultConfigsLoaded the defaultConfigsLoaded to set
-     */
-    private void setDefaultConfigsLoaded(boolean defaultConfigsLoaded) {
-        this.defaultConfigsLoaded = defaultConfigsLoaded;
     }
 
     /**
@@ -5188,15 +5160,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
             } else if (openSettingsDialog) {
-                String parametersName = null;
-                if (searchParametersFile != null) {
-                    parametersName = searchParametersFile.getName();
-                }
-                SearchSettingsDialog searchSettingsDialog = new SearchSettingsDialog(this, searchParameters,
-                        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                        true, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
-                setSearchParameters(searchSettingsDialog.getSearchParameters());
+                editIdentificationParameters();
             }
         }
     }
@@ -5372,23 +5336,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Returns the current search parameters.
+     * Returns the identification parameters.
      *
-     * @return the current search parameters
+     * @return the identification parameters
      */
-    public SearchParameters getSearchParameters() {
-        return searchParameters;
+    public IdentificationParameters getIdentificationParameters() {
+        return identificationParameters;
     }
 
     /**
-     * Set the search parameters.
+     * Sets the search parameters.
      *
-     * @param searchParameters the search parameters to set
+     * @param identificationParameters the identification parameters
      */
-    public void setSearchParameters(SearchParameters searchParameters) {
-        this.searchParameters = searchParameters;
-        if (searchParametersFile != null) {
-            searchSettingsTxt.setText(searchParametersFile.getName());
+    public void setIdentificationParameters(IdentificationParameters identificationParameters) {
+        this.identificationParameters = identificationParameters;
+        String name = identificationParameters.getName();
+        if (name != null && name.length() > 0) {
+            searchSettingsTxt.setText(name);
+        } else if (identificationParametersFile != null) {
+            searchSettingsTxt.setText(identificationParametersFile.getName());
         } else {
             searchSettingsTxt.setText(userSettingsTxt);
         }
@@ -5680,15 +5647,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Returns the gene preferences.
-     *
-     * @return the gene preferences
-     */
-    public GenePreferences getGenePreferences() {
-        return searchHandler.getGenePreferences();
-    }
-
-    /**
      * Returns the tips of the day.
      *
      * @return the tips of the day in an ArrayList
@@ -5755,7 +5713,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean checkPeptideShaker = true;
 
         if (peptideShakerCheckBox.isSelected()) {
-            OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
+            OmssaParameters omssaParameters = (OmssaParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
             if (enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
                 JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
                         "The selected OMSSA output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"

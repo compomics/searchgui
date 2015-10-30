@@ -10,6 +10,7 @@ import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import com.compomics.util.gui.filehandling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.searchgui.SearchHandler;
 import eu.isas.searchgui.preferences.OutputOption;
@@ -215,9 +216,16 @@ public class SearchCLI implements Callable {
             // Processing
             ProcessingPreferences processingPreferences = new ProcessingPreferences();
             processingPreferences.setnThreads(searchCLIInputBean.getNThreads());
+            
+            // Identification parameters
+            IdentificationParameters identificationParameters = searchCLIInputBean.getIdentificationParameters();
+            if (searchCLIInputBean.getSpecies() != null && searchCLIInputBean.getSpeciesType() != null) {
+                identificationParameters.getGenePreferences().setCurrentSpecies(searchCLIInputBean.getSpecies());
+                identificationParameters.getGenePreferences().setCurrentSpeciesType(searchCLIInputBean.getSpeciesType());
+            }
 
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
-            SearchHandler searchHandler = new SearchHandler(searchCLIInputBean.getSearchParameters(),
+            SearchHandler searchHandler = new SearchHandler(identificationParameters,
                     searchCLIInputBean.getOutputFile(), spectrumFiles,
                     new ArrayList<File>(), searchCLIInputBean.getSearchParametersFile(),
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
@@ -245,10 +253,6 @@ public class SearchCLI implements Callable {
                 searchHandler.setIncludeDateInOutputName(includeDate);
             }
 
-            if (searchCLIInputBean.getSpecies() != null && searchCLIInputBean.getSpeciesType() != null) {
-                searchHandler.getGenePreferences().setCurrentSpecies(searchCLIInputBean.getSpecies());
-                searchHandler.getGenePreferences().setCurrentSpeciesType(searchCLIInputBean.getSpeciesType());
-            }
             searchHandler.startSearch(waitingHandlerCLIImpl);
         } catch (Exception e) {
             e.printStackTrace();

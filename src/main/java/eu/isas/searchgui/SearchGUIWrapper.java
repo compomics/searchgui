@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * are read from the JavaOptions file.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class SearchGUIWrapper extends CompomicsWrapper {
 

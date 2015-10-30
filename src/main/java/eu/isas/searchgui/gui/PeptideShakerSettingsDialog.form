@@ -365,7 +365,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Advanced (see help for details)"/>
+                <TitledBorder title="Project Settings (see help for details)"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -377,29 +377,27 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="importFiltersLabel1" max="32767" attributes="1"/>
-                          <Component id="importFiltersLabel" max="32767" attributes="1"/>
+                          <Component id="projectSettingsLbl" max="32767" attributes="1"/>
+                          <Component id="identificationSettingsLbl" max="32767" attributes="1"/>
                           <Component id="mascotFilesLabel" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="importFilterTxt" alignment="0" pref="476" max="32767" attributes="3"/>
+                          <Component id="identificationSettingsTxt" alignment="0" pref="476" max="32767" attributes="3"/>
                           <Component id="mascotFilesTextField" max="32767" attributes="0"/>
-                          <Component id="preferencesTxt" alignment="0" max="32767" attributes="3"/>
+                          <Component id="projectSettingsTxt" alignment="0" max="32767" attributes="3"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="browseMascotFilesButton" max="32767" attributes="0"/>
-                          <Component id="editImportFilterButton" max="32767" attributes="1"/>
-                          <Component id="editPreferencesButton" alignment="0" min="-2" pref="70" max="-2" attributes="1"/>
+                          <Group type="102" attributes="0">
+                              <Component id="browseMascotFilesButton" pref="70" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="clearMascotFilesButton" min="-2" pref="70" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="editProjectSettingsButton" max="32767" attributes="1"/>
+                          <Component id="editIdentificationSettingsButton" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="defaultPreferencesButton" max="32767" attributes="0"/>
-                          <Component id="defaultImportFiltersButton" alignment="0" max="32767" attributes="0"/>
-                          <Component id="clearMascotFilesButton" alignment="0" min="-2" pref="70" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -408,17 +406,15 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="importFiltersLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="importFilterTxt" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="editImportFilterButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="defaultImportFiltersButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="identificationSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="identificationSettingsTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="editIdentificationSettingsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="importFiltersLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="preferencesTxt" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="editPreferencesButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="defaultPreferencesButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="projectSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="projectSettingsTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="editProjectSettingsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -461,12 +457,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearMascotFilesButtonActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="importFiltersLabel">
+            <Component class="javax.swing.JLabel" name="identificationSettingsLbl">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Import Filters"/>
+                <Property name="text" type="java.lang.String" value="Identification"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="importFilterTxt">
+            <Component class="javax.swing.JTextField" name="identificationSettingsTxt">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="horizontalAlignment" type="int" value="0"/>
@@ -474,20 +470,20 @@
                 <Property name="toolTipText" type="java.lang.String" value="Minimum Peptide Length"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="editImportFilterButton">
+            <Component class="javax.swing.JButton" name="editIdentificationSettingsButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Edit"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editImportFilterButtonActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editIdentificationSettingsButtonActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="importFiltersLabel1">
+            <Component class="javax.swing.JLabel" name="projectSettingsLbl">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Preferences"/>
+                <Property name="text" type="java.lang.String" value="Project"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="preferencesTxt">
+            <Component class="javax.swing.JTextField" name="projectSettingsTxt">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="horizontalAlignment" type="int" value="0"/>
@@ -495,30 +491,13 @@
                 <Property name="toolTipText" type="java.lang.String" value="Minimum Peptide Length"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="editPreferencesButton">
+            <Component class="javax.swing.JButton" name="editProjectSettingsButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Edit"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editPreferencesButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="defaultImportFiltersButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Default"/>
-                <Property name="toolTipText" type="java.lang.String" value="The file where the output will be stored."/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="defaultImportFiltersButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="defaultPreferencesButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Default"/>
-                <Property name="toolTipText" type="java.lang.String" value="The file where the output will be stored."/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="defaultPreferencesButtonActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editProjectSettingsButtonActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

@@ -3,6 +3,7 @@ package eu.isas.searchgui.cmd;
 import com.compomics.software.CommandLineUtils;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
+import com.compomics.util.preferences.IdentificationParameters;
 import eu.isas.searchgui.preferences.OutputOption;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,9 +29,9 @@ public class SearchCLIInputBean {
      */
     private File outputFolder;
     /**
-     * The search parameters.
+     * The identification parameters.
      */
-    private SearchParameters searchParameters;
+    private IdentificationParameters identificationParameters;
     /**
      * The search parameters file.
      */
@@ -188,7 +189,8 @@ public class SearchCLIInputBean {
         // identification parameters
         String fileTxt = aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id);
         searchParametersFile = new File(fileTxt);
-        searchParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
+        SearchParameters searchParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
+        identificationParameters = new IdentificationParameters(searchParameters);
 
         // override the fasta file location
         if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
@@ -385,12 +387,12 @@ public class SearchCLIInputBean {
     }
 
     /**
-     * Returns the search parameters.
+     * Returns the identification parameters.
      *
-     * @return the search parameters
+     * @return the identification parameters
      */
-    public SearchParameters getSearchParameters() {
-        return searchParameters;
+    public IdentificationParameters getIdentificationParameters() {
+        return identificationParameters;
     }
 
     /**

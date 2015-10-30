@@ -4,12 +4,8 @@ import com.compomics.software.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
-import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.waiting.WaitingHandler;
-import com.compomics.util.preferences.GenePreferences;
-import com.compomics.util.experiment.identification.filtering.PeptideAssumptionFilter;
-import com.compomics.util.preferences.IdMatchValidationPreferences;
-import com.compomics.util.preferences.PTMScoringPreferences;
+import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import java.io.File;
@@ -46,13 +42,13 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      */
     private ArrayList<File> identificationFiles;
     /**
-     * The search parameters.
+     * The identification parameters.
      */
-    private SearchParameters searchParameters;
+    private IdentificationParameters identificationParameters;
     /**
      * The file where to store the search parameters.
      */
-    private File searchParametersFile;
+    private File identificationParametersFile;
     /**
      * The cpsx file.
      */
@@ -62,26 +58,6 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * PeptideShaker.
      */
     private boolean showGuiProgress;
-    /**
-     * The ID filters.
-     */
-    private PeptideAssumptionFilter idFilter;
-    /**
-     * The processing preferences.
-     */
-    private ProcessingPreferences processingPreferences;
-    /**
-     * The PTM scoring preferences.
-     */
-    private PTMScoringPreferences ptmScoringPreferences;
-    /**
-     * The id match validation preferences.
-     */
-    private IdMatchValidationPreferences idMatchValidationPreferences = new IdMatchValidationPreferences();
-    /**
-     * The gene preferences.
-     */
-    private GenePreferences genePreferences;
     /**
      * Indicates whether the mgf and FASTA file should be included in the
      * output.
@@ -96,16 +72,12 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param sample the name of the sample
      * @param replicate the replicate number
      * @param spectrumFiles the spectrum files
-     * @param searchParameters the search parameters
+     * @param identificationParameters the identification parameters
      * @param cpsFile the cpsx file
      * @param identificationFiles the search engines result files
      * @param showGuiProgress a boolean indicating whether the progress shall be
      * displayed in a GUI
-     * @param idFilter the id filters
      * @param processingPreferences the processing preferences
-     * @param ptmScoringPreferences the PTM scoring preferences
-     * @param idMatchValidationPreferences the id match validation preferences
-     * @param genePreferences the gene preferences
      * @param includeData Indicates whether the mgf and FASTA file should be
      * included in the output
      * @param exceptionHandler the handler of exceptions
@@ -116,9 +88,9 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String experiment, String sample, Integer replicate,
-            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, SearchParameters searchParameters, File searchParametersFile, 
-            File cpsFile, boolean showGuiProgress, PeptideAssumptionFilter idFilter,
-            ProcessingPreferences processingPreferences, PTMScoringPreferences ptmScoringPreferences, IdMatchValidationPreferences idMatchValidationPreferences, GenePreferences genePreferences, boolean includeData)
+            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, IdentificationParameters identificationParameters, File searchParametersFile, 
+            File cpsFile, boolean showGuiProgress,
+            ProcessingPreferences processingPreferences, boolean includeData)
             throws FileNotFoundException, IOException, ClassNotFoundException {
 
         this.waitingHandler = waitingHandler;
@@ -127,16 +99,11 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
         this.sample = sample;
         this.replicate = replicate;
         this.spectrumFiles = spectrumFiles;
-        this.searchParameters = searchParameters;
-        this.searchParametersFile = searchParametersFile;
+        this.identificationParameters = identificationParameters;
+        this.identificationParametersFile = searchParametersFile;
         this.identificationFiles = identificationFiles;
         this.cpsFile = cpsFile;
         this.showGuiProgress = showGuiProgress;
-        this.idFilter = idFilter;
-        this.processingPreferences = processingPreferences;
-        this.ptmScoringPreferences = ptmScoringPreferences;
-        this.idMatchValidationPreferences = idMatchValidationPreferences;
-        this.genePreferences = genePreferences;
         this.includeData = includeData;
 
         setUpProcessBuilder();
@@ -180,7 +147,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFiles));
 
             process_name_array.add("-id_params");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParametersFile));
+            process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationParametersFile));
             process_name_array.add("-out");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(cpsFile));
             if (includeData) {
@@ -192,22 +159,22 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             // @TODO: add more test for if default parameter values are used and exclude the parameters
             // add the processing preferences
             process_name_array.add("-protein_FDR");
-            process_name_array.add("" + idMatchValidationPreferences.getDefaultProteinFDR());
+            process_name_array.add("" + identificationParameters.getIdValidationPreferences().getDefaultProteinFDR());
             process_name_array.add("-peptide_FDR");
-            process_name_array.add("" + idMatchValidationPreferences.getDefaultPeptideFDR());
+            process_name_array.add("" + identificationParameters.getIdValidationPreferences().getDefaultPeptideFDR());
             process_name_array.add("-psm_FDR");
-            process_name_array.add("" + idMatchValidationPreferences.getDefaultPsmFDR());
+            process_name_array.add("" + identificationParameters.getIdValidationPreferences().getDefaultPsmFDR());
 
             // ptm scoring options
-            if (!ptmScoringPreferences.isEstimateFlr()) {
+            if (!identificationParameters.getPtmScoringPreferences().isEstimateFlr()) {
                 process_name_array.add("-ptm_threshold");
-                process_name_array.add("" + ptmScoringPreferences.getFlrThreshold());
+                process_name_array.add("" + identificationParameters.getPtmScoringPreferences().getFlrThreshold());
             }
-            if (ptmScoringPreferences.isProbabilitsticScoreCalculation()) {
+            if (identificationParameters.getPtmScoringPreferences().isProbabilitsticScoreCalculation()) {
                 process_name_array.add("-ptm_score");
-                process_name_array.add(ptmScoringPreferences.getSelectedProbabilisticScore().getId() + "");
+                process_name_array.add(identificationParameters.getPtmScoringPreferences().getSelectedProbabilisticScore().getId() + "");
             }
-            if (ptmScoringPreferences.isProbabilisticScoreNeutralLosses()) {
+            if (identificationParameters.getPtmScoringPreferences().isProbabilisticScoreNeutralLosses()) {
                 process_name_array.add("-score_neutral_losses");
                 process_name_array.add("1");
             }
@@ -217,25 +184,25 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
 //            process_name_array.add("" + processingPreferences.getProteinConfidenceMwPlots());
 
             // add the gene preferences
-            if (genePreferences.getCurrentSpecies() != null) {
+            if (identificationParameters.getGenePreferences().getCurrentSpecies() != null) {
                 process_name_array.add("-species");
-                process_name_array.add(CommandLineUtils.getQuoteType() + genePreferences.getCurrentSpecies() + CommandLineUtils.getQuoteType());
+                process_name_array.add(CommandLineUtils.getQuoteType() + identificationParameters.getGenePreferences().getCurrentSpecies() + CommandLineUtils.getQuoteType());
                 process_name_array.add("-species_type");
-                process_name_array.add(CommandLineUtils.getQuoteType() + genePreferences.getCurrentSpeciesType() + CommandLineUtils.getQuoteType());
+                process_name_array.add(CommandLineUtils.getQuoteType() + identificationParameters.getGenePreferences().getCurrentSpeciesType() + CommandLineUtils.getQuoteType());
             }
 
             // add the filters
             process_name_array.add("-min_peptide_length");
-            process_name_array.add("" + idFilter.getMinPepLength());
+            process_name_array.add("" + identificationParameters.getPeptideAssumptionFilter().getMinPepLength());
             process_name_array.add("-max_peptide_length");
-            process_name_array.add("" + idFilter.getMaxPepLength());
+            process_name_array.add("" + identificationParameters.getPeptideAssumptionFilter().getMaxPepLength());
             process_name_array.add("-max_precursor_error");
-            process_name_array.add("" + idFilter.getMaxMzDeviation());
-            if (!idFilter.isIsPpm()) {
+            process_name_array.add("" + identificationParameters.getPeptideAssumptionFilter().getMaxMzDeviation());
+            if (!identificationParameters.getPeptideAssumptionFilter().isIsPpm()) {
                 process_name_array.add("-max_precursor_error_type");
                 process_name_array.add("1");
             }
-            if (!idFilter.removeUnknownPTMs()) {
+            if (!identificationParameters.getPeptideAssumptionFilter().removeUnknownPTMs()) {
                 process_name_array.add("-exclude_unknown_ptms");
                 process_name_array.add("0");
             }

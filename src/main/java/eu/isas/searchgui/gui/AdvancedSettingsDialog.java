@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
  * SearchGUI advanced settings dialog.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class AdvancedSettingsDialog extends javax.swing.JDialog {
 
@@ -426,7 +427,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(advancedParamatersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(advancedParamatersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
