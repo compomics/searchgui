@@ -4204,7 +4204,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Edits the identification parameters
      */
     private void editIdentificationParameters() {
-        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, identificationParameters, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
+        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, identificationParameters, IdentificationParametersSelectionDialog.StartupMode.searchParameters, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
         if (!identificationParametersSelectionDialog.isCanceled()) {
             IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
             identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());

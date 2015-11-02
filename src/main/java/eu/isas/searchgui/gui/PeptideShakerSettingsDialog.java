@@ -776,7 +776,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void editIdentificationSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editIdentificationSettingsButtonActionPerformed
-        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(searchGUI, this, identificationParameters, searchGUI.getSearchHandler().getConfigurationFile(),
+        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(searchGUI, this, identificationParameters, IdentificationParametersSelectionDialog.StartupMode.advanced, searchGUI.getSearchHandler().getConfigurationFile(),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), searchGUI.getLastSelectedFolder(), null, true);
         if (!identificationParametersSelectionDialog.isCanceled()) {
