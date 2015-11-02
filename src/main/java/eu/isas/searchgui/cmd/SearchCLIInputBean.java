@@ -189,8 +189,8 @@ public class SearchCLIInputBean {
         // identification parameters
         String fileTxt = aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id);
         searchParametersFile = new File(fileTxt);
-        SearchParameters searchParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
-        identificationParameters = new IdentificationParameters(searchParameters);
+        identificationParameters = IdentificationParameters.getIdentificationParameters(searchParametersFile);
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
 
         // override the fasta file location
         if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {

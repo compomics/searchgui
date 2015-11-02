@@ -426,11 +426,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // Set the search parameters
+            IdentificationParametersFactory identificationParametersFactory = IdentificationParametersFactory.getInstance();
+            if (!identificationParametersFactory.getParametersList().isEmpty()) {
+                editSettingsButton.setText("Select");
+            }
             if (searchParametersFile != null) {
                 this.identificationParametersFile = searchParametersFile;
                 try {
-                    SearchParameters searchParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
-                    identificationParameters = new IdentificationParameters(searchParameters);
+                    identificationParameters = IdentificationParameters.getIdentificationParameters(searchParametersFile);
+                    SearchParameters searchParameters = identificationParameters.getSearchParameters();
                     loadModifications(searchParameters);
                     searchSettingsTxt.setText(searchParametersFile.getName());
 
@@ -2549,12 +2553,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (fileName.endsWith(".par")) {
 
                 try {
-                    SearchParameters searchParameters = SearchParameters.getIdentificationParameters(file);
-                    identificationParameters = new IdentificationParameters(searchParameters);
+                    identificationParameters = IdentificationParameters.getIdentificationParameters(file);
+                    identificationParametersFile = file;
+                    SearchParameters searchParameters = identificationParameters.getSearchParameters();
                     loadModifications(searchParameters);
                     searchSettingsTxt.setText(fileName);
 
-                    String parametersName = null;
+                    String parametersName = identificationParameters.getName();
                     if (identificationParametersFile != null) {
                         parametersName = identificationParametersFile.getName();
                     }
@@ -2568,7 +2573,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         settingsDialog.validateParametersInput(true);
                         IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, settingsDialog);
                         if (!identificationParametersSelectionDialog.isCanceled()) {
-                            IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
+                            identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
                             identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
                             setIdentificationParameters(identificationParameters);
                         }
@@ -4486,7 +4491,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public boolean validateParametersInput(boolean showMessage) {
 
+        editSettingsButton.setText("Edit");
         if (identificationParameters == null || identificationParametersFile == null) {
+            if (!IdentificationParametersFactory.getInstance().getParametersList().isEmpty()) {
+                editSettingsButton.setText("Select");
+            }
             return false;
         }
 
@@ -4972,7 +4981,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (parameters) {
                 searchParametersFile = new File(arg);
                 try {
-                    SearchParameters tempParameters = SearchParameters.getIdentificationParameters(searchParametersFile);
+                    IdentificationParameters identificationParameters = IdentificationParameters.getIdentificationParameters(searchParametersFile);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,
                             "Failed to import search parameters from: " + searchParametersFile.getAbsolutePath() + ".", "Search Parameters",
