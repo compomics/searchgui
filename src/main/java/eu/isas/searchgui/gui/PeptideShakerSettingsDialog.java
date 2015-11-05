@@ -12,17 +12,10 @@ import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.gene_mapping.SpeciesDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import com.compomics.util.preferences.GenePreferences;
-import com.compomics.util.experiment.identification.filtering.PeptideAssumptionFilter;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.gui.parameters.IdentificationParametersSelectionDialog;
 import com.compomics.util.preferences.IdentificationParameters;
-import com.compomics.util.preferences.PTMScoringPreferences;
-import com.compomics.util.preferences.PSProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
-import com.compomics.util.gui.parameters.OldProcessingPreferencesDialog;
-import com.compomics.util.gui.parameters.identification_parameters.MatchesImportFiltersDialog;
-import com.compomics.util.preferences.ProteinInferencePreferences;
-import com.compomics.util.preferences.SequenceMatchingPreferences;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.File;
@@ -780,9 +773,9 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), searchGUI.getLastSelectedFolder(), null, true);
         if (!identificationParametersSelectionDialog.isCanceled()) {
-            IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
-            setIdentificationParameters(identificationParameters);
-            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
+            IdentificationParameters tempIdentificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
+            setIdentificationParameters(tempIdentificationParameters);
+            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(tempIdentificationParameters.getName());
         }
     }//GEN-LAST:event_editIdentificationSettingsButtonActionPerformed
 
