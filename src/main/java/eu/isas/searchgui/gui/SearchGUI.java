@@ -2145,6 +2145,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             } else {
                 outputFolderTxt.setHorizontalAlignment(JTextField.CENTER);
             }
+            
+            // set the peptideshaker output file
+            if (searchHandler.getPeptideShakerFile() == null) {
+                searchHandler.setPeptideShakerFile(new File(outputFolder, "PeptideShaker_output.cpsx"));
+            }
+            
             lastSelectedFolder.setLastSelectedFolder(outputFolder.getAbsolutePath());
             validateInput(false);
         }

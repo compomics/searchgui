@@ -9,9 +9,7 @@ import com.compomics.software.dialogs.JavaSettingsDialog;
 import com.compomics.software.dialogs.PeptideShakerSetupDialog;
 import com.compomics.util.Util;
 import com.compomics.util.gui.error_handlers.HelpDialog;
-import com.compomics.util.gui.gene_mapping.SpeciesDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
-import com.compomics.util.preferences.GenePreferences;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.gui.parameters.IdentificationParametersSelectionDialog;
 import com.compomics.util.preferences.IdentificationParameters;
@@ -95,12 +93,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         sampleNameIdtxt.setText(searchGUI.getSearchHandler().getSampleLabel());
         replicateNumberIdtxt.setText(searchGUI.getSearchHandler().getReplicateNumber().toString());
 
-        if (identificationParameters.getGenePreferences().getCurrentSpecies() != null && identificationParameters.getGenePreferences().getCurrentSpeciesType() != null) {
-            speciesTextField.setText(identificationParameters.getGenePreferences().getCurrentSpecies());
-        } else {
-            speciesTextField.setText("(not selected)");
-        }
-
         // make sure that long strings are handled correctly
         peptideShakerInstallationJTextField.setColumns(1);
         outputFileTextField.setColumns(1);
@@ -178,9 +170,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         sampleNameLabel = new javax.swing.JLabel();
         projectReferenceLabel = new javax.swing.JLabel();
         sampleNameIdtxt = new javax.swing.JTextField();
-        speciesLabel = new javax.swing.JLabel();
-        speciesTextField = new javax.swing.JTextField();
-        editSpeciesButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
         fileNamePanel = new javax.swing.JPanel();
         outputFileLabel = new javax.swing.JLabel();
@@ -242,44 +231,23 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        speciesLabel.setText("Species");
-        speciesLabel.setToolTipText("Set the species to get gene annotations");
-
-        speciesTextField.setEditable(false);
-        speciesTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        speciesTextField.setToolTipText("Set the species to get gene annotations");
-
-        editSpeciesButton.setText("Edit");
-        editSpeciesButton.setToolTipText("Set the species");
-        editSpeciesButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editSpeciesButtonActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout projectDetailsPanelLayout = new javax.swing.GroupLayout(projectDetailsPanel);
         projectDetailsPanel.setLayout(projectDetailsPanelLayout);
         projectDetailsPanelLayout.setHorizontalGroup(
             projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(projectDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(projectReferenceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(sampleNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(speciesLabel))
+                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(projectReferenceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sampleNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sampleNameIdtxt, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
                     .addComponent(projectNameIdTxt)
-                    .addComponent(speciesTextField))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(editSpeciesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, projectDetailsPanelLayout.createSequentialGroup()
-                        .addComponent(replicateLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(replicateNumberIdtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(sampleNameIdtxt))
+                .addGap(18, 18, 18)
+                .addComponent(replicateLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(replicateNumberIdtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         projectDetailsPanelLayout.setVerticalGroup(
@@ -295,11 +263,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
                     .addComponent(replicateNumberIdtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(replicateLabel)
                     .addComponent(sampleNameLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(speciesLabel)
-                    .addComponent(speciesTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editSpeciesButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -522,14 +485,14 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         lowMemoryWarningLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         lowMemoryWarningLabel.setIconTextGap(-4);
         lowMemoryWarningLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                lowMemoryWarningLabelMouseReleased(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 lowMemoryWarningLabelMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 lowMemoryWarningLabelMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lowMemoryWarningLabelMouseReleased(evt);
             }
         });
 
@@ -662,7 +625,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -817,26 +779,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_replicateNumberIdtxtKeyReleased
 
     /**
-     * Open the species selection dialog.
-     *
-     * @param evt
-     */
-    private void editSpeciesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSpeciesButtonActionPerformed
-        GenePreferences genePreferences = identificationParameters.getGenePreferences();
-        if (genePreferences == null) {
-            genePreferences = new GenePreferences();
-        }
-        new SpeciesDialog(this, searchGUI, genePreferences, true,
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
-        if (genePreferences.getCurrentSpecies() != null) {
-            speciesTextField.setText(genePreferences.getCurrentSpecies());
-        } else {
-            speciesTextField.setText("(not selected)");
-        }
-    }//GEN-LAST:event_editSpeciesButtonActionPerformed
-
-    /**
      * Change the cursor to a hand cursor.
      *
      * @param evt
@@ -873,7 +815,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JButton editOutputButton;
     private javax.swing.JButton editPeptideShakerLocationButton;
     private javax.swing.JButton editProjectSettingsButton;
-    private javax.swing.JButton editSpeciesButton;
     private javax.swing.JPanel fileNamePanel;
     private javax.swing.JLabel identificationSettingsLbl;
     private javax.swing.JTextField identificationSettingsTxt;
@@ -896,8 +837,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField replicateNumberIdtxt;
     private javax.swing.JTextField sampleNameIdtxt;
     private javax.swing.JLabel sampleNameLabel;
-    private javax.swing.JLabel speciesLabel;
-    private javax.swing.JTextField speciesTextField;
     // End of variables declaration//GEN-END:variables
 
     /**
