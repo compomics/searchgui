@@ -10,7 +10,7 @@
    (Replace X.Y.Z with the SearchGUI version number.)
 
    For help with runnng SearchGUI please see:
-   http://code.google.com/p/searchgui/#Troubleshooting
+   http://compomics.github.io/projects/searchgui.html#troubleshooting
 
 
    ====================
@@ -18,7 +18,7 @@
    ====================
 
    For updated information about SearchGUI please visit:
-   http://searchgui.googlecode.com
+   http://compomics.github.io/projects/searchgui.html
 
 
    =========
