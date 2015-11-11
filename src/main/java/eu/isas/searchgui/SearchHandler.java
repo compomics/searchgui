@@ -72,10 +72,6 @@ public class SearchHandler {
      */
     private static String ENZYME_FILE = "resources/conf/searchGUI_enzymes.xml";
     /**
-     * Output parameters file.
-     */
-    private final static String PARAMETERS_OUTPUT_FILE = "SearchGUI.par";
-    /**
      * Folder where the output is stored before packaging.
      */
     public final static String outputTempFolderName = ".SearchGUI_temp";
@@ -332,12 +328,12 @@ public class SearchHandler {
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
-     * @param searchParametersFile the search parameters file
+     * @param identificationParametersFile the identification parameters file
      * @param processingPreferences the processing preferences
      * @param generateProteinTree if true, the protein tree will be generated
      * @param exceptionHandler a handler for exceptions
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile, ProcessingPreferences processingPreferences, boolean generateProteinTree, ExceptionHandler exceptionHandler) {
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile, ProcessingPreferences processingPreferences, boolean generateProteinTree, ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -352,7 +348,7 @@ public class SearchHandler {
         enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, false, false, true);
         enableAndromeda = loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false);
         loadSearchEngineLocation(null, false, true, true, true, false, false, true);
-        this.identificationParametersFile = searchParametersFile;
+        this.identificationParametersFile = identificationParametersFile;
         this.processingPreferences = processingPreferences;
         this.generateProteinTree = generateProteinTree;
         this.identificationParameters = identificationParameters;

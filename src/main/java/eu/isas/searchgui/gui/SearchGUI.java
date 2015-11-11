@@ -169,7 +169,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private boolean checkPeakPicking = true; // @TODO: should be moved to user preferences?
     /**
-     * The search parameters file.
+     * The identification settings file.
      */
     private File identificationParametersFile;
     /**
@@ -249,12 +249,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param spectrumFiles the spectrum files (can be null)
      * @param rawFiles the raw files (can be null)
-     * @param searchParametersFile the search parameters file (can be null)
+     * @param aIdentificationParametersFile the identification settings file
+     * (can be null)
      * @param outputFolder the output folder (can be null)
      * @param species the species (can be null)
      * @param speciesType the species type (can be null)
      */
-    public SearchGUI(ArrayList<File> spectrumFiles, ArrayList<File> rawFiles, File searchParametersFile, File outputFolder, String species, String speciesType) {
+    public SearchGUI(ArrayList<File> spectrumFiles, ArrayList<File> rawFiles, File aIdentificationParametersFile, File outputFolder, String species, String speciesType) {
 
         // set path configuration
         try {
@@ -316,11 +317,61 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
             }
 
-            // Set the processing preferences
+            // set the processing preferences
             processingPreferences = new ProcessingPreferences();
             processingPreferences.setnThreads(Runtime.getRuntime().availableProcessors());
 
-            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, searchParametersFile, processingPreferences, false, exceptionHandler);
+            // set the search parameters
+            Vector parameterList = new Vector();
+            parameterList.add("-- Select --");
+
+            if (aIdentificationParametersFile != null) {
+                this.identificationParametersFile = aIdentificationParametersFile;
+                try {
+                    identificationParameters = IdentificationParameters.getIdentificationParameters(aIdentificationParametersFile);
+                    SearchParameters searchParameters = identificationParameters.getSearchParameters();
+                    loadModifications(searchParameters);
+
+                    if (identificationParametersFactory.getParametersList().contains(identificationParameters.getName())) {
+                        identificationParameters.setName(getIdentificationSettingsFileName());
+                    }
+
+                    identificationParametersFactory.addIdentificationParameters(identificationParameters);
+
+                    // load the gene mappings
+                    boolean genesLoaded = identificationParameters.getGenePreferences().loadGeneMappings(getJarFilePath(), progressDialog);
+                    if (!genesLoaded) {
+                        JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
+                    } else // set the gene preferences
+                    {
+                        if (species != null && speciesType != null) {
+                            identificationParameters.getGenePreferences().setCurrentSpecies(species);
+                            identificationParameters.getGenePreferences().setCurrentSpeciesType(speciesType);
+                        }
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null,
+                            "Failed to import search parameters from: " + aIdentificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
+                            JOptionPane.WARNING_MESSAGE);
+                    e.printStackTrace();
+
+                    // set the search settings to default
+                    identificationParameters = null;
+                    identificationParametersFile = null;
+                }
+            }
+
+            for (String tempParameters : identificationParametersFactory.getParametersList()) {
+                parameterList.add(tempParameters);
+            }
+
+            settingsComboBox.setModel(new javax.swing.DefaultComboBoxModel(parameterList));
+
+            if (identificationParameters != null) {
+                settingsComboBox.setSelectedItem(identificationParameters.getName());
+            }
+
+            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, aIdentificationParametersFile, processingPreferences, false, exceptionHandler);
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
             enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());
@@ -445,49 +496,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 peptideShakerCheckBox.setSelected(true);
             }
 
-            // set the search parameters
-            Vector parameterList = new Vector();
-            parameterList.add("-- Select --");
-
-            if (searchParametersFile != null) {
-                this.identificationParametersFile = searchParametersFile;
-                try {
-                    identificationParameters = IdentificationParameters.getIdentificationParameters(searchParametersFile);
-                    SearchParameters searchParameters = identificationParameters.getSearchParameters();
-                    loadModifications(searchParameters);
-
-                    identificationParametersFactory.addIdentificationParameters(identificationParameters); // @TODO: have to check if settings are already added...
-                    settingsComboBox.setSelectedItem(identificationParameters.getName());
-
-                    // load the gene mappings
-                    boolean genesLoaded = identificationParameters.getGenePreferences().loadGeneMappings(getJarFilePath(), progressDialog);
-                    if (!genesLoaded) {
-                        JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        // set the gene preferences
-                        if (species != null && speciesType != null) {
-                            identificationParameters.getGenePreferences().setCurrentSpecies(species);
-                            identificationParameters.getGenePreferences().setCurrentSpeciesType(speciesType);
-                        }
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,
-                            "Failed to import search parameters from: " + searchParametersFile.getAbsolutePath() + ".", "Search Parameters",
-                            JOptionPane.WARNING_MESSAGE);
-                    e.printStackTrace();
-
-                    // set the search settings to default
-                    identificationParameters = null;
-                    identificationParametersFile = null;
-                }
-            }
-
-            for (String tempParameters : identificationParametersFactory.getParametersList()) {
-                parameterList.add(tempParameters);
-            }
-
-            settingsComboBox.setModel(new javax.swing.DefaultComboBoxModel(parameterList));
-
             // set the results folder
             if (outputFolder != null && outputFolder.exists()) {
                 setOutputFolder(outputFolder);
@@ -513,6 +521,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (pathConfigurationFile.exists()) {
             SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
         }
+    }
+
+    /**
+     * Returns the name to use for the identification settings file.
+     *
+     * @return the name to use for the identification settings file
+     */
+    private String getIdentificationSettingsFileName() {
+
+        String name = identificationParameters.getName();
+        int counter = 2;
+        String currentName = name;
+
+        while (identificationParametersFactory.getParametersList().contains(currentName)
+                && !identificationParametersFactory.getIdentificationParameters(currentName).equals(identificationParameters)) {
+            currentName = name + "_" + counter++;
+        }
+
+        return currentName;
     }
 
     /**
@@ -1536,8 +1563,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             .addComponent(resultFolderLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(outputFolderTxt)))
                     .addGroup(inputFilesPanelLayout.createSequentialGroup()
                         .addComponent(spectraFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -3776,9 +3803,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile((String) settingsComboBox.getSelectedItem());
             try {
                 identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
-
                 enableSearchEnginePanel(true);
-
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
                         "Failed to import search parameters from: " + identificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
@@ -3788,6 +3813,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         } else {
             enableSearchEnginePanel(false);
         }
+        
+        validateInput(false);
     }//GEN-LAST:event_settingsComboBoxActionPerformed
 
     /**
@@ -4538,34 +4565,40 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public boolean validateParametersInput(boolean showMessage) {
 
-        if (identificationParameters == null || identificationParametersFile == null) {
+        if (identificationParameters == null || identificationParametersFile == null || searchHandler == null) {
             return false;
         }
 
-        String parametersName = identificationParameters.getName();
-        if (parametersName == null) {
-            parametersName = Util.removeExtension(identificationParametersFile.getName());
-        }
-        SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, identificationParameters.getSearchParameters(),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
-        boolean valid = settingsDialog.validateParametersInput(false);
-
-        if (!valid) {
-            if (showMessage) {
-                settingsDialog.validateParametersInput(true);
-                editIdentificationParameters();
-            } else {
-                searchSettingsLbl.setForeground(Color.RED);
-                searchSettingsLbl.setToolTipText("Please check the search settings");
-            }
+        if (settingsComboBox.getSelectedIndex() == 0) {
+            searchSettingsLbl.setForeground(Color.RED);
+            searchSettingsLbl.setToolTipText("Please check the search settings");
+            return false;
         } else {
-            searchSettingsLbl.setToolTipText(null);
-            searchSettingsLbl.setForeground(Color.BLACK);
-        }
+            String parametersName = identificationParameters.getName();
+            if (parametersName == null) {
+                parametersName = Util.removeExtension(identificationParametersFile.getName());
+            }
+            SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, identificationParameters.getSearchParameters(),
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
+                    false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
+            boolean valid = settingsDialog.validateParametersInput(false);
 
-        return valid;
+            if (!valid) {
+                if (showMessage) {
+                    settingsDialog.validateParametersInput(true);
+                    editIdentificationParameters();
+                } else {
+                    searchSettingsLbl.setForeground(Color.RED);
+                    searchSettingsLbl.setToolTipText("Please check the search settings");
+                }
+            } else {
+                searchSettingsLbl.setToolTipText(null);
+                searchSettingsLbl.setForeground(Color.BLACK);
+            }
+
+            return valid;
+        }
     }
 
     /**
