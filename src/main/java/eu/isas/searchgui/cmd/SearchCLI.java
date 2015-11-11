@@ -4,6 +4,8 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
 import com.compomics.software.settings.UtilitiesPathPreferences;
 import com.compomics.util.experiment.biology.*;
+import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
+import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.io.massspectrometry.MgfIndex;
 import com.compomics.util.experiment.io.massspectrometry.MgfReader;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
@@ -219,15 +221,16 @@ public class SearchCLI implements Callable {
             
             // Identification parameters
             IdentificationParameters identificationParameters = searchCLIInputBean.getIdentificationParameters();
-            if (searchCLIInputBean.getSpecies() != null && searchCLIInputBean.getSpeciesType() != null) {
-                identificationParameters.getGenePreferences().setCurrentSpecies(searchCLIInputBean.getSpecies());
-                identificationParameters.getGenePreferences().setCurrentSpeciesType(searchCLIInputBean.getSpeciesType());
-            }
+            
+            // Load the fasta file in the factory
+            SearchParameters searchParameters = identificationParameters.getSearchParameters();
+            File fastaFile = searchParameters.getFastaFile();
+            SequenceFactory.getInstance(1000000).loadFastaFile(fastaFile);
 
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
                     searchCLIInputBean.getOutputFile(), spectrumFiles,
-                    new ArrayList<File>(), searchCLIInputBean.getSearchParametersFile(),
+                    new ArrayList<File>(), searchCLIInputBean.getIdentificationParametersFile(),
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),

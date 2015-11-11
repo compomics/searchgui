@@ -2,6 +2,7 @@ package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CommandLineUtils;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
+import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersInputBean;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.preferences.IdentificationParameters;
 import eu.isas.searchgui.preferences.OutputOption;
@@ -29,13 +30,17 @@ public class SearchCLIInputBean {
      */
     private File outputFolder;
     /**
-     * The identification parameters.
+     * The identification parameters input.
      */
-    private IdentificationParameters identificationParameters;
+    private IdentificationParametersInputBean identificationParametersInputBean;
     /**
-     * The search parameters file.
+     * The path settings.
      */
-    private File searchParametersFile;
+    private PathSettingsCLIInputBean pathSettingsCLIInputBean;
+    /**
+     * The identification parameters file.
+     */
+    private File identificationParametersFile;
     /**
      * The sequence factory.
      */
@@ -136,21 +141,9 @@ public class SearchCLIInputBean {
      */
     private int nThreads = Runtime.getRuntime().availableProcessors();
     /**
-     * The current species.
-     */
-    private String species;
-    /**
-     * The current species type.
-     */
-    private String speciesType;
-    /**
      * If true, the protein tree will be created.
      */
     private boolean generateProteinTree = false;
-    /**
-     * The path settings.
-     */
-    private PathSettingsCLIInputBean pathSettingsCLIInputBean;
     /**
      * The way the output should be organized.
      */
@@ -185,22 +178,6 @@ public class SearchCLIInputBean {
         // output folder
         String arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
         outputFolder = new File(arg);
-
-        // identification parameters
-        String fileTxt = aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id);
-        searchParametersFile = new File(fileTxt);
-        identificationParameters = IdentificationParameters.getIdentificationParameters(searchParametersFile);
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-
-        // override the fasta file location
-        if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
-            String newPath = aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id);
-            File fastaFile = new File(newPath);
-            searchParameters.setFastaFile(fastaFile);
-        }
-
-        // load the fasta file
-        sequenceFactory.loadFastaFile(searchParameters.getFastaFile(), null);
 
         // get the mgf splitting limits
         if (aLine.hasOption(SearchCLIParams.MGF_SPLITTING_LIMIT.id)) {
@@ -343,14 +320,6 @@ public class SearchCLIInputBean {
             }
         }
 
-        // get the species
-        if (aLine.hasOption(SearchCLIParams.SPECIES.id)) {
-            species = aLine.getOptionValue(SearchCLIParams.SPECIES.id);
-        }
-        if (aLine.hasOption(SearchCLIParams.SPECIES_TYPE.id)) {
-            speciesType = aLine.getOptionValue(SearchCLIParams.SPECIES_TYPE.id);
-        }
-
         // load the output preference
         if (aLine.hasOption(SearchCLIParams.OUTPUT_OPTION.id)) {
             int option = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id));
@@ -365,6 +334,10 @@ public class SearchCLIInputBean {
             outputDate = input == 1;
         }
 
+        // identification parameters
+        identificationParametersInputBean = new IdentificationParametersInputBean(aLine);
+
+        // Path settings
         pathSettingsCLIInputBean = new PathSettingsCLIInputBean(aLine);
     }
 
@@ -392,16 +365,16 @@ public class SearchCLIInputBean {
      * @return the identification parameters
      */
     public IdentificationParameters getIdentificationParameters() {
-        return identificationParameters;
+        return identificationParametersInputBean.getIdentificationParameters();
     }
 
     /**
-     * Returns the search parameters file.
+     * Returns the identification parameters file.
      *
-     * @return the search parameters file
+     * @return the identification parameters file
      */
-    public File getSearchParametersFile() {
-        return searchParametersFile;
+    public File getIdentificationParametersFile() {
+        return identificationParametersFile;
     }
 
     /**
@@ -644,24 +617,6 @@ public class SearchCLIInputBean {
     }
 
     /**
-     * Returns the species.
-     *
-     * @return the species
-     */
-    public String getSpecies() {
-        return species;
-    }
-
-    /**
-     * Returns the species type.
-     *
-     * @return the species type
-     */
-    public String getSpeciesType() {
-        return speciesType;
-    }
-
-    /**
      * Verifies the command line start parameters.
      *
      * @param aLine the command line to validate
@@ -698,27 +653,6 @@ public class SearchCLIInputBean {
             File file = new File(((String) aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id)));
             if (!file.exists()) {
                 System.out.println(System.getProperty("line.separator") + "Output folder \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
-                return false;
-            }
-        }
-
-        // check the optional fasta
-        if (aLine.hasOption(SearchCLIParams.FASTA_FILE.id)) {
-            File file = new File(((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)));
-            if (!file.exists()) {
-                System.out.println(System.getProperty("line.separator") + "FASTA file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
-                return false;
-            }
-        }
-
-        // check the id params
-        if (!aLine.hasOption(SearchCLIParams.IDENTIFICATION_PARAMETERS.id) || ((String) aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id)).equals("")) {
-            System.out.println(System.getProperty("line.separator") + "Identification parameters file not specified." + System.getProperty("line.separator"));
-            return false;
-        } else {
-            File file = new File(((String) aLine.getOptionValue(SearchCLIParams.IDENTIFICATION_PARAMETERS.id)));
-            if (!file.exists()) {
-                System.out.println(System.getProperty("line.separator") + "Identification parameters file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
                 return false;
             }
         }
@@ -766,6 +700,11 @@ public class SearchCLIInputBean {
                 System.out.println(System.getProperty("line.separator") + "Output date argument should be 0 or 1. \'" + input + "\' not recognized." + System.getProperty("line.separator"));
                 return false;
             }
+        }
+        
+        // Check the identification parameters
+        if (!IdentificationParametersInputBean.isValidStartup(aLine)) {
+            return false;
         }
 
         return true;

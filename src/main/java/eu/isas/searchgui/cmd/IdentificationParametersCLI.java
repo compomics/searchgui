@@ -1,7 +1,7 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
-import com.compomics.util.experiment.identification.search_parameters_cli.AbstractIdentificationParametersCli;
+import com.compomics.util.experiment.identification.parameters_cli.AbstractIdentificationParametersCli;
 import eu.isas.searchgui.SearchHandler;
 import java.io.File;
 import org.apache.commons.cli.Options;

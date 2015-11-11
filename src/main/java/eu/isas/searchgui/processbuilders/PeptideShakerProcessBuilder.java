@@ -81,14 +81,14 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param includeData Indicates whether the mgf and FASTA file should be
      * included in the output
      * @param exceptionHandler the handler of exceptions
-     * @param searchParametersFile the file where to save the search parameters
+     * @param identificationParametersFile the file where to save the search parameters
      *
      * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String experiment, String sample, Integer replicate,
-            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, IdentificationParameters identificationParameters, File searchParametersFile, 
+            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, IdentificationParameters identificationParameters, File identificationParametersFile, 
             File cpsFile, boolean showGuiProgress,
             ProcessingPreferences processingPreferences, boolean includeData)
             throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -100,7 +100,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
         this.replicate = replicate;
         this.spectrumFiles = spectrumFiles;
         this.identificationParameters = identificationParameters;
-        this.identificationParametersFile = searchParametersFile;
+        this.identificationParametersFile = identificationParametersFile;
         this.identificationFiles = identificationFiles;
         this.cpsFile = cpsFile;
         this.showGuiProgress = showGuiProgress;
