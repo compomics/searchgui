@@ -1,7 +1,6 @@
 package eu.isas.searchgui.gui;
 
 import com.compomics.software.CompomicsWrapper;
-import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
 import com.compomics.software.autoupdater.GUIFileDAO;
 import com.compomics.software.autoupdater.MavenJarFile;
 import com.compomics.software.autoupdater.WebDAO;
@@ -10,9 +9,6 @@ import com.compomics.software.dialogs.PeptideShakerSetupDialog;
 import com.compomics.util.Util;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
-import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
-import com.compomics.util.gui.parameters.IdentificationParametersSelectionDialog;
-import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import java.awt.Color;
 import java.awt.Toolkit;
@@ -27,6 +23,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.stream.XMLStreamException;
+import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
 
 /**
  * A dialog for editing the PeptideShaker settings required when starting
@@ -53,25 +50,15 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * The progress dialog.
      */
     private ProgressDialogX progressDialog;
-    /**
-     * The identification parameters.
-     */
-    private IdentificationParameters identificationParameters;
-    /**
-     * The identification parameters file.
-     */
-    private File identificationParametersFile;
 
     /**
      * Creates a new PeptideShakerSettingsDialog.
      *
      * @param searchGUI the SearchGUI parent
-     * @param identificationParameters the identification preferences
-     * @param identificationParametersFile the identification parameters file
      * @param modal if the dialog is to be modal
      * @param mascotFiles the mascot dat files
      */
-    public PeptideShakerSettingsDialog(SearchGUI searchGUI, IdentificationParameters identificationParameters, File identificationParametersFile, boolean modal, ArrayList<File> mascotFiles) {
+    public PeptideShakerSettingsDialog(SearchGUI searchGUI, boolean modal, ArrayList<File> mascotFiles) {
         super(searchGUI, modal);
         this.searchGUI = searchGUI;
 
@@ -144,9 +131,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             }
         }
 
-        this.identificationParameters = identificationParameters;
-        this.identificationParametersFile = identificationParametersFile;
-
         validateInput();
 
         setLocationRelativeTo(searchGUI);
@@ -185,9 +169,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         mascotFilesTextField = new javax.swing.JTextField();
         browseMascotFilesButton = new javax.swing.JButton();
         clearMascotFilesButton = new javax.swing.JButton();
-        identificationSettingsLbl = new javax.swing.JLabel();
-        identificationSettingsTxt = new javax.swing.JTextField();
-        editIdentificationSettingsButton = new javax.swing.JButton();
         projectSettingsLbl = new javax.swing.JLabel();
         projectSettingsTxt = new javax.swing.JTextField();
         editProjectSettingsButton = new javax.swing.JButton();
@@ -197,6 +178,11 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("PeptideShaker Settings");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         backgroundPanel.setBackground(new java.awt.Color(230, 230, 230));
 
@@ -360,7 +346,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        advancedPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Project Settings (see help for details)"));
+        advancedPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Advanced Settings (see help for details)"));
         advancedPanel.setOpaque(false);
 
         mascotFilesLabel.setText("Mascot Files");
@@ -380,20 +366,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         clearMascotFilesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearMascotFilesButtonActionPerformed(evt);
-            }
-        });
-
-        identificationSettingsLbl.setText("Identification");
-
-        identificationSettingsTxt.setEditable(false);
-        identificationSettingsTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        identificationSettingsTxt.setText("Default");
-        identificationSettingsTxt.setToolTipText("Minimum Peptide Length");
-
-        editIdentificationSettingsButton.setText("Edit");
-        editIdentificationSettingsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editIdentificationSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -420,32 +392,24 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(projectSettingsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(identificationSettingsLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(mascotFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(identificationSettingsTxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
                     .addComponent(mascotFilesTextField)
-                    .addComponent(projectSettingsTxt, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(projectSettingsTxt, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(advancedPanelLayout.createSequentialGroup()
                         .addComponent(browseMascotFilesButton, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(clearMascotFilesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(editProjectSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(editIdentificationSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(editProjectSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         advancedPanelLayout.setVerticalGroup(
             advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(advancedPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(identificationSettingsLbl)
-                    .addComponent(identificationSettingsTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editIdentificationSettingsButton))
-                .addGap(7, 7, 7)
                 .addGroup(advancedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(projectSettingsLbl)
                     .addComponent(projectSettingsTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -726,22 +690,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_clearMascotFilesButtonActionPerformed
 
     /**
-     * Open the ImportSettingsDialog.
-     *
-     * @param evt
-     */
-    private void editIdentificationSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editIdentificationSettingsButtonActionPerformed
-        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(searchGUI, this, identificationParameters, IdentificationParametersSelectionDialog.StartupMode.advanced, searchGUI.getSearchHandler().getConfigurationFile(),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), searchGUI.getLastSelectedFolder(), null, true);
-        if (!identificationParametersSelectionDialog.isCanceled()) {
-            IdentificationParameters tempIdentificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
-            setIdentificationParameters(tempIdentificationParameters);
-            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(tempIdentificationParameters.getName());
-        }
-    }//GEN-LAST:event_editIdentificationSettingsButtonActionPerformed
-
-    /**
      * Open the ProcessingPreferencesDialog.
      *
      * @param evt
@@ -805,19 +753,25 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         new JavaSettingsDialog(searchGUI, searchGUI, null, "SearchGUI", true);
     }//GEN-LAST:event_lowMemoryWarningLabelMouseReleased
 
+    /**
+     * Cancel the dialog.
+     * 
+     * @param evt 
+     */
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        canceled = true;
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedPanel;
     private javax.swing.JPanel backgroundPanel;
     private javax.swing.JButton browseMascotFilesButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton clearMascotFilesButton;
-    private javax.swing.JButton editIdentificationSettingsButton;
     private javax.swing.JButton editOutputButton;
     private javax.swing.JButton editPeptideShakerLocationButton;
     private javax.swing.JButton editProjectSettingsButton;
     private javax.swing.JPanel fileNamePanel;
-    private javax.swing.JLabel identificationSettingsLbl;
-    private javax.swing.JTextField identificationSettingsTxt;
     private javax.swing.JLabel lowMemoryWarningLabel;
     private javax.swing.JLabel mascotFilesLabel;
     private javax.swing.JTextField mascotFilesTextField;
@@ -875,6 +829,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             valid = false;
             projectReferenceLabel.setForeground(Color.red);
             projectReferenceLabel.setToolTipText("Please provide a project name.");
+            projectNameIdTxt.requestFocus();
         }
         if (sampleNameIdtxt.getText().trim().length() == 0) {
             valid = false;
@@ -902,17 +857,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         okButton.setEnabled(valid);
 
         return valid;
-    }
-
-    /**
-     * Sets the search parameters in the identification parameters and updates
-     * the GUI.
-     *
-     * @param searchParameters new search parameters
-     */
-    private void setIdentificationParameters(IdentificationParameters identificationParameters) {
-        this.identificationParameters = identificationParameters;
-        identificationSettingsTxt.setText(identificationParameters.getName());
     }
 
     /**
@@ -967,24 +911,6 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      */
     public File getPeptideShakerOutputFile() {
         return new File(outputFileTextField.getText());
-    }
-
-    /**
-     * Returns the identification parameters as set by the user.
-     *
-     * @return the identification parameters as set by the user
-     */
-    public IdentificationParameters getIdentificationParameters() {
-        return identificationParameters;
-    }
-
-    /**
-     * Returns the identification parameters file selected by the user.
-     *
-     * @return the identification parameters file selected by the user
-     */
-    public File getIdentificationParametersFile() {
-        return identificationParametersFile;
     }
 
     /**

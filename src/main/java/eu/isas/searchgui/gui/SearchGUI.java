@@ -54,7 +54,7 @@ import javax.swing.filechooser.FileFilter;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.filehandling.FileDisplayDialog;
 import com.compomics.util.gui.filehandling.TempFilesManager;
-import com.compomics.util.gui.parameters.IdentificationParametersSelectionDialog;
+import com.compomics.util.gui.parameters.IdentificationParametersEditionDialog;
 import com.compomics.util.gui.parameters.ProcessingPreferencesDialog;
 import com.compomics.util.gui.ptm.ModificationsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.SearchSettingsDialog;
@@ -232,6 +232,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             + "<a href=\"http://www.mono-project.com/download/\">Mono</a> has to be installed. "
             + "See the <a href=\"http://compomics.github.io/projects/searchgui.html#troubleshooting\">TroubleShooting</a> section at the SearchGUI<br>"
             + "web page for help, and the SearchGUI log for details about the error.";
+    /**
+     * The identification parameters factory.
+     */
+    private IdentificationParametersFactory identificationParametersFactory = IdentificationParametersFactory.getInstance();
 
     /**
      * Empty constructor for instantiation purposes.
@@ -357,6 +361,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             msConvertParameters.setMsFormat(MsFormat.mgf);
             msConvertParameters.addFilter(ProteoWizardFilter.peakPicking.number, "");
 
+            settingsComboBox.setRenderer(new AlignedListCellRenderer(SwingConstants.CENTER));
+
             // set the font color for the titled borders, looks better than the default black
             UIManager.put("TitledBorder.titleColor", new Color(59, 59, 59));
 
@@ -397,6 +403,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 cometLinkLabel.setEnabled(false);
                 searchHandler.setCometEnabled(false);
             }
+
+            // disable andromeda on non-windows platforms
+            if (!operatingSystem.contains("windows")) {
+                enableAndromedaJCheckBox.setSelected(false);
+                enableAndromedaJCheckBox.setEnabled(false);
+                enableAndromedaJCheckBox.setToolTipText("Only available for Windows");
+                andromedaButton.setEnabled(false);
+                andromedaButton.setToolTipText("Only available for Windows");
+                andromedaSettingsButton.setEnabled(false);
+                andromedaSettingsButton.setToolTipText("Only available for Windows");
+                andromedaLinkLabel.setEnabled(false);
+                searchHandler.setCometEnabled(false);
+            }
+
             validateSearchEngines(true);
 
             // set the spectra files
@@ -425,18 +445,19 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 peptideShakerCheckBox.setSelected(true);
             }
 
-            // Set the search parameters
-            IdentificationParametersFactory identificationParametersFactory = IdentificationParametersFactory.getInstance();
-            if (!identificationParametersFactory.getParametersList().isEmpty()) {
-                editSettingsButton.setText("Select");
-            }
+            // set the search parameters
+            Vector parameterList = new Vector();
+            parameterList.add("-- Select --");
+
             if (searchParametersFile != null) {
                 this.identificationParametersFile = searchParametersFile;
                 try {
                     identificationParameters = IdentificationParameters.getIdentificationParameters(searchParametersFile);
                     SearchParameters searchParameters = identificationParameters.getSearchParameters();
                     loadModifications(searchParameters);
-                    searchSettingsTxt.setText(searchParametersFile.getName());
+
+                    identificationParametersFactory.addIdentificationParameters(identificationParameters); // @TODO: have to check if settings are already added...
+                    settingsComboBox.setSelectedItem(identificationParameters.getName());
 
                     // load the gene mappings
                     boolean genesLoaded = identificationParameters.getGenePreferences().loadGeneMappings(getJarFilePath(), progressDialog);
@@ -458,9 +479,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     // set the search settings to default
                     identificationParameters = null;
                     identificationParametersFile = null;
-                    searchSettingsTxt.setText("");
                 }
             }
+
+            for (String tempParameters : identificationParametersFactory.getParametersList()) {
+                parameterList.add(tempParameters);
+            }
+
+            settingsComboBox.setModel(new javax.swing.DefaultComboBoxModel(parameterList));
 
             // set the results folder
             if (outputFolder != null && outputFolder.exists()) {
@@ -520,7 +546,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         andromedaButton = new javax.swing.JButton();
         tideLinkLabel = new javax.swing.JLabel();
         xtandemSettingsButton = new javax.swing.JButton();
-        tiideButton = new javax.swing.JButton();
+        tideButton = new javax.swing.JButton();
         msgfSupportButton = new javax.swing.JButton();
         enableCometJCheckBox = new javax.swing.JCheckBox();
         cometLinkLabel = new javax.swing.JLabel();
@@ -556,12 +582,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         addSpectraButton = new javax.swing.JButton();
         spectraFilesTxt = new javax.swing.JTextField();
         searchSettingsLbl = new javax.swing.JLabel();
-        searchSettingsTxt = new javax.swing.JTextField();
         editSettingsButton = new javax.swing.JButton();
-        loadSettingsButton = new javax.swing.JButton();
+        addSettingsButton = new javax.swing.JButton();
         resultFolderLbl = new javax.swing.JLabel();
         outputFolderTxt = new javax.swing.JTextField();
         resultFolderBrowseButton = new javax.swing.JButton();
+        settingsComboBox = new javax.swing.JComboBox();
         searchButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
         searchGUIPublicationLabel = new javax.swing.JLabel();
@@ -581,7 +607,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
-        settingsMenuItem = new javax.swing.JMenuItem();
         advancedSettingsMenuItem = new javax.swing.JMenuItem();
         processingMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
@@ -710,6 +735,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         omssaButton.setBorder(null);
         omssaButton.setBorderPainted(false);
         omssaButton.setContentAreaFilled(false);
+        omssaButton.setEnabled(false);
         omssaButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 omssaButtonMouseEntered(evt);
@@ -729,6 +755,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msgfSettingsButton.setBorder(null);
         msgfSettingsButton.setBorderPainted(false);
         msgfSettingsButton.setContentAreaFilled(false);
+        msgfSettingsButton.setEnabled(false);
         msgfSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         msgfSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -737,13 +764,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 msgfSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                msgfSettingsButtonMouseReleased(evt);
+        });
+        msgfSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msgfSettingsButtonActionPerformed(evt);
             }
         });
 
         enableTideJCheckBox.setSelected(true);
         enableTideJCheckBox.setToolTipText("Enable Tide");
+        enableTideJCheckBox.setEnabled(false);
         enableTideJCheckBox.setOpaque(false);
         enableTideJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -756,6 +786,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msAmandaSettingsButton.setBorder(null);
         msAmandaSettingsButton.setBorderPainted(false);
         msAmandaSettingsButton.setContentAreaFilled(false);
+        msAmandaSettingsButton.setEnabled(false);
         msAmandaSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         msAmandaSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -764,8 +795,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 msAmandaSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                msAmandaSettingsButtonMouseReleased(evt);
+        });
+        msAmandaSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msAmandaSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -776,6 +809,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/myrimatch/\">MyriMatch web page</a></html> ");
         myriMatchLinkLabel.setToolTipText("Open the MyriMatch web page");
+        myriMatchLinkLabel.setEnabled(false);
         myriMatchLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 myriMatchLinkLabelMouseClicked(evt);
@@ -790,6 +824,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a href=\"http://www.andromeda-search.org\">Andromeda web page</a></html> ");
         andromedaLinkLabel.setToolTipText("Open the Andromeda web page");
+        andromedaLinkLabel.setEnabled(false);
         andromedaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 andromedaLinkLabelMouseClicked(evt);
@@ -807,6 +842,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         andromedaButton.setBorder(null);
         andromedaButton.setBorderPainted(false);
         andromedaButton.setContentAreaFilled(false);
+        andromedaButton.setEnabled(false);
         andromedaButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 andromedaButtonMouseEntered(evt);
@@ -823,6 +859,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         tideLinkLabel.setText("<html>Tide Search Algorithm - <a href=http://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
         tideLinkLabel.setToolTipText("Open the Tide web page");
+        tideLinkLabel.setEnabled(false);
         tideLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tideLinkLabelMouseClicked(evt);
@@ -840,6 +877,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         xtandemSettingsButton.setBorder(null);
         xtandemSettingsButton.setBorderPainted(false);
         xtandemSettingsButton.setContentAreaFilled(false);
+        xtandemSettingsButton.setEnabled(false);
         xtandemSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         xtandemSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -848,27 +886,30 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 xtandemSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                xtandemSettingsButtonMouseReleased(evt);
+        });
+        xtandemSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xtandemSettingsButtonActionPerformed(evt);
             }
         });
 
-        tiideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/tide.png"))); // NOI18N
-        tiideButton.setToolTipText("Enable Tide");
-        tiideButton.setBorder(null);
-        tiideButton.setBorderPainted(false);
-        tiideButton.setContentAreaFilled(false);
-        tiideButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        tideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/tide.png"))); // NOI18N
+        tideButton.setToolTipText("Enable Tide");
+        tideButton.setBorder(null);
+        tideButton.setBorderPainted(false);
+        tideButton.setContentAreaFilled(false);
+        tideButton.setEnabled(false);
+        tideButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                tiideButtonMouseEntered(evt);
+                tideButtonMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                tiideButtonMouseExited(evt);
+                tideButtonMouseExited(evt);
             }
         });
-        tiideButton.addActionListener(new java.awt.event.ActionListener() {
+        tideButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tiideButtonActionPerformed(evt);
+                tideButtonActionPerformed(evt);
             }
         });
 
@@ -879,6 +920,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         enableCometJCheckBox.setSelected(true);
         enableCometJCheckBox.setToolTipText("Enable Comet");
+        enableCometJCheckBox.setEnabled(false);
         enableCometJCheckBox.setOpaque(false);
         enableCometJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -888,6 +930,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         cometLinkLabel.setText("<html>Comet Search Algorithm - <a href=http://comet-ms.sourceforge.net\">Comet web page</a></html> ");
         cometLinkLabel.setToolTipText("Open the Comet web page");
+        cometLinkLabel.setEnabled(false);
         cometLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cometLinkLabelMouseClicked(evt);
@@ -902,6 +945,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         enableMyriMatchJCheckBox.setSelected(true);
         enableMyriMatchJCheckBox.setToolTipText("Enable MyriMatch");
+        enableMyriMatchJCheckBox.setEnabled(false);
         enableMyriMatchJCheckBox.setOpaque(false);
         enableMyriMatchJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -916,6 +960,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         enableMsAmandaJCheckBox.setSelected(true);
         enableMsAmandaJCheckBox.setToolTipText("Enable MS Amanda");
+        enableMsAmandaJCheckBox.setEnabled(false);
         enableMsAmandaJCheckBox.setOpaque(false);
         enableMsAmandaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -925,6 +970,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         xtandemLinkLabel.setText("<html>X!Tandem Search Algorithm - <a href=\"http://www.thegpm.org/tandem\">X!Tandem web page</a></html>\n");
         xtandemLinkLabel.setToolTipText("Open the X!Tandem web page");
+        xtandemLinkLabel.setEnabled(false);
         xtandemLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 xtandemLinkLabelMouseClicked(evt);
@@ -947,6 +993,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         myriMatchSettingsButton.setBorder(null);
         myriMatchSettingsButton.setBorderPainted(false);
         myriMatchSettingsButton.setContentAreaFilled(false);
+        myriMatchSettingsButton.setEnabled(false);
         myriMatchSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         myriMatchSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -955,13 +1002,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 myriMatchSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                myriMatchSettingsButtonMouseReleased(evt);
+        });
+        myriMatchSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                myriMatchSettingsButtonActionPerformed(evt);
             }
         });
 
         enableMsgfJCheckBox.setSelected(true);
         enableMsgfJCheckBox.setToolTipText("Enable MS-GF+");
+        enableMsgfJCheckBox.setEnabled(false);
         enableMsgfJCheckBox.setOpaque(false);
         enableMsgfJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -974,6 +1024,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         xtandemButton.setBorder(null);
         xtandemButton.setBorderPainted(false);
         xtandemButton.setContentAreaFilled(false);
+        xtandemButton.setEnabled(false);
+        xtandemButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         xtandemButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 xtandemButtonMouseEntered(evt);
@@ -995,6 +1047,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
         omssaLinkLabel.setToolTipText("Open the OMSSA web page");
+        omssaLinkLabel.setEnabled(false);
         omssaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 omssaLinkLabelMouseClicked(evt);
@@ -1012,6 +1065,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         myriMatchButton.setBorder(null);
         myriMatchButton.setBorderPainted(false);
         myriMatchButton.setContentAreaFilled(false);
+        myriMatchButton.setEnabled(false);
         myriMatchButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 myriMatchButtonMouseEntered(evt);
@@ -1033,6 +1087,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a href=\"http://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
         msAmandaLinkLabel.setToolTipText("Open the MS Amanda web page");
+        msAmandaLinkLabel.setEnabled(false);
         msAmandaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 msAmandaLinkLabelMouseClicked(evt);
@@ -1047,6 +1102,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         enableXTandemJCheckBox.setSelected(true);
         enableXTandemJCheckBox.setToolTipText("Enable X!Tandem");
+        enableXTandemJCheckBox.setEnabled(false);
         enableXTandemJCheckBox.setOpaque(false);
         enableXTandemJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1059,6 +1115,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         cometSettingsButton.setBorder(null);
         cometSettingsButton.setBorderPainted(false);
         cometSettingsButton.setContentAreaFilled(false);
+        cometSettingsButton.setEnabled(false);
         cometSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         cometSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -1067,8 +1124,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 cometSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                cometSettingsButtonMouseReleased(evt);
+        });
+        cometSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cometSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -1077,6 +1136,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msAmandaButton.setBorder(null);
         msAmandaButton.setBorderPainted(false);
         msAmandaButton.setContentAreaFilled(false);
+        msAmandaButton.setEnabled(false);
         msAmandaButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 msAmandaButtonMouseEntered(evt);
@@ -1096,6 +1156,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         andromedaSettingsButton.setBorder(null);
         andromedaSettingsButton.setBorderPainted(false);
         andromedaSettingsButton.setContentAreaFilled(false);
+        andromedaSettingsButton.setEnabled(false);
         andromedaSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         andromedaSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -1104,8 +1165,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 andromedaSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                andromedaSettingsButtonMouseReleased(evt);
+        });
+        andromedaSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                andromedaSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -1114,6 +1177,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         omssaSettingsButton.setBorder(null);
         omssaSettingsButton.setBorderPainted(false);
         omssaSettingsButton.setContentAreaFilled(false);
+        omssaSettingsButton.setEnabled(false);
         omssaSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         omssaSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -1122,12 +1186,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 omssaSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                omssaSettingsButtonMouseReleased(evt);
+        });
+        omssaSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                omssaSettingsButtonActionPerformed(evt);
             }
         });
 
         enableAndromedaJCheckBox.setToolTipText("Enable Andromeda");
+        enableAndromedaJCheckBox.setEnabled(false);
         enableAndromedaJCheckBox.setOpaque(false);
         enableAndromedaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1140,6 +1207,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         tideSettingsButton.setBorder(null);
         tideSettingsButton.setBorderPainted(false);
         tideSettingsButton.setContentAreaFilled(false);
+        tideSettingsButton.setEnabled(false);
         tideSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         tideSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -1148,13 +1216,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 tideSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                tideSettingsButtonMouseReleased(evt);
+        });
+        tideSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tideSettingsButtonActionPerformed(evt);
             }
         });
 
         msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a href=\"http://proteomics.ucsd.edu/Software/MSGFPlus\">MS-GF+ web page</a></html> ");
         msgfLinkLabel.setToolTipText("Open the MS-GF+ web page");
+        msgfLinkLabel.setEnabled(false);
         msgfLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 msgfLinkLabelMouseClicked(evt);
@@ -1182,6 +1253,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msgfButton.setBorder(null);
         msgfButton.setBorderPainted(false);
         msgfButton.setContentAreaFilled(false);
+        msgfButton.setEnabled(false);
         msgfButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 msgfButtonMouseEntered(evt);
@@ -1198,6 +1270,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         enableOmssaJCheckBox.setSelected(true);
         enableOmssaJCheckBox.setToolTipText("Enable OMSSA");
+        enableOmssaJCheckBox.setEnabled(false);
         enableOmssaJCheckBox.setOpaque(false);
         enableOmssaJCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1210,6 +1283,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         cometButton.setBorder(null);
         cometButton.setBorderPainted(false);
         cometButton.setContentAreaFilled(false);
+        cometButton.setEnabled(false);
         cometButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 cometButtonMouseEntered(evt);
@@ -1231,18 +1305,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                            .addComponent(enableXTandemJCheckBox)
-                            .addGap(63, 63, 63)
-                            .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                             .addGap(81, 81, 81)
                             .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                            .addComponent(enableMyriMatchJCheckBox)
-                            .addGap(63, 63, 63)
-                            .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(enableMsAmandaJCheckBox)
                         .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                             .addComponent(enableCometJCheckBox)
@@ -1252,11 +1318,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(enableTideJCheckBox)
                                 .addComponent(enableAndromedaJCheckBox))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                            .addGap(53, 53, 53)
                             .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(andromedaButton)
-                                .addComponent(tiideButton))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                .addComponent(tideButton))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, searchEnginesPanelLayout.createSequentialGroup()
+                                .addComponent(enableXTandemJCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, searchEnginesPanelLayout.createSequentialGroup()
+                                .addComponent(enableMyriMatchJCheckBox)
+                                .addGap(63, 63, 63)
+                                .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(searchEnginesPanelLayout.createSequentialGroup()
@@ -1287,7 +1362,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(omssaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1309,9 +1384,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableXTandemJCheckBox)
                     .addComponent(xtandemButton)
+                    .addComponent(xtandemSupportButton)
                     .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xtandemSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xtandemSupportButton))
+                    .addComponent(xtandemSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableMyriMatchJCheckBox)
@@ -1350,7 +1425,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableTideJCheckBox)
-                    .addComponent(tiideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSupportButton))
@@ -1413,20 +1488,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchSettingsLbl.setForeground(new java.awt.Color(255, 0, 0));
         searchSettingsLbl.setText("Search Settings");
 
-        searchSettingsTxt.setEditable(false);
-        searchSettingsTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
         editSettingsButton.setText("Edit");
+        editSettingsButton.setEnabled(false);
         editSettingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editSettingsButtonActionPerformed(evt);
             }
         });
 
-        loadSettingsButton.setText("Load");
-        loadSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+        addSettingsButton.setText("Add");
+        addSettingsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadSettingsButtonActionPerformed(evt);
+                addSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -1443,6 +1516,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
+        settingsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "-- Select --" }));
+        settingsComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                settingsComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout inputFilesPanelLayout = new javax.swing.GroupLayout(inputFilesPanel);
         inputFilesPanel.setLayout(inputFilesPanelLayout);
         inputFilesPanelLayout.setHorizontalGroup(
@@ -1456,26 +1536,28 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             .addComponent(resultFolderLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchSettingsTxt)
-                            .addComponent(outputFolderTxt))
-                        .addGap(10, 10, 10)
-                        .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(editSettingsButton)
-                            .addComponent(resultFolderBrowseButton)))
+                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 409, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(inputFilesPanelLayout.createSequentialGroup()
                         .addComponent(spectraFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spectraFilesTxt)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(7, 7, 7)
-                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(clearSpectraButton, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
-                    .addComponent(loadSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(spectraFilesTxt)))
+                .addGap(10, 10, 10)
+                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(inputFilesPanelLayout.createSequentialGroup()
+                            .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(editSettingsButton))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputFilesPanelLayout.createSequentialGroup()
+                            .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(clearSpectraButton, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)))
+                    .addComponent(resultFolderBrowseButton))
                 .addContainerGap())
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSpectraButton, clearSpectraButton, editSettingsButton, loadSettingsButton, resultFolderBrowseButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editSettingsButton, resultFolderBrowseButton});
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {resultFolderLbl, searchSettingsLbl, spectraFilesLabel});
 
@@ -1491,9 +1573,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchSettingsLbl)
-                    .addComponent(searchSettingsTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editSettingsButton)
-                    .addComponent(loadSettingsButton))
+                    .addComponent(addSettingsButton)
+                    .addComponent(settingsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editSettingsButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resultFolderLbl)
@@ -1502,7 +1584,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSpectraButton, clearSpectraButton, editSettingsButton, loadSettingsButton, resultFolderBrowseButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editSettingsButton, resultFolderBrowseButton});
 
         searchButton.setBackground(new java.awt.Color(0, 153, 0));
         searchButton.setFont(searchButton.getFont().deriveFont(searchButton.getFont().getStyle() | java.awt.Font.BOLD));
@@ -1554,6 +1636,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         postProcessingPanel.setPreferredSize(new java.awt.Dimension(785, 83));
 
         peptideShakerCheckBox.setToolTipText("Enable PeptideShaker");
+        peptideShakerCheckBox.setEnabled(false);
         peptideShakerCheckBox.setIconTextGap(15);
         peptideShakerCheckBox.setOpaque(false);
         peptideShakerCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -1564,6 +1647,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         peptideShakerLabel.setText("<html>PeptideShaker - <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">Visualize the results in PeptideShaker</a></html>");
         peptideShakerLabel.setToolTipText("Open the PeptideShaker web page");
+        peptideShakerLabel.setEnabled(false);
         peptideShakerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 peptideShakerLabelMouseClicked(evt);
@@ -1581,6 +1665,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         peptideShakerButton.setBorder(null);
         peptideShakerButton.setBorderPainted(false);
         peptideShakerButton.setContentAreaFilled(false);
+        peptideShakerButton.setEnabled(false);
         peptideShakerButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 peptideShakerButtonMouseEntered(evt);
@@ -1600,6 +1685,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         peptideShakerSettingsButton.setBorder(null);
         peptideShakerSettingsButton.setBorderPainted(false);
         peptideShakerSettingsButton.setContentAreaFilled(false);
+        peptideShakerSettingsButton.setEnabled(false);
         peptideShakerSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         peptideShakerSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -1608,8 +1694,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 peptideShakerSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                peptideShakerSettingsButtonMouseReleased(evt);
+        });
+        peptideShakerSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                peptideShakerSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -1631,7 +1719,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addComponent(peptideShakerSupportButton)
                 .addGap(20, 20, 20)
                 .addComponent(peptideShakerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(peptideShakerSettingsButton)
                 .addGap(33, 33, 33))
         );
@@ -1652,6 +1740,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         preProcessingPanel.setOpaque(false);
 
         msconvertCheckBox.setToolTipText("Enable msconvert");
+        msconvertCheckBox.setEnabled(false);
         msconvertCheckBox.setIconTextGap(15);
         msconvertCheckBox.setOpaque(false);
         msconvertCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -1662,6 +1751,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         msconvertLabel.setText("<html>msconvert File Conversion - <a href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
         msconvertLabel.setToolTipText("Open the ProteoWizard web page");
+        msconvertLabel.setEnabled(false);
         msconvertLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 msconvertLabelMouseClicked(evt);
@@ -1678,12 +1768,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msconvertButton.setBorder(null);
         msconvertButton.setBorderPainted(false);
         msconvertButton.setContentAreaFilled(false);
+        msconvertButton.setEnabled(false);
 
         msconvertSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
         msconvertSettingsButton.setToolTipText("Edit msconvert Settings");
         msconvertSettingsButton.setBorder(null);
         msconvertSettingsButton.setBorderPainted(false);
         msconvertSettingsButton.setContentAreaFilled(false);
+        msconvertSettingsButton.setEnabled(false);
         msconvertSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
         msconvertSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -1692,8 +1784,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 msconvertSettingsButtonMouseExited(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                msconvertSettingsButtonMouseReleased(evt);
+        });
+        msconvertSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                msconvertSettingsButtonActionPerformed(evt);
             }
         });
 
@@ -1761,7 +1855,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchEnginesLocationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(taskEditorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(aboutButton)
@@ -1784,15 +1878,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         menuBar.add(fileMenu);
 
         editMenu.setText("Edit");
-
-        settingsMenuItem.setMnemonic('S');
-        settingsMenuItem.setText("Search Settings");
-        settingsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                settingsMenuItemActionPerformed(evt);
-            }
-        });
-        editMenu.add(settingsMenuItem);
 
         advancedSettingsMenuItem.setMnemonic('A');
         advancedSettingsMenuItem.setText("Advanced Settings");
@@ -1921,7 +2006,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void clearSpectraButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSpectraButtonActionPerformed
         mgfFiles.clear();
         rawFiles.clear();
-        msconvertCheckBox.setSelected(false);
+
+        enableMsConvertPanel();
+
         spectraFilesTxt.setText("");
         validateInput(false);
     }//GEN-LAST:event_clearSpectraButtonActionPerformed
@@ -2087,6 +2174,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     spectraFilesTxt.setText(nFiles + " file(s) selected");
                     msconvertCheckBox.setSelected(!rawFiles.isEmpty());
 
+                    enableMsConvertPanel();
+
                     validateInput(false);
                 }
             }.start();
@@ -2145,12 +2234,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             } else {
                 outputFolderTxt.setHorizontalAlignment(JTextField.CENTER);
             }
-            
+
             // set the peptideshaker output file
-            if (searchHandler.getPeptideShakerFile() == null) {
-                searchHandler.setPeptideShakerFile(new File(outputFolder, "PeptideShaker_output.cpsx"));
-            }
-            
+            searchHandler.setPeptideShakerFile(new File(outputFolder, "PeptideShaker_output.cpsx"));
+
             lastSelectedFolder.setLastSelectedFolder(outputFolder.getAbsolutePath());
             validateInput(false);
         }
@@ -2522,80 +2609,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_editSettingsButtonActionPerformed
 
     /**
-     * Load search parameters from a file.
+     * Load search settings from a file.
      *
      * @param evt the action event
      */
-    private void loadSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadSettingsButtonActionPerformed
-        // First check whether a file has already been selected.
-        // If so, start from that file's parent.
-        File startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
-        if (identificationParametersFile != null && !searchSettingsTxt.getText().trim().equals("")
-                && !searchSettingsTxt.getText().trim().equals(defaultSettingsTxt)
-                && !searchSettingsTxt.getText().trim().equals(userSettingsTxt)) {
-            startLocation = identificationParametersFile.getParentFile();
+    private void addSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSettingsButtonActionPerformed
+
+        IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
+                this, null, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
+
+        if (!identificationParametersEditionDialog.isCanceled()) {
+            IdentificationParameters tempIdentificationParameters = identificationParametersEditionDialog.getIdentificationParameters();
+            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(tempIdentificationParameters.getName());
+            setIdentificationParameters(tempIdentificationParameters);
         }
-        JFileChooser fc = new JFileChooser(startLocation);
-
-        FileFilter filter = new FileFilter() {
-            @Override
-            public boolean accept(File myFile) {
-
-                return myFile.getName().toLowerCase().endsWith(".par") || myFile.isDirectory();
-            }
-
-            @Override
-            public String getDescription() {
-                return "SearchGUI settings file (.par)";
-            }
-        };
-        fc.setFileFilter(filter);
-        int result = fc.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
-            String fileName = file.getName();
-            lastSelectedFolder.setLastSelectedFolder(file.getAbsolutePath());
-
-            if (fileName.endsWith(".par")) {
-
-                try {
-                    identificationParameters = IdentificationParameters.getIdentificationParameters(file);
-                    identificationParametersFile = file;
-                    SearchParameters searchParameters = identificationParameters.getSearchParameters();
-                    loadModifications(searchParameters);
-                    searchSettingsTxt.setText(fileName);
-
-                    String parametersName = identificationParameters.getName();
-                    if (identificationParametersFile != null) {
-                        parametersName = identificationParametersFile.getName();
-                    }
-                    SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, searchParameters,
-                            Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                            Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                            false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
-                    boolean valid = settingsDialog.validateParametersInput(false);
-
-                    if (!valid) {
-                        settingsDialog.validateParametersInput(true);
-                        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, settingsDialog);
-                        if (!identificationParametersSelectionDialog.isCanceled()) {
-                            identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
-                            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
-                            setIdentificationParameters(identificationParameters);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error occurred while reading " + file + ". Please verify the search paramters.", "File Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                validateInput(false);
-            } else {
-                JOptionPane.showMessageDialog(this, "Please select a valid search settings file (.par).", "File Error", JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_loadSettingsButtonActionPerformed
+    }//GEN-LAST:event_addSettingsButtonActionPerformed
 
     /**
      * Open the ModificationsDialog.
@@ -3000,15 +3029,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_editReporterSettingsLabelMouseClicked
 
     /**
-     * Open the SettingsDialog.
-     *
-     * @param evt the action event
-     */
-    private void settingsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsMenuItemActionPerformed
-        editIdentificationParameters();
-    }//GEN-LAST:event_settingsMenuItemActionPerformed
-
-    /**
      * Open the PeptideShaker settings dialog.
      *
      * @param evt the action event
@@ -3118,99 +3138,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_peptideShakerSettingsButtonMouseExited
 
     /**
-     * Edit the PeptideShaker settings.
-     *
-     * @param evt the mouse event
-     */
-    private void peptideShakerSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peptideShakerSettingsButtonMouseReleased
-        openPeptideShakerSettings(true);
-    }//GEN-LAST:event_peptideShakerSettingsButtonMouseReleased
-
-    /**
-     * Edit the X!Tandem settings.
-     *
-     * @param evt the mouse event
-     */
-    private void xtandemSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
-        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy(), true);
-
-        boolean xtandemParametersSet = false;
-
-        while (!xtandemParametersSet) {
-
-            if (!xtandemSettingsDialog.isCancelled()) {
-                XtandemParameters newXtandemParameters = xtandemSettingsDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldXtandemParameters.equals(newXtandemParameters) || xtandemSettingsDialog.modProfileEdited()) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
-                    newSearchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(xtandemSettingsDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        xtandemParametersSet = true;
-                    } else {
-                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, newSearchParameters.getPtmSettings(), newSearchParameters.getFragmentIonAccuracy(), true);
-                    }
-                } else {
-                    xtandemParametersSet = true;
-                }
-            } else {
-                xtandemParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_xtandemSettingsButtonMouseReleased
-
-    /**
-     * Edit the OMSSA settings.
-     *
-     * @param evt the mouse event
-     */
-    private void omssaSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_omssaSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        OmssaParameters oldOmssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
-        if (oldOmssaParameters == null) { //backward compatibility check
-            oldOmssaParameters = new OmssaParameters();
-        }
-        OmssaSettingsDialog omssaParametersDialog = new OmssaSettingsDialog(this, oldOmssaParameters, true);
-
-        boolean omssaParametersSet = false;
-
-        while (!omssaParametersSet) {
-
-            if (!omssaParametersDialog.isCancelled()) {
-                OmssaParameters newOmssaParameters = omssaParametersDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldOmssaParameters.equals(newOmssaParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(omssaParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        omssaParametersSet = true;
-                    } else {
-                        omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters, true);
-                    }
-                } else {
-                    omssaParametersSet = true;
-                }
-            } else {
-                omssaParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_omssaSettingsButtonMouseReleased
-
-    /**
      * Set MS-GF+ enabled.
      *
      * @param evt the action event
@@ -3302,49 +3229,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_msgfSettingsButtonMouseExited
 
     /**
-     * Edit the MS-GF+ settings.
-     *
-     * @param evt the mouse event
-     */
-    private void msgfSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msgfSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        MsgfParameters oldMsgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
-        if (oldMsgfParameters == null) { //backward compatibility check
-            oldMsgfParameters = new MsgfParameters();
-        }
-        MsgfSettingsDialog msgfParametersDialog = new MsgfSettingsDialog(this, oldMsgfParameters, true);
-
-        boolean msgfParametersSet = false;
-
-        while (!msgfParametersSet) {
-
-            if (!msgfParametersDialog.isCancelled()) {
-                MsgfParameters newMsgfParameters = msgfParametersDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldMsgfParameters.equals(newMsgfParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msgfParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        msgfParametersSet = true;
-                    } else {
-                        msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters, true);
-                    }
-                } else {
-                    msgfParametersSet = true;
-                }
-            } else {
-                msgfParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_msgfSettingsButtonMouseReleased
-
-    /**
      * Set MS Amanda enabled.
      *
      * @param evt the action event
@@ -3416,46 +3300,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void msAmandaLinkLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msAmandaLinkLabelMouseExited
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_msAmandaLinkLabelMouseExited
-
-    /**
-     * Edit the MS Amanda advanced settings.
-     *
-     * @param evt the mouse event
-     */
-    private void msAmandaSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msAmandaSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
-        MsAmandaSettingsDialog msAmandaParametersDialog = new MsAmandaSettingsDialog(this, oldMsAmandaParameters, true);
-
-        boolean msAmandaParametersSet = false;
-
-        while (!msAmandaParametersSet) {
-
-            if (!msAmandaParametersDialog.isCancelled()) {
-                MsAmandaParameters newMsAmandaParameters = msAmandaParametersDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldMsAmandaParameters.equals(newMsAmandaParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msAmandaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        msAmandaParametersSet = true;
-                    } else {
-                        msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters, true);
-                    }
-                } else {
-                    msAmandaParametersSet = true;
-                }
-            } else {
-                msAmandaParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_msAmandaSettingsButtonMouseReleased
 
     /**
      * Change the cursor to a hand cursor.
@@ -3558,46 +3402,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_myriMatchLinkLabelMouseExited
 
     /**
-     * Edit the MyriMatch advanced settings.
-     *
-     * @param evt the mouse event
-     */
-    private void myriMatchSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_myriMatchSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        MyriMatchParameters oldMyriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
-        MyriMatchSettingsDialog myriMatchParametersDialog = new MyriMatchSettingsDialog(this, oldMyriMatchParameters, true);
-
-        boolean myriMatchParametersSet = false;
-
-        while (!myriMatchParametersSet) {
-
-            if (!myriMatchParametersDialog.isCancelled()) {
-                MyriMatchParameters newMyriMatchParameters = myriMatchParametersDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldMyriMatchParameters.equals(newMyriMatchParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(myriMatchParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        myriMatchParametersSet = true;
-                    } else {
-                        myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters, true);
-                    }
-                } else {
-                    myriMatchParametersSet = true;
-                }
-            } else {
-                myriMatchParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_myriMatchSettingsButtonMouseReleased
-
-    /**
      * Change the cursor to a hand cursor.
      *
      * @param evt the mouse event
@@ -3689,46 +3493,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_cometLinkLabelMouseExited
 
     /**
-     * Edit the Comet settings.
-     *
-     * @param evt the mouse event
-     */
-    private void cometSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cometSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        CometParameters oldCometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
-        CometSettingsDialog cometSettingsDialog = new CometSettingsDialog(this, oldCometParameters, true);
-
-        boolean cometParametersSet = false;
-
-        while (!cometParametersSet) {
-
-            if (!cometSettingsDialog.isCancelled()) {
-                CometParameters newCometParameters = cometSettingsDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldCometParameters.equals(newCometParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(cometSettingsDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        cometParametersSet = true;
-                    } else {
-                        cometSettingsDialog = new CometSettingsDialog(this, newCometParameters, true);
-                    }
-                } else {
-                    cometParametersSet = true;
-                }
-            } else {
-                cometParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_cometSettingsButtonMouseReleased
-
-    /**
      * Change the cursor to a hand cursor.
      *
      * @param evt the mouse event
@@ -3776,28 +3540,28 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the mouse event
      */
-    private void tiideButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tiideButtonMouseEntered
+    private void tideButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tideButtonMouseEntered
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-    }//GEN-LAST:event_tiideButtonMouseEntered
+    }//GEN-LAST:event_tideButtonMouseEntered
 
     /**
      * Change the cursor back to the default cursor.
      *
      * @param evt the mouse event
      */
-    private void tiideButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tiideButtonMouseExited
+    private void tideButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tideButtonMouseExited
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-    }//GEN-LAST:event_tiideButtonMouseExited
+    }//GEN-LAST:event_tideButtonMouseExited
 
     /**
      * Enable/disable Tide.
      *
      * @param evt the action event
      */
-    private void tiideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tiideButtonActionPerformed
+    private void tideButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tideButtonActionPerformed
         enableTideJCheckBox.setSelected(!enableTideJCheckBox.isSelected());
         enableTideJCheckBoxActionPerformed(null);
-    }//GEN-LAST:event_tiideButtonActionPerformed
+    }//GEN-LAST:event_tideButtonActionPerformed
 
     /**
      * Open the Tide web page.
@@ -3845,49 +3609,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void tideSettingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tideSettingsButtonMouseExited
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_tideSettingsButtonMouseExited
-
-    /**
-     * Edit the Tide settings.
-     *
-     * @param evt the mouse event
-     */
-    private void tideSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tideSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        TideParameters oldTideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
-        if (oldTideParameters == null) { //backward compatibility check
-            oldTideParameters = new TideParameters();
-        }
-        TideSettingsDialog tideParametersDialog = new TideSettingsDialog(this, oldTideParameters, true);
-
-        boolean tideParametersSet = false;
-
-        while (!tideParametersSet) {
-
-            if (!tideParametersDialog.isCancelled()) {
-                TideParameters newTideParameters = tideParametersDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldTideParameters.equals(newTideParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(tideParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        tideParametersSet = true;
-                    } else {
-                        tideParametersDialog = new TideSettingsDialog(this, newTideParameters, true);
-                    }
-                } else {
-                    tideParametersSet = true;
-                }
-            } else {
-                tideParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_tideSettingsButtonMouseReleased
 
     /**
      * Set Andromeda enabled.
@@ -3981,49 +3702,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_andromedaSettingsButtonMouseExited
 
     /**
-     * Edit the Andromeda settings.
-     *
-     * @param evt the mouse event
-     */
-    private void andromedaSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_andromedaSettingsButtonMouseReleased
-
-        SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        AndromedaParameters oldAndromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
-        if (oldAndromedaParameters == null) { //backward compatibility check
-            oldAndromedaParameters = new AndromedaParameters();
-        }
-        AndromedaSettingsDialog andromedaParametersDialog = new AndromedaSettingsDialog(this, oldAndromedaParameters, true);
-
-        boolean andromedaParametersSet = false;
-
-        while (!andromedaParametersSet) {
-
-            if (!andromedaParametersDialog.isCancelled()) {
-                AndromedaParameters newAndromedaParameters = andromedaParametersDialog.getInput();
-
-                // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldAndromedaParameters.equals(newAndromedaParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(andromedaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        searchSettingsTxt.setText(newSearchParametersFile.getName());
-                        andromedaParametersSet = true;
-                    } else {
-                        andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters, true);
-                    }
-                } else {
-                    andromedaParametersSet = true;
-                }
-            } else {
-                andromedaParametersSet = true;
-            }
-        }
-    }//GEN-LAST:event_andromedaSettingsButtonMouseReleased
-
-    /**
      * Open the ProteoWizard web page.
      *
      * @param evt
@@ -4051,24 +3729,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void msconvertLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msconvertLabelMouseExited
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_msconvertLabelMouseExited
-
-    /**
-     * Open the MS Convert settings dialog.
-     *
-     * @param evt
-     */
-    private void msconvertSettingsButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msconvertSettingsButtonMouseReleased
-        boolean canceled = false;
-        if (utilitiesUserPreferences.getProteoWizardPath() == null) {
-            canceled = !editProteoWizardInstallation();
-        }
-        if (!canceled) {
-            MsConvertParametersDialog msConvertParametersDialog = new MsConvertParametersDialog(this, msConvertParameters);
-            if (!msConvertParametersDialog.isCanceled()) {
-                msConvertParameters = msConvertParametersDialog.getMsConvertParameters();
-            }
-        }
-    }//GEN-LAST:event_msconvertSettingsButtonMouseReleased
 
     /**
      * Change the cursor to a hand cursor.
@@ -4104,9 +3764,388 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
     }//GEN-LAST:event_processingMenuItemActionPerformed
 
+    /**
+     * Enable/disable the Edit button for the settings.
+     *
+     * @param evt
+     */
+    private void settingsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsComboBoxActionPerformed
+        editSettingsButton.setEnabled(settingsComboBox.getSelectedIndex() != 0);
+
+        if (settingsComboBox.getSelectedIndex() != 0) {
+            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile((String) settingsComboBox.getSelectedItem());
+            try {
+                identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
+
+                enableSearchEnginePanel(true);
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,
+                        "Failed to import search parameters from: " + identificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
+                        JOptionPane.WARNING_MESSAGE);
+                e.printStackTrace();
+            }
+        } else {
+            enableSearchEnginePanel(false);
+        }
+    }//GEN-LAST:event_settingsComboBoxActionPerformed
+
+    /**
+     * Open the MS Convert settings dialog.
+     *
+     * @param evt
+     */
+    private void msconvertSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msconvertSettingsButtonActionPerformed
+        boolean canceled = false;
+        if (utilitiesUserPreferences.getProteoWizardPath() == null) {
+            canceled = !editProteoWizardInstallation();
+        }
+        if (!canceled) {
+            MsConvertParametersDialog msConvertParametersDialog = new MsConvertParametersDialog(this, msConvertParameters);
+            if (!msConvertParametersDialog.isCanceled()) {
+                msConvertParameters = msConvertParametersDialog.getMsConvertParameters();
+            }
+        }
+    }//GEN-LAST:event_msconvertSettingsButtonActionPerformed
+
+    /**
+     * Edit the X!Tandem settings.
+     *
+     * @param evt the mouse event
+     */
+    private void xtandemSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
+        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy(), true);
+
+        boolean xtandemParametersSet = false;
+
+        while (!xtandemParametersSet) {
+
+            if (!xtandemSettingsDialog.isCancelled()) {
+                XtandemParameters newXtandemParameters = xtandemSettingsDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldXtandemParameters.equals(newXtandemParameters) || xtandemSettingsDialog.modProfileEdited()) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
+                    newSearchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(xtandemSettingsDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        xtandemParametersSet = true;
+                    } else {
+                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, newSearchParameters.getPtmSettings(), newSearchParameters.getFragmentIonAccuracy(), true);
+                    }
+                } else {
+                    xtandemParametersSet = true;
+                }
+            } else {
+                xtandemParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_xtandemSettingsButtonActionPerformed
+
+    /**
+     * Edit the MyriMatch advanced settings.
+     *
+     * @param evt the mouse event
+     */
+    private void myriMatchSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myriMatchSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        MyriMatchParameters oldMyriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
+        MyriMatchSettingsDialog myriMatchParametersDialog = new MyriMatchSettingsDialog(this, oldMyriMatchParameters, true);
+
+        boolean myriMatchParametersSet = false;
+
+        while (!myriMatchParametersSet) {
+
+            if (!myriMatchParametersDialog.isCancelled()) {
+                MyriMatchParameters newMyriMatchParameters = myriMatchParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldMyriMatchParameters.equals(newMyriMatchParameters)) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(myriMatchParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        myriMatchParametersSet = true;
+                    } else {
+                        myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters, true);
+                    }
+                } else {
+                    myriMatchParametersSet = true;
+                }
+            } else {
+                myriMatchParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_myriMatchSettingsButtonActionPerformed
+
+    /**
+     * Edit the MS Amanda advanced settings.
+     *
+     * @param evt the mouse event
+     */
+    private void msAmandaSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msAmandaSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
+        MsAmandaSettingsDialog msAmandaParametersDialog = new MsAmandaSettingsDialog(this, oldMsAmandaParameters, true);
+
+        boolean msAmandaParametersSet = false;
+
+        while (!msAmandaParametersSet) {
+
+            if (!msAmandaParametersDialog.isCancelled()) {
+                MsAmandaParameters newMsAmandaParameters = msAmandaParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldMsAmandaParameters.equals(newMsAmandaParameters)) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msAmandaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        msAmandaParametersSet = true;
+                    } else {
+                        msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters, true);
+                    }
+                } else {
+                    msAmandaParametersSet = true;
+                }
+            } else {
+                msAmandaParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_msAmandaSettingsButtonActionPerformed
+
+    /**
+     * Edit the MS-GF+ settings.
+     *
+     * @param evt the mouse event
+     */
+    private void msgfSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msgfSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        MsgfParameters oldMsgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
+        if (oldMsgfParameters == null) { //backward compatibility check
+            oldMsgfParameters = new MsgfParameters();
+        }
+        MsgfSettingsDialog msgfParametersDialog = new MsgfSettingsDialog(this, oldMsgfParameters, true);
+
+        boolean msgfParametersSet = false;
+
+        while (!msgfParametersSet) {
+
+            if (!msgfParametersDialog.isCancelled()) {
+                MsgfParameters newMsgfParameters = msgfParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldMsgfParameters.equals(newMsgfParameters)) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msgfParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        msgfParametersSet = true;
+                    } else {
+                        msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters, true);
+                    }
+                } else {
+                    msgfParametersSet = true;
+                }
+            } else {
+                msgfParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_msgfSettingsButtonActionPerformed
+
+    /**
+     * Edit the OMSSA settings.
+     *
+     * @param evt the mouse event
+     */
+    private void omssaSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_omssaSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        OmssaParameters oldOmssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
+        if (oldOmssaParameters == null) { //backward compatibility check
+            oldOmssaParameters = new OmssaParameters();
+        }
+        OmssaSettingsDialog omssaParametersDialog = new OmssaSettingsDialog(this, oldOmssaParameters, true);
+
+        boolean omssaParametersSet = false;
+
+        while (!omssaParametersSet) {
+
+            if (!omssaParametersDialog.isCancelled()) {
+                OmssaParameters newOmssaParameters = omssaParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldOmssaParameters.equals(newOmssaParameters)) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(omssaParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        omssaParametersSet = true;
+                    } else {
+                        omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters, true);
+                    }
+                } else {
+                    omssaParametersSet = true;
+                }
+            } else {
+                omssaParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_omssaSettingsButtonActionPerformed
+
+    /**
+     * Edit the Comet settings.
+     *
+     * @param evt the mouse event
+     */
+    private void cometSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cometSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        CometParameters oldCometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
+        CometSettingsDialog cometSettingsDialog = new CometSettingsDialog(this, oldCometParameters, true);
+
+        boolean cometParametersSet = false;
+
+        while (!cometParametersSet) {
+
+            if (!cometSettingsDialog.isCancelled()) {
+                CometParameters newCometParameters = cometSettingsDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldCometParameters.equals(newCometParameters)) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(cometSettingsDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        cometParametersSet = true;
+                    } else {
+                        cometSettingsDialog = new CometSettingsDialog(this, newCometParameters, true);
+                    }
+                } else {
+                    cometParametersSet = true;
+                }
+            } else {
+                cometParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_cometSettingsButtonActionPerformed
+
+    /**
+     * Edit the Tide settings.
+     *
+     * @param evt the mouse event
+     */
+    private void tideSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tideSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        TideParameters oldTideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
+        if (oldTideParameters == null) { //backward compatibility check
+            oldTideParameters = new TideParameters();
+        }
+        TideSettingsDialog tideParametersDialog = new TideSettingsDialog(this, oldTideParameters, true);
+
+        boolean tideParametersSet = false;
+
+        while (!tideParametersSet) {
+
+            if (!tideParametersDialog.isCancelled()) {
+                TideParameters newTideParameters = tideParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldTideParameters.equals(newTideParameters)) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(tideParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        tideParametersSet = true;
+                    } else {
+                        tideParametersDialog = new TideSettingsDialog(this, newTideParameters, true);
+                    }
+                } else {
+                    tideParametersSet = true;
+                }
+            } else {
+                tideParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_tideSettingsButtonActionPerformed
+
+    /**
+     * Edit the Andromeda settings.
+     *
+     * @param evt the mouse event
+     */
+    private void andromedaSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_andromedaSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        AndromedaParameters oldAndromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
+        if (oldAndromedaParameters == null) { //backward compatibility check
+            oldAndromedaParameters = new AndromedaParameters();
+        }
+        AndromedaSettingsDialog andromedaParametersDialog = new AndromedaSettingsDialog(this, oldAndromedaParameters, true);
+
+        boolean andromedaParametersSet = false;
+
+        while (!andromedaParametersSet) {
+
+            if (!andromedaParametersDialog.isCancelled()) {
+                AndromedaParameters newAndromedaParameters = andromedaParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldAndromedaParameters.equals(newAndromedaParameters)) {
+                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
+                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
+                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(andromedaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    if (newSearchParametersFile != null) {
+                        identificationParameters.setSearchParameters(newSearchParameters);
+                        identificationParametersFile = newSearchParametersFile;
+                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
+                        andromedaParametersSet = true;
+                    } else {
+                        andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters, true);
+                    }
+                } else {
+                    andromedaParametersSet = true;
+                }
+            } else {
+                andromedaParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_andromedaSettingsButtonActionPerformed
+
+    /**
+     * Edit the PeptideShaker settings.
+     *
+     * @param evt the mouse event
+     */
+    private void peptideShakerSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peptideShakerSettingsButtonActionPerformed
+        openPeptideShakerSettings(true);
+    }//GEN-LAST:event_peptideShakerSettingsButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JButton addSettingsButton;
     private javax.swing.JButton addSpectraButton;
     private javax.swing.JMenuItem advancedSettingsMenuItem;
     private javax.swing.JButton andromedaButton;
@@ -4143,7 +4182,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JPopupMenu.Separator jSeparator17;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenuItem javaSettingsJMenuItem;
-    private javax.swing.JButton loadSettingsButton;
     private javax.swing.JMenuItem logReportMenu;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPopupMenu modificationOptionsPopupMenu;
@@ -4191,15 +4229,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JScrollPane searchEnginesScrollPane;
     private javax.swing.JLabel searchGUIPublicationLabel;
     private javax.swing.JLabel searchSettingsLbl;
-    private javax.swing.JTextField searchSettingsTxt;
-    private javax.swing.JMenuItem settingsMenuItem;
+    private javax.swing.JComboBox settingsComboBox;
     private javax.swing.JLabel spectraFilesLabel;
     private javax.swing.JTextField spectraFilesTxt;
     private javax.swing.JPanel taskEditorPanel;
+    private javax.swing.JButton tideButton;
     private javax.swing.JLabel tideLinkLabel;
     private javax.swing.JButton tideSettingsButton;
     private javax.swing.JButton tideSupportButton;
-    private javax.swing.JButton tiideButton;
     private javax.swing.JButton xtandemButton;
     private javax.swing.JLabel xtandemLinkLabel;
     private javax.swing.JButton xtandemSettingsButton;
@@ -4207,14 +4244,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     // End of variables declaration//GEN-END:variables
 
     /**
-     * Edits the identification parameters
+     * Edits the identification parameters.
      */
     private void editIdentificationParameters() {
-        IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, identificationParameters, IdentificationParametersSelectionDialog.StartupMode.searchParameters, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
-        if (!identificationParametersSelectionDialog.isCanceled()) {
-            IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
-            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
-            setIdentificationParameters(identificationParameters);
+
+        IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
+                this, identificationParameters, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
+
+        if (!identificationParametersEditionDialog.isCanceled()) {
+            IdentificationParameters tempIdentificationParameters = identificationParametersEditionDialog.getIdentificationParameters();
+            identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(tempIdentificationParameters.getName());
+            setIdentificationParameters(tempIdentificationParameters);
         }
     }
 
@@ -4263,15 +4304,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void editPeptideShakerSettings() {
 
-        PeptideShakerSettingsDialog psSettingsDialog = new PeptideShakerSettingsDialog(this, identificationParameters, identificationParametersFile, true, searchHandler.getMascotFiles());
+        PeptideShakerSettingsDialog psSettingsDialog = new PeptideShakerSettingsDialog(this, true, searchHandler.getMascotFiles());
         if (!psSettingsDialog.isCanceled()) {
             searchHandler.setExperimentLabel(psSettingsDialog.getProjectName());
             searchHandler.setSampleLabel(psSettingsDialog.getSampleName());
             searchHandler.setReplicateNumber(psSettingsDialog.getReplicateNumber());
             searchHandler.setPeptideShakerFile(psSettingsDialog.getPeptideShakerOutputFile());
             searchHandler.setMascotFiles(psSettingsDialog.getMascotFiles());
-            identificationParameters = psSettingsDialog.getIdentificationParameters();
-            identificationParametersFile = psSettingsDialog.getIdentificationParametersFile();
+        } else {
+            peptideShakerCheckBox.setSelected(false);
         }
     }
 
@@ -4497,11 +4538,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public boolean validateParametersInput(boolean showMessage) {
 
-        editSettingsButton.setText("Edit");
         if (identificationParameters == null || identificationParametersFile == null) {
-            if (!IdentificationParametersFactory.getInstance().getParametersList().isEmpty()) {
-                editSettingsButton.setText("Select");
-            }
             return false;
         }
 
@@ -4518,12 +4555,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (!valid) {
             if (showMessage) {
                 settingsDialog.validateParametersInput(true);
-                IdentificationParametersSelectionDialog identificationParametersSelectionDialog = new IdentificationParametersSelectionDialog(this, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, settingsDialog);
-                if (!identificationParametersSelectionDialog.isCanceled()) {
-                    IdentificationParameters identificationParameters = identificationParametersSelectionDialog.getIdentificationParameters();
-                    identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName());
-                    setIdentificationParameters(identificationParameters);
-                }
+                editIdentificationParameters();
             } else {
                 searchSettingsLbl.setForeground(Color.RED);
                 searchSettingsLbl.setToolTipText("Please check the search settings");
@@ -4893,30 +4925,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Returns true if the settings tab has been displayed.
+     * Returns true if the settings have been displayed.
      *
-     * @return true if the settings tab has been displayed
+     * @return true if the settings have has been displayed
      */
-    public boolean hasSettingsTabBeenDisplayed() {
+    public boolean settingsDisplayed() {
         return settingsTabDisplayed;
     }
 
     /**
-     * Returns true if the default settings are used.
+     * Set if the settings have been displayed.
      *
-     * @return true if the default settings are used
-     */
-    public boolean isDefaultSettings() {
-        return searchSettingsTxt.getText().equals(defaultSettingsTxt);
-    }
-
-    /**
-     * Set if the settings tab has been displayed.
-     *
-     * @param settingsDisplayed boolean indicating whether the settings tab has
+     * @param settingsDisplayed boolean indicating whether the settings have
      * been displayed
      */
-    public void setSettingsTabHasBeenDisplayed(boolean settingsDisplayed) {
+    public void setSettingsDisplayed(boolean settingsDisplayed) {
         this.settingsTabDisplayed = settingsDisplayed;
     }
 
@@ -4987,7 +5010,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (parameters) {
                 searchParametersFile = new File(arg);
                 try {
-                    IdentificationParameters identificationParameters = IdentificationParameters.getIdentificationParameters(searchParametersFile);
+                    IdentificationParameters.getIdentificationParameters(searchParametersFile);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,
                             "Failed to import search parameters from: " + searchParametersFile.getAbsolutePath() + ".", "Search Parameters",
@@ -5126,56 +5149,31 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public void startSearch() {
 
-        // if input validation process
         if (validateInput(true)) {
 
-            boolean stopSearch = false;
-            boolean openSettingsDialog = false;
+            waitingDialog = new WaitingDialog(this,
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), false,
+                    getTips(),
+                    "Search",
+                    "SearchGUI",
+                    new eu.isas.searchgui.utilities.Properties().getVersion(),
+                    true);
 
-            if (!hasSettingsTabBeenDisplayed() && isDefaultSettings()) {
-                int selection = JOptionPane.showConfirmDialog(this,
-                        "Are you sure that you want to start the search\n"
-                        + "without looking at the search settings?",
-                        "Check Search Settings?", JOptionPane.YES_NO_CANCEL_OPTION);
-
-                if (selection != JOptionPane.YES_OPTION) {
-                    stopSearch = true;
-
-                    if (selection == JOptionPane.NO_OPTION) {
-                        openSettingsDialog = true;
-                    }
+            waitingDialog.addWaitingActionListener(new WaitingActionListener() {
+                @Override
+                public void cancelPressed() {
+                    searchHandler.cancelSearch();
                 }
-            }
+            });
 
-            if (!stopSearch) {
+            waitingDialog.setLocationRelativeTo(this);
 
-                waitingDialog = new WaitingDialog(this,
-                        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                        Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), false,
-                        getTips(),
-                        "Search",
-                        "SearchGUI",
-                        new eu.isas.searchgui.utilities.Properties().getVersion(),
-                        true);
-
-                waitingDialog.addWaitingActionListener(new WaitingActionListener() {
-                    @Override
-                    public void cancelPressed() {
-                        searchHandler.cancelSearch();
-                    }
-                });
-
-                waitingDialog.setLocationRelativeTo(this);
-
-                try {
-                    searchHandler.startSearch(waitingDialog);
-                } catch (InterruptedException e) {
-                    // should happen only in cli mode
-                    e.printStackTrace();
-                }
-
-            } else if (openSettingsDialog) {
-                editIdentificationParameters();
+            try {
+                searchHandler.startSearch(waitingDialog);
+            } catch (InterruptedException e) {
+                // should happen only in cli mode
+                e.printStackTrace();
             }
         }
     }
@@ -5366,14 +5364,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public void setIdentificationParameters(IdentificationParameters identificationParameters) {
         this.identificationParameters = identificationParameters;
-        String name = identificationParameters.getName();
-        if (name != null && name.length() > 0) {
-            searchSettingsTxt.setText(name);
-        } else if (identificationParametersFile != null) {
-            searchSettingsTxt.setText(identificationParametersFile.getName());
-        } else {
-            searchSettingsTxt.setText(userSettingsTxt);
+
+        Vector parameterList = new Vector();
+        parameterList.add("-- Select --");
+
+        for (String tempParameters : identificationParametersFactory.getParametersList()) {
+            parameterList.add(tempParameters);
         }
+
+        settingsComboBox.setModel(new javax.swing.DefaultComboBoxModel(parameterList));
+        settingsComboBox.setSelectedItem(identificationParameters.getName());
+
         validateInput(false);
     }
 
@@ -5817,6 +5818,75 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 JOptionPane.showMessageDialog(this, "ProteoWizard folder not set. Raw file(s) not selected.", "Raw File Error", JOptionPane.WARNING_MESSAGE);
                 rawFiles.clear();
             }
+        }
+    }
+
+    /**
+     * Enable/disable the msconvert options.
+     */
+    private void enableMsConvertPanel() {
+        msconvertSettingsButton.setEnabled(!rawFiles.isEmpty());
+        msconvertCheckBox.setEnabled(!rawFiles.isEmpty());
+        msconvertButton.setEnabled(!rawFiles.isEmpty());
+        msconvertLabel.setEnabled(!rawFiles.isEmpty());
+        msconvertCheckBox.setSelected(!rawFiles.isEmpty());
+    }
+
+    /**
+     * Enable/disable the search engine panel.
+     *
+     * @param enable if true, the panel is enabled
+     */
+    private void enableSearchEnginePanel(boolean enable) {
+        xtandemSettingsButton.setEnabled(enable);
+        msAmandaSettingsButton.setEnabled(enable);
+        msgfSettingsButton.setEnabled(enable);
+        omssaSettingsButton.setEnabled(enable);
+        tideSettingsButton.setEnabled(enable);
+        peptideShakerSettingsButton.setEnabled(enable);
+        enableXTandemJCheckBox.setEnabled(enable);
+
+        enableMsAmandaJCheckBox.setEnabled(enable);
+        enableMsgfJCheckBox.setEnabled(enable);
+        enableOmssaJCheckBox.setEnabled(enable);
+        enableTideJCheckBox.setEnabled(enable);
+        peptideShakerCheckBox.setEnabled(enable);
+
+        xtandemButton.setEnabled(enable);
+        msAmandaButton.setEnabled(enable);
+        msgfButton.setEnabled(enable);
+        omssaButton.setEnabled(enable);
+        tideButton.setEnabled(enable);
+        xtandemButton.setEnabled(enable);
+        peptideShakerButton.setEnabled(enable);
+
+        xtandemLinkLabel.setEnabled(enable);
+        msAmandaLinkLabel.setEnabled(enable);
+        msgfLinkLabel.setEnabled(enable);
+        omssaLinkLabel.setEnabled(enable);
+        tideLinkLabel.setEnabled(enable);
+        peptideShakerLabel.setEnabled(enable);
+
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+
+        // disable myrimatch and comet if mac
+        if (!operatingSystem.contains("mac os")) {
+            myriMatchSettingsButton.setEnabled(enable);
+            cometSettingsButton.setEnabled(enable);
+            enableMyriMatchJCheckBox.setEnabled(enable);
+            enableCometJCheckBox.setEnabled(enable);
+            myriMatchButton.setEnabled(enable);
+            cometButton.setEnabled(enable);
+            myriMatchLinkLabel.setEnabled(enable);
+            cometLinkLabel.setEnabled(enable);
+        }
+
+        // disable andromeda on non-windows platforms
+        if (operatingSystem.contains("windows")) {
+            andromedaSettingsButton.setEnabled(enable);
+            enableAndromedaJCheckBox.setEnabled(enable);
+            andromedaButton.setEnabled(enable);
+            andromedaLinkLabel.setEnabled(enable);
         }
     }
 }

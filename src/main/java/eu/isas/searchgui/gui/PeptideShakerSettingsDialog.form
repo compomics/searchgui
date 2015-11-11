@@ -10,6 +10,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -328,7 +331,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Project Settings (see help for details)"/>
+                <TitledBorder title="Advanced Settings (see help for details)"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -338,17 +341,15 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="projectSettingsLbl" max="32767" attributes="1"/>
-                          <Component id="identificationSettingsLbl" max="32767" attributes="1"/>
                           <Component id="mascotFilesLabel" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="identificationSettingsTxt" alignment="0" pref="476" max="32767" attributes="3"/>
                           <Component id="mascotFilesTextField" max="32767" attributes="0"/>
-                          <Component id="projectSettingsTxt" alignment="0" max="32767" attributes="3"/>
+                          <Component id="projectSettingsTxt" alignment="0" pref="476" max="32767" attributes="3"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -358,7 +359,6 @@
                               <Component id="clearMascotFilesButton" min="-2" pref="70" max="-2" attributes="0"/>
                           </Group>
                           <Component id="editProjectSettingsButton" max="32767" attributes="1"/>
-                          <Component id="editIdentificationSettingsButton" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -368,12 +368,6 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="identificationSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="identificationSettingsTxt" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="editIdentificationSettingsButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="projectSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="projectSettingsTxt" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -418,27 +412,6 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearMascotFilesButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JLabel" name="identificationSettingsLbl">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Identification"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="identificationSettingsTxt">
-              <Properties>
-                <Property name="editable" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="Default"/>
-                <Property name="toolTipText" type="java.lang.String" value="Minimum Peptide Length"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="editIdentificationSettingsButton">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Edit"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editIdentificationSettingsButtonActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="projectSettingsLbl">

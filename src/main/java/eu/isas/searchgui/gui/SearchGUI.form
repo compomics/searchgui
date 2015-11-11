@@ -133,15 +133,6 @@
             <Property name="text" type="java.lang.String" value="Edit"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="settingsMenuItem">
-              <Properties>
-                <Property name="mnemonic" type="int" value="83"/>
-                <Property name="text" type="java.lang.String" value="Search Settings"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="settingsMenuItemActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="advancedSettingsMenuItem">
               <Properties>
                 <Property name="mnemonic" type="int" value="65"/>
@@ -338,7 +329,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="searchEnginesLocationPanel" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="postProcessingPanel" pref="73" max="32767" attributes="0"/>
+                  <Component id="postProcessingPanel" pref="80" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="aboutButton" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -404,20 +395,10 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="enableXTandemJCheckBox" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                                          <Component id="xtandemButton" linkSize="6" min="-2" pref="115" max="-2" attributes="0"/>
-                                      </Group>
+                                  <Group type="103" alignment="0" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="-2" pref="81" max="-2" attributes="0"/>
                                           <Component id="msAmandaButton" min="-2" pref="115" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Component id="enableMyriMatchJCheckBox" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
-                                          <Component id="myriMatchButton" min="-2" pref="105" max="-2" attributes="0"/>
                                       </Group>
                                       <Component id="enableMsAmandaJCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                                       <Group type="102" alignment="0" attributes="0">
@@ -430,12 +411,24 @@
                                               <Component id="enableTideJCheckBox" min="-2" max="-2" attributes="0"/>
                                               <Component id="enableAndromedaJCheckBox" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace pref="53" max="32767" attributes="0"/>
+                                          <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
                                               <Component id="andromedaButton" min="-2" max="-2" attributes="0"/>
-                                              <Component id="tiideButton" min="-2" max="-2" attributes="0"/>
+                                              <Component id="tideButton" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="enableXTandemJCheckBox" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace max="32767" attributes="0"/>
+                                              <Component id="xtandemButton" linkSize="6" min="-2" pref="115" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="enableMyriMatchJCheckBox" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                                              <Component id="myriMatchButton" min="-2" pref="105" max="-2" attributes="0"/>
+                                          </Group>
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -475,7 +468,7 @@
                                   <Component id="msAmandaLinkLabel" min="-2" max="-2" attributes="0"/>
                                   <Component id="xtandemLinkLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="125" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="msAmandaSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
                                   <Component id="myriMatchSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
@@ -497,9 +490,9 @@
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="enableXTandemJCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="xtandemButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="xtandemSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="xtandemLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="xtandemSettingsButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                                  <Component id="xtandemSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
@@ -544,7 +537,7 @@
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="enableTideJCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="tiideButton" alignment="2" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="tideButton" alignment="2" min="-2" pref="35" max="-2" attributes="0"/>
                                   <Component id="tideLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="tideSettingsButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
                                   <Component id="tideSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -574,6 +567,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="omssaButtonMouseEntered"/>
@@ -592,6 +586,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -599,13 +594,14 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msgfSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msgfSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msgfSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="msgfSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="enableTideJCheckBox">
                       <Properties>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="toolTipText" type="java.lang.String" value="Enable Tide"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -623,6 +619,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -630,7 +627,7 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msAmandaSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msAmandaSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msAmandaSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="msAmandaSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="myrimatchSupportButton">
@@ -647,6 +644,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a href=&quot;http://fenchurch.mc.vanderbilt.edu/bumbershoot/myrimatch/&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MyriMatch web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="myriMatchLinkLabelMouseClicked"/>
@@ -658,6 +656,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a href=&quot;http://www.andromeda-search.org&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Andromeda web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="andromedaLinkLabelMouseClicked"/>
@@ -676,6 +675,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="andromedaButtonMouseEntered"/>
@@ -687,6 +687,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;Tide Search Algorithm - &lt;a href=http://cruxtoolkit.sourceforge.net&quot;&gt;Tide web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Tide web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tideLinkLabelMouseClicked"/>
@@ -705,6 +706,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -712,10 +714,10 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="xtandemSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="xtandemSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="xtandemSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="xtandemSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JButton" name="tiideButton">
+                    <Component class="javax.swing.JButton" name="tideButton">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/tide.png"/>
@@ -726,11 +728,12 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
-                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tiideButtonMouseEntered"/>
-                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tiideButtonMouseExited"/>
-                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tiideButtonActionPerformed"/>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tideButtonMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tideButtonMouseExited"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tideButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="msgfSupportButton">
@@ -747,6 +750,7 @@
                       <Properties>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="toolTipText" type="java.lang.String" value="Enable Comet"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -757,6 +761,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;Comet Search Algorithm - &lt;a href=http://comet-ms.sourceforge.net&quot;&gt;Comet web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Comet web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cometLinkLabelMouseClicked"/>
@@ -768,6 +773,7 @@
                       <Properties>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="toolTipText" type="java.lang.String" value="Enable MyriMatch"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -788,6 +794,7 @@
                       <Properties>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="toolTipText" type="java.lang.String" value="Enable MS Amanda"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -798,6 +805,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;X!Tandem Search Algorithm - &lt;a href=&quot;http://www.thegpm.org/tandem&quot;&gt;X!Tandem web page&lt;/a&gt;&lt;/html&gt;&#xa;"/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the X!Tandem web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="xtandemLinkLabelMouseClicked"/>
@@ -826,6 +834,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -833,13 +842,14 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="myriMatchSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="myriMatchSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="myriMatchSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="myriMatchSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="enableMsgfJCheckBox">
                       <Properties>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="toolTipText" type="java.lang.String" value="Enable MS-GF+"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -857,6 +867,8 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="horizontalAlignment" type="int" value="2"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="xtandemButtonMouseEntered"/>
@@ -878,6 +890,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;OMSSA Search Algorithm - &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/15473683&quot;&gt;OMSSA web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the OMSSA web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="omssaLinkLabelMouseClicked"/>
@@ -896,6 +909,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="myriMatchButtonMouseEntered"/>
@@ -917,6 +931,7 @@
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;MS Amanda Search Algorithm - &lt;a href=&quot;http://ms.imp.ac.at/?goto=msamanda&quot;&gt;MS Amanda web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS Amanda web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msAmandaLinkLabelMouseClicked"/>
@@ -928,6 +943,7 @@
                       <Properties>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="toolTipText" type="java.lang.String" value="Enable X!Tandem"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -945,6 +961,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -952,7 +969,7 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cometSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cometSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cometSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cometSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="msAmandaButton">
@@ -966,6 +983,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msAmandaButtonMouseEntered"/>
@@ -984,6 +1002,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -991,7 +1010,7 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="andromedaSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="andromedaSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="andromedaSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="andromedaSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="omssaSettingsButton">
@@ -1005,6 +1024,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -1012,12 +1032,13 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="omssaSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="omssaSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="omssaSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="omssaSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="enableAndromedaJCheckBox">
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable Andromeda"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -1035,6 +1056,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                           <Image iconType="3" name="/icons/edit.png"/>
                         </Property>
@@ -1042,13 +1064,14 @@
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tideSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tideSettingsButtonMouseExited"/>
-                        <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tideSettingsButtonMouseReleased"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tideSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="msgfLinkLabel">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;MS-GF+ Search Algorithm - &lt;a href=&quot;http://proteomics.ucsd.edu/Software/MSGFPlus&quot;&gt;MS-GF+ web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS-GF+ web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msgfLinkLabelMouseClicked"/>
@@ -1087,6 +1110,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msgfButtonMouseEntered"/>
@@ -1098,6 +1122,7 @@
                       <Properties>
                         <Property name="selected" type="boolean" value="true"/>
                         <Property name="toolTipText" type="java.lang.String" value="Enable OMSSA"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -1115,6 +1140,7 @@
                         </Property>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cometButtonMouseEntered"/>
@@ -1149,31 +1175,35 @@
                                   <Component id="searchSettingsLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                                   <Component id="resultFolderLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="searchSettingsTxt" max="32767" attributes="0"/>
-                                  <Component id="outputFolderTxt" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="editSettingsButton" linkSize="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="resultFolderBrowseButton" linkSize="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="outputFolderTxt" min="-2" pref="409" max="-2" attributes="0"/>
+                                  <Component id="settingsComboBox" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" attributes="0">
                               <Component id="spectraFilesLabel" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="spectraFilesTxt" max="32767" attributes="0"/>
-                              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                              <Component id="addSpectraButton" linkSize="2" min="-2" pref="51" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="clearSpectraButton" linkSize="2" pref="67" max="32767" attributes="0"/>
-                          <Component id="loadSettingsButton" linkSize="2" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="addSettingsButton" linkSize="2" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="editSettingsButton" linkSize="2" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="addSpectraButton" linkSize="2" min="-2" pref="51" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="clearSpectraButton" linkSize="2" pref="67" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="resultFolderBrowseButton" linkSize="2" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1190,9 +1220,9 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="searchSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="searchSettingsTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="addSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="settingsComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="editSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="loadSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -1247,26 +1277,21 @@
                 <Property name="text" type="java.lang.String" value="Search Settings"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="searchSettingsTxt">
-              <Properties>
-                <Property name="editable" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="editSettingsButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Edit"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editSettingsButtonActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="loadSettingsButton">
+            <Component class="javax.swing.JButton" name="addSettingsButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Load"/>
+                <Property name="text" type="java.lang.String" value="Add"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadSettingsButtonActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addSettingsButtonActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="resultFolderLbl">
@@ -1290,6 +1315,21 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resultFolderBrowseButtonActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="settingsComboBox">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="1">
+                    <StringItem index="0" value="-- Select --"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="settingsComboBoxActionPerformed"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
@@ -1368,7 +1408,7 @@
                       <Component id="peptideShakerSupportButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                       <Component id="peptideShakerLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="130" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="peptideShakerSettingsButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                   </Group>
@@ -1394,6 +1434,7 @@
             <Component class="javax.swing.JCheckBox" name="peptideShakerCheckBox">
               <Properties>
                 <Property name="toolTipText" type="java.lang.String" value="Enable PeptideShaker"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="iconTextGap" type="int" value="15"/>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
@@ -1405,6 +1446,7 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a href=&quot;http://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the PeptideShaker web page"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="peptideShakerLabelMouseClicked"/>
@@ -1423,6 +1465,7 @@
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="peptideShakerButtonMouseEntered"/>
@@ -1441,6 +1484,7 @@
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit.png"/>
                 </Property>
@@ -1448,7 +1492,7 @@
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="peptideShakerSettingsButtonMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="peptideShakerSettingsButtonMouseExited"/>
-                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="peptideShakerSettingsButtonMouseReleased"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="peptideShakerSettingsButtonActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="peptideShakerSupportButton">
@@ -1510,6 +1554,7 @@
             <Component class="javax.swing.JCheckBox" name="msconvertCheckBox">
               <Properties>
                 <Property name="toolTipText" type="java.lang.String" value="Enable msconvert"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="iconTextGap" type="int" value="15"/>
                 <Property name="opaque" type="boolean" value="false"/>
               </Properties>
@@ -1521,6 +1566,7 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="&lt;html&gt;msconvert File Conversion - &lt;a href=&quot;http://proteowizard.sourceforge.net/downloads.shtml&quot;&gt;ProteoWizard web page&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the ProteoWizard web page"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msconvertLabelMouseClicked"/>
@@ -1538,6 +1584,7 @@
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="msconvertSettingsButton">
@@ -1551,6 +1598,7 @@
                 </Property>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/edit.png"/>
                 </Property>
@@ -1558,7 +1606,7 @@
               <Events>
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msconvertSettingsButtonMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msconvertSettingsButtonMouseExited"/>
-                <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="msconvertSettingsButtonMouseReleased"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="msconvertSettingsButtonActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="msconvertSupportButton">
