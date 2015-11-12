@@ -18,6 +18,7 @@ import com.compomics.util.experiment.identification.identification_parameters.Se
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.protein.Header;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
@@ -256,15 +257,15 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * parameters.
      *
      * @param andromedaFolder the Andromeda installation folder
-     * @param searchParameters the search parameters
-     * @param searchParametersFile the file where to save the search parameters
+     * @param identificationParameters the identification parameters
+     * @param identificationParametersFile the file where to save the search parameters
      *
      * @throws IOException exception thrown whenever an error occurs while
      * writing to the file.
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public static void createPtmFile(File andromedaFolder, SearchParameters searchParameters, File searchParametersFile) throws IOException, ClassNotFoundException {
+    public static void createPtmFile(File andromedaFolder, IdentificationParameters identificationParameters, File identificationParametersFile) throws IOException, ClassNotFoundException {
 
         File file = new File(andromedaFolder, "conf");
         file = new File(file, "modifications.xml");
@@ -273,6 +274,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         String date = "0001-01-01T00:00:00";
 
         PTMFactory ptmFactory = PTMFactory.getInstance();
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         AndromedaParameters andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
 
         try {
@@ -292,7 +294,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.close();
         }
 
-        SearchParameters.saveIdentificationParameters(searchParameters, searchParametersFile);
+        IdentificationParameters.saveIdentificationParameters(identificationParameters, identificationParametersFile);
     }
 
     /**

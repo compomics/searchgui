@@ -1742,7 +1742,7 @@ public class SearchHandler {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
                     }
                     File userModsXmlFile = new File(omssaLocation, "usermods.xml");
-                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, searchParameters, identificationParametersFile);
+                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, identificationParameters, identificationParametersFile);
 
                     // Copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
@@ -1762,7 +1762,7 @@ public class SearchHandler {
                     // write Andromeda enzyme configuration file
                     AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
-                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, searchParameters, identificationParametersFile);
+                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, identificationParameters, identificationParametersFile);
                 }
 
                 int nRawFiles = getRawFiles().size();

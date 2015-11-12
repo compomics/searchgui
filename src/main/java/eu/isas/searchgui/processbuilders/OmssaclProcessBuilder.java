@@ -11,6 +11,7 @@ import com.compomics.util.experiment.identification.identification_parameters.Se
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.OmssaParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.preferences.IdentificationParameters;
 import java.io.BufferedWriter;
 
 import java.io.File;
@@ -395,22 +396,24 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * specific parameters.
      *
      * @param omssaFile the file where to write the omssa modification files
-     * @param searchParameters the search parameters
-     * @param searchParametersFile the file where to save the search parameters
+     * @param identificationParameters the identification parameters
+     * @param identificationParametersFile the file where to save the
+     * identification parameters
      *
      * @throws IOException exception thrown whenever an error occurred while
      * writing the file
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public static void writeOmssaUserModificationsFile(File omssaFile, SearchParameters searchParameters, File searchParametersFile) throws IOException, ClassNotFoundException {
+    public static void writeOmssaUserModificationsFile(File omssaFile, IdentificationParameters identificationParameters, File identificationParametersFile) throws IOException, ClassNotFoundException {
 
         PTMFactory ptmFactory = PTMFactory.getInstance();
 
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
         PtmSettings modificationProfile = searchParameters.getPtmSettings();
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
         omssaParameters.setPtmIndexes(modificationProfile);
-        SearchParameters.saveIdentificationParameters(searchParameters, searchParametersFile);
+        IdentificationParameters.saveIdentificationParameters(identificationParameters, identificationParametersFile);
 
         HashMap<Integer, String> ptmIndexes = omssaParameters.getPtmIndexes();
         ArrayList<Integer> indexes = new ArrayList<Integer>(ptmIndexes.keySet());

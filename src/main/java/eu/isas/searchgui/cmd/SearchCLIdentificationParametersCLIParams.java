@@ -19,197 +19,9 @@ public class SearchCLIdentificationParametersCLIParams {
      * @param aOptions the options object where the options will be added
      */
     public static void createOptionsCLI(Options aOptions) {
-
-        aOptions.addOption(IdentificationParametersCLIParams.OUT.id, true, IdentificationParametersCLIParams.OUT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MODS.id, false, IdentificationParametersCLIParams.MODS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.USAGE.id, false, IdentificationParametersCLIParams.USAGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.USAGE_2.id, false, IdentificationParametersCLIParams.USAGE_2.description);
-        aOptions.addOption(IdentificationParametersCLIParams.USAGE_3.id, false, IdentificationParametersCLIParams.USAGE_3.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.PREC_PPM.id, true, IdentificationParametersCLIParams.PREC_PPM.description);
-        aOptions.addOption(IdentificationParametersCLIParams.PREC_TOL.id, true, IdentificationParametersCLIParams.PREC_TOL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.FRAG_TOL.id, true, IdentificationParametersCLIParams.FRAG_TOL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ENZYME.id, true, IdentificationParametersCLIParams.ENZYME.description);
-        aOptions.addOption(IdentificationParametersCLIParams.FIXED_MODS.id, true, IdentificationParametersCLIParams.FIXED_MODS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.VARIABLE_MODS.id, true, IdentificationParametersCLIParams.VARIABLE_MODS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MIN_CHARGE.id, true, IdentificationParametersCLIParams.MIN_CHARGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MAX_CHARGE.id, true, IdentificationParametersCLIParams.MAX_CHARGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MC.id, true, IdentificationParametersCLIParams.MC.description);
-        aOptions.addOption(IdentificationParametersCLIParams.FI.id, true, IdentificationParametersCLIParams.FI.description);
-        aOptions.addOption(IdentificationParametersCLIParams.RI.id, true, IdentificationParametersCLIParams.RI.description);
-        aOptions.addOption(IdentificationParametersCLIParams.DB.id, true, IdentificationParametersCLIParams.DB.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_DYNAMIC_RANGE.id, true, IdentificationParametersCLIParams.XTANDEM_DYNAMIC_RANGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_NPEAKS.id, true, IdentificationParametersCLIParams.XTANDEM_NPEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_MIN_FRAG_MZ.id, true, IdentificationParametersCLIParams.XTANDEM_MIN_FRAG_MZ.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_MIN_PEAKS.id, true, IdentificationParametersCLIParams.XTANDEM_MIN_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_NOISE_SUPPRESSION.id, true, IdentificationParametersCLIParams.XTANDEM_NOISE_SUPPRESSION.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_MIN_PREC_MASS.id, true, IdentificationParametersCLIParams.XTANDEM_MIN_PREC_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_QUICK_ACETYL.id, true, IdentificationParametersCLIParams.XTANDEM_QUICK_ACETYL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_QUICK_PYRO.id, true, IdentificationParametersCLIParams.XTANDEM_QUICK_PYRO.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_STP_BIAS.id, true, IdentificationParametersCLIParams.XTANDEM_STP_BIAS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE_EVALUE.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE_EVALUE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE_UNANTICIPATED_CLEAVAGE.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE_UNANTICIPATED_CLEAVAGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE_SEMI.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE_SEMI.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE_POTENTIAL_MOD_FULL_REFINEMENT.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE_POTENTIAL_MOD_FULL_REFINEMENT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE_POINT_MUTATIONS.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE_POINT_MUTATIONS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE_SNAPS.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE_SNAPS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_REFINE_SPECTRUM_SYNTHESIS.id, true, IdentificationParametersCLIParams.XTANDEM_REFINE_SPECTRUM_SYNTHESIS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_EVALUE.id, true, IdentificationParametersCLIParams.XTANDEM_EVALUE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_OUTPUT_PROTEINS.id, true, IdentificationParametersCLIParams.XTANDEM_OUTPUT_PROTEINS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_OUTPUT_SEQUENCES.id, true, IdentificationParametersCLIParams.XTANDEM_OUTPUT_SEQUENCES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_OUTPUT_SPECTRA.id, true, IdentificationParametersCLIParams.XTANDEM_OUTPUT_SPECTRA.description);
-        aOptions.addOption(IdentificationParametersCLIParams.XTANDEM_SKYLINE.id, true, IdentificationParametersCLIParams.XTANDEM_SKYLINE.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_DECOY.id, true, IdentificationParametersCLIParams.MSGF_DECOY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_INSTRUMENT.id, true, IdentificationParametersCLIParams.MSGF_INSTRUMENT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_FRAGMENTATION.id, true, IdentificationParametersCLIParams.MSGF_FRAGMENTATION.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_PROTOCOL.id, true, IdentificationParametersCLIParams.MSGF_PROTOCOL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_MIN_PEP_LENGTH.id, true, IdentificationParametersCLIParams.MSGF_MIN_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_MAX_PEP_LENGTH.id, true, IdentificationParametersCLIParams.MSGF_MAX_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_NUM_MATCHES.id, true, IdentificationParametersCLIParams.MSGF_NUM_MATCHES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_ADDITIONAL.id, true, IdentificationParametersCLIParams.MSGF_ADDITIONAL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_ISOTOPE_LOW.id, true, IdentificationParametersCLIParams.MSGF_ISOTOPE_LOW.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_ISOTOPE_HIGH.id, true, IdentificationParametersCLIParams.MSGF_ISOTOPE_HIGH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_TERMINI.id, true, IdentificationParametersCLIParams.MSGF_TERMINI.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MSGF_PTMS.id, true, IdentificationParametersCLIParams.MSGF_PTMS.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.MS_AMANDA_DECOY.id, true, IdentificationParametersCLIParams.MS_AMANDA_DECOY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MS_AMANDA_INSTRUMENT.id, true, IdentificationParametersCLIParams.MS_AMANDA_INSTRUMENT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MS_AMANDA_MAX_RANK.id, true, IdentificationParametersCLIParams.MS_AMANDA_MAX_RANK.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MS_AMANDA_MONOISOTOPIC.id, true, IdentificationParametersCLIParams.MS_AMANDA_MONOISOTOPIC.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MS_AMANDA_LOW_MEM_MODE.id, true, IdentificationParametersCLIParams.MS_AMANDA_LOW_MEM_MODE.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_MIN_PEP_LENGTH.id, true, IdentificationParametersCLIParams.MYRIMATCH_MIN_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_MAX_PEP_LENGTH.id, true, IdentificationParametersCLIParams.MYRIMATCH_MAX_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_MIN_PREC_MASS.id, true, IdentificationParametersCLIParams.MYRIMATCH_MIN_PREC_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_MAX_PREC_MASS.id, true, IdentificationParametersCLIParams.MYRIMATCH_MAX_PREC_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_LOW.id, true, IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_LOW.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_HIGH.id, true, IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_HIGH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_NUM_MATCHES.id, true, IdentificationParametersCLIParams.MYRIMATCH_NUM_MATCHES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_PTMS.id, true, IdentificationParametersCLIParams.MYRIMATCH_PTMS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_FRAGMENTATION.id, true, IdentificationParametersCLIParams.MYRIMATCH_FRAGMENTATION.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_TERMINI.id, true, IdentificationParametersCLIParams.MYRIMATCH_TERMINI.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_SMART_PLUS_THREE.id, true, IdentificationParametersCLIParams.MYRIMATCH_SMART_PLUS_THREE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_XCORR.id, true, IdentificationParametersCLIParams.MYRIMATCH_XCORR.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_TIC_CUTOFF.id, true, IdentificationParametersCLIParams.MYRIMATCH_TIC_CUTOFF.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_INTENSTITY_CLASSES.id, true, IdentificationParametersCLIParams.MYRIMATCH_INTENSTITY_CLASSES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_CLASS_MULTIPLIER.id, true, IdentificationParametersCLIParams.MYRIMATCH_CLASS_MULTIPLIER.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_NUM_BATCHES.id, true, IdentificationParametersCLIParams.MYRIMATCH_NUM_BATCHES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.MYRIMATCH_MAX_PEAK_COUNT.id, true, IdentificationParametersCLIParams.MYRIMATCH_MAX_PEAK_COUNT.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_REMOVE_PREC.id, true, IdentificationParametersCLIParams.OMSSA_REMOVE_PREC.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_SCALE_PREC.id, true, IdentificationParametersCLIParams.OMSSA_SCALE_PREC.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_ESTIMATE_CHARGE.id, true, IdentificationParametersCLIParams.OMSSA_ESTIMATE_CHARGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MAX_EVALUE.id, true, IdentificationParametersCLIParams.OMSSA_MAX_EVALUE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_HITLIST_LENGTH.id, true, IdentificationParametersCLIParams.OMSSA_HITLIST_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_HITLIST_LENGTH_CHARGE.id, true, IdentificationParametersCLIParams.OMSSA_HITLIST_LENGTH_CHARGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MIN_PEP_LENGTH.id, true, IdentificationParametersCLIParams.OMSSA_MIN_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MAX_PEP_LENGTH.id, true, IdentificationParametersCLIParams.OMSSA_MAX_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_FORMAT.id, true, IdentificationParametersCLIParams.OMSSA_FORMAT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_SEQUENCES_IN_MEMORY.id, true, IdentificationParametersCLIParams.OMSSA_SEQUENCES_IN_MEMORY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_ISOTOPES.id, true, IdentificationParametersCLIParams.OMSSA_ISOTOPES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_NEUTRON.id, true, IdentificationParametersCLIParams.OMSSA_NEUTRON.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_LOW_INTENSITY.id, true, IdentificationParametersCLIParams.OMSSA_LOW_INTENSITY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_HIGH_INTENSITY.id, true, IdentificationParametersCLIParams.OMSSA_HIGH_INTENSITY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_INTENSITY_INCREMENT.id, true, IdentificationParametersCLIParams.OMSSA_INTENSITY_INCREMENT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_SINGLE_WINDOW_WIDTH.id, true, IdentificationParametersCLIParams.OMSSA_SINGLE_WINDOW_WIDTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_DOUBLE_WINDOW_WIDTH.id, true, IdentificationParametersCLIParams.OMSSA_DOUBLE_WINDOW_WIDTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_SINGLE_WINDOW_PEAKS.id, true, IdentificationParametersCLIParams.OMSSA_SINGLE_WINDOW_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_DOUBLE_WINDOW_PEAKS.id, true, IdentificationParametersCLIParams.OMSSA_DOUBLE_WINDOW_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MIN_ANNOTATED_INTENSE_PEAKS.id, true, IdentificationParametersCLIParams.OMSSA_MIN_ANNOTATED_INTENSE_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MIN_ANNOTATED_PEAKS.id, true, IdentificationParametersCLIParams.OMSSA_MIN_ANNOTATED_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MIN_PEAKS.id, true, IdentificationParametersCLIParams.OMSSA_MIN_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_METHIONINE.id, true, IdentificationParametersCLIParams.OMSSA_METHIONINE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MAX_LADDERS.id, true, IdentificationParametersCLIParams.OMSSA_MAX_LADDERS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MAX_FRAG_CHARGE.id, true, IdentificationParametersCLIParams.OMSSA_MAX_FRAG_CHARGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MAX_FRACTION.id, true, IdentificationParametersCLIParams.OMSSA_MAX_FRACTION.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_PLUS_ONE.id, true, IdentificationParametersCLIParams.OMSSA_PLUS_ONE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_POSITIVE_IONS.id, true, IdentificationParametersCLIParams.OMSSA_POSITIVE_IONS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_PREC_PER_SPECTRUM.id, true, IdentificationParametersCLIParams.OMSSA_PREC_PER_SPECTRUM.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_FORWARD_IONS.id, true, IdentificationParametersCLIParams.OMSSA_FORWARD_IONS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_REWIND_IONS.id, true, IdentificationParametersCLIParams.OMSSA_REWIND_IONS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_MAX_FRAG_SERIES.id, true, IdentificationParametersCLIParams.OMSSA_MAX_FRAG_SERIES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_CORRELATION_CORRECTION.id, true, IdentificationParametersCLIParams.OMSSA_CORRELATION_CORRECTION.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_CONSECUTIVE_ION_PROBABILITY.id, true, IdentificationParametersCLIParams.OMSSA_CONSECUTIVE_ION_PROBABILITY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_ITERATIVE_SEQUENCE_EVALUE.id, true, IdentificationParametersCLIParams.OMSSA_ITERATIVE_SEQUENCE_EVALUE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_ITERATIVE_SPECTRUM_EVALUE.id, true, IdentificationParametersCLIParams.OMSSA_ITERATIVE_SPECTRUM_EVALUE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.OMSSA_ITERATIVE_REPLACE_EVALUE.id, true, IdentificationParametersCLIParams.OMSSA_ITERATIVE_REPLACE_EVALUE.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_NUM_MATCHES.id, true, IdentificationParametersCLIParams.COMET_NUM_MATCHES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_PTMS.id, true, IdentificationParametersCLIParams.COMET_PTMS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_REQ_PTMS.id, true, IdentificationParametersCLIParams.COMET_REQ_PTMS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_MIN_PEAKS.id, true, IdentificationParametersCLIParams.COMET_MIN_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_MIN_PEAK_INTENSITY.id, true, IdentificationParametersCLIParams.COMET_MIN_PEAK_INTENSITY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_REMOVE_PRECURSOR.id, true, IdentificationParametersCLIParams.COMET_REMOVE_PRECURSOR.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_REMOVE_PRECURSOR_TOLERANCE.id, true, IdentificationParametersCLIParams.COMET_REMOVE_PRECURSOR_TOLERANCE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_CLEAR_MZ_RANGE_LOWER.id, true, IdentificationParametersCLIParams.COMET_CLEAR_MZ_RANGE_LOWER.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_CLEAR_MZ_RANGE_UPPER.id, true, IdentificationParametersCLIParams.COMET_CLEAR_MZ_RANGE_UPPER.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_ENZYME_TYPE.id, true, IdentificationParametersCLIParams.COMET_ENZYME_TYPE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_ISOTOPE_CORRECTION.id, true, IdentificationParametersCLIParams.COMET_ISOTOPE_CORRECTION.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_MIN_PREC_MASS.id, true, IdentificationParametersCLIParams.COMET_MIN_PREC_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_MAX_PREC_MASS.id, true, IdentificationParametersCLIParams.COMET_MAX_PREC_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_MAX_FRAGMENT_CHARGE.id, true, IdentificationParametersCLIParams.COMET_MAX_FRAGMENT_CHARGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_REMOVE_METH.id, true, IdentificationParametersCLIParams.COMET_REMOVE_METH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_BATCH_SIZE.id, true, IdentificationParametersCLIParams.COMET_BATCH_SIZE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_THEORETICAL_FRAGMENT_IONS.id, true, IdentificationParametersCLIParams.COMET_THEORETICAL_FRAGMENT_IONS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.COMET_FRAGMENT_BIN_OFFSET.id, true, IdentificationParametersCLIParams.COMET_FRAGMENT_BIN_OFFSET.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_PTMS.id, true, IdentificationParametersCLIParams.TIDE_PTMS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_PTMS_PER_TYPE.id, true, IdentificationParametersCLIParams.TIDE_PTMS_PER_TYPE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MIN_PEP_LENGTH.id, true, IdentificationParametersCLIParams.TIDE_MIN_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MAX_PEP_LENGTH.id, true, IdentificationParametersCLIParams.TIDE_MAX_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MIN_PREC_MASS.id, true, IdentificationParametersCLIParams.TIDE_MIN_PREC_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MAX_PREC_MASS.id, true, IdentificationParametersCLIParams.TIDE_MAX_PREC_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_DECOY_FORMAT.id, true, IdentificationParametersCLIParams.TIDE_DECOY_FORMAT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_KEEP_TERM_AA.id, true, IdentificationParametersCLIParams.TIDE_KEEP_TERM_AA.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_DECOY_SEED.id, true, IdentificationParametersCLIParams.TIDE_DECOY_SEED.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_OUTPUT_FOLDER.id, true, IdentificationParametersCLIParams.TIDE_OUTPUT_FOLDER.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_PRINT_PEPTIDES.id, true, IdentificationParametersCLIParams.TIDE_PRINT_PEPTIDES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_VERBOSITY.id, true, IdentificationParametersCLIParams.TIDE_VERBOSITY.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MONOISOTOPIC.id, true, IdentificationParametersCLIParams.TIDE_MONOISOTOPIC.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_CLIP_N_TERM.id, true, IdentificationParametersCLIParams.TIDE_CLIP_N_TERM.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_DIGESTION_TYPE.id, true, IdentificationParametersCLIParams.TIDE_DIGESTION_TYPE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_COMPUTE_SP.id, true, IdentificationParametersCLIParams.TIDE_COMPUTE_SP.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MAX_PSMS.id, true, IdentificationParametersCLIParams.TIDE_MAX_PSMS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_COMPUTE_P.id, true, IdentificationParametersCLIParams.TIDE_COMPUTE_P.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MIN_SPECTRUM_MZ.id, true, IdentificationParametersCLIParams.TIDE_MIN_SPECTRUM_MZ.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MAX_SPECTRUM_MZ.id, true, IdentificationParametersCLIParams.TIDE_MAX_SPECTRUM_MZ.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MIN_SPECTRUM_PEAKS.id, true, IdentificationParametersCLIParams.TIDE_MIN_SPECTRUM_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_SPECTRUM_CHARGES.id, true, IdentificationParametersCLIParams.TIDE_SPECTRUM_CHARGES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_REMOVE_PREC.id, true, IdentificationParametersCLIParams.TIDE_REMOVE_PREC.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_REMOVE_PREC_TOL.id, true, IdentificationParametersCLIParams.TIDE_REMOVE_PREC_TOL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_PROGRESS_INDICATOR.id, true, IdentificationParametersCLIParams.TIDE_PROGRESS_INDICATOR.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_USE_FLANKING.id, true, IdentificationParametersCLIParams.TIDE_USE_FLANKING.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_USE_NEUTRAL_LOSSES.id, true, IdentificationParametersCLIParams.TIDE_USE_NEUTRAL_LOSSES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MZ_BIN_WIDTH.id, true, IdentificationParametersCLIParams.TIDE_MZ_BIN_WIDTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_MZ_BIN_OFFSET.id, true, IdentificationParametersCLIParams.TIDE_MZ_BIN_OFFSET.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_CONCAT.id, true, IdentificationParametersCLIParams.TIDE_CONCAT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_STORE_SPECTRA.id, true, IdentificationParametersCLIParams.TIDE_STORE_SPECTRA.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_EXPORT_TEXT.id, true, IdentificationParametersCLIParams.TIDE_EXPORT_TEXT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_EXPORT_SQT.id, true, IdentificationParametersCLIParams.TIDE_EXPORT_SQT.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_EXPORT_PEPXML.id, true, IdentificationParametersCLIParams.TIDE_EXPORT_PEPXML.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_EXPORT_MZID.id, true, IdentificationParametersCLIParams.TIDE_EXPORT_MZID.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_EXPORT_PIN.id, true, IdentificationParametersCLIParams.TIDE_EXPORT_PIN.description);
-        aOptions.addOption(IdentificationParametersCLIParams.TIDE_REMOVE_TEMP.id, true, IdentificationParametersCLIParams.TIDE_REMOVE_TEMP.description);
-
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_MAX_PEPTIDE_MASS.id, true, IdentificationParametersCLIParams.ANDROMEDA_MAX_PEPTIDE_MASS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_MAX_COMBINATIONS.id, true, IdentificationParametersCLIParams.ANDROMEDA_MAX_COMBINATIONS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_TOP_PEAKS.id, true, IdentificationParametersCLIParams.ANDROMEDA_TOP_PEAKS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_TOP_PEAKS_WINDOW.id, true, IdentificationParametersCLIParams.ANDROMEDA_TOP_PEAKS_WINDOW.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_INCL_WATER.id, true, IdentificationParametersCLIParams.ANDROMEDA_INCL_WATER.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_INCL_AMMONIA.id, true, IdentificationParametersCLIParams.ANDROMEDA_INCL_AMMONIA.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_NEUTRAL_LOSSES.id, true, IdentificationParametersCLIParams.ANDROMEDA_NEUTRAL_LOSSES.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_FRAGMENT_ALL.id, true, IdentificationParametersCLIParams.ANDROMEDA_FRAGMENT_ALL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_EMP_CORRECTION.id, true, IdentificationParametersCLIParams.ANDROMEDA_EMP_CORRECTION.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_HIGHER_CHARGE.id, true, IdentificationParametersCLIParams.ANDROMEDA_HIGHER_CHARGE.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_FRAG_METHOD.id, true, IdentificationParametersCLIParams.ANDROMEDA_FRAG_METHOD.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_MAX_MODS.id, true, IdentificationParametersCLIParams.ANDROMEDA_MAX_MODS.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_MIN_PEP_LENGTH.id, true, IdentificationParametersCLIParams.ANDROMEDA_MIN_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_MAX_PEP_LENGTH.id, true, IdentificationParametersCLIParams.ANDROMEDA_MAX_PEP_LENGTH.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_EQUAL_IL.id, true, IdentificationParametersCLIParams.ANDROMEDA_EQUAL_IL.description);
-        aOptions.addOption(IdentificationParametersCLIParams.ANDROMEDA_MAX_PSMS.id, true, IdentificationParametersCLIParams.ANDROMEDA_MAX_PSMS.description);
+        for (IdentificationParametersCLIParams identificationParametersCLIParams : IdentificationParametersCLIParams.values()) {
+            aOptions.addOption(identificationParametersCLIParams.id, identificationParametersCLIParams.hasArgument, identificationParametersCLIParams.description);
+        }
     }
 
     /**
@@ -223,8 +35,8 @@ public class SearchCLIdentificationParametersCLIParams {
         String formatter = "%-25s";
 
         output += "Parameters Files:\n\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.OUT.id) + IdentificationParametersCLIParams.OUT.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.id) + IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.OUT.id) + IdentificationParametersCLIParams.OUT.description + " Mandatory parameter.\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.id) + IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.description + " Optional parameter.\n";
         output += getParametersOptionsAsString();
         return output;
     }
@@ -239,7 +51,7 @@ public class SearchCLIdentificationParametersCLIParams {
         String output = "";
         String formatter = "%-25s";
 
-        output += "Search Parameters:\n\n";
+        output += "\n\nSearch Parameters:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.DB.id) + IdentificationParametersCLIParams.DB.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PREC_TOL.id) + IdentificationParametersCLIParams.PREC_TOL.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PREC_PPM.id) + IdentificationParametersCLIParams.PREC_PPM.description + "\n";
@@ -457,7 +269,7 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SEPARATE_PEPTIDES.id) + IdentificationParametersCLIParams.SEPARATE_PEPTIDES.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MERGE_SUBGROUPS.id) + IdentificationParametersCLIParams.MERGE_SUBGROUPS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PROTEIN_FRACTION_MW_CONFIDENCE.id) + IdentificationParametersCLIParams.PROTEIN_FRACTION_MW_CONFIDENCE.description + "\n";
-        
+
         output += "\n\nHelp:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MODS.id) + IdentificationParametersCLIParams.MODS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.USAGE.id) + IdentificationParametersCLIParams.USAGE.description + "\n";

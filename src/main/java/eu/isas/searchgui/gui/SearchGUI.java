@@ -3857,7 +3857,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
                     newSearchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(xtandemSettingsDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(xtandemSettingsDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;
@@ -3896,7 +3896,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldMyriMatchParameters.equals(newMyriMatchParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(myriMatchParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(myriMatchParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;
@@ -3935,7 +3935,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldMsAmandaParameters.equals(newMsAmandaParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msAmandaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(msAmandaParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;
@@ -3977,7 +3977,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldMsgfParameters.equals(newMsgfParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(msgfParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(msgfParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;
@@ -4019,7 +4019,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldOmssaParameters.equals(newOmssaParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(omssaParametersDialog, newSearchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(omssaParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;
@@ -4058,7 +4058,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldCometParameters.equals(newCometParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(cometSettingsDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(cometSettingsDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;
@@ -4100,7 +4100,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldTideParameters.equals(newTideParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(tideParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(tideParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;
@@ -4142,7 +4142,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 if (!oldAndromedaParameters.equals(newAndromedaParameters)) {
                     SearchParameters newSearchParameters = new SearchParameters(searchParameters);
                     newSearchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveSearchParameters(andromedaParametersDialog, searchParameters, identificationParametersFile, lastSelectedFolder);
+                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(andromedaParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
                     if (newSearchParametersFile != null) {
                         identificationParameters.setSearchParameters(newSearchParameters);
                         identificationParametersFile = newSearchParametersFile;

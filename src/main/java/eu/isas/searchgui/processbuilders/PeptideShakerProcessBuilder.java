@@ -4,6 +4,7 @@ import com.compomics.software.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersCLIParams;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
@@ -145,8 +146,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationFiles));
             process_name_array.add("-spectrum_files");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFiles));
-
-            process_name_array.add("-id_params");
+            process_name_array.add(IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.id);
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationParametersFile));
             process_name_array.add("-out");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(cpsFile));
@@ -154,57 +154,6 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
                 File zipFile = new File(cpsFile.getParentFile(), Util.removeExtension(cpsFile.getName()) + ".zip");
                 process_name_array.add("-zip");
                 process_name_array.add(CommandLineUtils.getCommandLineArgument(zipFile));
-            }
-
-            // @TODO: add more test for if default parameter values are used and exclude the parameters
-            // add the processing preferences
-            process_name_array.add("-protein_FDR");
-            process_name_array.add("" + identificationParameters.getIdValidationPreferences().getDefaultProteinFDR());
-            process_name_array.add("-peptide_FDR");
-            process_name_array.add("" + identificationParameters.getIdValidationPreferences().getDefaultPeptideFDR());
-            process_name_array.add("-psm_FDR");
-            process_name_array.add("" + identificationParameters.getIdValidationPreferences().getDefaultPsmFDR());
-
-            // ptm scoring options
-            if (!identificationParameters.getPtmScoringPreferences().isEstimateFlr()) {
-                process_name_array.add("-ptm_threshold");
-                process_name_array.add("" + identificationParameters.getPtmScoringPreferences().getFlrThreshold());
-            }
-            if (identificationParameters.getPtmScoringPreferences().isProbabilitsticScoreCalculation()) {
-                process_name_array.add("-ptm_score");
-                process_name_array.add(identificationParameters.getPtmScoringPreferences().getSelectedProbabilisticScore().getId() + "");
-            }
-            if (identificationParameters.getPtmScoringPreferences().isProbabilisticScoreNeutralLosses()) {
-                process_name_array.add("-score_neutral_losses");
-                process_name_array.add("1");
-            }
-
-            // protein fraction mw confidence
-            process_name_array.add("-protein_fraction_mw_confidence");
-//            process_name_array.add("" + processingPreferences.getProteinConfidenceMwPlots());
-
-            // add the gene preferences
-            if (identificationParameters.getGenePreferences().getCurrentSpecies() != null) {
-                process_name_array.add("-species");
-                process_name_array.add(CommandLineUtils.getQuoteType() + identificationParameters.getGenePreferences().getCurrentSpecies() + CommandLineUtils.getQuoteType());
-                process_name_array.add("-species_type");
-                process_name_array.add(CommandLineUtils.getQuoteType() + identificationParameters.getGenePreferences().getCurrentSpeciesType() + CommandLineUtils.getQuoteType());
-            }
-
-            // add the filters
-            process_name_array.add("-min_peptide_length");
-            process_name_array.add("" + identificationParameters.getPeptideAssumptionFilter().getMinPepLength());
-            process_name_array.add("-max_peptide_length");
-            process_name_array.add("" + identificationParameters.getPeptideAssumptionFilter().getMaxPepLength());
-            process_name_array.add("-max_precursor_error");
-            process_name_array.add("" + identificationParameters.getPeptideAssumptionFilter().getMaxMzDeviation());
-            if (!identificationParameters.getPeptideAssumptionFilter().isIsPpm()) {
-                process_name_array.add("-max_precursor_error_type");
-                process_name_array.add("1");
-            }
-            if (!identificationParameters.getPeptideAssumptionFilter().removeUnknownPTMs()) {
-                process_name_array.add("-exclude_unknown_ptms");
-                process_name_array.add("0");
             }
 
             // show gui progress
