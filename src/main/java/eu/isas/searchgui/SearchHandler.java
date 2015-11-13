@@ -364,7 +364,7 @@ public class SearchHandler {
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
-     * @param searchParametersFile the search parameters file
+     * @param identificationParametersFile the search parameters file
      * @param searchOmssa if true the OMSSA search is enabled
      * @param searchXTandem if true the XTandem search is enabled
      * @param searchMsgf if true the MS-GF+ search is enabled
@@ -394,7 +394,7 @@ public class SearchHandler {
      * @param processingPreferences the processing preferences
      * @param generateProteinTree if true, the protein tree will be generated
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File searchParametersFile,
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder, File makeblastdbFolder,
             ProcessingPreferences processingPreferences, boolean generateProteinTree) {
@@ -1742,7 +1742,7 @@ public class SearchHandler {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
                     }
                     File userModsXmlFile = new File(omssaLocation, "usermods.xml");
-                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, searchParameters, identificationParametersFile);
+                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, identificationParameters, identificationParametersFile);
 
                     // Copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
@@ -1762,7 +1762,7 @@ public class SearchHandler {
                     // write Andromeda enzyme configuration file
                     AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
-                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, searchParameters, identificationParametersFile);
+                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, identificationParameters, identificationParametersFile);
                 }
 
                 int nRawFiles = getRawFiles().size();
