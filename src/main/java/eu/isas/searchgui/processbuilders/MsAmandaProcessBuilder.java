@@ -182,11 +182,11 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the enzyme
         Enzyme enzyme = searchParameters.getEnzyme();
-        enzymeName = searchParameters.getEnzyme().getName(); // @TODO: support SEMI(N) and SEMI(C)?
+        enzymeName = searchParameters.getEnzyme().getName();
         if (enzymeName.equalsIgnoreCase("No Enzyme")) {
             enzymeName = "Unspecific"; // backwards compatibility
         }
-        if (enzyme.isSemiSpecific()) {
+        if (enzyme.isSemiSpecific()) { // @TODO: support SEMI(N) and SEMI(C)?
             enzymeSpecificity = "SEMI";
         } else {
             enzymeSpecificity = "FULL";

@@ -606,6 +606,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             parametersSection.append("\t<note type=\"input\" label=\"refine, unanticipated cleavage\">no</note>").append(System.getProperty("line.separator"));
         }
+        //if (enzymeIsSemiSpecific.equalsIgnoreCase("yes") || xtandemParameters.isRefineSemi()) {
         if (xtandemParameters.isRefineSemi()) {
             parametersSection.append("\t<note type=\"input\" label=\"refine, cleavage semi\">yes</note>").append(System.getProperty("line.separator"));
         } else {
