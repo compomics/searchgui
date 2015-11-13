@@ -415,7 +415,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 result.append("3 "); // @TODO: make this a user parameter?
             }
 
-            // add distance to the peptide terminus constraint // @TODO: make this a user param??
+            // add distance to the terminus constraint // @TODO: possible to make this a user param?
             //      -1 = no distance contraint, 
             //      0 = only applies to terminal residue, 
             //      1 = only applies to terminal residue and next residue, 
@@ -427,7 +427,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 result.append("-1 ");
             }
 
-            // add which terminus the peptide terminus constraint applies to
+            // add which terminus the terminus constraint applies to (protein or peptide, c or n term)
             if (ptm.isNTerm()) {
                 if (ptm.getType() == PTM.MODN || ptm.getType() == PTM.MODNAA) {
                     result.append("0 ");

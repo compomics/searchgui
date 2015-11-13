@@ -50,7 +50,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The sub folder containing the apar files.
      */
-    private final static String aparFolder = "apar_files";
+    private final static String APAR_FOLDER = "apar_files";
     /**
      * The spectrum file.
      */
@@ -577,10 +577,19 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
 
         try {
-            String enzymeName = searchParameters.getEnzyme().getName();
-            bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes
+            Enzyme enzyme = searchParameters.getEnzyme();
+            String enzymeName = enzyme.getName();
+            bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
             bw.newLine();
-            bw.write("enzyme mode=specific"); //@TODO: support unspecific cleavage
+            if (enzyme.isUnspecific()) {
+                bw.write("enzyme mode=unspecific");
+            } else {
+                if (enzyme.isSemiSpecific()) {
+                    bw.write("enzyme mode=semispecific"); //@TODO: support: Semispecific Free N-terminus and Semispecific Free C-terminus
+                } else {
+                    bw.write("enzyme mode=specific");
+                }
+            }
             bw.newLine();
             PtmSettings modificationProfile = searchParameters.getPtmSettings();
             StringBuilder list = new StringBuilder();

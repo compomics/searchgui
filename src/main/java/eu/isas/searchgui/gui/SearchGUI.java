@@ -834,18 +834,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         myrimatchSupportButton.setBorderPainted(false);
         myrimatchSupportButton.setContentAreaFilled(false);
 
-        myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/myrimatch/\">MyriMatch web page</a></html> ");
+        myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a href=\"http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121\">MyriMatch web page</a></html> ");
         myriMatchLinkLabel.setToolTipText("Open the MyriMatch web page");
         myriMatchLinkLabel.setEnabled(false);
         myriMatchLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                myriMatchLinkLabelMouseClicked(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 myriMatchLinkLabelMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 myriMatchLinkLabelMouseExited(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                myriMatchLinkLabelMouseReleased(evt);
             }
         });
 
@@ -1748,7 +1748,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addComponent(peptideShakerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(peptideShakerSettingsButton)
-                .addGap(33, 33, 33))
+                .addGap(35, 35, 35))
         );
         postProcessingPanelLayout.setVerticalGroup(
             postProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1838,7 +1838,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addComponent(msconvertLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(msconvertSettingsButton)
-                .addGap(33, 33, 33))
+                .addGap(35, 35, 35))
         );
         preProcessingPanelLayout.setVerticalGroup(
             preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2295,22 +2295,19 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if the choosen enzyme is valid for ms-gf+
         if (enableMsgfJCheckBox.isSelected() && enzyme != null) {
-            String msgfEnzyme = MsgfParameters.enzymeMapping(enzyme);
-            if (msgfEnzyme == null) {
+            String enzymeName = enzyme.getName();
+            if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
                 JOptionPane.showMessageDialog(this,
-                        "The selected enzyme is not supported for MS-GF+.\n\n"
-                        + "Supported enzymes are: Trypsin, Chymotrypsin (FYWL),\n"
-                        + "Lys-C, Lys-N (K), Glu-C (DE), Arg-C, Asp-N, Unspecific,\n"
-                        + "Top-Down and Whole Protein.", "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
+                        "The selected enzyme is not yet supported for MS-GF+.\n\n"
+                        + "Please choose a different enzyme or disable MS-GF+.",
+                        "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
 
         // check if the choosen enzyme is valid for ms amanda
         if (enableMsAmandaJCheckBox.isSelected() && enzyme != null) {
-
             String enzymeName = enzyme.getName();
-
             if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
                 JOptionPane.showMessageDialog(this,
                         "The selected enzyme is not yet supported for MS Amanda.\n\n"
@@ -2322,7 +2319,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if the choosen enzyme is valid for myrimatch
         if (enableMyriMatchJCheckBox.isSelected() && enzyme != null) {
-            if (MyriMatchParameters.enzymeMapping(enzyme) == null) { // enzymes not supported: Trypsin + CNBr, Asp-N + Glu-C, Lys-N (K), Thermolysin, no P rule
+            String enzymeName = enzyme.getName();
+            if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
                 JOptionPane.showMessageDialog(this,
                         "The selected enzyme is not yet supported for MyriMatch.\n\n"
                         + "Please choose a different enzyme or disable MyriMatch.",
@@ -2339,6 +2337,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 JOptionPane.showMessageDialog(this,
                         "The selected enzyme is not yet supported for Tide.\n\n"
                         + "Please choose a different enzyme or disable Tide.",
+                        "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+        
+        // check if the choosen enzyme is valid for omssa
+        if (enableOmssaJCheckBox.isSelected() && enzyme != null) {
+            if (enzyme.getId() > 24) {
+                JOptionPane.showMessageDialog(this,
+                        "The selected enzyme is not supported for OMSSA.\n\n"
+                        + "Please choose a different enzyme or disable OMSSA.",
                         "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -3400,17 +3409,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_myriMatchButtonActionPerformed
 
     /**
-     * Open the MyriMatch web page.
-     *
-     * @param evt the mouse event
-     */
-    private void myriMatchLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_myriMatchLinkLabelMouseClicked
-        this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://forge.fenchurch.mc.vanderbilt.edu/scm/viewvc.php/*checkout*/trunk/doc/index.html?root=myrimatch");
-        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-    }//GEN-LAST:event_myriMatchLinkLabelMouseClicked
-
-    /**
      * Change the cursor to a hand cursor.
      *
      * @param evt the mouse event
@@ -4168,6 +4166,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void peptideShakerSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peptideShakerSettingsButtonActionPerformed
         openPeptideShakerSettings(true);
     }//GEN-LAST:event_peptideShakerSettingsButtonActionPerformed
+
+    /**
+     * Open the MyriMatch web page.
+     *
+     * @param evt the mouse event
+     */
+    private void myriMatchLinkLabelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_myriMatchLinkLabelMouseReleased
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        BareBonesBrowserLaunch.openURL("http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121");
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_myriMatchLinkLabelMouseReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;

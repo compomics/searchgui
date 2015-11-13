@@ -134,5 +134,15 @@
     <inhibitors>P</inhibitors>
     <position>after</position>
   </enzyme>
+  <enzyme>
+    <name>LysargiNase</name>
+    <cleavage_sites>RK</cleavage_sites>
+    <position>before</position>
+  </enzyme>
+  <enzyme>
+    <name>Semi-LysargiNase</name>
+    <cleavage_sites>RK</cleavage_sites>
+    <position>before</position>
+  </enzyme>
 </enzymes>
 

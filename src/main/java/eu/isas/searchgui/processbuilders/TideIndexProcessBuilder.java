@@ -163,7 +163,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // enzyme
-        //      note: Tide enzymes not supported: 
+        //      note: Tide enzymes not implemented in utilities: 
         //          elastase ([ALIV]|{P}), clostripain ([R]|[]), iodosobenzoate ([W]|[]), proline-endopeptidase ([P]|[]), 
         //          staph-protease ([E]|[]), pepsin-a ([FL]|{P}), elastase-trypsin-chymotrypsin ([ALIVKRWFY]|{P})
         if (searchParameters.getEnzyme().getName().equals("Trypsin")) {
@@ -203,7 +203,11 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         // full or partial enzyme digestion
         process_name_array.add("--digestion");
-        process_name_array.add(tideParameters.getDigestionType());
+        if (searchParameters.getEnzyme().isSemiSpecific()) {
+            process_name_array.add("partial-digest");
+        } else {
+            process_name_array.add(tideParameters.getDigestionType());
+        }
 
         process_name_array.trimToSize();
 
