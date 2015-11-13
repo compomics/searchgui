@@ -4538,7 +4538,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param searchParameters the search parameters to load
      */
     private void loadModifications(SearchParameters searchParameters) {
-        ArrayList<String> toCheck = ptmFactory.loadBackedUpModifications(searchParameters, false); // @TODO: have to set the searchparams???
+        ArrayList<String> toCheck = ptmFactory.loadBackedUpModifications(searchParameters, false);
         if (!toCheck.isEmpty()) {
             String message = "The definition of the following PTM(s) seems to have changed and were not loaded:\n";
             for (int i = 0; i < toCheck.size(); i++) {
