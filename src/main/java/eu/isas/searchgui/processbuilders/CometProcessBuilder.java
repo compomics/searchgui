@@ -393,9 +393,9 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // add targeted residues
             if (ptmCometPattern.length() == 0) {
                 if (ptm.isCTerm()) {
-                    ptmCometPattern.append("c");
+                    result.append("c");
                 } else if (ptm.isNTerm()) {
-                    ptmCometPattern.append("n");
+                    result.append("n");
                 } else {
                     result.append("X");
                 }
