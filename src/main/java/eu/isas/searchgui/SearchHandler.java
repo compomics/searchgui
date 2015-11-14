@@ -2126,7 +2126,7 @@ public class SearchHandler {
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, aplFile, identificationParametersFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, identificationParametersFile, aplFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         andromedaProcessBuilder.startProcess();
