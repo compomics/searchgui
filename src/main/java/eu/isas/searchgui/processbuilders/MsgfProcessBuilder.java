@@ -41,7 +41,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File msgfEnzymesFile;
     /**
-     * The MyriMatch enzyme map. Key: utilities enzyme name, element: MyriMatch
+     * The MS-GF+ enzyme map. Key: utilities enzyme name, element: MyriMatch
      * enzyme number.
      */
     private HashMap<String, Integer> enzymeMap = new HashMap<String, Integer>();
@@ -303,15 +303,15 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      */
     private void createEnzymesFile() throws IllegalArgumentException {
 
-        // Format: ShortName,CleaveAt,Terminus
+        // Format: ShortName,CleaveAt,Terminus (https://bix-lab.ucsd.edu/display/CCMStools/enzymes.txt)
         // - ShortName: an unique short name of the enzyme (e.g. Tryp). No space is allowed.
         // - CleaveAt: the residues cleaved by the enzyme (e.g. KR). Put "null" in case of no specificy.
         // - Terminus: Whether the enzyme cleaves C-term (C) or N-term (N)
         // - Description: description of the enzyme
         // Example: Tryp,KR,C,Trypsin
-        
+
         enzymeMap = new HashMap<String, Integer>();
-        
+
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(msgfEnzymesFile));
 
@@ -321,7 +321,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
             for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
 
                 String enzymeName = enzyme.getName();
-                
+
                 Integer enzymeIndex = enzymeMapping(enzyme);
 
                 if (enzymeIndex == null) {
@@ -329,14 +329,14 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
                     String cleavageType;
                     String cleavageSite = "";
 
-                    if (enzyme.getAminoAcidBefore().isEmpty()) {
-                        cleavageType = "N";
-                        for (Character character : enzyme.getAminoAcidAfter()) {
+                    if (!enzyme.getAminoAcidBefore().isEmpty()) {
+                        cleavageType = "C";
+                        for (Character character : enzyme.getAminoAcidBefore()) {
                             cleavageSite += character;
                         }
                     } else {
-                        cleavageType = "C";
-                        for (Character character : enzyme.getAminoAcidBefore()) {
+                        cleavageType = "N";
+                        for (Character character : enzyme.getAminoAcidAfter()) {
                             cleavageSite += character;
                         }
                     }
@@ -344,12 +344,12 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
                     String nameWithoutComma = enzymeName;
                     nameWithoutComma = nameWithoutComma.replaceAll(",", "");
                     String nameWithoutCommaAndSpaces = nameWithoutComma.replaceAll(" ", "_");
-                    
+
                     bw.write(nameWithoutCommaAndSpaces + ",");
                     bw.write(cleavageSite + ",");
                     bw.write(cleavageType + ",");
                     bw.write(nameWithoutComma + System.getProperty("line.separator"));
-                    
+
                     enzymeMap.put(enzymeName, myrimatcEnzymeCounter++);
                 }
             }
@@ -441,7 +441,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
     public String getCurrentlyProcessedFileName() {
         return spectrumFile;
     }
-    
+
     /**
      * Tries to map the utilities enzyme to the enzymes supported by MS-GF+.
      *
