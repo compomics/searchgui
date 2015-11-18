@@ -245,8 +245,8 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANDROMEDA_MAX_PSMS.id) + IdentificationParametersCLIParams.ANDROMEDA_MAX_PSMS.description + "\n";
 
         output += "\n\nPeptideShaker advanced parameters:\n\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.SPECIES_TYPE.id) + IdentificationParametersCLIParams.SPECIES_TYPE.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.SPECIES.id) + IdentificationParametersCLIParams.SPECIES.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.USE_GENE_MAPPING.id) + IdentificationParametersCLIParams.USE_GENE_MAPPING.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.UPDATE_GENE_MAPPING.id) + IdentificationParametersCLIParams.UPDATE_GENE_MAPPING.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_LEVEL.id) + IdentificationParametersCLIParams.ANNOTATION_LEVEL.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_MZ_TOLERANCE.id) + IdentificationParametersCLIParams.ANNOTATION_MZ_TOLERANCE.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_HIGH_RESOLUTION.id) + IdentificationParametersCLIParams.ANNOTATION_HIGH_RESOLUTION.description + "\n";

@@ -18,6 +18,7 @@ import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.biology.PTMFactory;
+import com.compomics.util.experiment.biology.genes.GeneFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
@@ -310,6 +311,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 JOptionPane.showMessageDialog(null, "Error while reading " + SearchHandler.getEnzymeFile() + ".", "Enzyme File Error", JOptionPane.ERROR_MESSAGE);
             }
 
+            // Load gene mappings
+            GeneFactory geneFactory = GeneFactory.getInstance();
+            try {
+                geneFactory.initialize(getJarFilePath());
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
+            }
+
             // set this version as the default SearchGUI version
             if (!getJarFilePath().equalsIgnoreCase(".")) {
                 String versionNumber = new eu.isas.searchgui.utilities.Properties().getVersion();
@@ -337,18 +347,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     }
 
                     identificationParametersFactory.addIdentificationParameters(identificationParameters);
-
-                    // load the gene mappings
-                    boolean genesLoaded = identificationParameters.getGenePreferences().loadGeneMappings(getJarFilePath(), progressDialog);
-                    if (!genesLoaded) {
-                        JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
-                    } else // set the gene preferences
-                    {
-                        if (species != null && speciesType != null) {
-                            identificationParameters.getGenePreferences().setCurrentSpecies(species);
-                            identificationParameters.getGenePreferences().setCurrentSpeciesType(speciesType);
-                        }
-                    }
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null,
                             "Failed to import search parameters from: " + aIdentificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
@@ -2341,7 +2339,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 return;
             }
         }
-        
+
         // check if the choosen enzyme is valid for omssa
         if (enableOmssaJCheckBox.isSelected() && enzyme != null) {
             if (enzyme.getId() > 24) {
@@ -3811,7 +3809,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         } else {
             enableSearchEnginePanel(false);
         }
-        
+
         validateInput(false);
     }//GEN-LAST:event_settingsComboBoxActionPerformed
 
