@@ -1,9 +1,7 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CommandLineUtils;
-import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersInputBean;
-import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.preferences.IdentificationParameters;
 import eu.isas.searchgui.preferences.OutputOption;
 import java.io.File;
@@ -41,10 +39,6 @@ public class SearchCLIInputBean {
      * The identification parameters file.
      */
     private File identificationParametersFile;
-    /**
-     * The sequence factory.
-     */
-    private SequenceFactory sequenceFactory = SequenceFactory.getInstance();
     /**
      * If true, OMSSA is enabled.
      */
@@ -703,7 +697,7 @@ public class SearchCLIInputBean {
         }
         
         // Check the identification parameters
-        if (!IdentificationParametersInputBean.isValidStartup(aLine)) {
+        if (!IdentificationParametersInputBean.isValidStartup(aLine, false)) {
             return false;
         }
 
