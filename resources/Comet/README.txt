@@ -1,21 +1,18 @@
-2015/09/30
+2015/11/24
 
-Comet version "2015.02 rev. 1".
+Comet version "2015.02 rev. 3".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
-- Modify behavior the binary modifications which is controlled by the third
-  parameter entry in the variable modifications (e.g. "variable_mod01"). Instead
-  of a binary 0 or 1 value to turn off or on each binary modification, one can
-  now set the third parameter entry to the same value across multiple variable
-  modifications effectively allowing an all-modified binary behavior across
-  multiple variable modifications. See the examples at the bottom of the
-  variable modification help pages for further explanation.
-- Wide mass tolerance searches, such as those performed by the Gygi lab's
-  recent mass-tolerant search paper, are now supported by Comet. Previous
-  versions of Comet would crash when given large tolerances.
-- Update MSToolkit to support "possible charge state" cvParam in mzML files as
-  implemented by M. Hoopmann.
+- Fix incorrect MGF parsing where blank lines in the MGF file would cause
+  an error.
+- Fix n-term distance constraint variable mod searches.
+- Change output file extension to ".pin" from ".tsv" for Percolator output
+  files.
+- Fix negative deltaCn values in text file output when no second hit is
+  present.
+- Fix case where double decoy string is appended to the protein accession
+  for decoy matches.
 
 Comet is an open source MS/MS database search engine released under the
 Apache 2.0 license.
