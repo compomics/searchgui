@@ -19,6 +19,7 @@ import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.genes.GeneFactory;
+import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
@@ -318,6 +319,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+            // Load the species mapping
+            try {
+                SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
+                speciesFactory.initiate(getJarFilePath());
+            } catch (Exception e) {
+                e.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "An error occurred while loading the species mapping.", "File Error", JOptionPane.OK_OPTION);
             }
 
             // set this version as the default SearchGUI version
