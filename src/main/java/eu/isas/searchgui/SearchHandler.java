@@ -5,7 +5,6 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.db.DerbyUtil;
 import com.compomics.util.exceptions.ExceptionHandler;
-import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
@@ -70,19 +69,15 @@ public class SearchHandler {
     /**
      * Enzymes file.
      */
-    private static String ENZYME_FILE = "resources/conf/searchGUI_enzymes.xml";
+    private static String enzymeFile = "resources/conf/searchGUI_enzymes.xml";
     /**
      * Folder where the output is stored before packaging.
      */
-    public final static String outputTempFolderName = ".SearchGUI_temp";
+    public final static String OUTPUT_TEMP_FOLDER_NAME = ".SearchGUI_temp";
     /**
      * The sub folder to use to store peak lists.
      */
-    private final static String peakListsSubFolder = "peak_lists";
-    /**
-     * The factory used to read the modifications.
-     */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private final static String PEAK_LIST_SUBFOLDER = "peak_lists";
     /**
      * If set to true SearchGUI is ran from the command line only, i.e., no GUI
      * will appear.
@@ -544,9 +539,9 @@ public class SearchHandler {
      * @return the user defined enzymes file
      */
     public static File getEnzymesFile(String jarFilePath) {
-        File result = new File(jarFilePath, ENZYME_FILE);
+        File result = new File(jarFilePath, enzymeFile);
         if (!result.exists()) {
-            JOptionPane.showMessageDialog(null, ENZYME_FILE + " not found.", "Enzymes File Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, enzymeFile + " not found.", "Enzymes File Error", JOptionPane.ERROR_MESSAGE);
         }
         return result;
     }
@@ -1698,7 +1693,7 @@ public class SearchHandler {
                     outputTempFolder = outputFolder;
                 } else {
                     try {
-                        outputTempFolder = new File(outputFolder, outputTempFolderName);
+                        outputTempFolder = new File(outputFolder, OUTPUT_TEMP_FOLDER_NAME);
                         if (outputTempFolder.exists()) {
                             Util.deleteDir(outputTempFolder);
                         }
@@ -2677,7 +2672,7 @@ public class SearchHandler {
      * @return the file containing the enzymes
      */
     public static String getEnzymeFile() {
-        return ENZYME_FILE;
+        return enzymeFile;
     }
 
     /**
@@ -2686,7 +2681,7 @@ public class SearchHandler {
      * @param enzymeFile the file containing the enzymes
      */
     public static void setEnzymeFile(String enzymeFile) {
-        SearchHandler.ENZYME_FILE = enzymeFile;
+        SearchHandler.enzymeFile = enzymeFile;
     }
 
     /**
@@ -3229,7 +3224,7 @@ public class SearchHandler {
      * @return the folder to use to store peak lists
      */
     public static File getPeakListFolder(String jarFilePath) {
-        File peakListFolder = new File(getTempFolderPath(jarFilePath), peakListsSubFolder);
+        File peakListFolder = new File(getTempFolderPath(jarFilePath), PEAK_LIST_SUBFOLDER);
         if (!peakListFolder.exists()) {
             peakListFolder.mkdirs();
         }
