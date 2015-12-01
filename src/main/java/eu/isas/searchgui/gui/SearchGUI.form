@@ -170,6 +170,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editSearchEngineLocationsMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="editIdSettingsFilesMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Identification Settings"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editIdSettingsFilesMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator2">
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="javaSettingsJMenuItem">
