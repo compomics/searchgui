@@ -342,8 +342,7 @@ public class SearchCLI implements Callable {
      */
     private static String getHeader() {
         return System.getProperty("line.separator")
-                + "SearchCLI searches spectrum files according to search parameters using OMSSA and X!Tandem." + System.getProperty("line.separator")
-                + "The results are an OMSSA .omx file and an X!Tandem .t.xml file." + System.getProperty("line.separator")
+                + "SearchCLI searches spectrum files according to search parameters using multiple search engines." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
                 + "Spectra must be provided in the Mascot Generic File (mgf) format." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
