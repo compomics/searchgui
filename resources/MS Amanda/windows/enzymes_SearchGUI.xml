@@ -144,5 +144,10 @@
     <cleavage_sites>RK</cleavage_sites>
     <position>before</position>
   </enzyme>
+  <enzyme>
+    <name>Trypsin + Glu-C</name>
+    <cleavage_sites>RKE</cleavage_sites>
+    <position>before</position>
+  </enzyme>
 </enzymes>
 
