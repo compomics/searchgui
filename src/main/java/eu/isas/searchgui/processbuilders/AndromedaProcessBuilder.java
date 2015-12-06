@@ -219,13 +219,13 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.newLine();
                 bw.write("      <specificity>");
                 bw.newLine();
-                ArrayList<Character> aaBefore = enzyme.getAminoAcidBefore();
+                ArrayList<Character> aaBefore = new ArrayList<Character>(enzyme.getAminoAcidBefore());
                 if (aaBefore.isEmpty()) {
                     for (char aa : AminoAcid.getUniqueAminoAcids()) {
                         aaBefore.add(aa);
                     }
                 }
-                ArrayList<Character> aaAfter = enzyme.getAminoAcidAfter();
+                ArrayList<Character> aaAfter = new ArrayList<Character>(enzyme.getAminoAcidAfter());
                 if (aaAfter.isEmpty()) {
                     for (char aa : AminoAcid.getUniqueAminoAcids()) {
                         aaAfter.add(aa);

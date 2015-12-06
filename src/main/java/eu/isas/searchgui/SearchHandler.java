@@ -2328,7 +2328,7 @@ public class SearchHandler {
                     Util.deleteDir(outputTempFolder);
                 }
 
-                if (enableAndromeda) {
+                if (enableAndromeda && AndromedaProcessBuilder.getTempFolderPath() != null) {
                     File andromedaTempFolder = new File(AndromedaProcessBuilder.getTempFolderPath());
                     if (andromedaTempFolder.exists()) {
                         Util.emptyDir(andromedaTempFolder);
