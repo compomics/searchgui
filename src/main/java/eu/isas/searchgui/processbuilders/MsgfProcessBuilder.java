@@ -464,7 +464,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
             msgfEnzymeIndex = 3;
         } else if (enzymeName.equalsIgnoreCase("Lys-N (K)")) {
             msgfEnzymeIndex = 4;
-        } else if (enzymeName.equalsIgnoreCase("Glu-C (DE)")) {
+        } else if (enzymeName.equalsIgnoreCase("Glu-C")) {
             msgfEnzymeIndex = 5;
         } else if (enzymeName.equalsIgnoreCase("Arg-C")) {
             msgfEnzymeIndex = 6;
