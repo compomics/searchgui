@@ -64,6 +64,8 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MC.id) + IdentificationParametersCLIParams.MC.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.FI.id) + IdentificationParametersCLIParams.FI.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.RI.id) + IdentificationParametersCLIParams.RI.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MIN_ISOTOPE.id) + IdentificationParametersCLIParams.MIN_ISOTOPE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MAX_ISOTOPE.id) + IdentificationParametersCLIParams.MAX_ISOTOPE.description + "\n";
 
         output += "\n\nX!Tandem advanced parameters:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_DYNAMIC_RANGE.id) + IdentificationParametersCLIParams.XTANDEM_DYNAMIC_RANGE.description + "\n";
@@ -94,8 +96,6 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_MAX_PEP_LENGTH.id) + IdentificationParametersCLIParams.MYRIMATCH_MAX_PEP_LENGTH.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_MIN_PREC_MASS.id) + IdentificationParametersCLIParams.MYRIMATCH_MIN_PREC_MASS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_MAX_PREC_MASS.id) + IdentificationParametersCLIParams.MYRIMATCH_MAX_PREC_MASS.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_LOW.id) + IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_LOW.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_HIGH.id) + IdentificationParametersCLIParams.MYRIMATCH_ISOTOPE_HIGH.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_NUM_MATCHES.id) + IdentificationParametersCLIParams.MYRIMATCH_NUM_MATCHES.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_PTMS.id) + IdentificationParametersCLIParams.MYRIMATCH_PTMS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MYRIMATCH_FRAGMENTATION.id) + IdentificationParametersCLIParams.MYRIMATCH_FRAGMENTATION.description + "\n";
@@ -124,8 +124,6 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_MAX_PEP_LENGTH.id) + IdentificationParametersCLIParams.MSGF_MAX_PEP_LENGTH.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_NUM_MATCHES.id) + IdentificationParametersCLIParams.MSGF_NUM_MATCHES.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_ADDITIONAL.id) + IdentificationParametersCLIParams.MSGF_ADDITIONAL.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_ISOTOPE_LOW.id) + IdentificationParametersCLIParams.MSGF_ISOTOPE_LOW.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_ISOTOPE_HIGH.id) + IdentificationParametersCLIParams.MSGF_ISOTOPE_HIGH.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_TERMINI.id) + IdentificationParametersCLIParams.MSGF_TERMINI.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_PTMS.id) + IdentificationParametersCLIParams.MSGF_PTMS.description + "\n";
 
@@ -140,7 +138,6 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.OMSSA_MAX_PEP_LENGTH.id) + IdentificationParametersCLIParams.OMSSA_MAX_PEP_LENGTH.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.OMSSA_FORMAT.id) + IdentificationParametersCLIParams.OMSSA_FORMAT.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.OMSSA_SEQUENCES_IN_MEMORY.id) + IdentificationParametersCLIParams.OMSSA_SEQUENCES_IN_MEMORY.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.OMSSA_ISOTOPES.id) + IdentificationParametersCLIParams.OMSSA_ISOTOPES.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.OMSSA_NEUTRON.id) + IdentificationParametersCLIParams.OMSSA_NEUTRON.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.OMSSA_LOW_INTENSITY.id) + IdentificationParametersCLIParams.OMSSA_LOW_INTENSITY.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.OMSSA_HIGH_INTENSITY.id) + IdentificationParametersCLIParams.OMSSA_HIGH_INTENSITY.description + "\n";

@@ -237,8 +237,8 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // set the range of allowed isotope peak errors
         process_name_array.add("-ti");
         process_name_array.add(CommandLineUtils.getQuoteType()
-                + msgfParameters.getLowerIsotopeErrorRange()
-                + "," + msgfParameters.getUpperIsotopeErrorRange()
+                + searchParameters.getMinIsotopicCorrection()
+                + "," + searchParameters.getMaxIsotopicCorrection()
                 + CommandLineUtils.getQuoteType());
 
         process_name_array.trimToSize();

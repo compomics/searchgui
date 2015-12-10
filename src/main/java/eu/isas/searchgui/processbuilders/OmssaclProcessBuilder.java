@@ -109,9 +109,9 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         if (omssaParameters.isMemoryMappedSequenceLibraries() != null && omssaParameters.isMemoryMappedSequenceLibraries()) {
             process_name_array.add("-umm");
         }
-        if (omssaParameters.getNumberOfItotopicPeaks() != null && omssaParameters.getNumberOfItotopicPeaks() > 0) {
+        if (searchParameters.getMaxIsotopicCorrection() > 0) {
             process_name_array.add("-ti");
-            process_name_array.add(Integer.toString(omssaParameters.getNumberOfItotopicPeaks()));
+            process_name_array.add(Integer.toString(searchParameters.getMaxIsotopicCorrection()));
         }
         if (omssaParameters.getNeutronThreshold() != null) {
             process_name_array.add("-tex");
