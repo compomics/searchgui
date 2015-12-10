@@ -312,6 +312,10 @@ public class SearchHandler {
      * The duration of the search.
      */
     private Duration searchDuration;
+    /**
+     * The folder where to save the logs.
+     */
+    private File logFolder = null;
 
     /**
      * Constructor for the SearchGUI command line interface. Uses the
@@ -621,10 +625,8 @@ public class SearchHandler {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else {
-                    if (waitingHandler != null) {
-                        waitingHandler.appendReport("PeptideShaker file (" + peptideShakerFile.getAbsolutePath() + ") not found!", true, true);
-                    }
+                } else if (waitingHandler != null) {
+                    waitingHandler.appendReport("PeptideShaker file (" + peptideShakerFile.getAbsolutePath() + ") not found!", true, true);
                 }
             }
 
@@ -658,11 +660,30 @@ public class SearchHandler {
 
         try {
             FileWriter fw = new FileWriter(new File(resultsFolder, fileName));
-            fw.write(report);
-            fw.close();
+            try {
+                fw.write(report);
+            } finally {
+                fw.close();
+            }
         } catch (IOException e) {
             if (waitingHandler != null) {
                 waitingHandler.appendReport("Failed to write to the report file!", true, true);
+            }
+            e.printStackTrace();
+        }
+
+        try {
+            if (logFolder != null) {
+                FileWriter fw = new FileWriter(new File(logFolder, fileName));
+                try {
+                    fw.write(report);
+                } finally {
+                    fw.close();
+                }
+            }
+        } catch (IOException e) {
+            if (waitingHandler != null) {
+                waitingHandler.appendReport("Failed to write to the log report file!", true, true);
             }
             e.printStackTrace();
         }
@@ -764,32 +785,26 @@ public class SearchHandler {
                                 if (operatingSystem.contains("windows") && windowsSupported) {
                                     if (!windowsBitVersions) {
                                         searchEngineLoation = new File(basePath + File.separator + "windows");
+                                    } else if (is64Bit) {
+                                        searchEngineLoation = new File(basePath + File.separator + "windows" + File.separator + "windows_64bit");
                                     } else {
-                                        if (is64Bit) {
-                                            searchEngineLoation = new File(basePath + File.separator + "windows" + File.separator + "windows_64bit");
-                                        } else {
-                                            searchEngineLoation = new File(basePath + File.separator + "windows" + File.separator + "windows_32bit");
-                                        }
+                                        searchEngineLoation = new File(basePath + File.separator + "windows" + File.separator + "windows_32bit");
                                     }
                                 } else if (operatingSystem.contains("mac os") && osxSupported) {
                                     if (!osxBitVersions) {
                                         searchEngineLoation = new File(basePath + File.separator + "osx");
+                                    } else if (is64Bit) {
+                                        searchEngineLoation = new File(basePath + File.separator + "osx" + File.separator + "osx_64bit");
                                     } else {
-                                        if (is64Bit) {
-                                            searchEngineLoation = new File(basePath + File.separator + "osx" + File.separator + "osx_64bit");
-                                        } else {
-                                            searchEngineLoation = new File(basePath + File.separator + "osx" + File.separator + "osx_32bit");
-                                        }
+                                        searchEngineLoation = new File(basePath + File.separator + "osx" + File.separator + "osx_32bit");
                                     }
                                 } else if ((operatingSystem.contains("nix") || operatingSystem.contains("nux")) && linuxSupported) {
                                     if (!linuxBitVersions) {
                                         searchEngineLoation = new File(basePath + File.separator + "linux");
+                                    } else if (is64Bit) {
+                                        searchEngineLoation = new File(basePath + File.separator + "linux" + File.separator + "linux_64bit");
                                     } else {
-                                        if (is64Bit) {
-                                            searchEngineLoation = new File(basePath + File.separator + "linux" + File.separator + "linux_64bit");
-                                        } else {
-                                            searchEngineLoation = new File(basePath + File.separator + "linux" + File.separator + "linux_32bit");
-                                        }
+                                        searchEngineLoation = new File(basePath + File.separator + "linux" + File.separator + "linux_32bit");
                                     }
                                 } else {
                                     // unsupported OS version
@@ -2289,32 +2304,30 @@ public class SearchHandler {
                         waitingHandler.appendReport("PeptideShaker not found! Please check the PeptideShaker path.", true, true);
                         waitingHandler.appendReportEndLine();
                         waitingHandler.setRunCanceled();
-                    } else {
-                        if (!identificationFiles.isEmpty()) {
-                            peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
-                                    waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
-                                    identificationParameters, identificationParametersFile, peptideShakerFile, true, processingPreferences, outputData);
-                            waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
+                    } else if (!identificationFiles.isEmpty()) {
+                        peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
+                                waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
+                                identificationParameters, identificationParametersFile, peptideShakerFile, true, processingPreferences, outputData);
+                        waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
-                            // cancel the protein tree if not done
-                            if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
-                                proteinTreeWorker.cancelBuild();
-                                while (!proteinTreeWorker.isFinished()) {
-                                    // wait until the tree is closed
-                                    Thread.sleep(100);
-                                }
+                        // cancel the protein tree if not done
+                        if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
+                            proteinTreeWorker.cancelBuild();
+                            while (!proteinTreeWorker.isFinished()) {
+                                // wait until the tree is closed
+                                Thread.sleep(100);
                             }
-
-                            peptideShakerProcessBuilder.startProcess();
-                        } else {
-                            enablePeptideShaker = false;
-                            waitingHandler.appendReportEndLine();
-                            waitingHandler.appendReport("No identification files to process with PeptideShaker!", true, true);
-                            waitingHandler.appendReportEndLine();
                         }
+
+                        peptideShakerProcessBuilder.startProcess();
+                    } else {
+                        enablePeptideShaker = false;
+                        waitingHandler.appendReportEndLine();
+                        waitingHandler.appendReport("No identification files to process with PeptideShaker!", true, true);
+                        waitingHandler.appendReportEndLine();
                     }
-                } else {
-                    // cancel the protein tree if not done
+                } else // cancel the protein tree if not done
+                {
                     if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
                         proteinTreeWorker.cancelBuild();
                         while (!proteinTreeWorker.isFinished()) {
@@ -3269,5 +3282,14 @@ public class SearchHandler {
      */
     public static void setTempFolderPath(String aTempFolderPath) {
         tempFolderPath = aTempFolderPath;
+    }
+
+    /**
+     * Sets the log folder.
+     *
+     * @param logFolder the log folder
+     */
+    public void setLogFolder(File logFolder) {
+        this.logFolder = logFolder;
     }
 }

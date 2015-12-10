@@ -11,7 +11,8 @@ import org.apache.commons.cli.Options;
  */
 public enum PathSettingsCLIParams {
 
-    ALL("temp_folder", "A folder for temporary file storage. Use only if you encounter problems with the default configuration.");
+    ALL("temp_folder", "A folder for temporary file storage. Use only if you encounter problems with the default configuration."),
+    LOG("log", "Folder where to write log files.");
     /**
      * The id of the command line option.
      */
@@ -59,6 +60,9 @@ public enum PathSettingsCLIParams {
 
         String output = "";
         String formatter = "%-35s";
+
+        output += "Log folder:\n\n";
+        output += "-" + String.format(formatter, LOG.id) + LOG.description + "\n";
 
         output += "Generic temporary folder:\n\n";
         output += "-" + String.format(formatter, ALL.id) + ALL.description + "\n";

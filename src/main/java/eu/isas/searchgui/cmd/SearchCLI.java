@@ -17,11 +17,14 @@ import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.searchgui.SearchHandler;
 import eu.isas.searchgui.preferences.OutputOption;
 import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import org.apache.commons.cli.*;
@@ -95,6 +98,11 @@ public class SearchCLI implements Callable {
     public Object call() {
 
         PathSettingsCLIInputBean pathSettingsCLIInputBean = searchCLIInputBean.getPathSettingsCLIInputBean();
+
+        if (pathSettingsCLIInputBean.getLogFolder() != null) {
+            redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
+        }
+
         if (pathSettingsCLIInputBean.hasInput()) {
             PathSettingsCLI pathSettingsCLI = new PathSettingsCLI(pathSettingsCLIInputBean);
             pathSettingsCLI.setPathSettings();
@@ -218,10 +226,10 @@ public class SearchCLI implements Callable {
             // Processing
             ProcessingPreferences processingPreferences = new ProcessingPreferences();
             processingPreferences.setnThreads(searchCLIInputBean.getNThreads());
-            
+
             // Identification parameters
             IdentificationParameters identificationParameters = searchCLIInputBean.getIdentificationParameters();
-            
+
             // Load the fasta file in the factory
             SearchParameters searchParameters = identificationParameters.getSearchParameters();
             File fastaFile = searchParameters.getFastaFile();
@@ -254,6 +262,10 @@ public class SearchCLI implements Callable {
             Boolean includeDate = searchCLIInputBean.isOutputDate();
             if (includeDate != null) {
                 searchHandler.setIncludeDateInOutputName(includeDate);
+            }
+            File logFolder = pathSettingsCLIInputBean.getLogFolder();
+            if (logFolder != null) {
+                searchHandler.setLogFolder(logFolder);
             }
 
             searchHandler.startSearch(waitingHandlerCLIImpl);
@@ -370,6 +382,29 @@ public class SearchCLI implements Callable {
     public static void main(String[] args) {
         try {
             new SearchCLI(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * redirects the error stream to the PeptideShaker.log of a given folder.
+     *
+     * @param logFolder the folder where to save the log
+     */
+    public static void redirectErrorStream(File logFolder) {
+
+        try {
+            logFolder.mkdirs();
+            File file = new File(logFolder, "PeptideShaker.log");
+            System.setErr(new java.io.PrintStream(new FileOutputStream(file, true)));
+
+            System.err.println(System.getProperty("line.separator") + System.getProperty("line.separator") + new Date()
+                    + ": PeptideShaker version " + new Properties().getVersion() + ".");
+            System.err.println("Memory given to the Java virtual machine: " + Runtime.getRuntime().maxMemory() + ".");
+            System.err.println("Total amount of memory in the Java virtual machine: " + Runtime.getRuntime().totalMemory() + ".");
+            System.err.println("Free memory: " + Runtime.getRuntime().freeMemory() + ".");
+            System.err.println("Java version: " + System.getProperty("java.version") + ".");
         } catch (Exception e) {
             e.printStackTrace();
         }
