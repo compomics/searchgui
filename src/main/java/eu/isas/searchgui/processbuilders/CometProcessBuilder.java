@@ -697,7 +697,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     }
                     if (!enzyme.getRestrictionBefore().isEmpty()) {
                         restriction = "";
-                        for (Character character : enzyme.getRestrictionAfter()) {
+                        for (Character character : enzyme.getRestrictionBefore()) {
                             restriction += character;
                         }
                     }

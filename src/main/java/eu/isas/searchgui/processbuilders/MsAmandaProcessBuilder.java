@@ -3,6 +3,7 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.software.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.Enzyme;
+import com.compomics.util.experiment.biology.EnzymeFactory;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
@@ -197,6 +198,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         modificationsAsString = getModificationsAsString(searchParameters.getPtmSettings());
         instrument = msAmandaParameters.getInstrumentID();
 
+        // create the enzyme file
+        createEnzymeFile();
+
         // create the settings xml file
         createSettingsFile();
 
@@ -237,6 +241,80 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // set error out and std out to same stream
         pb.redirectErrorStream(true);
+    }
+
+    /**
+     * Create the enzyme file.
+     */
+    private void createEnzymeFile() {
+
+        File enzymeFile = new File(msAmandaFolder, ENZYMES_FILE);
+
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(enzymeFile));
+            bw.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + System.getProperty("line.separator"));
+            bw.write("<enzymes>" + System.getProperty("line.separator"));
+
+            EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
+
+            for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
+
+                if (!enzyme.getName().equalsIgnoreCase("Asp-N + Glu-C")) { // Asp-N + Glu-C is not supported
+
+                    bw.write("  <enzyme>" + System.getProperty("line.separator"));
+                    bw.write("    <name>" + enzyme.getName() + "</name>" + System.getProperty("line.separator"));
+
+                    if (enzyme.isWholeProtein()) { // whole protein and top-down
+                        bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
+                    } else if (enzyme.isUnspecific()) { // unspecific cleavage
+                        bw.write("    <cleavage_sites>X</cleavage_sites>" + System.getProperty("line.separator"));
+                    } else {
+
+                        String cleavageType;
+                        String cleavageSite = "";
+                        String restriction = "";
+
+                        if (enzyme.getAminoAcidBefore().isEmpty()) {
+                            cleavageType = "before";
+                            for (Character character : enzyme.getAminoAcidAfter()) {
+                                cleavageSite += character;
+                            }
+                            if (!enzyme.getRestrictionBefore().isEmpty()) {
+                                restriction = "";
+                                for (Character character : enzyme.getRestrictionBefore()) {
+                                    restriction += character;
+                                }
+                            }
+                        } else {
+                            cleavageType = "after";
+                            for (Character character : enzyme.getAminoAcidBefore()) {
+                                cleavageSite += character;
+                            }
+                            if (!enzyme.getRestrictionAfter().isEmpty()) {
+                                restriction = "";
+                                for (Character character : enzyme.getRestrictionAfter()) {
+                                    restriction += character;
+                                }
+                            }
+                        }
+
+                        bw.write("    <cleavage_sites>" + cleavageSite + "</cleavage_sites>" + System.getProperty("line.separator"));
+                        if (!restriction.isEmpty()) {
+                            bw.write("    <inhibitors>" + restriction + "</inhibitors>" + System.getProperty("line.separator"));
+                        }
+                        bw.write("    <position>" + cleavageType + "</position>" + System.getProperty("line.separator"));
+                    }
+                    
+                    bw.write("  </enzyme>" + System.getProperty("line.separator"));
+                }
+            }
+            bw.write("</enzymes>" + System.getProperty("line.separator"));
+
+            bw.flush();
+            bw.close();
+        } catch (IOException ioe) {
+            throw new IllegalArgumentException("Could not create MS Amanda enzyme file. Unable to write file: '" + ioe.getMessage() + "'!");
+        }
     }
 
     /**

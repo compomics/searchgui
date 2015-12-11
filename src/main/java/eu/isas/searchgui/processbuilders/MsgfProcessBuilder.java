@@ -208,13 +208,13 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add(msgfEnzyme.toString());
         }
 
-        // set the protocol
-        process_name_array.add("-protocol");
-        process_name_array.add("" + msgfParameters.getProtocol());
-
         // set the number of tolerable termini
         process_name_array.add("-ntt");
         process_name_array.add("" + msgfParameters.getNumberTolerableTermini());
+
+        // set the protocol
+        process_name_array.add("-protocol");
+        process_name_array.add("" + msgfParameters.getProtocol());
 
         // set the min/max peptide lengths
         process_name_array.add("-minLength");
