@@ -87,6 +87,7 @@ import eu.isas.searchgui.processbuilders.MyriMatchProcessBuilder;
 import eu.isas.searchgui.processbuilders.OmssaclProcessBuilder;
 import eu.isas.searchgui.processbuilders.TandemProcessBuilder;
 import eu.isas.searchgui.processbuilders.TideSearchProcessBuilder;
+import java.awt.Dimension;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -5038,6 +5039,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean numbusLookAndFeelSet = false;
         try {
             numbusLookAndFeelSet = UtilitiesGUIDefaults.setLookAndFeel();
+            
+            // fix for the scroll bar thumb disappearing...
+            LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
+            UIDefaults defaults = lookAndFeel.getDefaults();
+            defaults.put("ScrollBar.minimumThumbSize", new Dimension(30, 30));
         } catch (Exception e) {
         }
 

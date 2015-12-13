@@ -486,7 +486,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         String charges = "";
 
-        for (int i = minCharge; i < maxCharge; i++) {
+        for (int i = minCharge; i <= maxCharge; i++) {
             if (!charges.isEmpty()) {
                 charges += ",";
             }
