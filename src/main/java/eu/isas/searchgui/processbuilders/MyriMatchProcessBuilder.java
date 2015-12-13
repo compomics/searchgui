@@ -211,8 +211,8 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         if (precursorsToleranceWide) {
             process_name_array.add("0"); // MonoisotopeAdjustmentSet should be set to 0 when the MonoPrecursorMzTolerance is wide
         } else {
-            process_name_array.add("[" + myriMatchParameters.getLowerIsotopeCorrectionRange()
-                    + "," + myriMatchParameters.getUpperIsotopeCorrectionRange() + "]");
+            process_name_array.add("[" + searchParameters.getMinIsotopicCorrection()
+                    + "," + searchParameters.getMaxIsotopicCorrection() + "]");
         }
 
         // set the fragmention rules
