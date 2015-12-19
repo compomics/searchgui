@@ -53,6 +53,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
+     * @param refMass the reference mass to convert the fragment ion tolerance from ppm to Da
      * @param nThreads the number of threads to use
      *
      * @throws java.io.IOException exception thrown whenever an error occurred
@@ -60,7 +61,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException, ClassNotFoundException {
+    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, Double refMass, int nThreads) throws IOException, ClassNotFoundException {
 
         this.spectraFile = spectraFile;
         this.waitingHandler = waitingHandler;
@@ -84,9 +85,9 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
         // check if set by user (that is, if not defaults) and then add to array
         process_name_array.add("-to");
-        process_name_array.add(searchParameters.getFragmentIonAccuracy() + "");
+        process_name_array.add(searchParameters.getFragmentIonAccuracyInDaltons(refMass).toString());
         process_name_array.add("-te");
-        process_name_array.add(searchParameters.getPrecursorAccuracy() + "");
+        process_name_array.add(searchParameters.getPrecursorAccuracy().toString());
         if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
             process_name_array.add("-teppm");
         }

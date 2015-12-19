@@ -1,6 +1,7 @@
 package eu.isas.searchgui.gui;
 
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
+import com.compomics.util.gui.GuiUtilities;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import eu.isas.searchgui.SearchHandler;
 import eu.isas.searchgui.preferences.OutputOption;
@@ -53,6 +54,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         } else {
             duplicateTitlesComboBox.setSelectedIndex(1);
         }
+        refMassTxt.setText(currentSearchHandler.getRefMass() + "");
         if (currentSearchHandler.generateProteinTree()) {
             proteinTreeComboBox.setSelectedIndex(0);
         } else {
@@ -87,6 +89,9 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        proteinTreePanel1 = new javax.swing.JPanel();
+        proteinTreeLabel1 = new javax.swing.JLabel();
+        proteinTreeComboBox1 = new javax.swing.JComboBox();
         advancedParamatersPanel = new javax.swing.JPanel();
         fileProcessingPanel = new javax.swing.JPanel();
         fastaFileSuffixLabel = new javax.swing.JLabel();
@@ -115,6 +120,38 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         proteinTreePanel = new javax.swing.JPanel();
         proteinTreeLabel = new javax.swing.JLabel();
         proteinTreeComboBox = new javax.swing.JComboBox();
+        identificationParametersPanel = new javax.swing.JPanel();
+        refMassLbl = new javax.swing.JLabel();
+        refMassTxt = new javax.swing.JTextField();
+
+        proteinTreePanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Protein Inference"));
+        proteinTreePanel1.setOpaque(false);
+
+        proteinTreeLabel1.setText("Generate Protein Index");
+
+        proteinTreeComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
+        proteinTreeComboBox1.setSelectedIndex(1);
+
+        javax.swing.GroupLayout proteinTreePanel1Layout = new javax.swing.GroupLayout(proteinTreePanel1);
+        proteinTreePanel1.setLayout(proteinTreePanel1Layout);
+        proteinTreePanel1Layout.setHorizontalGroup(
+            proteinTreePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(proteinTreePanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(proteinTreeLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(proteinTreeComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        proteinTreePanel1Layout.setVerticalGroup(
+            proteinTreePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(proteinTreePanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(proteinTreePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(proteinTreeComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(proteinTreeLabel1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Advanced Settings");
@@ -377,6 +414,46 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        identificationParametersPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search"));
+        identificationParametersPanel.setOpaque(false);
+
+        refMassLbl.setText("Reference Mass (Da)");
+        refMassLbl.setToolTipText("Reference mass used to convert tolerances from ppm to Da");
+
+        refMassTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        refMassTxt.setToolTipText("Reference mass used to convert tolerances from ppm to Da");
+        refMassTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refMassTxtActionPerformed(evt);
+            }
+        });
+        refMassTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                refMassTxtKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout identificationParametersPanelLayout = new javax.swing.GroupLayout(identificationParametersPanel);
+        identificationParametersPanel.setLayout(identificationParametersPanelLayout);
+        identificationParametersPanelLayout.setHorizontalGroup(
+            identificationParametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(identificationParametersPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(refMassLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(refMassTxt)
+                .addContainerGap())
+        );
+        identificationParametersPanelLayout.setVerticalGroup(
+            identificationParametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(identificationParametersPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(identificationParametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(refMassLbl)
+                    .addComponent(refMassTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout advancedParamatersPanelLayout = new javax.swing.GroupLayout(advancedParamatersPanel);
         advancedParamatersPanel.setLayout(advancedParamatersPanelLayout);
         advancedParamatersPanelLayout.setHorizontalGroup(
@@ -394,7 +471,8 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                         .addComponent(closeButton))
                     .addComponent(fileProcessingPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(outputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(proteinTreePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(proteinTreePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(identificationParametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -410,8 +488,10 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(outputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(proteinTreePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(identificationParametersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(proteinTreePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(openDialogHelpJButton)
                     .addComponent(okButton)
@@ -449,6 +529,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             currentSearchHandler.setOutputOption(outputOption);
             currentSearchHandler.setOutputData(includeDataCmb.getSelectedIndex() == 0);
             currentSearchHandler.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
+            currentSearchHandler.setRefMass(new Double(refMassTxt.getText()));
             dispose();
         }
     }//GEN-LAST:event_okButtonActionPerformed
@@ -560,6 +641,14 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         SequenceFactory.setTargetDecoyFileNameTag(fastaSuffixTxt.getText().trim());
     }//GEN-LAST:event_fastaSuffixTxtActionPerformed
 
+    private void refMassTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refMassTxtActionPerformed
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_refMassTxtActionPerformed
+
+    private void refMassTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_refMassTxtKeyReleased
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_refMassTxtKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedParamatersPanel;
     private javax.swing.JButton closeButton;
@@ -570,6 +659,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JPanel fileProcessingPanel;
     private javax.swing.JComboBox groupResultFilesCmb;
     private javax.swing.JLabel groupResultFilesTxt;
+    private javax.swing.JPanel identificationParametersPanel;
     private javax.swing.JComboBox includeDataCmb;
     private javax.swing.JLabel includeDataTxt;
     private javax.swing.JComboBox includeDateCmb;
@@ -584,8 +674,13 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox peakPickingComboBox;
     private javax.swing.JLabel peakPickingLabel;
     private javax.swing.JComboBox proteinTreeComboBox;
+    private javax.swing.JComboBox proteinTreeComboBox1;
     private javax.swing.JLabel proteinTreeLabel;
+    private javax.swing.JLabel proteinTreeLabel1;
     private javax.swing.JPanel proteinTreePanel;
+    private javax.swing.JPanel proteinTreePanel1;
+    private javax.swing.JLabel refMassLbl;
+    private javax.swing.JTextField refMassTxt;
     private javax.swing.JComboBox renameCmb;
     private javax.swing.JLabel renameXTandemFileLabel;
     private javax.swing.JPanel spectrumProcessingPanel;
@@ -600,8 +695,12 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     public boolean validateAdvancedParametersInput(boolean showMessage) {
 
         boolean valid = true;
+        
+        valid = GuiUtilities.validateDoubleInput(this, maxMgfFileSizeLabel, mgfMaxSizeTxt, "mgf max size", "Mgf Max Size Error", true, showMessage, valid);
+        valid = GuiUtilities.validateDoubleInput(this, maxSpectraPerFileLabel, mgfReducedSizeTxt, "max spectra in mgf file", "Max Spectra Error", true, showMessage, valid);
+        
+        valid = GuiUtilities.validateDoubleInput(this, refMassLbl, refMassTxt, "reference mass", "Reference Mass Error", true, showMessage, valid);
 
-        //@TODO: do something here?
         return valid;
     }
 }

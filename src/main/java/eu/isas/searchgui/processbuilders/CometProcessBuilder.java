@@ -67,6 +67,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * The compomics PTM factory.
      */
     private PTMFactory ptmFactory = PTMFactory.getInstance();
+    /**
+     * A reference mass to convert fragment ion tolerance from ppm to Dalton.
+     */
+    private Double refMass;
 
     /**
      * Constructor.
@@ -77,11 +81,12 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads
+     * @param refMass A reference mass to convert fragment ion tolerance from ppm to Dalton
      *
      * @throws IOException thrown if there are problems creating the Comet
      * parameter file
      */
-    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
+    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, Double refMass) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -90,6 +95,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         cometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
         this.spectrumFile = spectrumFile;
         this.nThreads = nThreads;
+        this.refMass = refMass;
 
         createParametersFile();
 
@@ -230,8 +236,8 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "# ion trap ms/ms:  1.0005 tolerance, 0.4 offset (mono masses), theoretical_fragment_ions = 1" + System.getProperty("line.separator")
                     + "# high res ms/ms:    0.02 tolerance, 0.0 offset (mono masses), theoretical_fragment_ions = 0" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
-                    // @TODO: is fragment_bin_tol really fragment ion accuracy? if so use the general setting from the search parameters! (and set the offset and theoretical_fragment_ions automatically?)
-                    + "fragment_bin_tol = " + searchParameters.getFragmentIonAccuracy() + " # binning to use on fragment ions" + System.getProperty("line.separator")
+                    // @TODO: is fragment_bin_tol really fragment ion accuracy? (and set the offset and theoretical_fragment_ions automatically?)
+                    + "fragment_bin_tol = " + searchParameters.getFragmentIonAccuracyInDaltons(refMass)+ " # binning to use on fragment ions" + System.getProperty("line.separator")
                     + "fragment_bin_offset = " + cometParameters.getFragmentBinOffset() + " # offset position to start the binning (0.0 to 1.0)" + System.getProperty("line.separator")
                     + "theoretical_fragment_ions = " + theoretical_Fragment_ions + " # 0=use flanking peaks, 1=M peak only" + System.getProperty("line.separator")
                     + getIonsSearched()

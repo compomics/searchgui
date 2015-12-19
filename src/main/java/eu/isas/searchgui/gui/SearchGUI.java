@@ -162,16 +162,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * Number of spectra allowed in the split file.
      */
-    private int mgfNSpectra = 25000; // @TODO: should be moved to user preferences?
+    private int mgfNSpectra = 25000; // @TODO: should be moved to SearchGUI user preferences
     /**
      * If true, the selected spectra will be checked for duplicate spectrum
      * titles.
      */
-    private boolean checkDuplicateTitles = true; // @TODO: should be moved to user preferences?
+    private boolean checkDuplicateTitles = true; // @TODO: should be moved to SearchGUI user preferences
     /**
      * If true, the selected spectra will be checked for peak picking.
      */
-    private boolean checkPeakPicking = true; // @TODO: should be moved to user preferences?
+    private boolean checkPeakPicking = true; // @TODO: should be moved to SearchGUI user preferences
     /**
      * The identification settings file.
      */
@@ -262,7 +262,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     public SearchGUI(ArrayList<File> spectrumFiles, ArrayList<File> rawFiles, File aIdentificationParametersFile, File outputFolder, String species, String speciesType) {
 
         this.identificationParametersFile = aIdentificationParametersFile;
-        
+
         // set path configuration
         try {
             setPathConfiguration();
@@ -497,9 +497,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         Vector parameterList = new Vector();
         parameterList.add("-- Select --");
-        
+
         if (identificationParametersFile != null && loadSettings) {
-            
+
             try {
                 identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
                 SearchParameters searchParameters = identificationParameters.getSearchParameters();
@@ -531,7 +531,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (identificationParameters != null) {
             settingsComboBox.setSelectedItem(identificationParameters.getName());
         }
-        
+
         settingsComboBoxActionPerformed(null);
     }
 
@@ -3873,7 +3873,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void xtandemSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonActionPerformed
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
-        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracy(), true);
+        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracyInDaltons(searchHandler.getRefMass()), true);
 
         boolean xtandemParametersSet = false;
 
@@ -3894,7 +3894,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
                         xtandemParametersSet = true;
                     } else {
-                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, newSearchParameters.getPtmSettings(), newSearchParameters.getFragmentIonAccuracy(), true);
+                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, newSearchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracyInDaltons(searchHandler.getRefMass()), true);
                     }
                 } else {
                     xtandemParametersSet = true;
@@ -5039,7 +5039,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean numbusLookAndFeelSet = false;
         try {
             numbusLookAndFeelSet = UtilitiesGUIDefaults.setLookAndFeel();
-            
+
             // fix for the scroll bar thumb disappearing...
             LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
             UIDefaults defaults = lookAndFeel.getDefaults();

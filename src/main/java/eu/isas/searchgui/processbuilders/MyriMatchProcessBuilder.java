@@ -120,7 +120,13 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the fragment ion tolerance
         process_name_array.add("-FragmentMzTolerance");
-        process_name_array.add("\"" + searchParameters.getFragmentIonAccuracy() + " daltons" + "\""); // @TODO: support ppm as well? means changing the search settings dialog
+        String fragemtnTolerance = searchParameters.getFragmentIonAccuracy().toString();
+        if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
+            fragemtnTolerance += " daltons";
+        } else {
+            fragemtnTolerance += " ppm";
+        }
+        process_name_array.add("\"" + fragemtnTolerance + " daltons" + "\"");
 
         // set the mono precursor tolerance
         process_name_array.add("-MonoPrecursorMzTolerance");

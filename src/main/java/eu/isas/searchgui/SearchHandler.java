@@ -278,7 +278,11 @@ public class SearchHandler {
     /**
      * The way output files should be exported.
      */
-    private OutputOption outputOption = OutputOption.grouped;
+    private OutputOption outputOption = OutputOption.grouped; // @TODO: should be moved to SearchGUI user preferences
+    /**
+     * Reference mass for the conversion of the fragment ion tolerance from ppm to Dalton.
+     */
+    private Double refMass = 2000.0; // @TODO: should be moved to SearchGUI user preferences
     /**
      * Indicates whether data files (mgf and FASTA) should be copied in the
      * output.
@@ -1570,6 +1574,24 @@ public class SearchHandler {
     }
 
     /**
+     * Returns the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton.
+     * 
+     * @return the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton
+     */
+    public Double getRefMass() {
+        return refMass;
+    }
+
+    /**
+     * Sets the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton.
+     * 
+     * @param refMass the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton
+     */
+    public void setRefMass(Double refMass) {
+        this.refMass = refMass;
+    }
+
+    /**
      * Indicates whether data should be copied along with the identification
      * files.
      *
@@ -2032,7 +2054,7 @@ public class SearchHandler {
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
                         omssaProcessBuilder = new OmssaclProcessBuilder(omssaLocation,
-                                spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                                spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler, refMass, processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         omssaProcessBuilder.startProcess();
@@ -2066,7 +2088,7 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
-                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, ms2File, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, ms2File, waitingHandler, exceptionHandler, processingPreferences.getnThreads(), refMass);
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         cometProcessBuilder.startProcess();
