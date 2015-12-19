@@ -126,7 +126,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             fragemtnTolerance += " ppm";
         }
-        process_name_array.add("\"" + fragemtnTolerance + " daltons" + "\"");
+        process_name_array.add("\"" + fragemtnTolerance + "\"");
 
         // set the mono precursor tolerance
         process_name_array.add("-MonoPrecursorMzTolerance");

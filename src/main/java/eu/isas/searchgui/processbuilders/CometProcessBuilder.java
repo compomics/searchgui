@@ -81,12 +81,14 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads
-     * @param refMass A reference mass to convert fragment ion tolerance from ppm to Dalton
+     * @param refMass a reference mass to convert fragment ion tolerance from
+     * ppm to Dalton
      *
      * @throws IOException thrown if there are problems creating the Comet
      * parameter file
      */
-    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, Double refMass) throws IOException {
+    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile,
+            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, Double refMass) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -179,7 +181,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         if (searchParameters.getEnzyme().isSemiSpecific()) {
             enzymeType = 1;
         }
-        
+
         try {
             br.write(
                     /////////////////////////
@@ -326,32 +328,48 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
         String ions = "";
 
-        if (searchParameters.getIonSearched1() == PeptideFragmentIon.A_ION) {
-            ions += "use_A_ions = 1" + System.getProperty("line.separator");
-            ions += "use_B_ions = 0" + System.getProperty("line.separator");
-            ions += "use_C_ions = 0" + System.getProperty("line.separator");
-        } else if (searchParameters.getIonSearched1() == PeptideFragmentIon.B_ION) {
-            ions += "use_A_ions = 0" + System.getProperty("line.separator");
-            ions += "use_B_ions = 1" + System.getProperty("line.separator");
-            ions += "use_C_ions = 0" + System.getProperty("line.separator");
-        } else if (searchParameters.getIonSearched1() == PeptideFragmentIon.C_ION) {
-            ions += "use_A_ions = 0" + System.getProperty("line.separator");
-            ions += "use_B_ions = 0" + System.getProperty("line.separator");
-            ions += "use_C_ions = 1" + System.getProperty("line.separator");
+        if (null != searchParameters.getIonSearched1()) {
+            switch (searchParameters.getIonSearched1()) {
+                case PeptideFragmentIon.A_ION:
+                    ions += "use_A_ions = 1" + System.getProperty("line.separator");
+                    ions += "use_B_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_C_ions = 0" + System.getProperty("line.separator");
+                    break;
+                case PeptideFragmentIon.B_ION:
+                    ions += "use_A_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_B_ions = 1" + System.getProperty("line.separator");
+                    ions += "use_C_ions = 0" + System.getProperty("line.separator");
+                    break;
+                case PeptideFragmentIon.C_ION:
+                    ions += "use_A_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_B_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_C_ions = 1" + System.getProperty("line.separator");
+                    break;
+                default:
+                    break;
+            }
         }
 
-        if (searchParameters.getIonSearched2() == PeptideFragmentIon.X_ION) {
-            ions += "use_X_ions = 1" + System.getProperty("line.separator");
-            ions += "use_Y_ions = 0" + System.getProperty("line.separator");
-            ions += "use_Z_ions = 0" + System.getProperty("line.separator");
-        } else if (searchParameters.getIonSearched2() == PeptideFragmentIon.Y_ION) {
-            ions += "use_X_ions = 0" + System.getProperty("line.separator");
-            ions += "use_Y_ions = 1" + System.getProperty("line.separator");
-            ions += "use_Z_ions = 0" + System.getProperty("line.separator");
-        } else if (searchParameters.getIonSearched2() == PeptideFragmentIon.Z_ION) {
-            ions += "use_X_ions = 0" + System.getProperty("line.separator");
-            ions += "use_Y_ions = 0" + System.getProperty("line.separator");
-            ions += "use_Z_ions = 1" + System.getProperty("line.separator");
+        if (null != searchParameters.getIonSearched2()) {
+            switch (searchParameters.getIonSearched2()) {
+                case PeptideFragmentIon.X_ION:
+                    ions += "use_X_ions = 1" + System.getProperty("line.separator");
+                    ions += "use_Y_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_Z_ions = 0" + System.getProperty("line.separator");
+                    break;
+                case PeptideFragmentIon.Y_ION:
+                    ions += "use_X_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_Y_ions = 1" + System.getProperty("line.separator");
+                    ions += "use_Z_ions = 0" + System.getProperty("line.separator");
+                    break;
+                case PeptideFragmentIon.Z_ION:
+                    ions += "use_X_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_Y_ions = 0" + System.getProperty("line.separator");
+                    ions += "use_Z_ions = 1" + System.getProperty("line.separator");
+                    break;
+                default:
+                    break;
+            }
         }
 
         return ions;
@@ -488,32 +506,43 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @return the fixed modifications
      */
     private String getFixedModifications() {
+
         HashMap<Character, Double> residueToModificationMap = new HashMap<Character, Double>();
         double proteinCtermModification = 0,
                 proteinNtermModification = 0,
                 peptideCtermModification = 0,
                 peptideNTermModification = 0;
+
         for (String ptmName : searchParameters.getPtmSettings().getFixedModifications()) {
             PTM ptm = ptmFactory.getPTM(ptmName);
-            if (ptm.getType() == PTM.MODAA) {
-                for (Character aminoAcid : ptm.getPattern().getAminoAcidsAtTarget()) {
-                    Double modification = residueToModificationMap.get(aminoAcid);
-                    if (modification == null) {
-                        residueToModificationMap.put(aminoAcid, ptm.getRoundedMass());
-                    } else {
-                        residueToModificationMap.put(aminoAcid, modification + ptm.getRoundedMass());
+            switch (ptm.getType()) {
+                case PTM.MODAA:
+                    for (Character aminoAcid : ptm.getPattern().getAminoAcidsAtTarget()) {
+                        Double modification = residueToModificationMap.get(aminoAcid);
+                        if (modification == null) {
+                            residueToModificationMap.put(aminoAcid, ptm.getRoundedMass());
+                        } else {
+                            residueToModificationMap.put(aminoAcid, modification + ptm.getRoundedMass());
+                        }
                     }
-                }
-            } else if (ptm.getType() == PTM.MODC) {
-                proteinCtermModification += ptm.getRoundedMass();
-            } else if (ptm.getType() == PTM.MODN) {
-                proteinNtermModification += ptm.getRoundedMass();
-            } else if (ptm.getType() == PTM.MODCP) {
-                peptideCtermModification += ptm.getRoundedMass();
-            } else if (ptm.getType() == PTM.MODNP) {
-                peptideNTermModification += ptm.getRoundedMass();
+                    break;
+                case PTM.MODC:
+                    proteinCtermModification += ptm.getRoundedMass();
+                    break;
+                case PTM.MODN:
+                    proteinNtermModification += ptm.getRoundedMass();
+                    break;
+                case PTM.MODCP:
+                    peptideCtermModification += ptm.getRoundedMass();
+                    break;
+                case PTM.MODNP:
+                    peptideNTermModification += ptm.getRoundedMass();
+                    break;
+                default:
+                    break;
             }
         }
+
         StringBuilder result = new StringBuilder();
         result.append("#").append(System.getProperty("line.separator")).append("# additional modifications").append(System.getProperty("line.separator"));
         result.append("#").append(System.getProperty("line.separator"));
@@ -523,6 +552,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         result.append("add_Cterm_protein = ").append(proteinCtermModification).append(System.getProperty("line.separator"));
         result.append("add_Nterm_protein = ").append(proteinNtermModification).append(System.getProperty("line.separator"));
         result.append(System.getProperty("line.separator"));
+
         Double modifiedMass = residueToModificationMap.get('G');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
@@ -654,6 +684,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         }
         result.append("add_Z_user_amino_acid = ").append(modifiedMass).append("                 # added to Z - avg.   0.0000, mono.   0.00000").append(System.getProperty("line.separator"));
         result.append(System.getProperty("line.separator"));
+
         return result.toString();
     }
 

@@ -89,9 +89,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        proteinTreePanel1 = new javax.swing.JPanel();
-        proteinTreeLabel1 = new javax.swing.JLabel();
-        proteinTreeComboBox1 = new javax.swing.JComboBox();
         advancedParamatersPanel = new javax.swing.JPanel();
         fileProcessingPanel = new javax.swing.JPanel();
         fastaFileSuffixLabel = new javax.swing.JLabel();
@@ -123,35 +120,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         identificationParametersPanel = new javax.swing.JPanel();
         refMassLbl = new javax.swing.JLabel();
         refMassTxt = new javax.swing.JTextField();
-
-        proteinTreePanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Protein Inference"));
-        proteinTreePanel1.setOpaque(false);
-
-        proteinTreeLabel1.setText("Generate Protein Index");
-
-        proteinTreeComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
-        proteinTreeComboBox1.setSelectedIndex(1);
-
-        javax.swing.GroupLayout proteinTreePanel1Layout = new javax.swing.GroupLayout(proteinTreePanel1);
-        proteinTreePanel1.setLayout(proteinTreePanel1Layout);
-        proteinTreePanel1Layout.setHorizontalGroup(
-            proteinTreePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(proteinTreePanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(proteinTreeLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(proteinTreeComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        proteinTreePanel1Layout.setVerticalGroup(
-            proteinTreePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(proteinTreePanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(proteinTreePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(proteinTreeComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(proteinTreeLabel1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Advanced Settings");
@@ -641,10 +609,20 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         SequenceFactory.setTargetDecoyFileNameTag(fastaSuffixTxt.getText().trim());
     }//GEN-LAST:event_fastaSuffixTxtActionPerformed
 
+    /**
+     * Validate the input parameters.
+     * 
+     * @param evt 
+     */
     private void refMassTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refMassTxtActionPerformed
         validateAdvancedParametersInput(false);
     }//GEN-LAST:event_refMassTxtActionPerformed
 
+    /**
+     * Validate the input parameters.
+     * 
+     * @param evt 
+     */
     private void refMassTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_refMassTxtKeyReleased
         validateAdvancedParametersInput(false);
     }//GEN-LAST:event_refMassTxtKeyReleased
@@ -674,11 +652,8 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox peakPickingComboBox;
     private javax.swing.JLabel peakPickingLabel;
     private javax.swing.JComboBox proteinTreeComboBox;
-    private javax.swing.JComboBox proteinTreeComboBox1;
     private javax.swing.JLabel proteinTreeLabel;
-    private javax.swing.JLabel proteinTreeLabel1;
     private javax.swing.JPanel proteinTreePanel;
-    private javax.swing.JPanel proteinTreePanel1;
     private javax.swing.JLabel refMassLbl;
     private javax.swing.JTextField refMassTxt;
     private javax.swing.JComboBox renameCmb;
@@ -698,7 +673,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         
         valid = GuiUtilities.validateDoubleInput(this, maxMgfFileSizeLabel, mgfMaxSizeTxt, "mgf max size", "Mgf Max Size Error", true, showMessage, valid);
         valid = GuiUtilities.validateDoubleInput(this, maxSpectraPerFileLabel, mgfReducedSizeTxt, "max spectra in mgf file", "Max Spectra Error", true, showMessage, valid);
-        
         valid = GuiUtilities.validateDoubleInput(this, refMassLbl, refMassTxt, "reference mass", "Reference Mass Error", true, showMessage, valid);
 
         return valid;

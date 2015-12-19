@@ -53,7 +53,8 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
-     * @param refMass the reference mass to convert the fragment ion tolerance from ppm to Da
+     * @param refMass the reference mass to convert the fragment ion tolerance
+     * from ppm to Dalton
      * @param nThreads the number of threads to use
      *
      * @throws java.io.IOException exception thrown whenever an error occurred
@@ -61,7 +62,8 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, Double refMass, int nThreads) throws IOException, ClassNotFoundException {
+    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters,
+            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, Double refMass, int nThreads) throws IOException, ClassNotFoundException {
 
         this.spectraFile = spectraFile;
         this.waitingHandler = waitingHandler;
@@ -461,27 +463,39 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         result += "\t\t\t<MSMod value=\"usermod" + cpt + "\">" + omssaIndex + "</MSMod>\n";
         result += "\t\t</MSModSpec_mod>\n"
                 + "\t\t<MSModSpec_type>\n";
-        if (ptm.getType() == PTM.MODAA) {
-            result += "\t\t\t<MSModType value=\"modaa\">" + PTM.MODAA + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODN) {
-            result += "\t\t\t<MSModType value=\"modn\">" + PTM.MODN + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODNAA) {
-            result += "\t\t\t<MSModType value=\"modnaa\">" + PTM.MODNAA + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODNP) {
-            result += "\t\t\t<MSModType value=\"modnp\">" + PTM.MODNP + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODNPAA) {
-            result += "\t\t\t<MSModType value=\"modnpaa\">" + PTM.MODNPAA + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODC) {
-            result += "\t\t\t<MSModType value=\"modc\">" + PTM.MODC + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODCAA) {
-            result += "\t\t\t<MSModType value=\"modcaa\">" + PTM.MODCAA + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODCP) {
-            result += "\t\t\t<MSModType value=\"modcp\">" + PTM.MODCP + "</MSModType>\n";
-        } else if (ptm.getType() == PTM.MODCPAA) {
-            result += "\t\t\t<MSModType value=\"modcpaa\">" + PTM.MODCPAA + "</MSModType>\n";
-        } else {
-            throw new IllegalArgumentException("Export not implemented for PTM of type " + ptm.getType() + ".");
+
+        switch (ptm.getType()) {
+            case PTM.MODAA:
+                result += "\t\t\t<MSModType value=\"modaa\">" + PTM.MODAA + "</MSModType>\n";
+                break;
+            case PTM.MODN:
+                result += "\t\t\t<MSModType value=\"modn\">" + PTM.MODN + "</MSModType>\n";
+                break;
+            case PTM.MODNAA:
+                result += "\t\t\t<MSModType value=\"modnaa\">" + PTM.MODNAA + "</MSModType>\n";
+                break;
+            case PTM.MODNP:
+                result += "\t\t\t<MSModType value=\"modnp\">" + PTM.MODNP + "</MSModType>\n";
+                break;
+            case PTM.MODNPAA:
+                result += "\t\t\t<MSModType value=\"modnpaa\">" + PTM.MODNPAA + "</MSModType>\n";
+                break;
+            case PTM.MODC:
+                result += "\t\t\t<MSModType value=\"modc\">" + PTM.MODC + "</MSModType>\n";
+                break;
+            case PTM.MODCAA:
+                result += "\t\t\t<MSModType value=\"modcaa\">" + PTM.MODCAA + "</MSModType>\n";
+                break;
+            case PTM.MODCP:
+                result += "\t\t\t<MSModType value=\"modcp\">" + PTM.MODCP + "</MSModType>\n";
+                break;
+            case PTM.MODCPAA:
+                result += "\t\t\t<MSModType value=\"modcpaa\">" + PTM.MODCPAA + "</MSModType>\n";
+                break;
+            default:
+                throw new IllegalArgumentException("Export not implemented for PTM of type " + ptm.getType() + ".");
         }
+
         result += "\t\t</MSModSpec_type>\n";
         result += "\t\t<MSModSpec_name>" + ptm.getName() + "</MSModSpec_name>\n";
         result += "\t\t<MSModSpec_monomass>" + ptm.getRoundedMass() + "</MSModSpec_monomass>\n"
