@@ -179,7 +179,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         if (searchParameters.getEnzyme().isSemiSpecific()) {
             enzymeType = 1;
         }
-
+        
         try {
             br.write(
                     /////////////////////////
@@ -237,7 +237,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "# high res ms/ms:    0.02 tolerance, 0.0 offset (mono masses), theoretical_fragment_ions = 0" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
                     // @TODO: is fragment_bin_tol really fragment ion accuracy? (and set the offset and theoretical_fragment_ions automatically?)
-                    + "fragment_bin_tol = " + searchParameters.getFragmentIonAccuracyInDaltons(refMass)+ " # binning to use on fragment ions" + System.getProperty("line.separator")
+                    + "fragment_bin_tol = " + searchParameters.getFragmentIonAccuracyInDaltons(refMass) + " # binning to use on fragment ions" + System.getProperty("line.separator")
                     + "fragment_bin_offset = " + cometParameters.getFragmentBinOffset() + " # offset position to start the binning (0.0 to 1.0)" + System.getProperty("line.separator")
                     + "theoretical_fragment_ions = " + theoretical_Fragment_ions + " # 0=use flanking peaks, 1=M peak only" + System.getProperty("line.separator")
                     + getIonsSearched()

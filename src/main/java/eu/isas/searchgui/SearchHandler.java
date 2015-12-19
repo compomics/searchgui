@@ -2074,13 +2074,6 @@ public class SearchHandler {
                         }
                     }
 
-                    File ms2File = null;
-                    if ((enableComet || enableTide) && !waitingHandler.isRunCanceled()) {
-                        waitingHandler.appendReport("Converting spectrum file " + spectrumFileName + " for Comet/Tide.", true, true); // @TODO: from "Comet 2015.02 rev. 0" mgf is supported directly
-                        ms2File = new File(getPeakListFolder(getJarFilePath()), Util.removeExtension(spectrumFileName) + ".ms2");
-                        Ms2Exporter.mgfToMs2(spectrumFile, ms2File, true);
-                    }
-
                     if (enableComet && !waitingHandler.isRunCanceled()) {
 
                         File cometOutputFile = new File(outputTempFolder, getCometFileName(spectrumFileName));
@@ -2088,7 +2081,7 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
-                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, ms2File, waitingHandler, exceptionHandler, processingPreferences.getnThreads(), refMass);
+                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, spectrumFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads(), refMass);
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         cometProcessBuilder.startProcess();
@@ -2096,7 +2089,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
 
                             // move the comet result file to the results folder
-                            File tempCometOutputFile = new File(getPeakListFolder(getJarFilePath()), getCometFileName(spectrumFileName));
+                            File tempCometOutputFile = new File(spectrumFile.getParent(), getCometFileName(spectrumFileName));
                             FileUtils.moveFile(tempCometOutputFile, cometOutputFile);
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
@@ -2113,7 +2106,13 @@ public class SearchHandler {
                         }
                     }
 
+                    File ms2File = null;
+
                     if (enableTide && !waitingHandler.isRunCanceled()) {
+                        
+                        waitingHandler.appendReport("Converting spectrum file " + spectrumFileName + " for Tide.", true, true);
+                        ms2File = new File(getPeakListFolder(getJarFilePath()), Util.removeExtension(spectrumFileName) + ".ms2");
+                        Ms2Exporter.mgfToMs2(spectrumFile, ms2File, true);
 
                         File tideOutputFile = new File(outputTempFolder, getTideFileName(spectrumFileName));
 

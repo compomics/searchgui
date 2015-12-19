@@ -451,7 +451,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addGroup(identificationParametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(refMassLbl)
                     .addComponent(refMassTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout advancedParamatersPanelLayout = new javax.swing.GroupLayout(advancedParamatersPanel);
