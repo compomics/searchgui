@@ -417,6 +417,7 @@ public class SearchHandler {
         this.identificationParameters = identificationParameters;
         this.processingPreferences = processingPreferences;
         this.generateProteinTree = generateProteinTree;
+        this.identificationParametersFile = identificationParametersFile;
 
         if (omssaFolder != null) {
             this.omssaLocation = omssaFolder;
@@ -3035,11 +3036,6 @@ public class SearchHandler {
                 break;
 
             default: // no zipping
-
-                File copiedParametersFile = new File(outputFolder, identificationParametersFile.getName());
-                if (!copiedParametersFile.exists()) {
-                    Util.copyFile(identificationParametersFile, copiedParametersFile);
-                }
 
                 // add data files if needed
                 if (outputData) {

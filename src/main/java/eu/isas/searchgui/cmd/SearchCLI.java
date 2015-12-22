@@ -239,6 +239,15 @@ public class SearchCLI implements Callable {
 
             // Identification parameters
             IdentificationParameters identificationParameters = searchCLIInputBean.getIdentificationParameters();
+            File parametersFile = searchCLIInputBean.getIdentificationParametersFile();
+            if (parametersFile == null) {
+                String name = identificationParameters.getName();
+                if (name == null) {
+                    name = "SearchCLI.par";
+                }
+                parametersFile = new File(searchCLIInputBean.getOutputFile(), name);
+                IdentificationParameters.saveIdentificationParameters(identificationParameters, parametersFile);
+            }
 
             // Load the fasta file in the factory
             SearchParameters searchParameters = identificationParameters.getSearchParameters();
@@ -248,7 +257,7 @@ public class SearchCLI implements Callable {
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
                     searchCLIInputBean.getOutputFile(), spectrumFiles,
-                    new ArrayList<File>(), searchCLIInputBean.getIdentificationParametersFile(),
+                    new ArrayList<File>(), parametersFile,
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),

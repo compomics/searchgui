@@ -36,10 +36,6 @@ public class SearchCLIInputBean {
      */
     private PathSettingsCLIInputBean pathSettingsCLIInputBean;
     /**
-     * The identification parameters file.
-     */
-    private File identificationParametersFile;
-    /**
      * If true, OMSSA is enabled.
      */
     private boolean omssaEnabled = true;
@@ -368,7 +364,7 @@ public class SearchCLIInputBean {
      * @return the identification parameters file
      */
     public File getIdentificationParametersFile() {
-        return identificationParametersFile;
+        return identificationParametersInputBean.getDestinationFile();
     }
 
     /**
