@@ -4,6 +4,7 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
 import com.compomics.software.settings.UtilitiesPathPreferences;
 import com.compomics.util.experiment.biology.*;
+import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.io.massspectrometry.MgfIndex;
@@ -67,6 +68,15 @@ public class SearchCLI implements Callable {
                 System.out.println("An error occurred while loading the enzymes.");
                 e.printStackTrace();
             }
+            
+            try {
+                SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
+                speciesFactory.initiate(getJarFilePath());
+            } catch (Exception e) {
+                System.out.println("An error occurred while loading the species.");
+                e.printStackTrace();
+            }
+            
             Options lOptions = new Options();
             SearchCLIParams.createOptionsCLI(lOptions);
             BasicParser parser = new BasicParser();
