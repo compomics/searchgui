@@ -148,14 +148,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private boolean settingsTabDisplayed = false;
     /**
-     * The text to display when default settings are loaded.
-     */
-    public static final String defaultSettingsTxt = "[not selected]";
-    /**
-     * The text to display when user defined settings are loaded.
-     */
-    public static final String userSettingsTxt = "[user settings]";
-    /**
      * If an mgf file exceeds this limit, the user will be asked for a split.
      */
     private double mgfMaxSize = 1000; // @TODO: should be moved to user preferences?
@@ -3938,16 +3930,29 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMyriMatchParameters.equals(newMyriMatchParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(myriMatchParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        myriMatchParametersSet = true;
-                    } else {
-                        myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters, true);
+                    
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                myriMatchParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            myriMatchParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     myriMatchParametersSet = true;
@@ -3977,16 +3982,29 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMsAmandaParameters.equals(newMsAmandaParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(msAmandaParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        msAmandaParametersSet = true;
-                    } else {
-                        msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters, true);
+                    
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                msAmandaParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            msAmandaParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     msAmandaParametersSet = true;
@@ -4019,16 +4037,29 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMsgfParameters.equals(newMsgfParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(msgfParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        msgfParametersSet = true;
-                    } else {
-                        msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters, true);
+                    
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                msgfParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            msgfParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     msgfParametersSet = true;
@@ -4061,16 +4092,29 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldOmssaParameters.equals(newOmssaParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(omssaParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        omssaParametersSet = true;
-                    } else {
-                        omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters, true);
+                    
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                omssaParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            omssaParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     omssaParametersSet = true;
@@ -4100,16 +4144,29 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldCometParameters.equals(newCometParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(cometSettingsDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        cometParametersSet = true;
-                    } else {
-                        cometSettingsDialog = new CometSettingsDialog(this, newCometParameters, true);
+                    
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                cometParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            cometSettingsDialog = new CometSettingsDialog(this, newCometParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            cometParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     cometParametersSet = true;
@@ -4142,16 +4199,29 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldTideParameters.equals(newTideParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(tideParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        tideParametersSet = true;
-                    } else {
-                        tideParametersDialog = new TideSettingsDialog(this, newTideParameters, true);
+                    
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                tideParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            tideParametersDialog = new TideSettingsDialog(this, newTideParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            tideParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     tideParametersSet = true;
@@ -4184,16 +4254,29 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldAndromedaParameters.equals(newAndromedaParameters)) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(andromedaParametersDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        andromedaParametersSet = true;
-                    } else {
-                        andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters, true);
+                    
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                andromedaParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            andromedaParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     andromedaParametersSet = true;
