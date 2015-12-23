@@ -3884,17 +3884,31 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldXtandemParameters.equals(newXtandemParameters) || xtandemSettingsDialog.modProfileEdited()) {
-                    SearchParameters newSearchParameters = new SearchParameters(searchParameters);
-                    newSearchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
-                    newSearchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
-                    File newSearchParametersFile = SearchSettingsDialog.saveIdentificationParameters(xtandemSettingsDialog, identificationParameters, identificationParametersFile, lastSelectedFolder);
-                    if (newSearchParametersFile != null) {
-                        identificationParameters.setSearchParameters(newSearchParameters);
-                        identificationParametersFile = newSearchParametersFile;
-                        //searchSettingsTxt.setText(newSearchParametersFile.getName()); // @TODO: ???
-                        xtandemParametersSet = true;
-                    } else {
-                        xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, newSearchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracyInDaltons(searchHandler.getRefMass()), true);
+
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
+                                searchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                xtandemParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }   break;
+                        case JOptionPane.CANCEL_OPTION:
+                            xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, searchParameters.getPtmSettings(),
+                                    searchParameters.getFragmentIonAccuracyInDaltons(searchHandler.getRefMass()), true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            xtandemParametersSet = true;
+                            break;
+                        default:
+                            break;
                     }
                 } else {
                     xtandemParametersSet = true;
