@@ -469,7 +469,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         CvTerm cvTerm = ptm.getCvTerm();
 
         if (cvTerm != null) {
-            return "\t\t\t<modification " + fixedTag
+            return "\t\t\t<modification" + fixedTag
                     + nTermTag + cTermTag + proteinTag + ">" + cvTerm.getName() + aminoAcidsAtTarget + "</modification>";
         } else {
             return "\t\t\t<modification delta_mass=\"" + ptm.getRoundedMass() + "\"" + fixedTag
