@@ -398,7 +398,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * the factory in the given file. Stores the PTM indexes in the OMSSA
      * specific parameters.
      *
-     * @param omssaFile the file where to write the omssa modification files
+     * @param omssaFile the file where to write the OMSSA modification files
      * @param identificationParameters the identification parameters
      * @param identificationParametersFile the file where to save the
      * identification parameters

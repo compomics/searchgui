@@ -34,7 +34,6 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -295,11 +294,15 @@ public class SearchHandler {
     /**
      * Default name for a SearchGUI output.
      */
-    public final static String defaultOutput = "searchgui_out.zip";
+    public final static String DEFAULT_OUTPUT = "searchgui_out";
+    /**
+     * Default file name ending for a SearchGUI output.
+     */
+    public final static String DEFAULT_OUTPUT_FILE_NAME_ENDING = ".zip";
     /**
      * The name of the folder where to save the mgf and FASTA file.
      */
-    public final static String defaultDataFolder = "data";
+    public final static String DEFAULT_DATA_FOLDER = "data";
     /**
      * Default SearchGUI configurations.
      */
@@ -651,7 +654,7 @@ public class SearchHandler {
      * Save the SearchGUI report to the results folder.
      */
     private void saveReport() {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh.mm.ss");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
         String fileName = "SearchGUI Report " + df.format(new Date()) + ".html";
         String report = "";
 
@@ -1775,7 +1778,7 @@ public class SearchHandler {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
                     }
                     File userModsXmlFile = new File(omssaLocation, "usermods.xml");
-                    omssaProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, identificationParameters, identificationParametersFile);
+                    OmssaclProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, identificationParameters, identificationParametersFile);
 
                     // Copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
@@ -2407,9 +2410,9 @@ public class SearchHandler {
     public void saveInputFile(File folder) {
 
         File outputFile = getInputFile(folder);
-        ArrayList<File> mgfFiles = new ArrayList<File>(this.mgfFiles);
+        ArrayList<File> tempMgfFiles = new ArrayList<File>(this.mgfFiles);
         ArrayList<String> names = new ArrayList<String>();
-        for (File file : mgfFiles) {
+        for (File file : tempMgfFiles) {
             names.add(file.getName());
         }
         if (outputFile.exists()) {
@@ -2424,7 +2427,7 @@ public class SearchHandler {
                             File newFile = new File(line);
                             if (!names.contains(newFile.getName())) {
                                 names.add(newFile.getName());
-                                mgfFiles.add(newFile);
+                                tempMgfFiles.add(newFile);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -2435,12 +2438,12 @@ public class SearchHandler {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
                 // ignore error
-                mgfFiles = new ArrayList<File>(this.mgfFiles);
+                tempMgfFiles = new ArrayList<File>(this.mgfFiles);
             }
         }
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
-            for (File mgfFile : mgfFiles) {
+            for (File mgfFile : tempMgfFiles) {
                 bw.write(mgfFile.getAbsolutePath() + System.getProperty("line.separator"));
             }
             bw.flush();
@@ -2730,10 +2733,11 @@ public class SearchHandler {
      */
     public static File getDefaultOutputFile(File outputFolder, boolean includeDate) {
         String fileName = "";
+        fileName += DEFAULT_OUTPUT;
         if (includeDate) {
-            fileName += getOutputDate() + "_";
+            fileName += "_" + getOutputDate();
         }
-        fileName += defaultOutput;
+        fileName += DEFAULT_OUTPUT_FILE_NAME_ENDING;
         return new File(outputFolder, fileName);
     }
 
@@ -2750,23 +2754,23 @@ public class SearchHandler {
      */
     public static File getDefaultOutputFile(File outputFolder, String classifier, boolean includeDate) {
         String fileName = classifier;
+        fileName += "_" + DEFAULT_OUTPUT;
         if (includeDate) {
             fileName += "_" + getOutputDate();
         }
-        fileName += "_" + defaultOutput;
+        fileName += DEFAULT_OUTPUT_FILE_NAME_ENDING;
         return new File(outputFolder, fileName);
     }
 
     /**
      * Returns the date as a string to be included in the output.
-     * YYYY-MM-DD_HH.MM.SS.
+     * yyyy-MM-dd_HH.mm.ss.
      *
      * @return the date as a string to be included in the output
      */
     public static String getOutputDate() {
-        Calendar calendar = Calendar.getInstance();
-        return calendar.get(Calendar.YEAR) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH)
-                + "_" + calendar.get(Calendar.HOUR_OF_DAY) + "." + calendar.get(Calendar.MINUTE) + "." + calendar.get(Calendar.SECOND);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+        return df.format(new Date());
     }
 
     /**
@@ -2786,7 +2790,7 @@ public class SearchHandler {
      * result files will be deleted.
      *
      * @param outputFolder the output folder
-     * @param tempOutputFolder the folder where the raw searchgui output is
+     * @param tempOutputFolder the folder where the raw SearchGUI output is
      * stored
      * @param identificationFiles the identification files
      * @param parametersFile the parameters file
@@ -3040,7 +3044,7 @@ public class SearchHandler {
                 // add data files if needed
                 if (outputData) {
                     // create the data folder
-                    File dataFolder = new File(outputFolder, defaultDataFolder);
+                    File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
 
                     File dbFile = identificationParameters.getSearchParameters().getFastaFile();
@@ -3067,13 +3071,13 @@ public class SearchHandler {
     private void addDataToZip(ZipOutputStream out, long totalUncompressedSize) throws IOException {
 
         // create the data folder in the zip file
-        ZipUtils.addFolderToZip(defaultDataFolder, out);
+        ZipUtils.addFolderToZip(DEFAULT_DATA_FOLDER, out);
 
         File dbFile = identificationParameters.getSearchParameters().getFastaFile();
-        ZipUtils.addFileToZip(defaultDataFolder, dbFile, out, waitingHandler, totalUncompressedSize);
+        ZipUtils.addFileToZip(DEFAULT_DATA_FOLDER, dbFile, out, waitingHandler, totalUncompressedSize);
 
         for (File spectrumFile : getMgfFiles()) {
-            ZipUtils.addFileToZip(defaultDataFolder, spectrumFile, out, waitingHandler, totalUncompressedSize);
+            ZipUtils.addFileToZip(DEFAULT_DATA_FOLDER, spectrumFile, out, waitingHandler, totalUncompressedSize);
         }
     }
 
