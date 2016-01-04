@@ -61,18 +61,18 @@ public enum PathSettingsCLIParams {
         String output = "";
         String formatter = "%-35s";
 
-        output += "Log folder:\n\n";
-        output += "-" + String.format(formatter, LOG.id) + LOG.description + "\n";
+        output += "Log Folder:\n\n";
+        output += "-" + String.format(formatter, LOG.id) + " " + LOG.description + "\n";
 
-        output += "Generic temporary folder:\n\n";
-        output += "-" + String.format(formatter, ALL.id) + ALL.description + "\n";
+        output += "Generic Temporary Folder:\n\n";
+        output += "-" + String.format(formatter, ALL.id) + " " + ALL.description + "\n";
 
-        output += "\n\nSpecific path setting:\n\n";
+        output += "\n\nSpecific Path Setting:\n\n";
         for (SearchGUIPathPreferences.SearchGUIPathKey searchGUIPathKey : SearchGUIPathPreferences.SearchGUIPathKey.values()) {
-            output += "-" + String.format(formatter, searchGUIPathKey.getId()) + searchGUIPathKey.getDescription() + System.getProperty("line.separator");
+            output += "-" + String.format(formatter, searchGUIPathKey.getId()) + " " + searchGUIPathKey.getDescription() + System.getProperty("line.separator");
         }
         for (UtilitiesPathPreferences.UtilitiesPathKey utilitiesPathKey : UtilitiesPathPreferences.UtilitiesPathKey.values()) {
-            output += "-" + String.format(formatter, utilitiesPathKey.getId()) + utilitiesPathKey.getDescription() + System.getProperty("line.separator");
+            output += "-" + String.format(formatter, utilitiesPathKey.getId()) + " " + utilitiesPathKey.getDescription() + System.getProperty("line.separator");
         }
 
         return output;

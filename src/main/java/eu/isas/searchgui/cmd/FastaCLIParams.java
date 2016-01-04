@@ -3,7 +3,7 @@ package eu.isas.searchgui.cmd;
 import org.apache.commons.cli.Options;
 
 /**
- * This class contains the parameters which can be used in the Fasta command
+ * This class contains the parameters which can be used in the FASTA command
  * line.
  *
  * @author Marc Vaudel
@@ -59,11 +59,11 @@ public enum FastaCLIParams {
         String formatter = "%-25s";
 
         output += "Mandatory parameters:\n\n";
-        output += "-" + String.format(formatter, in.id) + in.description + "\n";
+        output += "-" + String.format(formatter, in.id) + " " + in.description + "\n";
 
         output += "\n\nOptional parameters:\n\n";
-        output += "-" + String.format(formatter, decoy.id) + decoy.description + "\n";
-        output += "-" + String.format(formatter, decoy_suffix.id) + decoy_suffix.description + "\n";
+        output += "-" + String.format(formatter, decoy.id) + " " + decoy.description + "\n";
+        output += "-" + String.format(formatter, decoy_suffix.id) + " " + decoy_suffix.description + "\n";
 
         return output;
     }

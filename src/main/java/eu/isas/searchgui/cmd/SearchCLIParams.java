@@ -106,51 +106,51 @@ public enum SearchCLIParams {
         String output = "";
         String formatter = "%-25s";
 
-        output += "Mandatory parameters:\n\n";
-        output += "-" + String.format(formatter, SPECTRUM_FILES.id) + SPECTRUM_FILES.description + "\n";
-        output += "-" + String.format(formatter, OUTPUT_FOLDER.id) + OUTPUT_FOLDER.description + "\n";
+        output += "Mandatory Parameters:\n\n";
+        output += "-" + String.format(formatter, SPECTRUM_FILES.id) + " " + SPECTRUM_FILES.description + "\n";
+        output += "-" + String.format(formatter, OUTPUT_FOLDER.id) + " " + OUTPUT_FOLDER.description + "\n";
 
-        output += "\n\nOptional input parameters:\n\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.id) + IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.description + "\n";
+        output += "\n\nOptional Input Parameters:\n\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.id) + " " + IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.description + "\n";
         
         output += "\n\nSearch Engine Selection:\n\n";
-        output += "-" + String.format(formatter, OMSSA.id) + OMSSA.description + "\n";
-        output += "-" + String.format(formatter, XTANDEM.id) + XTANDEM.description + "\n";
-        output += "-" + String.format(formatter, MSGF.id) + MSGF.description + "\n";
-        output += "-" + String.format(formatter, MS_AMANDA.id) + MS_AMANDA.description + "\n";
-        output += "-" + String.format(formatter, MYRIMATCH.id) + MYRIMATCH.description + "\n";
-        output += "-" + String.format(formatter, COMET.id) + COMET.description + "\n";
-        output += "-" + String.format(formatter, TIDE.id) + TIDE.description + "\n";
-        output += "-" + String.format(formatter, ANDROMEDA.id) + ANDROMEDA.description + "\n";
+        output += "-" + String.format(formatter, OMSSA.id) + " " + OMSSA.description + "\n";
+        output += "-" + String.format(formatter, XTANDEM.id) + " " + XTANDEM.description + "\n";
+        output += "-" + String.format(formatter, MSGF.id) + " " + MSGF.description + "\n";
+        output += "-" + String.format(formatter, MS_AMANDA.id) + " " + MS_AMANDA.description + "\n";
+        output += "-" + String.format(formatter, MYRIMATCH.id) + " " + MYRIMATCH.description + "\n";
+        output += "-" + String.format(formatter, COMET.id) + " " + COMET.description + "\n";
+        output += "-" + String.format(formatter, TIDE.id) + " " + TIDE.description + "\n";
+        output += "-" + String.format(formatter, ANDROMEDA.id) + " " + ANDROMEDA.description + "\n";
 
         output += "\n\nTools Location:\n\n";
-        output += "-" + String.format(formatter, OMSSA_LOCATION.id) + OMSSA_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, XTANDEM_LOCATION.id) + XTANDEM_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, MSGF_LOCATION.id) + MSGF_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, MS_AMANDA_LOCATION.id) + MS_AMANDA_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, MYRIMATCH_LOCATION.id) + MYRIMATCH_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, COMET_LOCATION.id) + COMET_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, TIDE_LOCATION.id) + TIDE_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, ANDROMEDA_LOCATION.id) + ANDROMEDA_LOCATION.description + "\n";
-        output += "-" + String.format(formatter, MAKEBLASTDB_LOCATION.id) + MAKEBLASTDB_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, OMSSA_LOCATION.id) + " " + OMSSA_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, XTANDEM_LOCATION.id) + " " + XTANDEM_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, MSGF_LOCATION.id) + " " + MSGF_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, MS_AMANDA_LOCATION.id) + " " + MS_AMANDA_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, MYRIMATCH_LOCATION.id) + " " + MYRIMATCH_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, COMET_LOCATION.id) + " " + COMET_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, TIDE_LOCATION.id) + " " + TIDE_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, ANDROMEDA_LOCATION.id) + " " + ANDROMEDA_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, MAKEBLASTDB_LOCATION.id) + " " + MAKEBLASTDB_LOCATION.description + "\n";
         
         output += "\n\nInput Files Handling:\n\n";
-        output += "-" + String.format(formatter, MGF_SPLITTING_LIMIT.id) + MGF_SPLITTING_LIMIT.description + "\n";
-        output += "-" + String.format(formatter, MGF_MAX_SPECTRA.id) + MGF_MAX_SPECTRA.description + "\n";
-        output += "-" + String.format(formatter, DUPLICATE_TITLE_HANDLING.id) + DUPLICATE_TITLE_HANDLING.description + "\n";
-        output += "-" + String.format(formatter, MISSING_TITLE_HANDLING.id) + MISSING_TITLE_HANDLING.description + "\n";
+        output += "-" + String.format(formatter, MGF_SPLITTING_LIMIT.id) + " " + MGF_SPLITTING_LIMIT.description + "\n";
+        output += "-" + String.format(formatter, MGF_MAX_SPECTRA.id) + " " + MGF_MAX_SPECTRA.description + "\n";
+        output += "-" + String.format(formatter, DUPLICATE_TITLE_HANDLING.id) + " " + DUPLICATE_TITLE_HANDLING.description + "\n";
+        output += "-" + String.format(formatter, MISSING_TITLE_HANDLING.id) + " " + MISSING_TITLE_HANDLING.description + "\n";
         
         output += "\n\nOutput Files Handling:\n\n";
-        output += "-" + String.format(formatter, OUTPUT_OPTION.id) + OUTPUT_OPTION.description + "\n";
-        output += "-" + String.format(formatter, OUTPUT_DATA.id) + OUTPUT_DATA.description + "\n";
-        output += "-" + String.format(formatter, OUTPUT_DATE.id) + OUTPUT_DATE.description + "\n";
+        output += "-" + String.format(formatter, OUTPUT_OPTION.id) + " " + OUTPUT_OPTION.description + "\n";
+        output += "-" + String.format(formatter, OUTPUT_DATA.id) + " " + OUTPUT_DATA.description + "\n";
+        output += "-" + String.format(formatter, OUTPUT_DATE.id) + " " + OUTPUT_DATE.description + "\n";
         
         output += "\n\nProcessing Options:\n\n";
-        output += "-" + String.format(formatter, THREADS.id) + THREADS.description + "\n";
-        output += "-" + String.format(formatter, PROTEIN_INDEX.id) + PROTEIN_INDEX.description + "\n";
+        output += "-" + String.format(formatter, THREADS.id) + " " + THREADS.description + "\n";
+        output += "-" + String.format(formatter, PROTEIN_INDEX.id) + " " + PROTEIN_INDEX.description + "\n";
 
-        output += "\n\nOptional temporary folder:\n\n";
-        output += "-" + String.format(formatter, PathSettingsCLIParams.ALL.id) + PathSettingsCLIParams.ALL.description + "\n";
+        output += "\n\nOptional Temporary Folder:\n\n";
+        output += "-" + String.format(formatter, PathSettingsCLIParams.ALL.id) + " " + PathSettingsCLIParams.ALL.description + "\n";
         
         output += "\n\n\nFor identification parameters options:\nReplace eu.isas.searchgui.cmd.SearchCLI with eu.isas.searchgui.cmd.IdentificationParametersCLI\n\n";
 
