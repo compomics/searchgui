@@ -61,7 +61,7 @@ public class SearchCLI implements Callable {
     public SearchCLI(String[] args) {
 
         try {
-            // Load Enzymes
+            // load enzymes
             try {
                 enzymeFactory.importEnzymes(SearchHandler.getEnzymesFile(getJarFilePath()));
             } catch (Exception e) {
