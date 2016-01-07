@@ -2172,7 +2172,23 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                     }
 
-                    rawFiles.addAll(tempRawFiles);
+                    // if wiff files are used, check if the related wiff.scan is present
+                    for (File tempRawfile : tempRawFiles) {
+                        if (tempRawfile.getName().endsWith(MsFormat.wiff.fileNameEnding)) {
+
+                            String wiffScanFilePath = tempRawfile.getAbsolutePath() + ".scan";
+
+                            if (!new File(wiffScanFilePath).exists()) {
+                                JOptionPane.showMessageDialog(finalRef,
+                                        "Could not find the related .wiff.scan file for " + tempRawfile.getName() + "."
+                                        + "\nPlease put it in the same folder as the wiff file.", "Missing Scan File", JOptionPane.INFORMATION_MESSAGE);
+                            } else {
+                                rawFiles.add(tempRawfile);
+                            }
+                        } else {
+                            rawFiles.add(tempRawfile);
+                        }
+                    }
 
                     // iterate the mgf files and validate them
                     int fileCounter = 0;
@@ -3891,7 +3907,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, searchParameters.getPtmSettings(),
                                     searchParameters.getFragmentIonAccuracyInDaltons(searchHandler.getRefMass()), true);
@@ -3930,7 +3947,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMyriMatchParameters.equals(newMyriMatchParameters)) {
-                    
+
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -3944,7 +3961,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters, true);
                             break;
@@ -3982,7 +4000,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMsAmandaParameters.equals(newMsAmandaParameters)) {
-                    
+
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -3996,7 +4014,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters, true);
                             break;
@@ -4037,7 +4056,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMsgfParameters.equals(newMsgfParameters)) {
-                    
+
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -4051,7 +4070,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters, true);
                             break;
@@ -4092,7 +4112,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldOmssaParameters.equals(newOmssaParameters)) {
-                    
+
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -4106,7 +4126,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters, true);
                             break;
@@ -4144,7 +4165,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldCometParameters.equals(newCometParameters)) {
-                    
+
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -4158,7 +4179,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             cometSettingsDialog = new CometSettingsDialog(this, newCometParameters, true);
                             break;
@@ -4199,7 +4221,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldTideParameters.equals(newTideParameters)) {
-                    
+
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -4213,7 +4235,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             tideParametersDialog = new TideSettingsDialog(this, newTideParameters, true);
                             break;
@@ -4254,7 +4277,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldAndromedaParameters.equals(newAndromedaParameters)) {
-                    
+
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -4268,7 +4291,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 e.printStackTrace();
                                 JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
                                         + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }   break;
+                            }
+                            break;
                         case JOptionPane.CANCEL_OPTION:
                             andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters, true);
                             break;

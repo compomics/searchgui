@@ -81,14 +81,20 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(CommandLineUtils.getCommandLineArgument(proteoWizardFolder));
         process_name_array.add(CommandLineUtils.getCommandLineArgument(rawFile));
 
-        process_name_array.add("-o");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(destinationFolder));
-
         MsFormat msFormat = msConvertParameters.getMsFormat();
         if (msFormat == null) {
             msFormat = MsFormat.mgf;
         }
         process_name_array.add("--" + msFormat.commandLineOption);
+        
+        process_name_array.add("-o");
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(destinationFolder));
+        
+        // set the name of the output file
+        if (rawFile.getName().lastIndexOf(".") != -1) {
+            process_name_array.add("--outfile");
+            process_name_array.add(rawFile.getName().substring(0, rawFile.getName().lastIndexOf(".")) + msFormat.fileNameEnding);
+        }
 
         if (displayProgress) {
             process_name_array.add("-v");

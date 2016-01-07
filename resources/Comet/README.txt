@@ -1,18 +1,12 @@
-2015/11/24
+2016/01/07
 
-Comet version "2015.02 rev. 3".
+Comet version "2015.02 rev. 4".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
-- Fix incorrect MGF parsing where blank lines in the MGF file would cause
-  an error.
-- Fix n-term distance constraint variable mod searches.
-- Change output file extension to ".pin" from ".tsv" for Percolator output
-  files.
-- Fix negative deltaCn values in text file output when no second hit is
-  present.
-- Fix case where double decoy string is appended to the protein accession
-  for decoy matches.
+- Additional parsing changes for better MGF support.
+- pepXML output:  correct "mod_cterm_mass" value and escape special characters
+  in "spectrumNativeID" values.
 
 Comet is an open source MS/MS database search engine released under the
 Apache 2.0 license.
