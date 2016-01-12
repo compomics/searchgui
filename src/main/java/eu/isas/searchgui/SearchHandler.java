@@ -351,7 +351,7 @@ public class SearchHandler {
         enableMsAmanda = loadSearchEngineLocation(Advocate.msAmanda, false, true, true, true, false, false, false);
         enableMyriMatch = loadSearchEngineLocation(Advocate.myriMatch, false, true, false, true, true, false, true);
         enableComet = loadSearchEngineLocation(Advocate.comet, false, true, false, true, true, false, false);
-        enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, false, false, true);
+        enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, true, false, true);
         enableAndromeda = loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false);
         loadSearchEngineLocation(null, false, true, true, true, false, false, true);
         this.identificationParametersFile = identificationParametersFile;
@@ -461,7 +461,7 @@ public class SearchHandler {
         if (tideFolder != null) {
             this.tideLocation = tideFolder;
         } else {
-            loadSearchEngineLocation(Advocate.tide, false, true, true, true, false, false, true); // try to use the default
+            loadSearchEngineLocation(Advocate.tide, false, true, true, true, true, false, true); // try to use the default
         }
 
         if (andromedaFolder != null) {

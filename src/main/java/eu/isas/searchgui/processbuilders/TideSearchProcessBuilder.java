@@ -121,7 +121,11 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         // precursor charges
         process_name_array.add("--spectrum-charge");
         process_name_array.add(tideParameters.getSpectrumCharges());
-
+        
+        // max precursor charge
+        //process_name_array.add("--max-precursor-charge"); // The maximum charge state of a spectra to consider in search. Default = 5.
+        //process_name_array.add(tideParameters.getMaxPrecursorCharge()); // @TODO: implement me?
+        //
         // scan number 
         //process_name_array.add("--scan-number");
         //process_name_array.add("<int>|<int>-<int>"); // @TODO: implement?

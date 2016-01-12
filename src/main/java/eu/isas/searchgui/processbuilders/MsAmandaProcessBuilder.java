@@ -304,7 +304,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                         }
                         bw.write("    <position>" + cleavageType + "</position>" + System.getProperty("line.separator"));
                     }
-                    
+
                     bw.write("  </enzyme>" + System.getProperty("line.separator"));
                 }
             }
@@ -425,9 +425,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             case PTM.MODAA:
                 // not terminal
                 break;
-            case PTM.MODC: // @TODO: not supported in MS Amanda!
-            case PTM.MODCAA: // @TODO: not supported in MS Amanda!
-                proteinTag = " protein=\"true\"";
+            case PTM.MODC: 
+            case PTM.MODCAA:
+                //proteinTag = " protein=\"true\""; // note: MS Amanda Manual: "Protein level modifications are only valid in combination with n‐terminal modifications"
                 cTermTag = " cterm=\"true\"";
                 break;
             case PTM.MODCP:
@@ -450,7 +450,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         // get the targeted amino acids
         if (ptm.getType() == PTM.MODAA
                 || ptm.getType() == PTM.MODCAA
-                || ptm.getType() == PTM.MODCPAA // @TODO: not suppported
+                || ptm.getType() == PTM.MODCPAA
                 || ptm.getType() == PTM.MODNAA
                 || ptm.getType() == PTM.MODNPAA) {
             for (Character aa : ptm.getPattern().getAminoAcidsAtTarget()) {
