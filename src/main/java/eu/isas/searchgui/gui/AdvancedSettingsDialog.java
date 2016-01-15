@@ -61,10 +61,14 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             proteinTreeComboBox.setSelectedIndex(1);
         }
         groupResultFilesCmb.setSelectedIndex(currentSearchHandler.getOutputOption().id);
-        if (!currentSearchHandler.outputData()) {
+        if (currentSearchHandler.outputData()) {
+            includeDataCmb.setSelectedIndex(0);
+        } else {
             includeDataCmb.setSelectedIndex(1);
         }
-        if (!currentSearchHandler.isIncludeDateInOutputName()) {
+        if (currentSearchHandler.isIncludeDateInOutputName()) {
+            includeDateCmb.setSelectedIndex(0);
+        } else {
             includeDateCmb.setSelectedIndex(1);
         }
 
