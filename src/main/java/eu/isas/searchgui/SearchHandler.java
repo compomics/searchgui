@@ -279,7 +279,8 @@ public class SearchHandler {
      */
     private OutputOption outputOption = OutputOption.grouped; // @TODO: should be moved to SearchGUI user preferences
     /**
-     * Reference mass for the conversion of the fragment ion tolerance from ppm to Dalton.
+     * Reference mass for the conversion of the fragment ion tolerance from ppm
+     * to Dalton.
      */
     private Double refMass = 2000.0; // @TODO: should be moved to SearchGUI user preferences
     /**
@@ -1578,18 +1579,22 @@ public class SearchHandler {
     }
 
     /**
-     * Returns the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton.
-     * 
-     * @return the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton
+     * Returns the reference mass for the conversion of the fragment ion
+     * tolerance from ppm to Dalton.
+     *
+     * @return the reference mass for the conversion of the fragment ion
+     * tolerance from ppm to Dalton
      */
     public Double getRefMass() {
         return refMass;
     }
 
     /**
-     * Sets the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton.
-     * 
-     * @param refMass the reference mass for the conversion of the fragment ion tolerance from ppm to Dalton
+     * Sets the reference mass for the conversion of the fragment ion tolerance
+     * from ppm to Dalton.
+     *
+     * @param refMass the reference mass for the conversion of the fragment ion
+     * tolerance from ppm to Dalton
      */
     public void setRefMass(Double refMass) {
         this.refMass = refMass;
@@ -1807,7 +1812,7 @@ public class SearchHandler {
                 if (isOmssaEnabled()) {
                     nProgress += nFilesToSearch;
                 }
-                if (isXtandemEnabled()) {
+                if (enableXtandem) {
                     nProgress += nFilesToSearch;
                 }
                 if (enableMsgf) {
@@ -2113,7 +2118,7 @@ public class SearchHandler {
                     File ms2File = null;
 
                     if (enableTide && !waitingHandler.isRunCanceled()) {
-                        
+
                         waitingHandler.appendReport("Converting spectrum file " + spectrumFileName + " for Tide.", true, true);
                         ms2File = new File(getPeakListFolder(getJarFilePath()), Util.removeExtension(spectrumFileName) + ".ms2");
                         Ms2Exporter.mgfToMs2(spectrumFile, ms2File, true);
@@ -2351,9 +2356,8 @@ public class SearchHandler {
                         waitingHandler.appendReport("No identification files to process with PeptideShaker!", true, true);
                         waitingHandler.appendReportEndLine();
                     }
-                } else // cancel the protein tree if not done
-                {
-                    if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
+                } else {
+                    if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) { // cancel the protein tree if not done
                         proteinTreeWorker.cancelBuild();
                         while (!proteinTreeWorker.isFinished()) {
                             // wait until the tree is closed
