@@ -324,6 +324,10 @@ public class SearchHandler {
      * The folder where to save the logs.
      */
     private File logFolder = null;
+    /**
+     * The output time stamp.
+     */
+    private static String outputTimeStamp = null;
 
     /**
      * Constructor for the SearchGUI command line interface. Uses the
@@ -2224,6 +2228,8 @@ public class SearchHandler {
                         }
                     }
                 }
+                
+                outputTimeStamp = getOutputDate();
 
                 if (!waitingHandler.isRunCanceled()) {
                     // organize the output files
@@ -2233,7 +2239,7 @@ public class SearchHandler {
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
-                if (enablePeptideShaker && !waitingHandler.isRunCanceled()) {
+                if (enablePeptideShaker && !waitingHandler.isRunCanceled()) { // @TODO: the output file checks below don't work when the date is added to the file name... 
 
                     ArrayList<File> identificationFilesList = new ArrayList<File>();
                     identificationFilesList.addAll(mascotFiles);
@@ -2739,7 +2745,7 @@ public class SearchHandler {
         String fileName = "";
         fileName += DEFAULT_OUTPUT;
         if (includeDate) {
-            fileName += "_" + getOutputDate();
+            fileName += "_" + outputTimeStamp;
         }
         fileName += DEFAULT_OUTPUT_FILE_NAME_ENDING;
         return new File(outputFolder, fileName);
@@ -2760,7 +2766,7 @@ public class SearchHandler {
         String fileName = classifier;
         fileName += "_" + DEFAULT_OUTPUT;
         if (includeDate) {
-            fileName += "_" + getOutputDate();
+            fileName += "_" + outputTimeStamp;
         }
         fileName += DEFAULT_OUTPUT_FILE_NAME_ENDING;
         return new File(outputFolder, fileName);
@@ -2775,6 +2781,15 @@ public class SearchHandler {
     public static String getOutputDate() {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
         return df.format(new Date());
+    }
+    
+    /**
+     * Set the current output time stamp.
+     * 
+     * @param outputTimeStamp the current output time stamp
+     */
+    public void setOutputTimeStamp(String outputTimeStamp) {
+        SearchHandler.outputTimeStamp = outputTimeStamp;
     }
 
     /**

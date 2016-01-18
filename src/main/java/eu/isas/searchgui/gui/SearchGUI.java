@@ -2552,6 +2552,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
             }
 
+            searchHandler.setOutputTimeStamp(SearchHandler.getOutputDate());
+
             OutputOption outputOption = searchHandler.getOutputOption();
 
             if (outputOption == OutputOption.grouped) {
