@@ -364,7 +364,11 @@ public class SearchCLIInputBean {
      * @return the identification parameters file
      */
     public File getIdentificationParametersFile() {
-        return identificationParametersInputBean.getDestinationFile();
+        if (identificationParametersInputBean.getDestinationFile() != null) {
+            return identificationParametersInputBean.getDestinationFile();
+        } else {
+            return identificationParametersInputBean.getInputFile();
+        }
     }
 
     /**

@@ -244,6 +244,8 @@ public class SearchCLI implements Callable {
                 String name = identificationParameters.getName();
                 if (name == null) {
                     name = "SearchCLI.par";
+                } else {
+                    name += ".par";
                 }
                 parametersFile = new File(searchCLIInputBean.getOutputFile(), name);
                 IdentificationParameters.saveIdentificationParameters(identificationParameters, parametersFile);
