@@ -2233,7 +2233,11 @@ public class SearchHandler {
 
                 if (!waitingHandler.isRunCanceled()) {
                     // organize the output files
-                    waitingHandler.appendReport("Zipping output files.", true, true);
+                    if (outputOption != OutputOption.no_zip) {
+                        waitingHandler.appendReport("Zipping output files.", true, true);
+                    } else {
+                        waitingHandler.appendReport("Preparing output files.", true, true);
+                    }
                     waitingHandler.appendReportEndLine();
                     organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, includeDateInOutputName);
                     waitingHandler.increasePrimaryProgressCounter();
