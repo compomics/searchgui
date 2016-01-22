@@ -1,12 +1,15 @@
-2016/01/07
+2016/01/22
 
-Comet version "2015.02 rev. 4".
+Comet version "2015.02 rev. 5".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
-- Additional parsing changes for better MGF support.
-- pepXML output:  correct "mod_cterm_mass" value and escape special characters
-  in "spectrumNativeID" values.
+- pepXML output:  correctly report modified_peptide string; previously missing
+  static modifications and case where terminal mod strings were not encoded
+- MGF file parsing: fix how fragment masses are adjusted when their
+  fragment ion charge states are present.
+- RAW file parsing: update MSToolkit to not report warning of unknown tokens
+  't' and 'E'.
 
 Comet is an open source MS/MS database search engine released under the
 Apache 2.0 license.
