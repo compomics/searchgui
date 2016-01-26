@@ -531,7 +531,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, one sequence copy\">no</note>" + System.getProperty("line.separator")
                     + "\t\t<note>values = yes|no, set to yes to produce only one copy of each protein sequence in the output xml</note>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"output, results\">all</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"output, results\">" + xtandemParameters.getOutputResults() + "</note>" + System.getProperty("line.separator")
                     + "\t\t<note>values = all|valid|stochastic</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, maximum valid expectation value\">" + xtandemParameters.getMaxEValue() + "</note>" + System.getProperty("line.separator")
                     + "\t\t<note>value is used in the valid|stochastic setting of output, results</note>" + System.getProperty("line.separator")
