@@ -86,6 +86,7 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_REFINE_SNAPS.id) + " " + IdentificationParametersCLIParams.XTANDEM_REFINE_SNAPS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_REFINE_SPECTRUM_SYNTHESIS.id) + " " + IdentificationParametersCLIParams.XTANDEM_REFINE_SPECTRUM_SYNTHESIS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_EVALUE.id) + " " + IdentificationParametersCLIParams.XTANDEM_EVALUE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_RESULTS.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_RESULTS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_PROTEINS.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_PROTEINS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_SEQUENCES.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_SEQUENCES.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_SPECTRA.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_SPECTRA.description + "\n";
