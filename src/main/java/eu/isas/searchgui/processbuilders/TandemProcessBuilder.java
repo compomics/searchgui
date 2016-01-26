@@ -326,6 +326,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"protein, taxon\">all</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, path\">" + spectrumFile + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, path\">" + outputPath + "</note>" + System.getProperty("line.separator")
+                    //+ "\t<note type=\"input\" label=\"output, mzid\">yes</note>" + System.getProperty("line.separator") // @TODO: add support for mzid? requires that "output, results" below is set to "valid"...
                     + "</bioml>" + System.getProperty("line.separator"));
             bw.flush();
             bw.close();
@@ -442,7 +443,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\tpeaks in the spectrum. X! tandem does not do any peak finding: it only" + System.getProperty("line.separator")
                     + "\t\tlimits the peaks used by this parameter, and the dynamic range parameter.</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, maximum parent charge\">" + maxCharge + "</note>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"spectrum, use noise suppression\">" + noiseSuppression + "</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"spectrum, use noise suppression\">" + noiseSuppression + "</note>" + System.getProperty("line.separator") // note:  Note: ignored in X!Tandem VENGEANCE (2015.12.15) and newer
                     + "\t<note type=\"input\" label=\"spectrum, minimum parent m+h\">" + xtandemParameters.getMinPrecursorMass() + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, minimum fragment mz\">" + xtandemParameters.getMinFragmentMz() + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, minimum peaks\">" + xtandemParameters.getMinPeaksPerSpectrum() + "</note> " + System.getProperty("line.separator")
@@ -485,6 +486,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"protein, C-terminal residue modification mass\">" + fixedCtermProteinMod + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"protein, homolog management\">no</note>" + System.getProperty("line.separator")
                     + "\t\t<note>if yes, an upper limit is set on the number of homologues kept for a particular spectrum</note>" + System.getProperty("line.separator")
+                    //+ "\t<note type=\"input\" label=\"protein, ptm complexity\">6.0</note>" + System.getProperty("line.separator") // @TODO: implement me?
+                    // (C, a floating point number 0.0–12.0) sets the maximum number of variable modification alternatives that will be tested for a particular peptide. 
+                    // The number of alternatives is 2.0C. If this number is not specified, the default value C = 6.0 will be used. 
                     + System.getProperty("line.separator")
                     + getRefinementParametersSection()
                     + System.getProperty("line.separator")
@@ -507,7 +511,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"output, message\"></note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, one sequence copy\">no</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, sequence path\"></note>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"output, path\">output.xml</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"output, path\">" + outputPath + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, sort results by\">spectrum</note>" + System.getProperty("line.separator")
                     + "\t\t<note>values = protein|spectrum (spectrum is the default)</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, path hashing\">yes</note>" + System.getProperty("line.separator")
@@ -516,7 +520,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"output, parameters\">yes</note>" + System.getProperty("line.separator")
                     + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, performance\">yes</note>" + System.getProperty("line.separator")
-                    + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")
+                    + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")      
                     + "\t<note type=\"input\" label=\"output, spectra\">" + outputSpectra + "</note>" + System.getProperty("line.separator")
                     + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, histograms\">" + outputHistograms + "</note>" + System.getProperty("line.separator")
@@ -681,6 +685,17 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String getSearchedModList(ArrayList<String> variableModifications, ArrayList<String> fixedModifications) throws IllegalArgumentException {
 
+        // @TODO: The specification of a variable modification can include a value for the maximum number of modification sites to be considered in a single peptide
+        //          example: If you wish only to consider one such modification per peptide, you can now write "15.994915@1M". Any number from 1–10 can be used in 
+        //                   this notation. If not specified, a default value of 10 is used. 
+        //
+        // @TODO: It is possible to specify that a variable modification NOT occur at the C-terminus of a peptide. For example, previously "42.010565@K" would have 
+        //        been used to test for K acetylation. Using the new notation, "42.010565@]K" can be used, which will not test C-terminal lysines for acetylation 
+        //        (which are chemically impossible for tryptic peptides). This notation is useful for most lysine post-translational modifications, as well as 
+        //        dimethyl-arginine. Note: monomethyl-arginine and -lysine are both susceptible to trypsin cleavage, so this notation is not recommended for monomethyl 
+        //        variable modifications. It is also not recommended for use with carbamylation — a urea artifact that can occur during tryptic digestion — although 
+        //        reducing the number of carbamylations allowed per peptide, e.g., "43.005814@1K", can be quite useful. 
+        // 
         String completeModificationString = "";
 
         String variableModsString = "\t<note type=\"input\" label=\"residue, potential modification mass\">";
