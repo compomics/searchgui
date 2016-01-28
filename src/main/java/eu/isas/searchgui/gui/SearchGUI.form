@@ -662,7 +662,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="andromedaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a href=&quot;http://www.andromeda-search.org&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a href=&quot;http://coxdocs.org/doku.php?id=maxquant:andromeda:start&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Andromeda web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>

@@ -864,7 +864,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a href=\"http://www.andromeda-search.org\">Andromeda web page</a></html> ");
+        andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a href=\"http://coxdocs.org/doku.php?id=maxquant:andromeda:start\">Andromeda web page</a></html> ");
         andromedaLinkLabel.setToolTipText("Open the Andromeda web page");
         andromedaLinkLabel.setEnabled(false);
         andromedaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -3728,7 +3728,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void andromedaLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_andromedaLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://www.andromeda-search.org");
+        BareBonesBrowserLaunch.openURL("http://coxdocs.org/doku.php?id=maxquant:andromeda:start");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_andromedaLinkLabelMouseClicked
 
