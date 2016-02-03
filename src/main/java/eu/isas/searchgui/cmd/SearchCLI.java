@@ -253,6 +253,11 @@ public class SearchCLI implements Callable {
 
             // Load the fasta file in the factory
             SearchParameters searchParameters = identificationParameters.getSearchParameters();
+            String error = SearchHandler.loadModifications(searchParameters);
+            if (error != null) {
+                System.out.println(error);
+            }
+            
             File fastaFile = searchParameters.getFastaFile();
             SequenceFactory.getInstance(1000000).loadFastaFile(fastaFile);
 

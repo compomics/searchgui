@@ -494,8 +494,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             try {
                 identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
-                SearchParameters searchParameters = identificationParameters.getSearchParameters();
-                loadModifications(searchParameters);
+
+                // load project specific PTMs
+                String error = SearchHandler.loadModifications(getIdentificationParameters().getSearchParameters());
+                if (error != null) {
+                    JOptionPane.showMessageDialog(this,
+                            error,
+                            "PTM Definition Changed", JOptionPane.WARNING_MESSAGE);
+                }
 
                 if (identificationParametersFactory.getParametersList().contains(identificationParameters.getName())) {
                     identificationParameters.setName(getIdentificationSettingsFileName());
@@ -3843,6 +3849,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile((String) settingsComboBox.getSelectedItem());
             try {
                 identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
+
+                // load project specific PTMs
+                String error = SearchHandler.loadModifications(identificationParameters.getSearchParameters());
+                if (error != null) {
+                    JOptionPane.showMessageDialog(this,
+                            error,
+                            "PTM Definition Changed", JOptionPane.WARNING_MESSAGE);
+                }
+
                 enableSearchEnginePanel(true);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
@@ -4704,32 +4719,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         searchButton.setEnabled(valid);
         return valid;
-    }
-
-    /**
-     * Verifies that the modifications backed-up in the search parameters are
-     * loaded and alerts the user in case conflicts are found.
-     *
-     * @param searchParameters the search parameters to load
-     */
-    private void loadModifications(SearchParameters searchParameters) {
-        ArrayList<String> toCheck = ptmFactory.loadBackedUpModifications(searchParameters, false);
-        if (!toCheck.isEmpty()) {
-            String message = "The definition of the following PTM(s) seems to have changed and were not loaded:\n";
-            for (int i = 0; i < toCheck.size(); i++) {
-                if (i > 0) {
-                    if (i < toCheck.size() - 1) {
-                        message += ", ";
-                    } else {
-                        message += " and ";
-                    }
-                }
-                message += toCheck.get(i);
-            }
-            message += ".\nPlease verify the definition of the PTM(s) in the modifications editor.";
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    message, "PTM Definition Obsolete", JOptionPane.OK_OPTION);
-        }
     }
 
     /**

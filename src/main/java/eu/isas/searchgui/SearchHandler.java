@@ -5,6 +5,7 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.db.DerbyUtil;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
@@ -3335,5 +3336,33 @@ public class SearchHandler {
      */
     public void setLogFolder(File logFolder) {
         this.logFolder = logFolder;
+    }
+    
+    /**
+     * Verifies that the modifications backed-up in the search parameters are
+     * loaded and returns an error message if one was already loaded, null
+     * otherwise.
+     *
+     * @param searchParameters the search parameters to load
+     * @return an error message if one was already loaded, null otherwise
+     */
+    public static String loadModifications(SearchParameters searchParameters) {
+        String error = null;
+        ArrayList<String> toCheck = PTMFactory.getInstance().loadBackedUpModifications(searchParameters, true);
+        if (!toCheck.isEmpty()) {
+            error = "The definition of the following PTM(s) seems to have changed and were overwritten:\n";
+            for (int i = 0; i < toCheck.size(); i++) {
+                if (i > 0) {
+                    if (i < toCheck.size() - 1) {
+                        error += ", ";
+                    } else {
+                        error += " and ";
+                    }
+                }
+                error += toCheck.get(i);
+            }
+            error += ".\nPlease verify the definition of the PTM(s) in the modifications editor.";
+        }
+        return error;
     }
 }
