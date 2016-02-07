@@ -2229,7 +2229,7 @@ public class SearchHandler {
                         }
                     }
                 }
-                
+
                 outputTimeStamp = getOutputDate();
 
                 if (!waitingHandler.isRunCanceled()) {
@@ -2367,18 +2367,32 @@ public class SearchHandler {
                         waitingHandler.appendReport("No identification files to process with PeptideShaker!", true, true);
                         waitingHandler.appendReportEndLine();
                     }
-                } else {
-                    if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) { // cancel the protein tree if not done
-                        proteinTreeWorker.cancelBuild();
-                        while (!proteinTreeWorker.isFinished()) {
-                            // wait until the tree is closed
-                            Thread.sleep(10);
-                        }
+                } else if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) { // cancel the protein tree if not done
+                    proteinTreeWorker.cancelBuild();
+                    while (!proteinTreeWorker.isFinished()) {
+                        // wait until the tree is closed
+                        Thread.sleep(10);
                     }
                 }
 
                 if (!outputFolder.getAbsolutePath().equals(outputTempFolder.getAbsolutePath())) {
-                    Util.deleteDir(outputTempFolder);
+                    boolean deleteTempFolder = true;
+                    if (!identificationFiles.isEmpty() && waitingHandler.isRunCanceled() && waitingHandler instanceof WaitingDialog) {
+
+                        WaitingDialog guiWaitingDialog = (WaitingDialog) waitingHandler;
+                        
+                        // change the icon to the normal icon
+                        ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
+
+                        int option = JOptionPane.showConfirmDialog(guiWaitingDialog, "Keep the partial search results?", "Keep Partial Results?", JOptionPane.YES_NO_OPTION);
+                        deleteTempFolder = (option == JOptionPane.NO_OPTION);
+                        
+                        // change the icon to the waiting icon
+                        ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                    }
+                    if (deleteTempFolder) {
+                        Util.deleteDir(outputTempFolder);
+                    }
                 }
 
                 if (enableAndromeda && AndromedaProcessBuilder.getTempFolderPath() != null) {
@@ -2787,10 +2801,10 @@ public class SearchHandler {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
         return df.format(new Date());
     }
-    
+
     /**
      * Set the current output time stamp.
-     * 
+     *
      * @param outputTimeStamp the current output time stamp
      */
     public void setOutputTimeStamp(String outputTimeStamp) {
@@ -3337,7 +3351,7 @@ public class SearchHandler {
     public void setLogFolder(File logFolder) {
         this.logFolder = logFolder;
     }
-    
+
     /**
      * Verifies that the modifications backed-up in the search parameters are
      * loaded and returns an error message if one was already loaded, null
