@@ -31,7 +31,7 @@
 
 ## Introduction
 
-SearchGUI is a user-friendly open-source graphical user interface for configuring and running proteomics identification search engines, currently supporting [X!Tandem](http://www.thegpm.org/tandem), [MS-GF+](https://bix-lab.ucsd.edu/pages/viewpage.action?pageId#13533355), [MS Amanda](http://ms.imp.ac.at/?goto#msamanda), [MyriMatch](http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.andromeda-search.org) and [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683).
+SearchGUI is a user-friendly open-source graphical user interface for configuring and running proteomics identification search engines, currently supporting [X!Tandem](http://www.thegpm.org/tandem), [MS-GF+](http://www.ncbi.nlm.nih.gov/pubmed/?term=25358478), [MS Amanda](http://ms.imp.ac.at/?goto#msamanda), [MyriMatch](http://www.ncbi.nlm.nih.gov/pubmed/?term=17269722), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.andromeda-search.org) and [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683).
 
 To start using SearchGUI, unzip the downloaded file, and double-click the `SearchGUI-X.Y.Z.jar file`. No additional installation required!
 
@@ -122,6 +122,8 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
  * **Linux and Mac OSX File Permissions** - On Linux and Mac OSX you may have to edit the permissions for the executable files in order for SearchGUI to work. Allow execution for all users.
 
  * **32 bits vs 64 bits** - Please make sure that your using versions of the search engines that are compatible with your OS. Note that the latest releases of OMSSA are only available in 64 bits versions. For older versions of OMSSA see the [OMSSA archive](ftp://ftp.ncbi.nlm.nih.gov/pub/lewisg/omssa). However, it is always recommended to use the latest version if possible. Also note that OMSSA versions up until version 2.1.9 does not support precursor mass tolerance in ppm.
+
+* **Headless mode** - When running the command lines on systems without a grahpical user interface you may get errors related to X11. If that happens try adding `-Djava.awt.headless=true` to the command line.
 
  * **Problem Not Solved? Or Problem Not List?** - Contact the developers of SearchGUI by setting up an [issue](https://github.com/compomics/searchgui/issues) describing the problem. If the issue is related to the installation of the search engines, please contact the search engine developers directly.
 
