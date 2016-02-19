@@ -1840,8 +1840,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msconvertSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_only_gray.png"))); // NOI18N
-        msconvertSupportButton.setToolTipText("Supported on Windows");
+        msconvertSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        msconvertSupportButton.setToolTipText("<html>\nSupported on Windows, Mac and Linux<br>\nVendor raw file conversion requires Windows\n</html>");
         msconvertSupportButton.setBorderPainted(false);
         msconvertSupportButton.setContentAreaFilled(false);
 
