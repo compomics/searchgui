@@ -1,5 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.Enzyme;
@@ -10,6 +11,7 @@ import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters;
+import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters.CometOutputFormat;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -196,7 +198,6 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     /////////////////////////
                     + "database_name = " + searchParameters.getFastaFile().getAbsolutePath() + System.getProperty("line.separator")
                     + "decoy_search = 0 # 0=no (default), 1=concatenated search, 2=separate search" + System.getProperty("line.separator")
-                    + System.getProperty("line.separator")
                     /////////////////////////
                     // number of threads
                     /////////////////////////
@@ -209,11 +210,11 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "# masses" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
                     + "peptide_mass_tolerance = " + searchParameters.getPrecursorAccuracy() + System.getProperty("line.separator")
-                    + "peptide_mass_units = " + precursorToleranceType + " # 0=amu, 1=mmu, 2=ppm" + System.getProperty("line.separator")
+                    + "peptide_mass_units = " + precursorToleranceType + "           # 0=amu, 1=mmu, 2=ppm" + System.getProperty("line.separator")
                     + "mass_type_parent = 1                   # 0=average masses, 1=monoisotopic masses" + System.getProperty("line.separator")
                     + "mass_type_fragment = 1                 # 0=average masses, 1=monoisotopic masses" + System.getProperty("line.separator")
                     + "precursor_tolerance_type = 0           # 0=MH+ (default), 1=precursor m/z; only valid for amu/mmu tolerances" + System.getProperty("line.separator")
-                    + "isotope_error = " + cometParameters.getIsotopeCorrection() + " # 0=off, 1=on -1/0/1/2/3 (standard C13 error), 2= -8/-4/0/4/8 (for +4/+8 labeling)" + System.getProperty("line.separator")
+                    + "isotope_error = " + cometParameters.getIsotopeCorrection() + "           # 0=off, 1=on -1/0/1/2/3 (standard C13 error), 2= -8/-4/0/4/8 (for +4/+8 labeling)" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // enzyme
@@ -221,14 +222,15 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "#" + System.getProperty("line.separator")
                     + "# search enzyme" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
-                    + "search_enzyme_number = " + searchParameters.getEnzyme().getId() + " # choose from list at end of this params file" + System.getProperty("line.separator")
-                    + "num_enzyme_termini = " + enzymeType + " # valid values are 1 (semi-digested), 2 (fully digested, default), 8 N-term, 9 C-term" + System.getProperty("line.separator")
-                    + "allowed_missed_cleavage = " + searchParameters.getnMissedCleavages() + " # maximum value is 5; for enzyme search" + System.getProperty("line.separator")
+                    + "search_enzyme_number = " + searchParameters.getEnzyme().getId() + "           # choose from list at end of this params file" + System.getProperty("line.separator")
+                    + "num_enzyme_termini = " + enzymeType + "           # valid values are 1 (semi-digested), 2 (fully digested, default), 8 N-term, 9 C-term" + System.getProperty("line.separator")
+                    + "allowed_missed_cleavage = " + searchParameters.getnMissedCleavages() + "           # maximum value is 5; for enzyme search" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // variable modifications
                     /////////////////////////
                     + getVariableModifications()
+                    + System.getProperty("line.separator")
                     /////////////////////////
                     // fragment ions
                     /////////////////////////
@@ -252,15 +254,15 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "# output" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
                     + "output_sqtstream = 0                   # 0=no, 1=yes  write sqt to standard output" + System.getProperty("line.separator")
-                    + "output_sqtfile = 0                     # 0=no, 1=yes  write sqt file" + System.getProperty("line.separator")
-                    + "output_txtfile = 0                     # 0=no, 1=yes  write tab-delimited txt file" + System.getProperty("line.separator")
-                    + "output_pepxmlfile = 1                  # 0=no, 1=yes  write pep.xml file" + System.getProperty("line.separator")
-                    + "output_percolatorfile = 0              # 0=no, 1=yes  write Percolator tab-delimited input file" + System.getProperty("line.separator")
-                    + "output_outfiles = 0                    # 0=no, 1=yes  write .out files" + System.getProperty("line.separator")
-                    + "print_expect_score = 1                 # 0=no, 1=yes to replace Sp with expect in out & sqt" + System.getProperty("line.separator")
-                    + "num_output_lines = " + cometParameters.getNumberOfSpectrumMatches() + " # num peptide results to show" + System.getProperty("line.separator")
+                    + "output_sqtfile = " + outputFormat(CometOutputFormat.SQT) + "                 # 0=no, 1=yes  write sqt file" + System.getProperty("line.separator")
+                    + "output_txtfile = " + outputFormat(CometOutputFormat.TXT) + "                 # 0=no, 1=yes  write tab-delimited txt file" + System.getProperty("line.separator")
+                    + "output_pepxmlfile = " + outputFormat(CometOutputFormat.PepXML) + "                 # 0=no, 1=yes  write pep.xml file" + System.getProperty("line.separator")
+                    + "output_percolatorfile = " + outputFormat(CometOutputFormat.Percolator) + "                 # 0=no, 1=yes  write Percolator tab-delimited input file" + System.getProperty("line.separator")
+                    + "output_outfiles = 0                 # 0=no, 1=yes  write .out files" + System.getProperty("line.separator")
+                    + "print_expect_score = " + Util.convertBooleanToInteger(cometParameters.getPrintExpectScore()) + "                 # 0=no, 1=yes to replace Sp with expect in out & sqt" + System.getProperty("line.separator")
+                    + "num_output_lines = " + cometParameters.getNumberOfSpectrumMatches() + "                 # num peptide results to show" + System.getProperty("line.separator")
                     + "show_fragment_ions = 0                 # 0=no, 1=yes for out files only" + System.getProperty("line.separator")
-                    + "sample_enzyme_number = " + searchParameters.getEnzyme().getId() + " # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator") // @TODO: set enzyme!
+                    + "sample_enzyme_number = " + searchParameters.getEnzyme().getId() + "               # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator") // @TODO: set enzyme!
                     + "                                       # Used to calculate NTT & NMC in pepXML output (default=1 for trypsin)." + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
@@ -281,14 +283,14 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "#" + System.getProperty("line.separator")
                     + "# misc parameters" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
-                    + "digest_mass_range = " + cometParameters.getMinPrecursorMass() + " " + cometParameters.getMaxPrecursorMass() + " # MH+ peptide mass range to analyze" + System.getProperty("line.separator")
-                    + "num_results = " + cometParameters.getNumberOfSpectrumMatches() + " # number of search hits to store internally" + System.getProperty("line.separator")
+                    + "digest_mass_range = " + cometParameters.getMinPrecursorMass() + " " + cometParameters.getMaxPrecursorMass() + "                 # MH+ peptide mass range to analyze" + System.getProperty("line.separator")
+                    + "num_results = " + cometParameters.getNumberOfSpectrumMatches() + "                 # number of search hits to store internally" + System.getProperty("line.separator")
                     + "skip_researching = 1                   # for '.out' file output only, 0=search everything again (default), 1=don't search if .out exists" + System.getProperty("line.separator")
-                    + "max_fragment_charge = " + cometParameters.getMaxFragmentCharge() + " # set maximum fragment charge state to analyze (allowed max 5)" + System.getProperty("line.separator")
-                    + "max_precursor_charge = " + searchParameters.getMaxChargeSearched() + " # set maximum precursor charge state to analyze (allowed max 9)" + System.getProperty("line.separator")
+                    + "max_fragment_charge = " + cometParameters.getMaxFragmentCharge() + "                 # set maximum fragment charge state to analyze (allowed max 5)" + System.getProperty("line.separator")
+                    + "max_precursor_charge = " + searchParameters.getMaxChargeSearched() + "                 # set maximum precursor charge state to analyze (allowed max 9)" + System.getProperty("line.separator")
                     + "nucleotide_reading_frame = 0           # 0=proteinDB, 1-6, 7=forward three, 8=reverse three, 9=all six" + System.getProperty("line.separator")
-                    + "clip_nterm_methionine = " + clip_nterm_methionine + " # 0=leave sequences as-is; 1=also consider sequence w/o N-term methionine" + System.getProperty("line.separator")
-                    + "spectrum_batch_size = " + cometParameters.getBatchSize() + " # max. # of spectra to search at a time; 0 to search the entire scan range in one loop" + System.getProperty("line.separator")
+                    + "clip_nterm_methionine = " + clip_nterm_methionine + "                 # 0=leave sequences as-is; 1=also consider sequence w/o N-term methionine" + System.getProperty("line.separator")
+                    + "spectrum_batch_size = " + cometParameters.getBatchSize() + "                 # max. # of spectra to search at a time; 0 to search the entire scan range in one loop" + System.getProperty("line.separator")
                     + "decoy_prefix = DECOY_                  # decoy entries are denoted by this string which is pre-pended to each protein accession" + System.getProperty("line.separator")
                     + "output_suffix = .comet                 # add a suffix to output base names i.e. suffix \"-C\" generates base-C.pep.xml from base.mzXML input" + System.getProperty("line.separator")
                     + "mass_offsets =                         # one or more mass offsets to search (values substracted from deconvoluted precursor mass)" + System.getProperty("line.separator") // @TODO: implement?
@@ -299,11 +301,11 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "#" + System.getProperty("line.separator")
                     + "# spectral processing" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
-                    + "minimum_peaks = " + cometParameters.getMinPeaks() + " # required minimum number of peaks in spectrum to search (default 10)" + System.getProperty("line.separator")
-                    + "minimum_intensity = " + cometParameters.getMinPeakIntensity() + " # minimum intensity value to read in" + System.getProperty("line.separator")
-                    + "remove_precursor_peak = " + cometParameters.getRemovePrecursor() + " # 0=no, 1=yes, 2=all charge reduced precursor peaks (for ETD)" + System.getProperty("line.separator")
-                    + "remove_precursor_tolerance = " + cometParameters.getRemovePrecursorTolerance() + " # +- Da tolerance for precursor removal" + System.getProperty("line.separator")
-                    + "clear_mz_range = " + cometParameters.getLowerClearMzRange() + " " + cometParameters.getUpperClearMzRange() + " # for iTRAQ/TMT type data; will clear out all peaks in the specified m/z range" + System.getProperty("line.separator")
+                    + "minimum_peaks = " + cometParameters.getMinPeaks() + "                 # required minimum number of peaks in spectrum to search (default 10)" + System.getProperty("line.separator")
+                    + "minimum_intensity = " + cometParameters.getMinPeakIntensity() + "                 # minimum intensity value to read in" + System.getProperty("line.separator")
+                    + "remove_precursor_peak = " + cometParameters.getRemovePrecursor() + "                 # 0=no, 1=yes, 2=all charge reduced precursor peaks (for ETD)" + System.getProperty("line.separator")
+                    + "remove_precursor_tolerance = " + cometParameters.getRemovePrecursorTolerance() + "                 # +- Da tolerance for precursor removal" + System.getProperty("line.separator")
+                    + "clear_mz_range = " + cometParameters.getLowerClearMzRange() + " " + cometParameters.getUpperClearMzRange() + "                 # for iTRAQ/TMT type data; will clear out all peaks in the specified m/z range" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // fixed modifications
@@ -797,5 +799,19 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      */
     public static void setTempFolder(String cometTempFolder) {
         CometProcessBuilder.cometTempFolderPath = cometTempFolder;
+    }
+
+    /**
+     * Returns the correct integer value to indicate whether the given output
+     * format is to be used or not.
+     *
+     * @return 1 if the given output is to be generated, 0 otherwise
+     */
+    private int outputFormat(CometOutputFormat cometOutputFormat) {
+        if (cometParameters.getSelectedOutputFormat() == cometOutputFormat) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

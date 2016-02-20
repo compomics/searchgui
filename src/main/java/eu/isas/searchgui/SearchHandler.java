@@ -10,6 +10,7 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
+import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MyriMatchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.OmssaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.TideParameters;
@@ -927,7 +928,36 @@ public class SearchHandler {
      *
      * @return the name of the Comet result file
      */
-    public static String getCometFileName(String spectrumFileName) {
+    public String getCometFileName(String spectrumFileName) {
+        CometParameters cometParameters = (CometParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
+        return getCometFileName(spectrumFileName, cometParameters);
+    }
+
+    /**
+     * Returns the name of the Comet result file.
+     *
+     * @param spectrumFileName the mgf file name
+     * @param cometParameters the Comet parameters
+     *
+     * @return the name of the Comet result file
+     */
+    public static String getCometFileName(String spectrumFileName, CometParameters cometParameters) {
+
+        if (cometParameters.getSelectedOutputFormat() != null) {
+            switch (cometParameters.getSelectedOutputFormat()) {
+                case PepXML:
+                    return Util.removeExtension(spectrumFileName) + ".comet.pep.xml";
+                case Percolator:
+                    return Util.removeExtension(spectrumFileName) + ".comet.pin";
+                case SQT:
+                    return Util.removeExtension(spectrumFileName) + ".comet.sqt";
+                case TXT:
+                    return Util.removeExtension(spectrumFileName) + ".comet.txt";
+                default:
+                    break;
+            }
+        }
+
         return Util.removeExtension(spectrumFileName) + ".comet.pep.xml";
     }
 
@@ -2380,13 +2410,13 @@ public class SearchHandler {
                     if (!identificationFiles.isEmpty() && waitingHandler.isRunCanceled() && waitingHandler instanceof WaitingDialog) {
 
                         WaitingDialog guiWaitingDialog = (WaitingDialog) waitingHandler;
-                        
+
                         // change the icon to the normal icon
                         ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
                         int option = JOptionPane.showConfirmDialog(guiWaitingDialog, "Keep the partial search results?", "Keep Partial Results?", JOptionPane.YES_NO_OPTION);
                         deleteTempFolder = (option == JOptionPane.NO_OPTION);
-                        
+
                         // change the icon to the waiting icon
                         ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
                     }

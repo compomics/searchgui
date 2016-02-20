@@ -2466,6 +2466,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
         MyriMatchParameters myriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
         TideParameters tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
+        CometParameters cometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
 
         if (peptideShakerCheckBox.isSelected() && enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
@@ -2483,6 +2484,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
                     "The selected Tide output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
                     + "Tide text output in the Advanced Settings, or disable Tide or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    "Format Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        } else if (peptideShakerCheckBox.isSelected() && enableCometJCheckBox.isSelected() && cometParameters.getSelectedOutputFormat() != CometParameters.CometOutputFormat.PepXML) {
+            JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
+                    "The selected Comet output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
+                    + "Comet PepXML output in the Advanced Settings, or disable Comet or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else {
@@ -2534,7 +2541,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
                 if (searchHandler.isCometEnabled()) {
-                    File cometOutputFile = new File(outputFolder, SearchHandler.getCometFileName(spectrumFileName));
+                    File cometOutputFile = new File(outputFolder, SearchHandler.getCometFileName(spectrumFileName, cometParameters));
                     if (cometOutputFile.exists()) {
                         fileFound = true;
                         break;
