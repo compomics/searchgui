@@ -1621,9 +1621,9 @@
             <Component class="javax.swing.JButton" name="msconvertSupportButton">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/windows_only_gray.png"/>
+                  <Image iconType="3" name="/icons/all_platforms_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Supported on Windows"/>
+                <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Supported on Windows, Mac and Linux&lt;br&gt;&#xa;Vendor raw file conversion requires Windows&#xa;&lt;/html&gt;"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
               </Properties>
