@@ -486,9 +486,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"protein, C-terminal residue modification mass\">" + fixedCtermProteinMod + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"protein, homolog management\">no</note>" + System.getProperty("line.separator")
                     + "\t\t<note>if yes, an upper limit is set on the number of homologues kept for a particular spectrum</note>" + System.getProperty("line.separator")
-                    //+ "\t<note type=\"input\" label=\"protein, ptm complexity\">6.0</note>" + System.getProperty("line.separator") // @TODO: implement me?
-                    // (C, a floating point number 0.0–12.0) sets the maximum number of variable modification alternatives that will be tested for a particular peptide. 
-                    // The number of alternatives is 2.0C. If this number is not specified, the default value C = 6.0 will be used. 
+                    + "\t<note type=\"input\" label=\"protein, ptm complexity\">" + xtandemParameters.getProteinPtmComplexity() + "</note>" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     + getRefinementParametersSection()
                     + System.getProperty("line.separator")

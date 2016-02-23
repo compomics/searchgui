@@ -308,7 +308,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 JOptionPane.showMessageDialog(null, "Error while reading " + SearchHandler.getEnzymeFile() + ".", "Enzyme File Error", JOptionPane.ERROR_MESSAGE);
             }
 
-            // Load gene mappings
+            // load gene mappings
             GeneFactory geneFactory = GeneFactory.getInstance();
             try {
                 geneFactory.initialize(getJarFilePath());
@@ -317,7 +317,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
             }
 
-            // Load the species mapping
+            // load the species mapping
             try {
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
                 speciesFactory.initiate(getJarFilePath());
