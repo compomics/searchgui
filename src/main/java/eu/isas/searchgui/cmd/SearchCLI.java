@@ -16,7 +16,7 @@ import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.searchgui.SearchHandler;
-import eu.isas.searchgui.preferences.OutputOption;
+import com.compomics.util.preferences.UtilitiesUserPreferences;
 import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
 import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
@@ -68,7 +68,7 @@ public class SearchCLI implements Callable {
                 System.out.println("An error occurred while loading the enzymes.");
                 e.printStackTrace();
             }
-            
+
             try {
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
                 speciesFactory.initiate(getJarFilePath());
@@ -76,7 +76,7 @@ public class SearchCLI implements Callable {
                 System.out.println("An error occurred while loading the species.");
                 e.printStackTrace();
             }
-            
+
             Options lOptions = new Options();
             SearchCLIParams.createOptionsCLI(lOptions);
             BasicParser parser = new BasicParser();
@@ -209,7 +209,7 @@ public class SearchCLI implements Callable {
             // see if we need to split any of the mgf files
             ArrayList<File> fatMgfFiles = new ArrayList<File>();
             for (File tempMgfFile : searchCLIInputBean.getSpectrumFiles()) {
-                if (tempMgfFile.length() > (((long) searchCLIInputBean.getMgfMaxSize()) * 1048576)) {
+                if (searchCLIInputBean.checkMgfSize() && tempMgfFile.length() > (((long) searchCLIInputBean.getMgfMaxSize()) * 1048576)) {
                     fatMgfFiles.add(tempMgfFile);
                 } else {
                     spectrumFiles.add(tempMgfFile);
@@ -257,7 +257,16 @@ public class SearchCLI implements Callable {
             if (error != null) {
                 System.out.println(error);
             }
-            
+
+            UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+            userPreferences.setTargetDecoyFileNameTag(searchCLIInputBean.getTargetDecoyFileNameTag());
+            userPreferences.setRefMass(searchCLIInputBean.getRefMass());
+            userPreferences.setRenameXTandemFile(searchCLIInputBean.renameXTandemFile());
+            userPreferences.setOutputOption(searchCLIInputBean.getOutputOption());
+            userPreferences.setOutputData(searchCLIInputBean.isOutputData());
+            userPreferences.setIncludeDateInOutputName(searchCLIInputBean.isOutputDate());
+            UtilitiesUserPreferences.saveUserPreferences(userPreferences);
+
             File fastaFile = searchParameters.getFastaFile();
             SequenceFactory.getInstance(1000000).loadFastaFile(fastaFile);
 
@@ -277,18 +286,6 @@ public class SearchCLI implements Callable {
                     processingPreferences,
                     searchCLIInputBean.isGenerateProteinTree());
 
-            OutputOption outputOption = searchCLIInputBean.getOutputOption();
-            if (outputOption != null) {
-                searchHandler.setOutputOption(outputOption);
-            }
-            Boolean includeData = searchCLIInputBean.isOutputData();
-            if (includeData != null) {
-                searchHandler.setOutputData(includeData);
-            }
-            Boolean includeDate = searchCLIInputBean.isOutputDate();
-            if (includeDate != null) {
-                searchHandler.setIncludeDateInOutputName(includeDate);
-            }
             File logFolder = pathSettingsCLIInputBean.getLogFolder();
             if (logFolder != null) {
                 searchHandler.setLogFolder(logFolder);

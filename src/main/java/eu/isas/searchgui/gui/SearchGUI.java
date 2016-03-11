@@ -77,7 +77,7 @@ import com.compomics.util.preferences.LastSelectedFolder;
 import com.compomics.util.preferences.ProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import eu.isas.searchgui.SearchGUIWrapper;
-import eu.isas.searchgui.preferences.OutputOption;
+import com.compomics.util.preferences.SearchGuiOutputOption;
 import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
 import eu.isas.searchgui.processbuilders.CometProcessBuilder;
@@ -147,23 +147,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * is displayed.s
      */
     private boolean settingsTabDisplayed = false;
-    /**
-     * If an mgf file exceeds this limit, the user will be asked for a split.
-     */
-    private double mgfMaxSize = 1000; // @TODO: should be moved to user preferences?
-    /**
-     * Number of spectra allowed in the split file.
-     */
-    private int mgfNSpectra = 25000; // @TODO: should be moved to SearchGUI user preferences
-    /**
-     * If true, the selected spectra will be checked for duplicate spectrum
-     * titles.
-     */
-    private boolean checkDuplicateTitles = true; // @TODO: should be moved to SearchGUI user preferences
-    /**
-     * If true, the selected spectra will be checked for peak picking.
-     */
-    private boolean checkPeakPicking = true; // @TODO: should be moved to SearchGUI user preferences
     /**
      * The identification settings file.
      */
@@ -2241,7 +2224,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     checkProteoWizard();
 
                     // verify the sizes of the mgf files
-                    verifyMgfFilesSize();
+                    if (utilitiesUserPreferences.checkMgfSize()) {
+                        verifyMgfFilesSize();
+                    }
 
                     int nFiles = mgfFiles.size() + rawFiles.size();
                     spectraFilesTxt.setText(nFiles + " file(s) selected");
@@ -2510,7 +2495,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     }
                 }
 
-                if (searchHandler.isXtandemEnabled() && searchHandler.renameXTandemFile()
+                if (searchHandler.isXtandemEnabled() && utilitiesUserPreferences.renameXTandemFile()
                         && !searchHandler.getXTandemFiles(outputFolder, spectrumFileName).isEmpty()) {
                     fileFound = true;
                     break;
@@ -2567,53 +2552,53 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             searchHandler.setOutputTimeStamp(SearchHandler.getOutputDate());
 
-            OutputOption outputOption = searchHandler.getOutputOption();
+            SearchGuiOutputOption outputOption = utilitiesUserPreferences.getOutputOption();
 
-            if (outputOption == OutputOption.grouped) {
-                File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, searchHandler.isIncludeDateInOutputName());
+            if (outputOption == SearchGuiOutputOption.grouped) {
+                File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, utilitiesUserPreferences.isIncludeDateInOutputName());
                 if (outputFile.exists()) {
                     fileFound = true;
                 }
-            } else if (outputOption == OutputOption.algorithm) {
+            } else if (outputOption == SearchGuiOutputOption.algorithm) {
 
                 if (searchHandler.isOmssaEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), searchHandler.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isXtandemEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), searchHandler.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isMsgfEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), searchHandler.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isMsAmandaEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), searchHandler.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isMyriMatchEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), searchHandler.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
-            } else if (outputOption == OutputOption.run) {
+            } else if (outputOption == SearchGuiOutputOption.run) {
                 for (File spectrumFile : spectrumFiles) {
                     String runName = Util.removeExtension(spectrumFile.getName());
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, runName, searchHandler.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, runName, utilitiesUserPreferences.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                         break;
@@ -2631,7 +2616,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // check if the xtandem files can be renamed
-            if (searchHandler.isXtandemEnabled() && searchHandler.renameXTandemFile()) {
+            if (searchHandler.isXtandemEnabled() && utilitiesUserPreferences.renameXTandemFile()) {
                 for (File spectrumFile : spectrumFiles) {
                     String spectrumFileName = spectrumFile.getName();
 
@@ -2745,6 +2730,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void advancedSettingsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advancedSettingsMenuItemActionPerformed
         new AdvancedSettingsDialog(this, true);
+        utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
     }//GEN-LAST:event_advancedSettingsMenuItemActionPerformed
 
     /**
@@ -3903,9 +3889,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void xtandemSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonActionPerformed
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
-        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(), searchParameters.getFragmentIonAccuracyInDaltons(searchHandler.getRefMass()), true);
+        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(),
+                searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserPreferences.getRefMass()), true);
 
         boolean xtandemParametersSet = false;
 
@@ -3935,7 +3923,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             break;
                         case JOptionPane.CANCEL_OPTION:
                             xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, searchParameters.getPtmSettings(),
-                                    searchParameters.getFragmentIonAccuracyInDaltons(searchHandler.getRefMass()), true);
+                                    searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserPreferences.getRefMass()), true);
                             break;
                         case JOptionPane.NO_OPTION:
                             xtandemParametersSet = true;
@@ -4850,6 +4838,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     progressDialog.setTitle("Adding Missing Spectrum Titles. Please Wait...");
                     spectrumFactory.closeFiles();
                     MgfReader.addMissingSpectrumTitles(currentSpectrumFile, waitingHandler);
+                    progressDialog.setTitle("Indexing File. Please Wait...");
                     spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
                 } else {
                     // don't use the file
@@ -4861,7 +4850,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // check for lack of peak picking
-            if (checkPeakPicking && !spectrumFactory.getIndex(indexFile).isPeakPicked()) {
+            if (utilitiesUserPreferences.checkPeakPicking() && !spectrumFactory.getIndex(indexFile).isPeakPicked()) {
 
                 this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
@@ -4879,6 +4868,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     progressDialog.setTitle("Removing Zero Intensities. Please Wait...");
                     spectrumFactory.closeFiles();
                     MgfReader.removeZeroes(currentSpectrumFile, waitingHandler);
+                    progressDialog.setTitle("Indexing File. Please Wait...");
                     spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
                 } else {
                     // don't use the file
@@ -4905,7 +4895,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // check for duplicate titles
             HashMap<String, Integer> duplicatedSpectrumTitles = spectrumFactory.getIndex(indexFile).getDuplicatedSpectrumTitles();
 
-            if (checkDuplicateTitles && duplicatedSpectrumTitles != null && duplicatedSpectrumTitles.size() > 0) {
+            if (utilitiesUserPreferences.checkDuplicateTitles() && duplicatedSpectrumTitles != null && duplicatedSpectrumTitles.size() > 0) {
 
                 this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
@@ -4917,22 +4907,60 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         + "We strongly recommend having unique spectrum titles. Fix duplicated titles?",
                         "Duplicated Spectrum Titles", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-                if (result == JOptionPane.YES_OPTION) {
-                    // rename duplicated titles
-                    this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                    progressDialog.setTitle("Renaming Duplicated Spectrum Titles. Please Wait...");
-                    spectrumFactory.closeFiles();
-                    MgfReader.renameDuplicateSpectrumTitles(currentSpectrumFile, waitingHandler);
-                    spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-                } else if (result == JOptionPane.NO_OPTION) {
-                    // delete duplicated titles
-                    this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                    progressDialog.setTitle("Deleting Duplicated Spectrum Titles. Please Wait...");
-                    spectrumFactory.closeFiles();
-                    MgfReader.removeDuplicateSpectrumTitles(currentSpectrumFile, waitingHandler);
-                    spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-                } else {
-                    // do nothing with the titles
+                switch (result) {
+                    case JOptionPane.YES_OPTION:
+                        // rename duplicated titles
+                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                        progressDialog.setTitle("Renaming Duplicated Spectrum Titles. Please Wait...");
+                        spectrumFactory.closeFiles();
+                        MgfReader.renameDuplicateSpectrumTitles(currentSpectrumFile, waitingHandler);
+                        progressDialog.setTitle("Indexing File. Please Wait...");
+                        spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        // delete duplicated titles
+                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                        progressDialog.setTitle("Deleting Duplicated Spectrum Titles. Please Wait...");
+                        spectrumFactory.closeFiles();
+                        MgfReader.removeDuplicateSpectrumTitles(currentSpectrumFile, waitingHandler);
+                        progressDialog.setTitle("Indexing File. Please Wait...");
+                        spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
+                        break;
+                    default:
+                        // do nothing with the titles
+                        break;
+                }
+
+                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+            }
+
+            // check for missing precursor charges
+            if (utilitiesUserPreferences.isCheckSpectrumCharges() && spectrumFactory.getIndex(indexFile).isPrecursorChargesMissing()) {
+
+                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
+
+                int value = JOptionPane.showConfirmDialog(this,
+                        "The file \'" + currentSpectrumFile.getName() + "\' contains spectra without precursor charges.\n"
+                        + "Some search engines will ignore such spectra. Do you want to add a default range of charges?\n",
+                        "Missing Precursor Charges", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+                switch (value) {
+                    case JOptionPane.YES_OPTION:
+                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                        progressDialog.setTitle("Replacing Missing Charges. Please Wait...");
+                        spectrumFactory.closeFiles();
+                        MgfReader.addMissingPrecursorCharges(currentSpectrumFile, waitingHandler);
+                        progressDialog.setTitle("Indexing File. Please Wait...");
+                        spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        // do nothing, already added
+                        break;
+                    default:
+                        // cancel
+                        // don't use the file
+                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                        return false;
                 }
 
                 this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
@@ -4965,7 +4993,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void verifyMgfFilesSize() {
         ArrayList<File> fatFiles = new ArrayList<File>();
         for (File file : mgfFiles) {
-            if (file.length() > (((long) mgfMaxSize) * 1048576)) {
+            if (file.length() > (((long) utilitiesUserPreferences.getMgfMaxSize()) * 1048576)) {
                 fatFiles.add(file);
             }
         }
@@ -5052,7 +5080,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     progressDialog.setPrimaryProgressCounterIndeterminate(false);
 
                     try {
-                        indexes = mgfReader.splitFile(originalFile, getMgfNSpectra(), progressDialog);
+                        indexes = mgfReader.splitFile(originalFile, utilitiesUserPreferences.getMgfNSpectra(), progressDialog);
                     } catch (FileNotFoundException e) {
                         progressDialog.setRunFinished();
                         JOptionPane.showMessageDialog(finalRef,
@@ -5441,78 +5469,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     "Could not save search engine locations."}, "Search Engine Location Error", JOptionPane.WARNING_MESSAGE);
             }
         }
-    }
-
-    /**
-     * Returns the max mgf file size before splitting.
-     *
-     * @return the mgfMaxSize
-     */
-    public double getMgfMaxSize() {
-        return mgfMaxSize;
-    }
-
-    /**
-     * Set the max mgf file size before splitting.
-     *
-     * @param mgfMaxSize the mgfMaxSize to set
-     */
-    public void setMgfMaxSize(double mgfMaxSize) {
-        this.mgfMaxSize = mgfMaxSize;
-    }
-
-    /**
-     * Get the max number of spectra in an mgf file.
-     *
-     * @return the mgfNSpectra
-     */
-    public int getMgfNSpectra() {
-        return mgfNSpectra;
-    }
-
-    /**
-     * Set the max number of spectra in an mgf file.
-     *
-     * @param mgfNSpectra the mgfNSpectra to set
-     */
-    public void setMgfNSpectra(int mgfNSpectra) {
-        this.mgfNSpectra = mgfNSpectra;
-    }
-
-    /**
-     * Returns if the spectra should be checked for duplicate titles or not.
-     *
-     * @return true if the spectra should be checked for duplicate titles
-     */
-    public boolean checkDuplicateTitles() {
-        return checkDuplicateTitles;
-    }
-
-    /**
-     * Set if the spectra should be checked for duplicate titles or not.
-     *
-     * @param checkDuplicateTitles the checkDuplicateTitles to set
-     */
-    public void setCheckDuplicateTitles(boolean checkDuplicateTitles) {
-        this.checkDuplicateTitles = checkDuplicateTitles;
-    }
-
-    /**
-     * Returns if the spectra should be checked for peak picking or not.
-     *
-     * @return true if the spectra should be checked for peak picking
-     */
-    public boolean checkPeakPicking() {
-        return checkPeakPicking;
-    }
-
-    /**
-     * Set if the spectra should be checked for peak picking or not.
-     *
-     * @param checkPeakPicking the checkPeakPicking to set
-     */
-    public void setCheckPeakPicking(boolean checkPeakPicking) {
-        this.checkPeakPicking = checkPeakPicking;
     }
 
     /**

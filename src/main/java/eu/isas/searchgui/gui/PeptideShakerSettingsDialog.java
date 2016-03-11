@@ -24,6 +24,9 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.stream.XMLStreamException;
 import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
+import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
+import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
+import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
 
 /**
  * A dialog for editing the PeptideShaker settings required when starting

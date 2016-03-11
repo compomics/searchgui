@@ -1,10 +1,10 @@
 package eu.isas.searchgui.gui;
 
-import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.gui.GuiUtilities;
 import com.compomics.util.gui.error_handlers.HelpDialog;
-import eu.isas.searchgui.SearchHandler;
-import eu.isas.searchgui.preferences.OutputOption;
+import com.compomics.util.preferences.UtilitiesUserPreferences;
+import com.compomics.util.preferences.SearchGuiOutputOption;
+import java.awt.Color;
 import java.awt.Toolkit;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -19,11 +19,6 @@ import javax.swing.SwingConstants;
 public class AdvancedSettingsDialog extends javax.swing.JDialog {
 
     /**
-     * The SearchGUI search panel.
-     */
-    private SearchGUI searchGUI;
-
-    /**
      * Creates a new AdvancedSettingsDialog.
      *
      * @param searchGUI the SearchGUI main frame
@@ -32,41 +27,53 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     public AdvancedSettingsDialog(SearchGUI searchGUI, boolean modal) {
         super(searchGUI, modal);
         initComponents();
-        this.searchGUI = searchGUI;
 
-        SearchHandler currentSearchHandler = searchGUI.getSearchHandler();
+        UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
 
-        fastaSuffixTxt.setText(SequenceFactory.getTargetDecoyFileNameTag());
-        mgfMaxSizeTxt.setText(searchGUI.getMgfMaxSize() + "");
-        mgfReducedSizeTxt.setText(searchGUI.getMgfNSpectra() + "");
-        if (currentSearchHandler.renameXTandemFile()) {
+        mgfMaxSizeTxt.setText(userPreferences.getMgfMaxSize() + "");
+        mgfReducedSizeTxt.setText(userPreferences.getMgfNSpectra() + "");
+        if (userPreferences.renameXTandemFile()) {
             renameCmb.setSelectedIndex(0);
         } else {
             renameCmb.setSelectedIndex(1);
         }
-        if (searchGUI.checkPeakPicking()) {
+        if (userPreferences.checkPeakPicking()) {
             peakPickingComboBox.setSelectedIndex(0);
         } else {
             peakPickingComboBox.setSelectedIndex(1);
         }
-        if (searchGUI.checkDuplicateTitles()) {
+        if (userPreferences.checkDuplicateTitles()) {
             duplicateTitlesComboBox.setSelectedIndex(0);
         } else {
             duplicateTitlesComboBox.setSelectedIndex(1);
         }
-        refMassTxt.setText(currentSearchHandler.getRefMass() + "");
-        if (currentSearchHandler.generateProteinTree()) {
+        if (userPreferences.checkMgfSize()) {
+            checkMgfFileSizeComboBox.setSelectedIndex(0);
+        } else {
+            checkMgfFileSizeComboBox.setSelectedIndex(1);
+        }
+        if (userPreferences.isCheckSpectrumCharges()) {
+            checkSpectrumChargesComboBox.setSelectedIndex(0);
+        } else {
+            checkSpectrumChargesComboBox.setSelectedIndex(1);
+        }
+        
+        lowSpectrumChargeRangeTxt.setText(userPreferences.getMinSpectrumChargeRange() + "");
+        highSpectrumChargeRangeTxt.setText(userPreferences.getMaxSpectrumChargeRange() + "");
+        
+        refMassTxt.setText(userPreferences.getRefMass() + "");
+        if (userPreferences.generateProteinTree()) {
             proteinTreeComboBox.setSelectedIndex(0);
         } else {
             proteinTreeComboBox.setSelectedIndex(1);
         }
-        groupResultFilesCmb.setSelectedIndex(currentSearchHandler.getOutputOption().id);
-        if (currentSearchHandler.outputData()) {
+        groupResultFilesCmb.setSelectedIndex(userPreferences.getOutputOption().id);
+        if (userPreferences.outputData()) {
             includeDataCmb.setSelectedIndex(0);
         } else {
             includeDataCmb.setSelectedIndex(1);
         }
-        if (currentSearchHandler.isIncludeDateInOutputName()) {
+        if (userPreferences.isIncludeDateInOutputName()) {
             includeDateCmb.setSelectedIndex(0);
         } else {
             includeDateCmb.setSelectedIndex(1);
@@ -79,6 +86,8 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         peakPickingComboBox.setRenderer(new com.compomics.util.gui.renderers.AlignedListCellRenderer(SwingConstants.CENTER));
         duplicateTitlesComboBox.setRenderer(new com.compomics.util.gui.renderers.AlignedListCellRenderer(SwingConstants.CENTER));
         proteinTreeComboBox.setRenderer(new com.compomics.util.gui.renderers.AlignedListCellRenderer(SwingConstants.CENTER));
+        checkSpectrumChargesComboBox.setRenderer(new com.compomics.util.gui.renderers.AlignedListCellRenderer(SwingConstants.CENTER));
+        checkMgfFileSizeComboBox.setRenderer(new com.compomics.util.gui.renderers.AlignedListCellRenderer(SwingConstants.CENTER));
 
         setLocationRelativeTo(searchGUI);
         setVisible(true);
@@ -94,11 +103,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         advancedParamatersPanel = new javax.swing.JPanel();
-        fileProcessingPanel = new javax.swing.JPanel();
-        fastaFileSuffixLabel = new javax.swing.JLabel();
-        fastaSuffixTxt = new javax.swing.JTextField();
-        renameCmb = new javax.swing.JComboBox();
-        renameXTandemFileLabel = new javax.swing.JLabel();
         spectrumProcessingPanel = new javax.swing.JPanel();
         peakPickingLabel = new javax.swing.JLabel();
         peakPickingComboBox = new javax.swing.JComboBox();
@@ -108,8 +112,15 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         maxSpectraPerFileLabel = new javax.swing.JLabel();
         mgfMaxSizeTxt = new javax.swing.JTextField();
         mgfReducedSizeTxt = new javax.swing.JTextField();
+        checkSpectrumChargesLabel = new javax.swing.JLabel();
+        checkSpectrumChargesComboBox = new javax.swing.JComboBox();
+        spectrumChargeRangeLabel = new javax.swing.JLabel();
+        lowSpectrumChargeRangeTxt = new javax.swing.JTextField();
+        highSpectrumChargeRangeTxt = new javax.swing.JTextField();
+        spectrumChargeRangeDelimiterLabel = new javax.swing.JLabel();
+        checkMgfFileSizeLabel = new javax.swing.JLabel();
+        checkMgfFileSizeComboBox = new javax.swing.JComboBox();
         openDialogHelpJButton = new javax.swing.JButton();
-        closeButton = new javax.swing.JButton();
         okButton = new javax.swing.JButton();
         outputPanel = new javax.swing.JPanel();
         groupResultFilesTxt = new javax.swing.JLabel();
@@ -118,12 +129,14 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         includeDataCmb = new javax.swing.JComboBox();
         includeDateLbl = new javax.swing.JLabel();
         includeDateCmb = new javax.swing.JComboBox();
-        proteinTreePanel = new javax.swing.JPanel();
+        renameXTandemFileLabel = new javax.swing.JLabel();
+        renameCmb = new javax.swing.JComboBox();
         proteinTreeLabel = new javax.swing.JLabel();
         proteinTreeComboBox = new javax.swing.JComboBox();
         identificationParametersPanel = new javax.swing.JPanel();
         refMassLbl = new javax.swing.JLabel();
         refMassTxt = new javax.swing.JTextField();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Advanced Settings");
@@ -132,70 +145,20 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
 
         advancedParamatersPanel.setBackground(new java.awt.Color(230, 230, 230));
 
-        fileProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("File Processing"));
-        fileProcessingPanel.setOpaque(false);
-
-        fastaFileSuffixLabel.setText("FASTA File Suffix");
-
-        fastaSuffixTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        fastaSuffixTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fastaSuffixTxtActionPerformed(evt);
-            }
-        });
-        fastaSuffixTxt.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                fastaSuffixTxtKeyReleased(evt);
-            }
-        });
-
-        renameCmb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
-
-        renameXTandemFileLabel.setText("Rename X!Tandem File");
-
-        javax.swing.GroupLayout fileProcessingPanelLayout = new javax.swing.GroupLayout(fileProcessingPanel);
-        fileProcessingPanel.setLayout(fileProcessingPanelLayout);
-        fileProcessingPanelLayout.setHorizontalGroup(
-            fileProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fileProcessingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(fileProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(fastaFileSuffixLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                    .addComponent(renameXTandemFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(fileProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(renameCmb, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fastaSuffixTxt))
-                .addContainerGap())
-        );
-        fileProcessingPanelLayout.setVerticalGroup(
-            fileProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(fileProcessingPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(fileProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fastaSuffixTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fastaFileSuffixLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(fileProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(renameCmb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(renameXTandemFileLabel))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
         spectrumProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Spectrum Processing"));
         spectrumProcessingPanel.setOpaque(false);
 
-        peakPickingLabel.setText("Check Peak Picking");
+        peakPickingLabel.setText("Peak Picking Check");
 
         peakPickingComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
 
-        duplicateTitlesLabel.setText("Check Duplicate Titles");
+        duplicateTitlesLabel.setText("Duplicate Titles Check");
 
         duplicateTitlesComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
 
-        maxMgfFileSizeLabel.setText("Maximum MGF File Size (MB)");
+        maxMgfFileSizeLabel.setText("Maximum Mgf File Size (MB)");
 
-        maxSpectraPerFileLabel.setText("Maximum Spectra in MGF File");
+        maxSpectraPerFileLabel.setText("Maximum Spectra in Mgf File");
 
         mgfMaxSizeTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         mgfMaxSizeTxt.addActionListener(new java.awt.event.ActionListener() {
@@ -221,6 +184,54 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             }
         });
 
+        checkSpectrumChargesLabel.setText("Spectrum Charges Check");
+
+        checkSpectrumChargesComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
+        checkSpectrumChargesComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkSpectrumChargesComboBoxActionPerformed(evt);
+            }
+        });
+
+        spectrumChargeRangeLabel.setText("Spectrum Charge Range");
+
+        lowSpectrumChargeRangeTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        lowSpectrumChargeRangeTxt.setText("2");
+        lowSpectrumChargeRangeTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lowSpectrumChargeRangeTxtActionPerformed(evt);
+            }
+        });
+        lowSpectrumChargeRangeTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                lowSpectrumChargeRangeTxtKeyReleased(evt);
+            }
+        });
+
+        highSpectrumChargeRangeTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        highSpectrumChargeRangeTxt.setText("4");
+        highSpectrumChargeRangeTxt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                highSpectrumChargeRangeTxtActionPerformed(evt);
+            }
+        });
+        highSpectrumChargeRangeTxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                highSpectrumChargeRangeTxtKeyReleased(evt);
+            }
+        });
+
+        spectrumChargeRangeDelimiterLabel.setText("-");
+
+        checkMgfFileSizeLabel.setText("Mgf File Size Check");
+
+        checkMgfFileSizeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
+        checkMgfFileSizeComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkMgfFileSizeComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout spectrumProcessingPanelLayout = new javax.swing.GroupLayout(spectrumProcessingPanel);
         spectrumProcessingPanel.setLayout(spectrumProcessingPanelLayout);
         spectrumProcessingPanelLayout.setHorizontalGroup(
@@ -229,23 +240,49 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
-                        .addComponent(peakPickingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(peakPickingComboBox, 0, 180, Short.MAX_VALUE))
-                    .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
-                        .addComponent(duplicateTitlesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(duplicateTitlesComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
-                        .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(maxMgfFileSizeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(maxSpectraPerFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(10, 10, 10)
                         .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(mgfReducedSizeTxt, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(mgfMaxSizeTxt, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                                .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(maxMgfFileSizeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(maxSpectraPerFileLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(mgfMaxSizeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(mgfReducedSizeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                                .addComponent(spectrumChargeRangeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(137, 137, 137)
+                                .addComponent(highSpectrumChargeRangeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                        .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                                .addComponent(peakPickingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(peakPickingComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                                .addComponent(duplicateTitlesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(duplicateTitlesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                                .addComponent(checkSpectrumChargesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(checkSpectrumChargesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                                .addComponent(checkMgfFileSizeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(checkMgfFileSizeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
+                                        .addComponent(lowSpectrumChargeRangeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(spectrumChargeRangeDelimiterLabel)))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+
+        spectrumProcessingPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {highSpectrumChargeRangeTxt, lowSpectrumChargeRangeTxt});
+
         spectrumProcessingPanelLayout.setVerticalGroup(
             spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(spectrumProcessingPanelLayout.createSequentialGroup()
@@ -257,6 +294,20 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(duplicateTitlesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(duplicateTitlesLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkSpectrumChargesLabel)
+                    .addComponent(checkSpectrumChargesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(spectrumChargeRangeLabel)
+                    .addComponent(lowSpectrumChargeRangeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(highSpectrumChargeRangeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spectrumChargeRangeDelimiterLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkMgfFileSizeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(checkMgfFileSizeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(spectrumProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(maxMgfFileSizeLabel)
@@ -287,13 +338,6 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        closeButton.setText("Close");
-        closeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                closeButtonActionPerformed(evt);
-            }
-        });
-
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -306,8 +350,13 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
 
         groupResultFilesTxt.setText("Group Identification Files");
 
-        groupResultFilesCmb.setModel(new DefaultComboBoxModel(OutputOption.getOutputOptionsNames()));
+        groupResultFilesCmb.setModel(new DefaultComboBoxModel(SearchGuiOutputOption.getOutputOptionsNames()));
         groupResultFilesCmb.setToolTipText("Output files grouping options");
+        groupResultFilesCmb.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                groupResultFilesCmbActionPerformed(evt);
+            }
+        });
 
         includeDataTxt.setText("Include Spectra and Database");
         includeDataTxt.setToolTipText("");
@@ -321,6 +370,15 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         includeDateCmb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
         includeDateCmb.setSelectedIndex(1);
 
+        renameXTandemFileLabel.setText("Rename X! Tandem File");
+
+        renameCmb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
+
+        proteinTreeLabel.setText("Generate Protein Index");
+
+        proteinTreeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
+        proteinTreeComboBox.setSelectedIndex(1);
+
         javax.swing.GroupLayout outputPanelLayout = new javax.swing.GroupLayout(outputPanel);
         outputPanel.setLayout(outputPanelLayout);
         outputPanelLayout.setHorizontalGroup(
@@ -328,15 +386,25 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             .addGroup(outputPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(includeDataTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
-                        .addComponent(groupResultFilesTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(includeDateLbl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(includeDateCmb, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(includeDataCmb, 0, 180, Short.MAX_VALUE)
-                    .addComponent(groupResultFilesCmb, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(outputPanelLayout.createSequentialGroup()
+                            .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(groupResultFilesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(includeDataTxt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(includeDateLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(4, 4, 4)
+                            .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(includeDateCmb, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(includeDataCmb, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(groupResultFilesCmb, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, outputPanelLayout.createSequentialGroup()
+                            .addComponent(renameXTandemFileLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(renameCmb, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, outputPanelLayout.createSequentialGroup()
+                        .addComponent(proteinTreeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(proteinTreeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         outputPanelLayout.setVerticalGroup(
@@ -354,33 +422,12 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(includeDateLbl)
                     .addComponent(includeDateCmb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        proteinTreePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Protein Inference"));
-        proteinTreePanel.setOpaque(false);
-
-        proteinTreeLabel.setText("Generate Protein Index");
-
-        proteinTreeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Yes", "No" }));
-        proteinTreeComboBox.setSelectedIndex(1);
-
-        javax.swing.GroupLayout proteinTreePanelLayout = new javax.swing.GroupLayout(proteinTreePanel);
-        proteinTreePanel.setLayout(proteinTreePanelLayout);
-        proteinTreePanelLayout.setHorizontalGroup(
-            proteinTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(proteinTreePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(proteinTreeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(proteinTreeComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        proteinTreePanelLayout.setVerticalGroup(
-            proteinTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(proteinTreePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(proteinTreePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(renameCmb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(renameXTandemFileLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(outputPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(proteinTreeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(proteinTreeLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -411,10 +458,10 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             identificationParametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(identificationParametersPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(refMassLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(refMassLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(refMassTxt)
-                .addContainerGap())
+                .addComponent(refMassTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         identificationParametersPanelLayout.setVerticalGroup(
             identificationParametersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -426,6 +473,13 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        closeButton.setText("Close");
+        closeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout advancedParamatersPanelLayout = new javax.swing.GroupLayout(advancedParamatersPanel);
         advancedParamatersPanel.setLayout(advancedParamatersPanelLayout);
         advancedParamatersPanelLayout.setHorizontalGroup(
@@ -433,42 +487,43 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             .addGroup(advancedParamatersPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spectrumProcessingPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, advancedParamatersPanelLayout.createSequentialGroup()
+                    .addGroup(advancedParamatersPanelLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(openDialogHelpJButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(okButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(closeButton))
-                    .addComponent(fileProcessingPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(outputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(proteinTreePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(identificationParametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(advancedParamatersPanelLayout.createSequentialGroup()
+                        .addGroup(advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(spectrumProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(identificationParametersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(outputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         advancedParamatersPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {closeButton, okButton});
 
+        advancedParamatersPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {identificationParametersPanel, outputPanel, spectrumProcessingPanel});
+
         advancedParamatersPanelLayout.setVerticalGroup(
             advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(advancedParamatersPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spectrumProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(advancedParamatersPanelLayout.createSequentialGroup()
+                        .addComponent(spectrumProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(identificationParametersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(outputPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fileProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(outputPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(identificationParametersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(proteinTreePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(advancedParamatersPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(openDialogHelpJButton)
                     .addComponent(okButton)
+                    .addComponent(openDialogHelpJButton)
                     .addComponent(closeButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -479,7 +534,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(advancedParamatersPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(advancedParamatersPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -492,16 +547,26 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (validateAdvancedParametersInput(true)) {
-            SearchHandler currentSearchHandler = searchGUI.getSearchHandler();
-            currentSearchHandler.setRenameXTandemFile(renameCmb.getSelectedIndex() == 0);
-            searchGUI.setCheckPeakPicking(peakPickingComboBox.getSelectedIndex() == 0);
-            searchGUI.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
-            currentSearchHandler.setGenerateProteinTree(proteinTreeComboBox.getSelectedIndex() == 0);
-            OutputOption outputOption = OutputOption.getOutputOption(groupResultFilesCmb.getSelectedIndex());
-            currentSearchHandler.setOutputOption(outputOption);
-            currentSearchHandler.setOutputData(includeDataCmb.getSelectedIndex() == 0);
-            currentSearchHandler.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
-            currentSearchHandler.setRefMass(new Double(refMassTxt.getText()));
+
+            UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+            userPreferences.setRenameXTandemFile(renameCmb.getSelectedIndex() == 0);
+            userPreferences.setCheckPeakPicking(peakPickingComboBox.getSelectedIndex() == 0);
+            userPreferences.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
+            userPreferences.setCheckMgfSize(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
+            userPreferences.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
+            userPreferences.setMgfMaxSize(new Integer(mgfReducedSizeTxt.getText().trim()));
+            userPreferences.setGenerateProteinTree(proteinTreeComboBox.getSelectedIndex() == 0);
+            SearchGuiOutputOption outputOption = SearchGuiOutputOption.getOutputOption(groupResultFilesCmb.getSelectedIndex());
+            userPreferences.setOutputOption(outputOption);
+            userPreferences.setOutputData(includeDataCmb.getSelectedIndex() == 0);
+            userPreferences.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
+            userPreferences.setRefMass(new Double(refMassTxt.getText()));
+            userPreferences.setCheckSpectrumCharges(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
+            userPreferences.setMinSpectrumChargeRange(new Integer(lowSpectrumChargeRangeTxt.getText()));
+            userPreferences.setMaxSpectrumChargeRange(new Integer(highSpectrumChargeRangeTxt.getText()));
+
+            UtilitiesUserPreferences.saveUserPreferences(userPreferences);
+
             dispose();
         }
     }//GEN-LAST:event_okButtonActionPerformed
@@ -548,6 +613,72 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_openDialogHelpJButtonMouseEntered
 
     /**
+     * Validate the input parameters.
+     *
+     * @param evt
+     */
+    private void refMassTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refMassTxtActionPerformed
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_refMassTxtActionPerformed
+
+    /**
+     * Validate the input parameters.
+     *
+     * @param evt
+     */
+    private void refMassTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_refMassTxtKeyReleased
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_refMassTxtKeyReleased
+
+    /**
+     * Validate the input parameters.
+     *
+     * @param evt
+     */
+    private void highSpectrumChargeRangeTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_highSpectrumChargeRangeTxtKeyReleased
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_highSpectrumChargeRangeTxtKeyReleased
+
+    /**
+     * Validate the input parameters.
+     *
+     * @param evt
+     */
+    private void highSpectrumChargeRangeTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highSpectrumChargeRangeTxtActionPerformed
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_highSpectrumChargeRangeTxtActionPerformed
+
+    /**
+     * Validate the input parameters.
+     *
+     * @param evt
+     */
+    private void lowSpectrumChargeRangeTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_lowSpectrumChargeRangeTxtKeyReleased
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_lowSpectrumChargeRangeTxtKeyReleased
+
+    /**
+     * Validate the input parameters.
+     *
+     * @param evt
+     */
+    private void lowSpectrumChargeRangeTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lowSpectrumChargeRangeTxtActionPerformed
+        validateAdvancedParametersInput(false);
+    }//GEN-LAST:event_lowSpectrumChargeRangeTxtActionPerformed
+
+    /**
+     * Enable/disable the spectrum charge range input.
+     *
+     * @param evt
+     */
+    private void checkSpectrumChargesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkSpectrumChargesComboBoxActionPerformed
+        spectrumChargeRangeLabel.setEnabled(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
+        lowSpectrumChargeRangeTxt.setEnabled(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
+        spectrumChargeRangeDelimiterLabel.setEnabled(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
+        highSpectrumChargeRangeTxt.setEnabled(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
+    }//GEN-LAST:event_checkSpectrumChargesComboBoxActionPerformed
+
+    /**
      * Verify the input for the max spectra in mgf file.
      *
      * @param evt
@@ -563,7 +694,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
      */
     private void mgfReducedSizeTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mgfReducedSizeTxtActionPerformed
         try {
-            searchGUI.setMgfNSpectra(new Integer(mgfReducedSizeTxt.getText().trim()));
+            new Integer(mgfReducedSizeTxt.getText().trim());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Maximum amount of spectra could not be parsed.",
                     "Input Error", JOptionPane.WARNING_MESSAGE);
@@ -587,7 +718,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
      */
     private void mgfMaxSizeTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mgfMaxSizeTxtActionPerformed
         try {
-            searchGUI.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
+            new Double(mgfMaxSizeTxt.getText().trim());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Maximum MGF file size could not be parsed.",
                     "Input Error", JOptionPane.WARNING_MESSAGE);
@@ -596,56 +727,45 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_mgfMaxSizeTxtActionPerformed
 
     /**
-     * Update the target decoy file name tag.
+     * Enable/disable the mgf file size filter input.
      *
      * @param evt
      */
-    private void fastaSuffixTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fastaSuffixTxtKeyReleased
-        fastaSuffixTxtActionPerformed(null);
-    }//GEN-LAST:event_fastaSuffixTxtKeyReleased
+    private void checkMgfFileSizeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkMgfFileSizeComboBoxActionPerformed
+        maxMgfFileSizeLabel.setEnabled(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
+        mgfMaxSizeTxt.setEnabled(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
+        maxSpectraPerFileLabel.setEnabled(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
+        mgfReducedSizeTxt.setEnabled(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
+    }//GEN-LAST:event_checkMgfFileSizeComboBoxActionPerformed
 
     /**
-     * Update the target decoy file name tag.
+     * Enable/disable the zipping details.
      *
      * @param evt
      */
-    private void fastaSuffixTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fastaSuffixTxtActionPerformed
-        SequenceFactory.setTargetDecoyFileNameTag(fastaSuffixTxt.getText().trim());
-    }//GEN-LAST:event_fastaSuffixTxtActionPerformed
-
-    /**
-     * Validate the input parameters.
-     * 
-     * @param evt 
-     */
-    private void refMassTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refMassTxtActionPerformed
-        validateAdvancedParametersInput(false);
-    }//GEN-LAST:event_refMassTxtActionPerformed
-
-    /**
-     * Validate the input parameters.
-     * 
-     * @param evt 
-     */
-    private void refMassTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_refMassTxtKeyReleased
-        validateAdvancedParametersInput(false);
-    }//GEN-LAST:event_refMassTxtKeyReleased
+    private void groupResultFilesCmbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_groupResultFilesCmbActionPerformed
+        includeDataTxt.setEnabled(!((String) groupResultFilesCmb.getSelectedItem()).equalsIgnoreCase(SearchGuiOutputOption.no_zip.name));
+        includeDataCmb.setEnabled(!((String) groupResultFilesCmb.getSelectedItem()).equalsIgnoreCase(SearchGuiOutputOption.no_zip.name));
+    }//GEN-LAST:event_groupResultFilesCmbActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel advancedParamatersPanel;
+    private javax.swing.JComboBox checkMgfFileSizeComboBox;
+    private javax.swing.JLabel checkMgfFileSizeLabel;
+    private javax.swing.JComboBox checkSpectrumChargesComboBox;
+    private javax.swing.JLabel checkSpectrumChargesLabel;
     private javax.swing.JButton closeButton;
     private javax.swing.JComboBox duplicateTitlesComboBox;
     private javax.swing.JLabel duplicateTitlesLabel;
-    private javax.swing.JLabel fastaFileSuffixLabel;
-    private javax.swing.JTextField fastaSuffixTxt;
-    private javax.swing.JPanel fileProcessingPanel;
     private javax.swing.JComboBox groupResultFilesCmb;
     private javax.swing.JLabel groupResultFilesTxt;
+    private javax.swing.JTextField highSpectrumChargeRangeTxt;
     private javax.swing.JPanel identificationParametersPanel;
     private javax.swing.JComboBox includeDataCmb;
     private javax.swing.JLabel includeDataTxt;
     private javax.swing.JComboBox includeDateCmb;
     private javax.swing.JLabel includeDateLbl;
+    private javax.swing.JTextField lowSpectrumChargeRangeTxt;
     private javax.swing.JLabel maxMgfFileSizeLabel;
     private javax.swing.JLabel maxSpectraPerFileLabel;
     private javax.swing.JTextField mgfMaxSizeTxt;
@@ -657,11 +777,12 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel peakPickingLabel;
     private javax.swing.JComboBox proteinTreeComboBox;
     private javax.swing.JLabel proteinTreeLabel;
-    private javax.swing.JPanel proteinTreePanel;
     private javax.swing.JLabel refMassLbl;
     private javax.swing.JTextField refMassTxt;
     private javax.swing.JComboBox renameCmb;
     private javax.swing.JLabel renameXTandemFileLabel;
+    private javax.swing.JLabel spectrumChargeRangeDelimiterLabel;
+    private javax.swing.JLabel spectrumChargeRangeLabel;
     private javax.swing.JPanel spectrumProcessingPanel;
     // End of variables declaration//GEN-END:variables
 
@@ -674,10 +795,35 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     public boolean validateAdvancedParametersInput(boolean showMessage) {
 
         boolean valid = true;
-        
+
         valid = GuiUtilities.validateDoubleInput(this, maxMgfFileSizeLabel, mgfMaxSizeTxt, "mgf max size", "Mgf Max Size Error", true, showMessage, valid);
         valid = GuiUtilities.validateDoubleInput(this, maxSpectraPerFileLabel, mgfReducedSizeTxt, "max spectra in mgf file", "Max Spectra Error", true, showMessage, valid);
         valid = GuiUtilities.validateDoubleInput(this, refMassLbl, refMassTxt, "reference mass", "Reference Mass Error", true, showMessage, valid);
+
+        boolean lowerChargeValid = GuiUtilities.validateIntegerInput(this, spectrumChargeRangeLabel, lowSpectrumChargeRangeTxt, "lower bound for the precursor charge", "Precursor Charge Error", true, showMessage, valid);
+        valid = GuiUtilities.validateIntegerInput(this, spectrumChargeRangeLabel, highSpectrumChargeRangeTxt, "upper bound for the precursor charge", "Precursor Charge Error", true, showMessage, valid);
+        if (!lowerChargeValid) {
+            GuiUtilities.validateIntegerInput(this, spectrumChargeRangeLabel, lowSpectrumChargeRangeTxt, "lower bound for the precursor charge", "Precursor Charge Error", true, showMessage, valid);
+        }
+
+        // make sure that the lower charge is smaller than the upper charge
+        try {
+            int chargeLowerBound = Integer.parseInt(lowSpectrumChargeRangeTxt.getText().trim());
+            int chargeUpperBound = Integer.parseInt(highSpectrumChargeRangeTxt.getText().trim());
+
+            if (chargeUpperBound < chargeLowerBound) {
+                if (showMessage && valid) {
+                    JOptionPane.showMessageDialog(this, "The minimum precursor charge must be lower than or equal to the maximum precursor charge.",
+                            "Precursor Charge Error", JOptionPane.WARNING_MESSAGE);
+                }
+                valid = false;
+                spectrumChargeRangeLabel.setForeground(Color.RED);
+                spectrumChargeRangeLabel.setToolTipText("Minimum precursor charge > Maximum precursor charge!");
+            }
+
+        } catch (NumberFormatException e) {
+            // ignore, error already caught above
+        }
 
         return valid;
     }

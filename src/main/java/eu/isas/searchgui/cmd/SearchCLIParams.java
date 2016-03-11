@@ -1,7 +1,7 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersCLIParams;
-import eu.isas.searchgui.preferences.OutputOption;
+import com.compomics.util.preferences.SearchGuiOutputOption;
 import org.apache.commons.cli.Options;
 
 /**
@@ -21,14 +21,14 @@ public enum SearchCLIParams {
     
     THREADS("threads", "Number of threads to use for the processing, default: the number of cores.", false),
     
-    OMSSA("omssa", "Turn the OMSSA search on or off (1: on, 0: off, default is '1').", false),
-    XTANDEM("xtandem", "Turn the X!Tandem search on or off (1: on, 0: off, default is '1').", false),
-    MSGF("msgf", "Turn the MS-GF+ search on or off (1: on, 0: off, default is '1').", false),
-    MS_AMANDA("ms_amanda", "Turn the MS Amanda search on or off (1: on, 0: off, default is '1').", false),
-    MYRIMATCH("myrimatch", "Turn the MyriMatch search on or off (1: on, 0: off, default is '1').", false),
-    COMET("comet", "Turn the Comet search on or off (1: on, 0: off, default is '1').", false),
-    TIDE("tide", "Turn the Tide search on or off (1: on, 0: off, default is '1').", false),
-    ANDROMEDA("andromeda", "Turn the Andromeda search on or off (1: on, 0: off, default is '1').", false),
+    OMSSA("omssa", "Turn the OMSSA search on or off (0: off, 1: on,  default is '1').", false),
+    XTANDEM("xtandem", "Turn the X!Tandem search on or off (0: off, 1: on, default is '1').", false),
+    MSGF("msgf", "Turn the MS-GF+ search on or off (0: off, 1: on, default is '1').", false),
+    MS_AMANDA("ms_amanda", "Turn the MS Amanda search on or off (0: off, 1: on, default is '1').", false),
+    MYRIMATCH("myrimatch", "Turn the MyriMatch search on or off (0: off,1: on,  default is '1').", false),
+    COMET("comet", "Turn the Comet search on or off (0: off, 1: on, default is '1').", false),
+    TIDE("tide", "Turn the Tide search on or off (0: off, 1: on, default is '1').", false),
+    ANDROMEDA("andromeda", "Turn the Andromeda search on or off (0: off, 1: on, default is '1').", false),
     
     OMSSA_LOCATION("omssa_folder", "The folder where OMSSA is installed, defaults to the provided version for the given OS.", false),
     MAKEBLASTDB_LOCATION("makeblastdb_folder", "The folder where makeblastdb is installed, defaults to the provided version for the given OS.", false),
@@ -40,16 +40,21 @@ public enum SearchCLIParams {
     TIDE_LOCATION("tide_folder", "The folder where Tide is installed, defaults to the included version.", false),
     ANDROMEDA_LOCATION("andromeda_folder", "The folder where Andromeda is installed, defaults to the included version.", false),
     
+    MGF_CHECK_SIZE("mgf_check_size", "Turn the mgf size check on or off (0: off, 1: on, default is '0').", false),
     MGF_SPLITTING_LIMIT("mgf_splitting", "The maximum mgf file size in MB before splitting the mgf. Default is '1000'.", false),
     MGF_MAX_SPECTRA("mgf_spectrum_count", "The maximum number of spectra per mgf file when splitting. Default is '25000'.", false),
     DUPLICATE_TITLE_HANDLING("correct_titles", "Correct for duplicate spectrum titles. (0: no correction, 1: rename spectra, 2: delete spectra, default is '1').", false),
     MISSING_TITLE_HANDLING("missing_titles", "Add missing spectrum titles. (0: no correction, 1: add missing spectrum titles, default is '0').", false),
     
-    OUTPUT_OPTION("output_option", "Optional result file compression (" + OutputOption.getCommandLineOptions() + "), default is '0'.", false),
+    REFERENCE_MASS("ref_mass", "Reference mass for the conversion of the fragment ion tolerance from ppm to Dalton. Default is '2000'.", false),
+    
+    OUTPUT_OPTION("output_option", "Optional result file compression (" + SearchGuiOutputOption.getCommandLineOptions() + "), default is '0'.", false),
     OUTPUT_DATA("output_data", "Include mgf and FASTA file in zipped output (0: no, 1: yes, default is '0').", false),
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
+    RENAME_XTANDEM_OUTPUT("rename_xtandem", "Turn the renaming of the X! Tandem files on/off. (0: off, 1: on, default is '1').", false),
     
-    PROTEIN_INDEX("protein_index", "Turn the FASTA file indexing on/off. (1: on, 0: off, default is '0').", false);
+    TARGET_DECOY_TAG("target_decoy_tag", "The tag added after adding decoy sequences to a FASTA file. Default is '_concatenated_target_decoy'", false),
+    PROTEIN_INDEX("protein_index", "Turn the FASTA file indexing on/off. (0: off, 1: on, default is '0').", false);
 
     /**
      * Short Id for the CLI parameter.
@@ -135,6 +140,7 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, MAKEBLASTDB_LOCATION.id) + " " + MAKEBLASTDB_LOCATION.description + "\n";
         
         output += "\n\nInput Files Handling:\n\n";
+        output += "-" + String.format(formatter, MGF_CHECK_SIZE.id) + " " + MGF_CHECK_SIZE.description + "\n";
         output += "-" + String.format(formatter, MGF_SPLITTING_LIMIT.id) + " " + MGF_SPLITTING_LIMIT.description + "\n";
         output += "-" + String.format(formatter, MGF_MAX_SPECTRA.id) + " " + MGF_MAX_SPECTRA.description + "\n";
         output += "-" + String.format(formatter, DUPLICATE_TITLE_HANDLING.id) + " " + DUPLICATE_TITLE_HANDLING.description + "\n";
@@ -144,11 +150,15 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, OUTPUT_OPTION.id) + " " + OUTPUT_OPTION.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATA.id) + " " + OUTPUT_DATA.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATE.id) + " " + OUTPUT_DATE.description + "\n";
+        output += "-" + String.format(formatter, RENAME_XTANDEM_OUTPUT.id) + " " + RENAME_XTANDEM_OUTPUT.description + "\n";
         
         output += "\n\nProcessing Options:\n\n";
         output += "-" + String.format(formatter, THREADS.id) + " " + THREADS.description + "\n";
         output += "-" + String.format(formatter, PROTEIN_INDEX.id) + " " + PROTEIN_INDEX.description + "\n";
-
+        
+        output += "\n\nAdvanced Options:\n\n";
+        output += "-" + String.format(formatter, REFERENCE_MASS.id) + " " + REFERENCE_MASS.description + "\n";
+        
         output += "\n\nOptional Temporary Folder:\n\n";
         output += "-" + String.format(formatter, PathSettingsCLIParams.ALL.id) + " " + PathSettingsCLIParams.ALL.description + "\n";
         

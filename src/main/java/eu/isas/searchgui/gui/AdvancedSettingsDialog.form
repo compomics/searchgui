@@ -33,7 +33,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="advancedParamatersPanel" min="-2" max="-2" attributes="0"/>
+          <Component id="advancedParamatersPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -51,8 +51,7 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="spectrumProcessingPanel" alignment="1" max="32767" attributes="0"/>
-                      <Group type="102" alignment="1" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
                           <Component id="openDialogHelpJButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
@@ -60,10 +59,15 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="closeButton" linkSize="1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="fileProcessingPanel" alignment="1" max="32767" attributes="0"/>
-                      <Component id="outputPanel" alignment="0" max="32767" attributes="0"/>
-                      <Component id="proteinTreePanel" alignment="1" max="32767" attributes="0"/>
-                      <Component id="identificationParametersPanel" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="spectrumProcessingPanel" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="identificationParametersPanel" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="outputPanel" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -72,106 +76,27 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="spectrumProcessingPanel" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Component id="identificationParametersPanel" max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="outputPanel" max="32767" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="spectrumProcessingPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="fileProcessingPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="outputPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="identificationParametersPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="proteinTreePanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="openDialogHelpJButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="okButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="openDialogHelpJButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="closeButton" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="fileProcessingPanel">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="File Processing"/>
-              </Border>
-            </Property>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="fastaFileSuffixLabel" alignment="0" pref="230" max="32767" attributes="1"/>
-                          <Component id="renameXTandemFileLabel" max="32767" attributes="1"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="renameCmb" max="32767" attributes="2"/>
-                          <Component id="fastaSuffixTxt" max="32767" attributes="2"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="fastaSuffixTxt" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="fastaFileSuffixLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="renameCmb" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="renameXTandemFileLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JLabel" name="fastaFileSuffixLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="FASTA File Suffix"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="fastaSuffixTxt">
-              <Properties>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fastaSuffixTxtActionPerformed"/>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fastaSuffixTxtKeyReleased"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="renameCmb">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="2">
-                    <StringItem index="0" value="Yes"/>
-                    <StringItem index="1" value="No"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="renameXTandemFileLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Rename X!Tandem File"/>
-              </Properties>
-            </Component>
-          </SubComponents>
-        </Container>
         <Container class="javax.swing.JPanel" name="spectrumProcessingPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -186,31 +111,63 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="peakPickingLabel" min="-2" pref="230" max="-2" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="peakPickingComboBox" pref="180" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="duplicateTitlesLabel" min="-2" pref="230" max="-2" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="duplicateTitlesComboBox" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="maxMgfFileSizeLabel" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="maxSpectraPerFileLabel" alignment="0" min="-2" pref="230" max="-2" attributes="1"/>
-                              </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="mgfReducedSizeTxt" alignment="1" max="32767" attributes="2"/>
-                                  <Component id="mgfMaxSizeTxt" alignment="1" max="32767" attributes="2"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="maxMgfFileSizeLabel" max="32767" attributes="1"/>
+                                          <Component id="maxSpectraPerFileLabel" max="32767" attributes="1"/>
+                                      </Group>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="mgfMaxSizeTxt" min="-2" pref="150" max="-2" attributes="2"/>
+                                          <Component id="mgfReducedSizeTxt" min="-2" pref="150" max="-2" attributes="2"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Component id="spectrumChargeRangeLabel" max="32767" attributes="1"/>
+                                      <EmptySpace min="-2" pref="137" max="-2" attributes="0"/>
+                                      <Component id="highSpectrumChargeRangeTxt" linkSize="4" min="-2" pref="55" max="-2" attributes="2"/>
+                                  </Group>
                               </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="peakPickingLabel" min="-2" pref="200" max="-2" attributes="1"/>
+                                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                                      <Component id="peakPickingComboBox" min="-2" pref="150" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="duplicateTitlesLabel" min="-2" pref="200" max="-2" attributes="1"/>
+                                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                                      <Component id="duplicateTitlesComboBox" min="-2" pref="150" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="checkSpectrumChargesLabel" min="-2" pref="200" max="-2" attributes="1"/>
+                                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                                      <Component id="checkSpectrumChargesComboBox" min="-2" pref="150" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="checkMgfFileSizeLabel" min="-2" pref="200" max="-2" attributes="1"/>
+                                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="checkMgfFileSizeComboBox" min="-2" pref="150" max="-2" attributes="0"/>
+                                          <Group type="102" attributes="0">
+                                              <Component id="lowSpectrumChargeRangeTxt" linkSize="4" min="-2" pref="62" max="-2" attributes="2"/>
+                                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                                              <Component id="spectrumChargeRangeDelimiterLabel" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -226,6 +183,23 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="duplicateTitlesComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="duplicateTitlesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="checkSpectrumChargesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="checkSpectrumChargesComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="spectrumChargeRangeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lowSpectrumChargeRangeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="highSpectrumChargeRangeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="spectrumChargeRangeDelimiterLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="checkMgfFileSizeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="checkMgfFileSizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -245,7 +219,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="peakPickingLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Check Peak Picking"/>
+                <Property name="text" type="java.lang.String" value="Peak Picking Check"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="peakPickingComboBox">
@@ -260,7 +234,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="duplicateTitlesLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Check Duplicate Titles"/>
+                <Property name="text" type="java.lang.String" value="Duplicate Titles Check"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="duplicateTitlesComboBox">
@@ -275,12 +249,12 @@
             </Component>
             <Component class="javax.swing.JLabel" name="maxMgfFileSizeLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Maximum MGF File Size (MB)"/>
+                <Property name="text" type="java.lang.String" value="Maximum Mgf File Size (MB)"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="maxSpectraPerFileLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Maximum Spectra in MGF File"/>
+                <Property name="text" type="java.lang.String" value="Maximum Spectra in Mgf File"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="mgfMaxSizeTxt">
@@ -301,6 +275,72 @@
                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="mgfReducedSizeTxtKeyReleased"/>
               </Events>
             </Component>
+            <Component class="javax.swing.JLabel" name="checkSpectrumChargesLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Spectrum Charges Check"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="checkSpectrumChargesComboBox">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="2">
+                    <StringItem index="0" value="Yes"/>
+                    <StringItem index="1" value="No"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkSpectrumChargesComboBoxActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="spectrumChargeRangeLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Spectrum Charge Range"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="lowSpectrumChargeRangeTxt">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="text" type="java.lang.String" value="2"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lowSpectrumChargeRangeTxtActionPerformed"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="lowSpectrumChargeRangeTxtKeyReleased"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JTextField" name="highSpectrumChargeRangeTxt">
+              <Properties>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="text" type="java.lang.String" value="4"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="highSpectrumChargeRangeTxtActionPerformed"/>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="highSpectrumChargeRangeTxtKeyReleased"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="spectrumChargeRangeDelimiterLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="-"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="checkMgfFileSizeLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Mgf File Size Check"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="checkMgfFileSizeComboBox">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="2">
+                    <StringItem index="0" value="Yes"/>
+                    <StringItem index="1" value="No"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="checkMgfFileSizeComboBoxActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
         </Container>
         <Component class="javax.swing.JButton" name="openDialogHelpJButton">
@@ -319,14 +359,6 @@
             <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="openDialogHelpJButtonMouseEntered"/>
             <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="openDialogHelpJButtonMouseExited"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="openDialogHelpJButtonActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="closeButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Close"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeButtonActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="okButton">
@@ -353,17 +385,31 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="includeDataTxt" pref="230" max="32767" attributes="0"/>
-                              <Component id="groupResultFilesTxt" max="32767" attributes="1"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="groupResultFilesTxt" min="-2" pref="200" max="-2" attributes="1"/>
+                                      <Component id="includeDataTxt" alignment="1" min="-2" pref="190" max="-2" attributes="0"/>
+                                      <Component id="includeDateLbl" min="-2" pref="200" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="includeDateCmb" min="-2" pref="150" max="-2" attributes="0"/>
+                                      <Component id="includeDataCmb" min="-2" pref="150" max="-2" attributes="0"/>
+                                      <Component id="groupResultFilesCmb" min="-2" pref="150" max="-2" attributes="2"/>
+                                  </Group>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="renameXTandemFileLabel" min="-2" pref="200" max="-2" attributes="1"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="renameCmb" min="-2" pref="150" max="-2" attributes="2"/>
+                              </Group>
                           </Group>
-                          <Component id="includeDateLbl" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="includeDateCmb" max="32767" attributes="0"/>
-                          <Component id="includeDataCmb" pref="180" max="32767" attributes="0"/>
-                          <Component id="groupResultFilesCmb" max="32767" attributes="2"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="proteinTreeLabel" min="-2" pref="200" max="-2" attributes="1"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="proteinTreeComboBox" min="-2" pref="150" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -387,6 +433,16 @@
                           <Component id="includeDateLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="includeDateCmb" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="renameCmb" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="renameXTandemFileLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="proteinTreeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="proteinTreeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -401,10 +457,13 @@
             <Component class="javax.swing.JComboBox" name="groupResultFilesCmb">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(OutputOption.getOutputOptionsNames())" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(eu.isas.searchgui.preferences.SearchGuiOutputOption.getOutputOptionsNames())" type="code"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Output files grouping options"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="groupResultFilesCmbActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="includeDataTxt">
               <Properties>
@@ -440,44 +499,21 @@
                 <Property name="selectedIndex" type="int" value="1"/>
               </Properties>
             </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="proteinTreePanel">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Protein Inference"/>
-              </Border>
-            </Property>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="proteinTreeLabel" min="-2" pref="230" max="-2" attributes="1"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="proteinTreeComboBox" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="proteinTreeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="proteinTreeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
+            <Component class="javax.swing.JLabel" name="renameXTandemFileLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Rename X! Tandem File"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="renameCmb">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="2">
+                    <StringItem index="0" value="Yes"/>
+                    <StringItem index="1" value="No"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+            </Component>
             <Component class="javax.swing.JLabel" name="proteinTreeLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Generate Protein Index"/>
@@ -510,11 +546,11 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="refMassLbl" min="-2" pref="230" max="-2" attributes="1"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="refMassTxt" max="32767" attributes="2"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="refMassLbl" min="-2" pref="200" max="-2" attributes="1"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="refMassTxt" min="-2" pref="150" max="-2" attributes="2"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -550,6 +586,14 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="closeButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Close"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeButtonActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

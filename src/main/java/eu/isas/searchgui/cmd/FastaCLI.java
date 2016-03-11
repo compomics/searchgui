@@ -3,6 +3,7 @@ package eu.isas.searchgui.cmd;
 import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.preferences.UtilitiesUserPreferences;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -70,7 +71,8 @@ public class FastaCLI {
             writeDbProperties();
 
             if (fastaCLIInputBean.isDecoy()) {
-                SequenceFactory.setTargetDecoyFileNameTag(fastaCLIInputBean.getDecoySuffix());
+                UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                userPreferences.setTargetDecoyFileNameTag(fastaCLIInputBean.getDecoySuffix() + ".fasta");
                 boolean success = generateTargetDecoyDatabase(waitingHandlerCLIImpl);
                 if (success) {
                     System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
@@ -121,7 +123,8 @@ public class FastaCLI {
         }
 
         // add the target decoy tag
-        newFasta += SequenceFactory.getTargetDecoyFileNameTag();
+        UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        newFasta += userPreferences.getTargetDecoyFileNameTag() + ".fasta";
         File newFile = new File(newFasta);
 
         try {

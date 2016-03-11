@@ -1,6 +1,6 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
+import com.compomics.util.preferences.UtilitiesUserPreferences;
 import java.io.File;
 import org.apache.commons.cli.CommandLine;
 
@@ -23,7 +23,7 @@ public class FastaCLIInputBean {
     /**
      * The tag added after adding decoy sequences to a FASTA file.
      */
-    private String decoySuffix = SequenceFactory.getTargetDecoyFileNameTag();
+    private String decoySuffix;
 
     /**
      * Constructor.
@@ -40,6 +40,9 @@ public class FastaCLIInputBean {
         }
         if (aLine.hasOption(FastaCLIParams.decoy_suffix.id)) {
             decoySuffix = aLine.getOptionValue(FastaCLIParams.decoy_suffix.id);
+        } else {
+            UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+            decoySuffix = userPreferences.getTargetDecoyFileNameTag();
         }
     }
 

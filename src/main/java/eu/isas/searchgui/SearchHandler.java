@@ -28,7 +28,7 @@ import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.compomics.util.waiting.Duration;
-import eu.isas.searchgui.preferences.OutputOption;
+import com.compomics.util.preferences.SearchGuiOutputOption;
 import eu.isas.searchgui.processbuilders.*;
 import javax.swing.*;
 import java.awt.*;
@@ -96,14 +96,6 @@ public class SearchHandler {
      * Worker which builds the protein tree.
      */
     private ProteinTreeWorker proteinTreeWorker;
-    /**
-     * If true the X!Tandem file will be renamed.
-     */
-    private boolean renameXTandemFile = true;
-    /**
-     * If true the protein tree will be created parallel to the searches.
-     */
-    private boolean generateProteinTree = false;
     /**
      * The results folder.
      */
@@ -277,24 +269,6 @@ public class SearchHandler {
      */
     private MsConvertParameters msConvertParameters;
     /**
-     * The way output files should be exported.
-     */
-    private OutputOption outputOption = OutputOption.grouped; // @TODO: should be moved to SearchGUI user preferences
-    /**
-     * Reference mass for the conversion of the fragment ion tolerance from ppm
-     * to Dalton.
-     */
-    private Double refMass = 2000.0; // @TODO: should be moved to SearchGUI user preferences
-    /**
-     * Indicates whether data files (mgf and FASTA) should be copied in the
-     * output.
-     */
-    private boolean outputData = false;
-    /**
-     * Indicates whether the date should be included in the output.
-     */
-    private boolean includeDateInOutputName = false;
-    /**
      * Default name for a SearchGUI output.
      */
     public final static String DEFAULT_OUTPUT = "searchgui_out";
@@ -346,7 +320,9 @@ public class SearchHandler {
      * @param generateProteinTree if true, the protein tree will be generated
      * @param exceptionHandler a handler for exceptions
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile, ProcessingPreferences processingPreferences, boolean generateProteinTree, ExceptionHandler exceptionHandler) {
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles,
+            ArrayList<File> rawFiles, File identificationParametersFile, ProcessingPreferences processingPreferences,
+            boolean generateProteinTree, ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -363,7 +339,11 @@ public class SearchHandler {
         loadSearchEngineLocation(null, false, true, true, true, false, false, true);
         this.identificationParametersFile = identificationParametersFile;
         this.processingPreferences = processingPreferences;
-        this.generateProteinTree = generateProteinTree;
+
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        utilitiesUserPreferences.setGenerateProteinTree(generateProteinTree);
+        UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
+
         this.identificationParameters = identificationParameters;
         searchDuration = new Duration();
     }
@@ -426,8 +406,10 @@ public class SearchHandler {
 
         this.identificationParameters = identificationParameters;
         this.processingPreferences = processingPreferences;
-        this.generateProteinTree = generateProteinTree;
         this.identificationParametersFile = identificationParametersFile;
+
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        utilitiesUserPreferences.setGenerateProteinTree(generateProteinTree);
 
         if (omssaFolder != null) {
             this.omssaLocation = omssaFolder;
@@ -486,10 +468,10 @@ public class SearchHandler {
         // set this version as the default SearchGUI version
         if (!getJarFilePath().equalsIgnoreCase(".")) {
             String versionNumber = new eu.isas.searchgui.utilities.Properties().getVersion();
-            UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
             utilitiesUserPreferences.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
-            UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
         }
+
+        UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
 
         searchDuration = new Duration();
     }
@@ -1100,43 +1082,6 @@ public class SearchHandler {
     }
 
     /**
-     * Returns true if the X!Tandem file should be renamed.
-     *
-     * @return true if the X!Tandem file should be renamed
-     */
-    public boolean renameXTandemFile() {
-        return renameXTandemFile;
-    }
-
-    /**
-     * Set if the X!Tandem file should be renamed.
-     *
-     * @param renameXTandemFile rename file?
-     */
-    public void setRenameXTandemFile(boolean renameXTandemFile) {
-        this.renameXTandemFile = renameXTandemFile;
-    }
-
-    /**
-     * Returns true if the protein tree will be created parallel to the
-     * searches.
-     *
-     * @return true if the protein tree will be created parallel to the searches
-     */
-    public boolean generateProteinTree() {
-        return generateProteinTree;
-    }
-
-    /**
-     * Set if the the protein tree will be created parallel to the searches.
-     *
-     * @param generateProteinTree create protein tree?
-     */
-    public void setGenerateProteinTree(boolean generateProteinTree) {
-        this.generateProteinTree = generateProteinTree;
-    }
-
-    /**
      * Returns the OMSSA location.
      *
      * @return the omssaLocation
@@ -1596,87 +1541,6 @@ public class SearchHandler {
     }
 
     /**
-     * Sets how output files should be organized.
-     *
-     * @param outputOption the file output option
-     */
-    public void setOutputOption(OutputOption outputOption) {
-        this.outputOption = outputOption;
-    }
-
-    /**
-     * Returns the selected output option.
-     *
-     * @return the selected output option
-     */
-    public OutputOption getOutputOption() {
-        return outputOption;
-    }
-
-    /**
-     * Returns the reference mass for the conversion of the fragment ion
-     * tolerance from ppm to Dalton.
-     *
-     * @return the reference mass for the conversion of the fragment ion
-     * tolerance from ppm to Dalton
-     */
-    public Double getRefMass() {
-        return refMass;
-    }
-
-    /**
-     * Sets the reference mass for the conversion of the fragment ion tolerance
-     * from ppm to Dalton.
-     *
-     * @param refMass the reference mass for the conversion of the fragment ion
-     * tolerance from ppm to Dalton
-     */
-    public void setRefMass(Double refMass) {
-        this.refMass = refMass;
-    }
-
-    /**
-     * Indicates whether data should be copied along with the identification
-     * files.
-     *
-     * @return a boolean indicating whether data should be copied along with the
-     * identification files
-     */
-    public boolean outputData() {
-        return outputData;
-    }
-
-    /**
-     * Sets whether data should be copied along with the identification files.
-     *
-     * @param outputData whether data should be copied along with the
-     * identification files
-     */
-    public void setOutputData(boolean outputData) {
-        this.outputData = outputData;
-    }
-
-    /**
-     * Indicates whether the date should be included in the file output name.
-     *
-     * @return a boolean indicating whether the date should be included in the
-     * file output name
-     */
-    public boolean isIncludeDateInOutputName() {
-        return includeDateInOutputName;
-    }
-
-    /**
-     * Sets whether the date should be included in the file output name.
-     *
-     * @param includeDateInOutputName whether the date should be included in the
-     * file output name
-     */
-    public void setIncludeDateInOutputName(boolean includeDateInOutputName) {
-        this.includeDateInOutputName = includeDateInOutputName;
-    }
-
-    /**
      * SearchWorker extends SwingWorker and is a helper class for performing the
      * searches.
      */
@@ -1767,10 +1631,12 @@ public class SearchHandler {
         protected Object doInBackground() {
 
             try {
+                UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                
                 File outputFolder = getResultsFolder();
                 File outputTempFolder;
 
-                if (outputOption == OutputOption.no_zip) {
+                if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.no_zip) {
                     outputTempFolder = outputFolder;
                 } else {
                     try {
@@ -1787,7 +1653,7 @@ public class SearchHandler {
                 }
 
                 SearchParameters searchParameters = identificationParameters.getSearchParameters();
-
+                
                 File fastaFile = searchParameters.getFastaFile();
 
                 if (enableOmssa) {
@@ -1960,7 +1826,7 @@ public class SearchHandler {
                     saveInputFile(outputTempFolder);
 
                     // load database in parallel of the search (Note: apparently needs to be done after completion of makeblastdb)
-                    if (generateProteinTree && UtilitiesUserPreferences.loadUserPreferences().getMemoryPreference() >= 4000) { // only build the tree if enough memory is available
+                    if (utilitiesUserPreferences.generateProteinTree() && utilitiesUserPreferences.getMemoryPreference() >= 4000) { // only build the tree if enough memory is available
                         proteinTreeWorker = new ProteinTreeWorker(waitingHandler);
                         proteinTreeWorker.execute();
                     }
@@ -1994,7 +1860,7 @@ public class SearchHandler {
                         xTandemProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
-                            if (renameXTandemFile) {
+                            if (utilitiesUserPreferences.renameXTandemFile()) {
                                 ArrayList<File> result = getXTandemFiles(outputTempFolder, spectrumFileName);
                                 if (result.size() == 1) {
                                     File xTandemFile = result.get(0);
@@ -2098,7 +1964,8 @@ public class SearchHandler {
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
                         omssaProcessBuilder = new OmssaclProcessBuilder(omssaLocation,
-                                spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler, refMass, processingPreferences.getnThreads());
+                                spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler,
+                                utilitiesUserPreferences.getRefMass(), processingPreferences.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         omssaProcessBuilder.startProcess();
@@ -2125,7 +1992,8 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
-                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, spectrumFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads(), refMass);
+                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, spectrumFile, waitingHandler, exceptionHandler,
+                                processingPreferences.getnThreads(), utilitiesUserPreferences.getRefMass());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         cometProcessBuilder.startProcess();
@@ -2264,13 +2132,13 @@ public class SearchHandler {
 
                 if (!waitingHandler.isRunCanceled()) {
                     // organize the output files
-                    if (outputOption != OutputOption.no_zip) {
+                    if (utilitiesUserPreferences.getOutputOption() != SearchGuiOutputOption.no_zip) {
                         waitingHandler.appendReport("Zipping output files.", true, true);
                     } else {
                         waitingHandler.appendReport("Preparing output files.", true, true);
                     }
                     waitingHandler.appendReportEndLine();
-                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, includeDateInOutputName);
+                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, utilitiesUserPreferences.isIncludeDateInOutputName());
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
@@ -2279,16 +2147,16 @@ public class SearchHandler {
                     ArrayList<File> identificationFilesList = new ArrayList<File>();
                     identificationFilesList.addAll(mascotFiles);
 
-                    if (outputOption == OutputOption.grouped) {
-                        File outputFile = getDefaultOutputFile(outputFolder, includeDateInOutputName);
+                    if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.grouped) {
+                        File outputFile = getDefaultOutputFile(outputFolder, utilitiesUserPreferences.isIncludeDateInOutputName());
                         if (outputFile.exists()) {
                             identificationFilesList.add(outputFile);
                         } else {
                             waitingHandler.appendReport("Could not find SearchGUI results.", true, true);
                         }
-                    } else if (outputOption == OutputOption.algorithm) {
+                    } else if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.algorithm) {
                         if (enableMsAmanda) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2296,7 +2164,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableMsgf) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2304,7 +2172,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableMyriMatch) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2312,7 +2180,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableOmssa) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2320,7 +2188,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableXtandem) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2328,7 +2196,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableComet) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.comet.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.comet.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2336,7 +2204,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableTide) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.tide.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.tide.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2344,17 +2212,17 @@ public class SearchHandler {
                             }
                         }
                         if (enableAndromeda) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.andromeda.getName(), includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.andromeda.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
                                 waitingHandler.appendReport("Could not find " + Advocate.andromeda.getName() + " results.", true, true);
                             }
                         }
-                    } else if (outputOption == OutputOption.run) {
+                    } else if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.run) {
                         for (String run : identificationFiles.keySet()) {
                             String runName = Util.removeExtension(run);
-                            File outputFile = getDefaultOutputFile(outputFolder, runName, includeDateInOutputName);
+                            File outputFile = getDefaultOutputFile(outputFolder, runName, utilitiesUserPreferences.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2369,8 +2237,6 @@ public class SearchHandler {
                         }
                     }
 
-                    UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-
                     if (utilitiesUserPreferences.getPeptideShakerPath() == null || !new File(utilitiesUserPreferences.getPeptideShakerPath()).exists()) {
                         waitingHandler.appendReport("PeptideShaker not found! Please check the PeptideShaker path.", true, true);
                         waitingHandler.appendReportEndLine();
@@ -2378,7 +2244,7 @@ public class SearchHandler {
                     } else if (!identificationFiles.isEmpty()) {
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                 waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
-                                identificationParameters, identificationParametersFile, peptideShakerFile, true, processingPreferences, outputData);
+                                identificationParameters, identificationParametersFile, peptideShakerFile, true, processingPreferences, utilitiesUserPreferences.outputData());
                         waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
                         // cancel the protein tree if not done
@@ -2869,7 +2735,9 @@ public class SearchHandler {
      */
     public void organizeOutput(File outputFolder, File tempOutputFolder, HashMap<String, HashMap<Integer, File>> identificationFiles, File parametersFile, boolean includeDate) throws IOException {
 
-        switch (outputOption) {
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        
+        switch (utilitiesUserPreferences.getOutputOption()) {
 
             case grouped:
 
@@ -2928,7 +2796,7 @@ public class SearchHandler {
                                 }
                             }
 
-                            if (outputData) {
+                            if (utilitiesUserPreferences.outputData()) {
                                 addDataToZip(out, totalUncompressedSize);
                             }
                         } finally {
@@ -3011,7 +2879,7 @@ public class SearchHandler {
                                     ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
                                 }
 
-                                if (outputData) {
+                                if (utilitiesUserPreferences.outputData()) {
                                     addDataToZip(out, totalUncompressedSize);
                                 }
 
@@ -3090,7 +2958,7 @@ public class SearchHandler {
                                     ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
                                 }
 
-                                if (outputData) {
+                                if (utilitiesUserPreferences.outputData()) {
                                     addDataToZip(out, totalUncompressedSize);
                                 }
 
@@ -3110,7 +2978,7 @@ public class SearchHandler {
             default: // no zipping
 
                 // add data files if needed
-                if (outputData) {
+                if (utilitiesUserPreferences.outputData()) {
                     // create the data folder
                     File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
@@ -3188,9 +3056,11 @@ public class SearchHandler {
                 totalUncompressedSize += identificationFile.length();
             }
         }
+        
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
 
         // output data
-        if (outputData) {
+        if (utilitiesUserPreferences.outputData()) {
             totalUncompressedSize += getTotalUncompressedSizeOfData();
         }
 
@@ -3238,8 +3108,10 @@ public class SearchHandler {
             totalUncompressedSize += identificationFile.length();
         }
 
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        
         // output data
-        if (outputData) {
+        if (utilitiesUserPreferences.outputData()) {
             totalUncompressedSize += getTotalUncompressedSizeOfData();
         }
 
@@ -3284,9 +3156,11 @@ public class SearchHandler {
         for (File identificationFile : fileMap.values()) {
             totalUncompressedSize += identificationFile.length();
         }
+        
+        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
 
         // output data
-        if (outputData) {
+        if (utilitiesUserPreferences.outputData()) {
             totalUncompressedSize += getTotalUncompressedSizeOfData();
         }
 

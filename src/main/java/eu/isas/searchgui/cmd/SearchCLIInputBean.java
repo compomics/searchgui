@@ -1,9 +1,10 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CommandLineUtils;
+import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersCLIParams;
 import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersInputBean;
 import com.compomics.util.preferences.IdentificationParameters;
-import eu.isas.searchgui.preferences.OutputOption;
+import com.compomics.util.preferences.SearchGuiOutputOption;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -68,10 +69,6 @@ public class SearchCLIInputBean {
      */
     private boolean andromedaEnabled = true;
     /**
-     * If true, PepNovo+ is enabled.
-     */
-    private boolean pepnovoEnabled = true;
-    /**
      * The folder where OMSSA is installed.
      */
     private File omssaLocation = null;
@@ -112,9 +109,18 @@ public class SearchCLIInputBean {
      */
     private int mgfMaxSize = 1000;
     /**
+     * If true, the mgf files will be checked for size.
+     */
+    private Boolean checkMgfSize = false;
+    /**
      * Number of spectra allowed in the split file.
      */
     private int mgfNSpectra = 25000;
+    /**
+     * Reference mass for the conversion of the fragment ion tolerance from ppm
+     * to Dalton.
+     */
+    private Double refMass = 2000.0;
     /**
      * How to handle duplicate spectrum titles. 0: do nothing, 1: rename by
      * adding (2), (3), etc, behind the titles of the duplicated titles, or 2:
@@ -137,16 +143,24 @@ public class SearchCLIInputBean {
     /**
      * The way the output should be organized.
      */
-    private OutputOption outputOption = null;
+    private SearchGuiOutputOption outputOption = SearchGuiOutputOption.grouped;
     /**
      * Indicates whether the mgf and FASTA files should be included in the
      * output.
      */
-    private Boolean outputData = null;
+    private Boolean outputData = false;
     /**
      * Indicates whether the date should be included in the output file name.
      */
-    private Boolean outputDate = null;
+    private Boolean outputDate = false;
+    /**
+     * If true the X!Tandem file will be renamed.
+     */
+    private Boolean renameXTandemFile = true;
+    /**
+     * The tag added after adding decoy sequences to a FASTA file.
+     */
+    private String targetDecoyFileNameTag = "_concatenated_target_decoy";
 
     /**
      * Takes all the arguments from a command line.
@@ -169,7 +183,13 @@ public class SearchCLIInputBean {
         String arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
         outputFolder = new File(arg);
 
-        // get the mgf splitting limits
+        // get the mgf size check settings
+        if (aLine.hasOption(SearchCLIParams.MGF_CHECK_SIZE.id)) {
+            String mgfSizeCheckOption = aLine.getOptionValue(SearchCLIParams.MGF_CHECK_SIZE.id);
+            if (mgfSizeCheckOption.trim().equals("1")) {
+                checkMgfSize = true;
+            }
+        }
         if (aLine.hasOption(SearchCLIParams.MGF_SPLITTING_LIMIT.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.MGF_SPLITTING_LIMIT.id);
             Integer option = new Integer(arg);
@@ -309,11 +329,22 @@ public class SearchCLIInputBean {
                 throw new IllegalArgumentException("Unknown value \'" + option + "\' for " + SearchCLIParams.PROTEIN_INDEX.id + ".");
             }
         }
+        if (aLine.hasOption(SearchCLIParams.TARGET_DECOY_TAG.id)) {
+            arg = aLine.getOptionValue(SearchCLIParams.TARGET_DECOY_TAG.id);
+            targetDecoyFileNameTag = arg;
+        }
+
+        // set the reference mass
+        if (aLine.hasOption(SearchCLIParams.REFERENCE_MASS.id)) {
+            arg = aLine.getOptionValue(SearchCLIParams.REFERENCE_MASS.id);
+            Double option = new Double(arg);
+            refMass = option;
+        }
 
         // load the output preference
         if (aLine.hasOption(SearchCLIParams.OUTPUT_OPTION.id)) {
             int option = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id));
-            outputOption = OutputOption.getOutputOption(option);
+            outputOption = SearchGuiOutputOption.getOutputOption(option);
         }
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATA.id)) {
             int input = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATA.id));
@@ -322,6 +353,10 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATE.id)) {
             int input = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATE.id));
             outputDate = input == 1;
+        }
+        if (aLine.hasOption(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id)) {
+            int input = new Integer(aLine.getOptionValue(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id));
+            renameXTandemFile = input == 1;
         }
 
         // identification parameters
@@ -656,7 +691,7 @@ public class SearchCLIInputBean {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id);
             try {
                 int option = new Integer(input);
-                if (OutputOption.getOutputOption(option) == null) {
+                if (SearchGuiOutputOption.getOutputOption(option) == null) {
                     System.out.println(System.getProperty("line.separator") + "Output option \'" + option + "\' not recognized." + System.getProperty("line.separator"));
                     return false;
                 }
@@ -669,14 +704,7 @@ public class SearchCLIInputBean {
         // check the output data option
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATA.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_DATA.id);
-            try {
-                int option = new Integer(input);
-                if (option != 0 && option != 1) {
-                    System.out.println(System.getProperty("line.separator") + "Output data argument should be 0 or 1. \'" + option + "\' not recognized." + System.getProperty("line.separator"));
-                    return false;
-                }
-            } catch (Exception e) {
-                System.out.println(System.getProperty("line.separator") + "Output data argument should be 0 or 1. \'" + input + "\' not recognized." + System.getProperty("line.separator"));
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.OUTPUT_DATA.id, input)) {
                 return false;
             }
         }
@@ -684,19 +712,211 @@ public class SearchCLIInputBean {
         // check the output date option
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATE.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_DATE.id);
-            try {
-                int option = new Integer(input);
-                if (option != 0 && option != 1) {
-                    System.out.println(System.getProperty("line.separator") + "Output date argument should be 0 or 1. \'" + option + "\' not recognized." + System.getProperty("line.separator"));
-                    return false;
-                }
-            } catch (Exception e) {
-                System.out.println(System.getProperty("line.separator") + "Output date argument should be 0 or 1. \'" + input + "\' not recognized." + System.getProperty("line.separator"));
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.OUTPUT_DATE.id, input)) {
                 return false;
             }
         }
         
-        // Check the identification parameters
+        // check the rename xtandem output option
+        if (aLine.hasOption(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id, input)) {
+                return false;
+            }
+        }
+        
+        // check the protein index option
+        if (aLine.hasOption(SearchCLIParams.PROTEIN_INDEX.id)) {
+            String arg = aLine.getOptionValue(SearchCLIParams.PROTEIN_INDEX.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.PROTEIN_INDEX.id, arg)) {
+                return false;
+            }
+        }
+        
+        // check the target-decoy tag option
+        if (aLine.hasOption(SearchCLIParams.TARGET_DECOY_TAG.id)) {
+            String arg = aLine.getOptionValue(SearchCLIParams.TARGET_DECOY_TAG.id);
+            if (arg.isEmpty()) {
+                System.out.println(System.getProperty("line.separator") + "The target-decoy tag cannot be empty!" + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+
+        // check the number of threads
+        if (aLine.hasOption(SearchCLIParams.THREADS.id)) {
+            String arg = aLine.getOptionValue(SearchCLIParams.THREADS.id);
+            if (!IdentificationParametersInputBean.isPositiveInteger(SearchCLIParams.THREADS.id, arg, false)) {
+                return false;
+            }
+        }
+
+        // check the search engine on/off status
+        if (aLine.hasOption(SearchCLIParams.OMSSA.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.OMSSA.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.OMSSA.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.XTANDEM.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.XTANDEM.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.XTANDEM.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MSGF.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MSGF.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MSGF.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MS_AMANDA.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MS_AMANDA.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MS_AMANDA.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MYRIMATCH.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MYRIMATCH.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MYRIMATCH.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.COMET.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.COMET.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.COMET.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.TIDE.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.TIDE.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.TIDE.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.ANDROMEDA.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.ANDROMEDA.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.ANDROMEDA.id, input)) {
+                return false;
+            }
+        }
+
+        // check the search engine folders
+        if (aLine.hasOption(SearchCLIParams.OMSSA_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.OMSSA_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.OMSSA_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MAKEBLASTDB_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MAKEBLASTDB_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.MAKEBLASTDB_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.XTANDEM_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.XTANDEM_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.XTANDEM_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MSGF_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MSGF_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.MSGF_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MS_AMANDA_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MS_AMANDA_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.MS_AMANDA_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MYRIMATCH_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MYRIMATCH_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.MYRIMATCH_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.COMET_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.COMET_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.COMET_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.TIDE_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.TIDE_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.TIDE_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.ANDROMEDA_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.ANDROMEDA_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.ANDROMEDA_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        
+        // check the mgf size filters
+        if (aLine.hasOption(SearchCLIParams.MGF_CHECK_SIZE.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MGF_CHECK_SIZE.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MGF_CHECK_SIZE.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MGF_SPLITTING_LIMIT.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MGF_SPLITTING_LIMIT.id);
+            if (!IdentificationParametersInputBean.isPositiveDouble(SearchCLIParams.MGF_CHECK_SIZE.id, input, false)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MGF_MAX_SPECTRA.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MGF_MAX_SPECTRA.id);
+            if (!IdentificationParametersInputBean.isPositiveInteger(SearchCLIParams.MGF_MAX_SPECTRA.id, input, false)) {
+                return false;
+            }
+        }
+        
+        // check the spectrum title options
+        if (aLine.hasOption(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.MISSING_TITLE_HANDLING.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.MISSING_TITLE_HANDLING.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MISSING_TITLE_HANDLING.id, input)) {
+                return false;
+            }
+        }
+        
+        // check the reference mass
+        if (aLine.hasOption(SearchCLIParams.REFERENCE_MASS.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.REFERENCE_MASS.id);
+            if (!IdentificationParametersInputBean.isPositiveDouble(SearchCLIParams.REFERENCE_MASS.id, input, false)) {
+                return false;
+            }
+        }
+
+        // check the identification parameters
         if (!IdentificationParametersInputBean.isValidStartup(aLine, false)) {
             return false;
         }
@@ -736,7 +956,7 @@ public class SearchCLIInputBean {
      *
      * @return the output option chosen by the user
      */
-    public OutputOption getOutputOption() {
+    public SearchGuiOutputOption getOutputOption() {
         return outputOption;
     }
 
@@ -756,5 +976,93 @@ public class SearchCLIInputBean {
      */
     public Boolean isOutputDate() {
         return outputDate;
+    }
+
+    /**
+     * Returns true if the X! Tandem file should be renamed.
+     *
+     * @return true if the X! Tandem file should be renamed
+     */
+    public Boolean renameXTandemFile() {
+        if (renameXTandemFile == null) {
+            renameXTandemFile = true;
+        }
+        return renameXTandemFile;
+    }
+
+    /**
+     * Set if the X! Tandem file should be renamed.
+     *
+     * @param renameXTandemFile rename file?
+     */
+    public void setRenameXTandemFile(Boolean renameXTandemFile) {
+        this.renameXTandemFile = renameXTandemFile;
+    }
+
+    /**
+     * Returns the target-decoy file name tag.
+     *
+     * @return the targetDecoyFileNameTag
+     */
+    public String getTargetDecoyFileNameTag() {
+        if (targetDecoyFileNameTag == null) {
+            targetDecoyFileNameTag = "_concatenated_target_decoy";
+        }
+        return targetDecoyFileNameTag;
+    }
+
+    /**
+     * Set the target-decoy file name tag.
+     *
+     * @param targetDecoyFileNameTag the targetDecoyFileNameTag to set
+     */
+    public void setTargetDecoyFileNameTag(String targetDecoyFileNameTag) {
+        this.targetDecoyFileNameTag = targetDecoyFileNameTag;
+    }
+
+    /**
+     * Returns if the mgf should be checked for size.
+     *
+     * @return true if the mgf should be checked for size
+     */
+    public Boolean checkMgfSize() {
+        if (checkMgfSize == null) {
+            checkMgfSize = false;
+        }
+        return checkMgfSize;
+    }
+
+    /**
+     * Set if the mgf should be checked for size.
+     *
+     * @param checkMgfSize the mgf should be checked for size
+     */
+    public void setCheckMgfSize(boolean checkMgfSize) {
+        this.checkMgfSize = checkMgfSize;
+    }
+
+    /**
+     * Returns the reference mass for the conversion of the fragment ion
+     * tolerance from ppm to Dalton.
+     *
+     * @return the reference mass for the conversion of the fragment ion
+     * tolerance from ppm to Dalton
+     */
+    public Double getRefMass() {
+        if (refMass == null) {
+            refMass = 2000.0;
+        }
+        return refMass;
+    }
+
+    /**
+     * Sets the reference mass for the conversion of the fragment ion tolerance
+     * from ppm to Dalton.
+     *
+     * @param refMass the reference mass for the conversion of the fragment ion
+     * tolerance from ppm to Dalton
+     */
+    public void setRefMass(Double refMass) {
+        this.refMass = refMass;
     }
 }
