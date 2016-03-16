@@ -48,7 +48,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2015.02 rev. 1"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2016.01 rev. 0"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -64,7 +64,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The number of threads to use.
      */
-    private int nThreads;
+    private int nThreads; // note that Comet 2016.01 and newer supports negative values: "will subtract that many threads from #CPU cores"
     /**
      * The compomics PTM factory.
      */
@@ -560,126 +560,151 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             modifiedMass = 0.0;
         }
         result.append("add_G_glycine = ").append(modifiedMass).append("                 # added to G - avg.  57.0513, mono.  57.02146").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('A');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_A_alanine = ").append(modifiedMass).append("                 # added to A - avg.  71.0779, mono.  71.03711").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('S');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_S_serine = ").append(modifiedMass).append("                 # added to S - avg.  87.0773, mono.  87.03203").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('P');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_P_proline = ").append(modifiedMass).append("                 # added to P - avg.  97.1152, mono.  97.05276").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('V');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_V_valine = ").append(modifiedMass).append("                 # added to V - avg.  99.1311, mono.  99.06841").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('T');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_T_threonine = ").append(modifiedMass).append("                 # added to T - avg. 101.1038, mono. 101.04768").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('C');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_C_cysteine = ").append(modifiedMass).append("                 # added to C - avg. 103.1429, mono. 103.00918").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('L');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_L_leucine = ").append(modifiedMass).append("                 # added to L - avg. 113.1576, mono. 113.08406").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('I');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_I_isoleucine = ").append(modifiedMass).append("                 # added to I - avg. 113.1576, mono. 113.08406").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('N');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_N_asparagine = ").append(modifiedMass).append("                 # added to N - avg. 114.1026, mono. 114.04293").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('D');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_D_aspartic_acid = ").append(modifiedMass).append("                 # added to D - avg. 115.0874, mono. 115.02694").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('Q');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_Q_glutamine = ").append(modifiedMass).append("                 # added to Q - avg. 128.1292, mono. 128.05858").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('K');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_K_lysine = ").append(modifiedMass).append("                 # added to K - avg. 128.1723, mono. 128.09496").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('E');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
+
         result.append("add_E_glutamic_acid = ").append(modifiedMass).append("                 # added to E - avg. 129.1140, mono. 129.04259").append(System.getProperty("line.separator"));
         modifiedMass = residueToModificationMap.get('M');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_M_methionine = ").append(modifiedMass).append("                 # added to M - avg. 131.1961, mono. 131.04048").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('O');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_O_ornithine = ").append(modifiedMass).append("                 # added to O - avg. 132.1610, mono  132.08988").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('H');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_H_histidine = ").append(modifiedMass).append("                 # added to H - avg. 137.1393, mono. 137.05891").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('F');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_F_phenylalanine = ").append(modifiedMass).append("                 # added to F - avg. 147.1739, mono. 147.06841").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('R');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_R_arginine = ").append(modifiedMass).append("                 # added to R - avg. 156.1857, mono. 156.10111").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('Y');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_Y_tyrosine = ").append(modifiedMass).append("                 # added to Y - avg. 163.0633, mono. 163.06333").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('W');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_W_tryptophan = ").append(modifiedMass).append("                 # added to W - avg. 186.0793, mono. 186.07931").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('B');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_B_user_amino_acid = ").append(modifiedMass).append("                 # added to B - avg.   0.0000, mono.   0.00000").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('J');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_J_user_amino_acid = ").append(modifiedMass).append("                 # added to J - avg. 113.1576, mono. 113.08406").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('U');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
-        result.append("add_U_user_amino_acid = ").append(modifiedMass).append("                 # added to U - avg.   0.0000, mono.   0.00000").append(System.getProperty("line.separator"));
+        result.append("add_U_selenocysteine = ").append(modifiedMass).append("                 # added to U - avg.   0.0000, mono.   0.00000").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('X');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
         result.append("add_X_user_amino_acid = ").append(modifiedMass).append("                 # added to X - avg.   0.0000, mono.   0.00000").append(System.getProperty("line.separator"));
+
         modifiedMass = residueToModificationMap.get('Z');
         if (modifiedMass == null) {
             modifiedMass = 0.0;
