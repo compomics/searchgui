@@ -1,16 +1,12 @@
-2016/03/29
+2016/04/06
 
-Comet version "2016.01 rev. 1".
+Comet version "2016.01 rev. 2".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
-- Fixes a bug where variable terminal modifications on decoy peptides are
-  not properly generated leading to possible program crash due to calculating
-  fragment ions that are too large for the decoy peptide.  Reported by the
-  Villen lab.
-- Fixes a bug where peptide mass comparisons are failing, leading to
-  duplicate peptides being stored and reported as separate entries.  Reported
-  by S. Michalakopoulos.
+- Reverts the modification encoding in the "output_txtfile" output back
+  to reporting variable modification mass difference (e.g. DLSTM[16.0]HK)
+  instead of the actual modified residue mass values (e.g. DLSTM[147]HK).
 
 
 Comet is an open source MS/MS database search engine released under the
