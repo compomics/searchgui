@@ -16,8 +16,8 @@
 
 |   |   |   |
 | :------------------------- | :--------------- | :--: |
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/2.8.2/SearchGUI-2.8.2-windows.zip) | *v2.8.2 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/2.8.2/SearchGUI-2.8.2-mac_and_linux.tar.gz) | *v2.8.2 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/2.8.3/SearchGUI-2.8.3-windows.zip) | *v2.8.3 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/2.8.3/SearchGUI-2.8.3-mac_and_linux.tar.gz) | *v2.8.3 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
 
 ----
 
@@ -104,8 +104,6 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
  * **Search Engine Issues** - Important: If you have problems with the search engines, please verify that the search engines are working outside of SearchGUI first. To test your installation run the search engine executable on the command line. This should result in output describing what the script does. If you get this, it works, and SearchGUI should run without problems. If not, see below.
 
  * **X!Tandem XML Syntax Error** - If X!Tandem gives the error "Syntax error parsing XML", the problems is most likely that the path to your database or mgf files contains special characters not supported on your operating system. If this happens try renaming the folders containing the special characters or move the files to folders not containing special characters.
-
- * **OMSSA on Windows** - Windows users might encounter issues starting OMSSA, due to missing libraries. Do solve this do the following: First, apply the following [update](http://www.microsoft.com/downloads/details.aspx?FamilyID#200b2fd9-ae1a-4a14-984d-389c36f85647&displaylang#en http://www.microsoft.com/downloads/details.aspx?FamilyID#200b2fd9-ae1a-4a14-984d-389c36f85647&displaylang#en), then apply this [security patch](http://www.microsoft.com/downloads/details.aspx?familyid#766a6af7-ec73-40ff-b072-9112bab119c2&displaylang#en http://www.microsoft.com/downloads/details.aspx?familyid#766a6af7-ec73-40ff-b072-9112bab119c2&displaylang#en).
 
  * **Linux Support** - Users wanting to use SearchGUI on Linux may have to install the search engines first, see the tools web pages for available search engine versions. *Important:* Please verify that the search engines are working outside of SearchGUI before using them inside SearchGUI.
 
