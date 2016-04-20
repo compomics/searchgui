@@ -554,7 +554,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
             userPreferences.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
             userPreferences.setCheckMgfSize(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
             userPreferences.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
-            userPreferences.setMgfMaxSize(new Integer(mgfReducedSizeTxt.getText().trim()));
+            userPreferences.setMgfNSpectra(new Integer(mgfReducedSizeTxt.getText().trim()));
             userPreferences.setGenerateProteinTree(proteinTreeComboBox.getSelectedIndex() == 0);
             SearchGuiOutputOption outputOption = SearchGuiOutputOption.getOutputOption(groupResultFilesCmb.getSelectedIndex());
             userPreferences.setOutputOption(outputOption);
