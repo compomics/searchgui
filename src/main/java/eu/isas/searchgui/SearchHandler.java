@@ -3,7 +3,6 @@ package eu.isas.searchgui;
 import com.compomics.software.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
-import com.compomics.util.db.DerbyUtil;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
@@ -92,10 +91,6 @@ public class SearchHandler {
      * Worker which indexes files.
      */
     private IndexingWorker indexingWorker;
-    /**
-     * Worker which builds the protein tree.
-     */
-    private ProteinTreeWorker proteinTreeWorker;
     /**
      * The results folder.
      */
@@ -317,12 +312,11 @@ public class SearchHandler {
      * @param rawFiles list of raw files
      * @param identificationParametersFile the identification parameters file
      * @param processingPreferences the processing preferences
-     * @param generateProteinTree if true, the protein tree will be generated
      * @param exceptionHandler a handler for exceptions
      */
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles,
             ArrayList<File> rawFiles, File identificationParametersFile, ProcessingPreferences processingPreferences,
-            boolean generateProteinTree, ExceptionHandler exceptionHandler) {
+            ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -339,10 +333,6 @@ public class SearchHandler {
         loadSearchEngineLocation(null, false, true, true, true, false, false, true);
         this.identificationParametersFile = identificationParametersFile;
         this.processingPreferences = processingPreferences;
-
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-        utilitiesUserPreferences.setGenerateProteinTree(generateProteinTree);
-        UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
 
         this.identificationParameters = identificationParameters;
         searchDuration = new Duration();
@@ -385,12 +375,11 @@ public class SearchHandler {
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
      * @param processingPreferences the processing preferences
-     * @param generateProteinTree if true, the protein tree will be generated
      */
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder, File makeblastdbFolder,
-            ProcessingPreferences processingPreferences, boolean generateProteinTree) {
+            ProcessingPreferences processingPreferences) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -407,9 +396,6 @@ public class SearchHandler {
         this.identificationParameters = identificationParameters;
         this.processingPreferences = processingPreferences;
         this.identificationParametersFile = identificationParametersFile;
-
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-        utilitiesUserPreferences.setGenerateProteinTree(generateProteinTree);
 
         if (omssaFolder != null) {
             this.omssaLocation = omssaFolder;
@@ -467,11 +453,11 @@ public class SearchHandler {
 
         // set this version as the default SearchGUI version
         if (!getJarFilePath().equalsIgnoreCase(".")) {
+            UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
             String versionNumber = new eu.isas.searchgui.utilities.Properties().getVersion();
             utilitiesUserPreferences.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
+            UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
         }
-
-        UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
 
         searchDuration = new Duration();
     }
@@ -524,10 +510,6 @@ public class SearchHandler {
     public void cancelSearch() {
         searchWorker.cancelRun();
 
-        if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
-            proteinTreeWorker.cancelBuild();
-        }
-
         if (waitingHandler != null) {
             waitingHandler.setRunCanceled();
         }
@@ -553,14 +535,6 @@ public class SearchHandler {
     private void searchCompleted() {
 
         if (searchWorker.isFinished() && indexingWorker.isFinished()) {
-
-            // stop the building of the tree
-            if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
-                proteinTreeWorker.cancelBuild();
-                while (!proteinTreeWorker.isFinished()) {
-                    // wait for the db to shut down
-                }
-            }
 
             if (waitingHandler != null) {
                 if (waitingHandler instanceof WaitingDialog) {
@@ -1620,11 +1594,6 @@ public class SearchHandler {
             if (peptideShakerProcessBuilder != null) {
                 peptideShakerProcessBuilder.endProcess();
             }
-
-            // stop the building of the tree
-            if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
-                proteinTreeWorker.cancelBuild();
-            }
         }
 
         @Override
@@ -1822,15 +1791,7 @@ public class SearchHandler {
                 }
 
                 if (!waitingHandler.isRunCanceled()) {
-
                     saveInputFile(outputTempFolder);
-
-                    // load database in parallel of the search (Note: apparently needs to be done after completion of makeblastdb)
-                    if (utilitiesUserPreferences.generateProteinTree() && utilitiesUserPreferences.getMemoryPreference() >= 4000) { // only build the tree if enough memory is available
-                        proteinTreeWorker = new ProteinTreeWorker(waitingHandler);
-                        proteinTreeWorker.execute();
-                    }
-
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
@@ -2247,27 +2208,12 @@ public class SearchHandler {
                                 identificationParameters, identificationParametersFile, peptideShakerFile, true, processingPreferences, utilitiesUserPreferences.outputData());
                         waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
-                        // cancel the protein tree if not done
-                        if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) {
-                            proteinTreeWorker.cancelBuild();
-                            while (!proteinTreeWorker.isFinished()) {
-                                // wait until the tree is closed
-                                Thread.sleep(100);
-                            }
-                        }
-
                         peptideShakerProcessBuilder.startProcess();
                     } else {
                         enablePeptideShaker = false;
                         waitingHandler.appendReportEndLine();
                         waitingHandler.appendReport("No identification files to process with PeptideShaker!", true, true);
                         waitingHandler.appendReportEndLine();
-                    }
-                } else if (proteinTreeWorker != null && !proteinTreeWorker.isFinished()) { // cancel the protein tree if not done
-                    proteinTreeWorker.cancelBuild();
-                    while (!proteinTreeWorker.isFinished()) {
-                        // wait until the tree is closed
-                        Thread.sleep(10);
                     }
                 }
 
@@ -2430,127 +2376,6 @@ public class SearchHandler {
          * Returns a boolean indicating whether the indexing is finished.
          *
          * @return a boolean indicating whether the indexing is finished
-         */
-        public boolean isFinished() {
-            return finished;
-        }
-    }
-
-    /**
-     * Worker which builds the protein tree.
-     */
-    private class ProteinTreeWorker extends SwingWorker {
-
-        /**
-         * The waiting handler displaying feedback to the user.
-         */
-        private WaitingHandler proteinTreeWaitingHandler;
-        /**
-         * Boolean indicating that the processing is finished.
-         */
-        private boolean finished = false;
-        /**
-         * Boolean indicating if the waiting handler should be command line or
-         * GUI.
-         */
-        private boolean commandlineWaitingHandler = true; // note: only set to false for testing purposes
-        /**
-         * The GUI waiting dialog.
-         */
-        private WaitingDialog guiWaitingDialog;
-
-        /**
-         * Constructor of the worker.
-         *
-         * @param waitingHandler
-         */
-        public ProteinTreeWorker(WaitingHandler waitingHandler) {
-            if (waitingHandler instanceof WaitingDialog) {
-                guiWaitingDialog = (WaitingDialog) waitingHandler;
-                ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-            }
-            if (commandlineWaitingHandler) {
-                this.proteinTreeWaitingHandler = new WaitingHandlerCLIImpl(); // @TODO: find a way of displaying this process in the waiting dialog?
-            } else {
-                this.proteinTreeWaitingHandler = waitingHandler;
-            }
-        }
-
-        @Override
-        protected synchronized Object doInBackground() throws Exception {
-
-            SequenceFactory sequenceFactory = SequenceFactory.getInstance();
-
-            try {
-                File fastaFile = sequenceFactory.getCurrentFastaFile();
-                Duration indexingTime = new Duration();
-                indexingTime.start();
-                proteinTreeWaitingHandler.appendReport("Importing " + fastaFile.getName(), true, true);
-                UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-                int memoryPreference = userPreferences.getMemoryPreference();
-                long fileSize = fastaFile.length();
-                long nSequences = sequenceFactory.getNTargetSequences();
-                if (!sequenceFactory.isDefaultReversed()) {
-                    nSequences = sequenceFactory.getNSequences();
-                }
-                long sequencesPerMb = 1048576 * nSequences / fileSize;
-                long availableCachSize = 3 * memoryPreference * sequencesPerMb / 4;
-                if (availableCachSize > nSequences) {
-                    availableCachSize = nSequences;
-                } else {
-                    proteinTreeWaitingHandler.appendReport("Warning: SearchGUI cannot load your FASTA file entirely into memory. This will slow down the processing. "
-                            + "Note that using large large databases also induces random hits efficiency. "
-                            + "Try to either (i) use a smaller database, (ii) increase the memory provided to DeNovoGUI, or (iii) improve the reading speed by using an SSD disc. "
-                            + "(See also http://compomics.github.io/compomics-utilities/wiki/proteininference.html.)", true, true);
-                }
-                int cacheSize = (int) availableCachSize;
-                sequenceFactory.setnCache(cacheSize);
-                sequenceFactory.getDefaultProteinTree(processingPreferences.getnThreads(), proteinTreeWaitingHandler, exceptionHandler, true);
-                if (!proteinTreeWaitingHandler.isRunCanceled()) {
-                    indexingTime.end();
-                    proteinTreeWaitingHandler.appendReport("Importing " + sequenceFactory.getFileName() + " finished (" + indexingTime.toString() + ").", true, true);
-                } else {
-                    proteinTreeWaitingHandler.appendReport("Importing " + sequenceFactory.getFileName() + " canceled.", true, true);
-                }
-                sequenceFactory.emptyCache();
-            } catch (Exception e) {
-                e.printStackTrace();
-                proteinTreeWaitingHandler.appendReport("Importing " + sequenceFactory.getFileName() + " failed: " + e.getMessage(), true, true);
-            } catch (OutOfMemoryError error) {
-                System.out.println("Ran out of memory building the protein tree!");
-                cancelBuild();
-            }
-
-            sequenceFactory.clearFactory();
-
-            if (proteinTreeWaitingHandler.isRunCanceled()) {
-                sequenceFactory.deleteProteinTree(exceptionHandler);
-            }
-
-            DerbyUtil.closeConnection();
-
-            if (guiWaitingDialog != null) {
-                // change the icon to the waiting icon
-                ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-            }
-
-            finished = true;
-            return 0;
-        }
-
-        /**
-         * Cancel the building of the tree.
-         */
-        private void cancelBuild() {
-            proteinTreeWaitingHandler.setRunCanceled();
-        }
-
-        /**
-         * Returns a boolean indicating whether the loading of the protein tree
-         * is finished.
-         *
-         * @return a boolean indicating whether the loading of the protein tree
-         * is finished
          */
         public boolean isFinished() {
             return finished;

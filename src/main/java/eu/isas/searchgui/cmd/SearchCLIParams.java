@@ -53,8 +53,7 @@ public enum SearchCLIParams {
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
     RENAME_XTANDEM_OUTPUT("rename_xtandem", "Turn the renaming of the X! Tandem files on/off. (0: off, 1: on, default is '1').", false),
     
-    TARGET_DECOY_TAG("target_decoy_tag", "The tag added after adding decoy sequences to a FASTA file. Default is '_concatenated_target_decoy'", false),
-    PROTEIN_INDEX("protein_index", "Turn the FASTA file indexing on/off. (0: off, 1: on, default is '0').", false);
+    TARGET_DECOY_TAG("target_decoy_tag", "The tag added after adding decoy sequences to a FASTA file. Default is '_concatenated_target_decoy'", false);
 
     /**
      * Short Id for the CLI parameter.
@@ -154,7 +153,6 @@ public enum SearchCLIParams {
         
         output += "\n\nProcessing Options:\n\n";
         output += "-" + String.format(formatter, THREADS.id) + " " + THREADS.description + "\n";
-        output += "-" + String.format(formatter, PROTEIN_INDEX.id) + " " + PROTEIN_INDEX.description + "\n";
         
         output += "\n\nAdvanced Options:\n\n";
         output += "-" + String.format(formatter, REFERENCE_MASS.id) + " " + REFERENCE_MASS.description + "\n";

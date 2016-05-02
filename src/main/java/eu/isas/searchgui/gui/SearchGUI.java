@@ -323,7 +323,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // set the search parameters
             updateIdentificationSettingsDropDownMenu(true);
 
-            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, identificationParametersFile, processingPreferences, false, exceptionHandler);
+            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, identificationParametersFile, processingPreferences, exceptionHandler);
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
             enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());

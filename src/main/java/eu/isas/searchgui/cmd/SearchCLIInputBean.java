@@ -1,7 +1,6 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CommandLineUtils;
-import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersCLIParams;
 import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersInputBean;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.SearchGuiOutputOption;
@@ -136,10 +135,6 @@ public class SearchCLIInputBean {
      * Number of threads to use. Defaults to the number of cores available.
      */
     private int nThreads = Runtime.getRuntime().availableProcessors();
-    /**
-     * If true, the protein tree will be created.
-     */
-    private boolean generateProteinTree = false;
     /**
      * The way the output should be organized.
      */
@@ -319,16 +314,7 @@ public class SearchCLIInputBean {
             nThreads = new Integer(arg);
         }
 
-        // get if the protein tree is to be generated
-        if (aLine.hasOption(SearchCLIParams.PROTEIN_INDEX.id)) {
-            arg = aLine.getOptionValue(SearchCLIParams.PROTEIN_INDEX.id);
-            Integer option = new Integer(arg);
-            if (option == 0 || option == 1) {
-                generateProteinTree = option == 1;
-            } else {
-                throw new IllegalArgumentException("Unknown value \'" + option + "\' for " + SearchCLIParams.PROTEIN_INDEX.id + ".");
-            }
-        }
+        // set the target-decoy tag
         if (aLine.hasOption(SearchCLIParams.TARGET_DECOY_TAG.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.TARGET_DECOY_TAG.id);
             targetDecoyFileNameTag = arg;
@@ -725,14 +711,6 @@ public class SearchCLIInputBean {
             }
         }
         
-        // check the protein index option
-        if (aLine.hasOption(SearchCLIParams.PROTEIN_INDEX.id)) {
-            String arg = aLine.getOptionValue(SearchCLIParams.PROTEIN_INDEX.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.PROTEIN_INDEX.id, arg)) {
-                return false;
-            }
-        }
-        
         // check the target-decoy tag option
         if (aLine.hasOption(SearchCLIParams.TARGET_DECOY_TAG.id)) {
             String arg = aLine.getOptionValue(SearchCLIParams.TARGET_DECOY_TAG.id);
@@ -922,24 +900,6 @@ public class SearchCLIInputBean {
         }
 
         return true;
-    }
-
-    /**
-     * Returns if the protein tree is to be generated or not.
-     *
-     * @return the generateProteinTree
-     */
-    public boolean isGenerateProteinTree() {
-        return generateProteinTree;
-    }
-
-    /**
-     * Set if the protein tree is to be generated or not.
-     *
-     * @param generateProteinTree the generateProteinTree to set
-     */
-    public void setGenerateProteinTree(boolean generateProteinTree) {
-        this.generateProteinTree = generateProteinTree;
     }
 
     /**

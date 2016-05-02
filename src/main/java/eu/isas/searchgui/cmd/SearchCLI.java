@@ -283,8 +283,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getMyriMatchLocation(), searchCLIInputBean.getCometLocation(),
                     searchCLIInputBean.getTideLocation(), searchCLIInputBean.getAndromedaLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
-                    processingPreferences,
-                    searchCLIInputBean.isGenerateProteinTree());
+                    processingPreferences);
 
             File logFolder = pathSettingsCLIInputBean.getLogFolder();
             if (logFolder != null) {
