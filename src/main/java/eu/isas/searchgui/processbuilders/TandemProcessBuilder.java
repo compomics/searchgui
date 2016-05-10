@@ -274,9 +274,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             enzymeIsSemiSpecific = "no";
         }
         missedCleavages = searchParameters.getnMissedCleavages();
-        if (searchParameters.getEnzyme().isUnspecific()) { // unspecific cleavage
-            missedCleavages = 50;
-        }
+//        if (searchParameters.getEnzyme().isUnspecific()) { // unspecific cleavage
+//            missedCleavages = 50;
+//        }
         ion1 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched1());
         ion2 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched2());
 
