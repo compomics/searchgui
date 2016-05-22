@@ -4,7 +4,6 @@ import com.compomics.software.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
-import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersCLIParams;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
