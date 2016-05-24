@@ -3402,7 +3402,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void privacyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privacyMenuItemActionPerformed
-        new PrivacySettingsDialog(this, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/reporter.gif")));
+        new PrivacySettingsDialog(this, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
     }//GEN-LAST:event_privacyMenuItemActionPerformed
 
     /**
