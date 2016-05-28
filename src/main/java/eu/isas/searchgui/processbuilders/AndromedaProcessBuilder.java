@@ -33,6 +33,7 @@ import java.util.HashMap;
  * ProcessBuilder for the Andromeda search engine.
  *
  * @author Marc Vaudel
+ * @author Harald Barsnes
  */
 public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -104,7 +105,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         File andromeda = new File(andromedaFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
         andromeda.setExecutable(true);
 
-        // Create parameters file
+        // create parameters file
         File andromedaParametersFile = createParametersFile(searchParametersFile);
 
         // full path to executable
@@ -664,7 +665,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             bw.write("fasta file=\"" + searchParameters.getFastaFile().getAbsolutePath() + "\"");
             bw.newLine();
-            bw.write("decoy mode=reverse");
+            bw.write("decoy mode=" + andromedaParameters.getDecoyMode());
             bw.newLine();
             bw.write("include contaminants=False");
             bw.newLine();
