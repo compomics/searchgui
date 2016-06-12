@@ -13,6 +13,10 @@ import org.apache.commons.cli.CommandLine;
 public class FastaCLIInputBean {
 
     /**
+     * The path settings.
+     */
+    private PathSettingsCLIInputBean pathSettingsCLIInputBean;
+    /**
      * The input file.
      */
     private File inputFile = null;
@@ -44,6 +48,18 @@ public class FastaCLIInputBean {
             UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
             decoySuffix = userPreferences.getTargetDecoyFileNameTag();
         }
+
+        // Path settings
+        pathSettingsCLIInputBean = new PathSettingsCLIInputBean(aLine);
+    }
+    
+    /**
+     * Returns the path settings provided by the user.
+     *
+     * @return the path settings provided by the user
+     */
+    public PathSettingsCLIInputBean getPathSettingsCLIInputBean() {
+        return pathSettingsCLIInputBean;
     }
 
     /**

@@ -517,16 +517,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Sets the path configuration.
-     */
-    private void setPathConfiguration() throws IOException {
-        File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
-        if (pathConfigurationFile.exists()) {
-            SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
-        }
-    }
-
-    /**
      * Returns the name to use for the identification settings file.
      *
      * @return the name to use for the identification settings file
@@ -5550,6 +5540,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public static String getJarFilePath() {
         return CompomicsWrapper.getJarFilePath((new SearchGUI()).getClass().getResource("SearchGUI.class").getPath(), "SearchGUI");
+    }
+
+    /**
+     * Sets the path configuration.
+     * 
+     * @throws java.io.IOException exception thrown whenever an error occurs while reading or writing the paths configuration file
+     */
+    public static void setPathConfiguration() throws IOException {
+        File pathConfigurationFile = new File(SearchGUI.getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+        if (pathConfigurationFile.exists()) {
+            SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
+        }
     }
 
     @Override

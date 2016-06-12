@@ -1,11 +1,16 @@
 package eu.isas.searchgui.cmd;
 
+import com.compomics.software.settings.PathKey;
 import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
+import static eu.isas.searchgui.cmd.SearchCLI.redirectErrorStream;
+import eu.isas.searchgui.gui.SearchGUI;
+import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -61,6 +66,36 @@ public class FastaCLI {
      * Calling this method will run the configured FastaCLI process.
      */
     public void call() {
+
+        PathSettingsCLIInputBean pathSettingsCLIInputBean = fastaCLIInputBean.getPathSettingsCLIInputBean();
+
+        if (pathSettingsCLIInputBean.getLogFolder() != null) {
+            redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
+        }
+
+        if (pathSettingsCLIInputBean.hasInput()) {
+            PathSettingsCLI pathSettingsCLI = new PathSettingsCLI(pathSettingsCLIInputBean);
+            pathSettingsCLI.setPathSettings();
+        } else {
+            try {
+                SearchGUI.setPathConfiguration();
+            } catch (Exception e) {
+                System.out.println("An error occurred when setting path configuration. Default paths will be used.");
+                e.printStackTrace();
+            }
+            try {
+                ArrayList<PathKey> errorKeys = SearchGUIPathPreferences.getErrorKeys(SearchGUI.getJarFilePath());
+                if (!errorKeys.isEmpty()) {
+                    System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
+                            + "the path configuration command line, or edit the configuration paths from the graphical interface.");
+                    for (PathKey pathKey : errorKeys) {
+                        System.out.println(pathKey.getId() + ": " + pathKey.getDescription());
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Unable to load the path configurations. Default pathswill be used.");
+            }
+        }
 
         try {
             WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
