@@ -45,6 +45,7 @@ For developer access to the search results we recommend the use of [compomics-ut
 
 ## Read Me
  
+ * [Availability](#availability)
  * [From the Command Line](#from-the-command-line)
  * [Database Help](https://github.com/compomics/searchgui/wiki/DatabaseHelp)
  * [User Defined Modifications](#user-defined-modifications)
@@ -52,6 +53,20 @@ For developer access to the search results we recommend the use of [compomics-ut
  * [Result Analysis](#result-analysis)
 
 To start identifying peptides and proteins using SearchGUI, download the latest version, unzip the downloaded file, and double-click on the SearchGUI-X.Y.Z.jar file.
+
+### Availability
+
+SearchGUI is available as [conda package](http://conda.pydata.org/miniconda.html) in the [bioconda](https://bioconda.github.io) channel. You can install SearchGUI with:
+
+```bash
+conda install searchgui -c bioconda
+```
+
+A [Docker](https://www.docker.com/) container is available via the [mulled](https://mulled.github.io/mulled/) project. You can make use of the container with a similar command to this:
+
+```bash
+docker run  quay.io/mulled/searchgui:2.1.4--1 searchgui eu.isas.searchgui.cmd.FastaCLI
+```
 
 [Go to top of page](#searchgui)
 
