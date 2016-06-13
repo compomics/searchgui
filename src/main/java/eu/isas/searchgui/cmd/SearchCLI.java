@@ -259,7 +259,7 @@ public class SearchCLI implements Callable {
             }
 
             UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-            userPreferences.setTargetDecoyFileNameTag(searchCLIInputBean.getTargetDecoyFileNameTag());
+            userPreferences.setTargetDecoyFileNameSuffix(searchCLIInputBean.getTargetDecoyFileNameTag());
             userPreferences.setRefMass(searchCLIInputBean.getRefMass());
             userPreferences.setRenameXTandemFile(searchCLIInputBean.renameXTandemFile());
             userPreferences.setOutputOption(searchCLIInputBean.getOutputOption());
