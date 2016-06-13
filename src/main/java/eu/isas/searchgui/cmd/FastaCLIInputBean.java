@@ -1,6 +1,5 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.util.preferences.UtilitiesUserPreferences;
 import java.io.File;
 import org.apache.commons.cli.CommandLine;
 
@@ -32,7 +31,7 @@ public class FastaCLIInputBean {
     /**
      * Constructor.
      *
-     * @param aLine The command line given to the tool
+     * @param aLine the command line given to the tool
      */
     public FastaCLIInputBean(CommandLine aLine) {
         if (aLine.hasOption(FastaCLIParams.in.id)) {
@@ -46,7 +45,7 @@ public class FastaCLIInputBean {
             decoySuffix = aLine.getOptionValue(FastaCLIParams.decoy_suffix.id);
         }
         
-        // Path settings
+        // path settings
         pathSettingsCLIInputBean = new PathSettingsCLIInputBean(aLine);
     }
     

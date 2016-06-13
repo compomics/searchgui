@@ -2,7 +2,6 @@ package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathPreferences;
 import com.compomics.util.experiment.biology.*;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
@@ -260,7 +259,7 @@ public class SearchCLI implements Callable {
             }
 
             UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-            userPreferences.setTargetDecoyFileNameSuffix(searchCLIInputBean.getTargetDecoyFileNameTag());
+            userPreferences.setTargetDecoyFileNameTag(searchCLIInputBean.getTargetDecoyFileNameTag());
             userPreferences.setRefMass(searchCLIInputBean.getRefMass());
             userPreferences.setRenameXTandemFile(searchCLIInputBean.renameXTandemFile());
             userPreferences.setOutputOption(searchCLIInputBean.getOutputOption());

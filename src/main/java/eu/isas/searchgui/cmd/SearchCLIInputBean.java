@@ -348,7 +348,7 @@ public class SearchCLIInputBean {
         // identification parameters
         identificationParametersInputBean = new IdentificationParametersInputBean(aLine);
 
-        // Path settings
+        // path settings
         pathSettingsCLIInputBean = new PathSettingsCLIInputBean(aLine);
     }
 

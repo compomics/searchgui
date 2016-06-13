@@ -110,7 +110,7 @@ public class FastaCLI {
                 String decoySuffix = fastaCLIInputBean.getDecoySuffix();
                 if (decoySuffix != null) {
                     UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-                    userPreferences.setTargetDecoyFileNameSuffix(decoySuffix + ".fasta");
+                    userPreferences.setTargetDecoyFileNameTag(decoySuffix + ".fasta");
                 }
                 boolean success = generateTargetDecoyDatabase(waitingHandlerCLIImpl);
                 if (success) {
