@@ -17,6 +17,7 @@ import com.compomics.util.examples.BareBonesBrowserLaunch;
 import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.EnzymeFactory;
+import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.genes.GeneFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
@@ -2666,6 +2667,35 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 JOptionPane.showMessageDialog(this,
                         "Database format not supported by Andromeda.", "Unsupported Fasta", JOptionPane.WARNING_MESSAGE); //@TODO: link to the help page? Make a more generic check for home made databases?
                 return;
+            }
+        }
+        
+        // check if there are less than 10 ptms (variable and fixed) for novor
+        if (enableNovorJCheckBox.isSelected()) {
+            if ((searchParameters.getPtmSettings().getFixedModifications().size() + searchParameters.getPtmSettings().getVariableModifications().size()) > 10) {
+                JOptionPane.showMessageDialog(this, "Maximum ten modifications are allowed when running Novor.\n"
+                        + "Please remove some of the modifications or disable Novor.", "Settings Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+        
+        // check if all ptms are valid for DirecTag
+        if (enableDirecTagJCheckBox.isSelected()) {
+            boolean terminalPtmsSelected = false;
+            for (String tempPtm : searchParameters.getPtmSettings().getAllModifications()) {
+                PTM currentPtm = ptmFactory.getPTM(tempPtm);
+                if (currentPtm.isCTerm() || currentPtm.isNTerm()) {
+                    terminalPtmsSelected = true;
+                }
+            }
+
+            if (terminalPtmsSelected) {
+                int option = JOptionPane.showConfirmDialog(this,
+                        "Terminal modifications are not supported for DirecTag and will be ignored.\n"
+                        + "Do you still want to continue?", "Settings Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (option == JOptionPane.NO_OPTION) {
+                    return;
+                }
             }
         }
 

@@ -6,6 +6,7 @@ import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
@@ -46,7 +47,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FileUtils;
 
 /**
- * This class represents the Search command line interface.
+ * This class represents the search command line interface.
  *
  * @author Marc Vaudel
  * @author Lennart Martens
@@ -323,6 +324,10 @@ public class SearchHandler {
      * A map from the name of the ID files to the spectrum file used.
      */
     private HashMap<String, File> idFileToSpectrumFileMap;
+    /**
+     * The identification parameters factory.
+     */
+    private IdentificationParametersFactory identificationParametersFactory = IdentificationParametersFactory.getInstance();
 
     /**
      * Constructor for the SearchGUI command line interface. Uses the
@@ -399,10 +404,10 @@ public class SearchHandler {
      * location is used
      * @param andromedaFolder the folder where Andromeda is installed, if null
      * the default location is used
-     * @param novorFolder the folder where Novor is installed, if null
-     * the default location is used
-     * @param direcTagFolder the folder where DirecTag is installed, if null
-     * the default location is used
+     * @param novorFolder the folder where Novor is installed, if null the
+     * default location is used
+     * @param direcTagFolder the folder where DirecTag is installed, if null the
+     * default location is used
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
      * @param processingPreferences the processing preferences
@@ -410,7 +415,7 @@ public class SearchHandler {
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             boolean runNovor, boolean runDirecTag,
-            File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder, 
+            File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder,
             File novorFolder, File direcTagFolder, File makeblastdbFolder,
             ProcessingPreferences processingPreferences) {
 
@@ -479,13 +484,13 @@ public class SearchHandler {
         } else {
             loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false); // try to use the default
         }
-        
+
         if (novorFolder != null) {
             this.novorLocation = novorFolder;
         } else {
             loadSearchEngineLocation(Advocate.novor, true, true, true, true, false, false, false); // try to use the default
         }
-        
+
         if (direcTagFolder != null) {
             this.direcTagLocation = direcTagFolder;
         } else {
@@ -1011,7 +1016,7 @@ public class SearchHandler {
     public static String getAndromedaFileName(String spectrumFileName) {
         return Util.removeExtension(spectrumFileName) + ".res";
     }
-    
+
     /**
      * Returns the name of the Novor result file.
      *
@@ -1022,7 +1027,7 @@ public class SearchHandler {
     public static String getNovorFileName(String spectrumFileName) {
         return Util.removeExtension(spectrumFileName) + ".novor.csv";
     }
-    
+
     /**
      * Returns the name of the DirecTag result file.
      *
@@ -1271,7 +1276,7 @@ public class SearchHandler {
     public void setAndromedaLocation(File andromedaLocation) {
         this.andromedaLocation = andromedaLocation;
     }
-    
+
     /**
      * Returns the Novor location.
      *
@@ -1289,7 +1294,7 @@ public class SearchHandler {
     public void setNovorLocation(File novorLocation) {
         this.novorLocation = novorLocation;
     }
-    
+
     /**
      * Returns the DirecTag location.
      *
@@ -1433,7 +1438,7 @@ public class SearchHandler {
     public boolean isAndromedaEnabled() {
         return enableAndromeda;
     }
-    
+
     /**
      * Returns true if Novor is to be used.
      *
@@ -1442,7 +1447,7 @@ public class SearchHandler {
     public boolean isNovorEnabled() {
         return enableNovor;
     }
-    
+
     /**
      * Returns true if DirecTag is to be used.
      *
@@ -1514,7 +1519,7 @@ public class SearchHandler {
     public void setAndromedaEnabled(boolean runAndromeda) {
         this.enableAndromeda = runAndromeda;
     }
-    
+
     /**
      * Set if Novor is to be used.
      *
@@ -1523,7 +1528,7 @@ public class SearchHandler {
     public void setNovorEnabled(boolean runNovor) {
         this.enableNovor = runNovor;
     }
-    
+
     /**
      * Set if DirecTag is to be used.
      *
@@ -1826,7 +1831,7 @@ public class SearchHandler {
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
                     AndromedaProcessBuilder.createPtmFile(andromedaLocation, identificationParameters, identificationParametersFile);
                 }
-                
+
                 int nRawFiles = getRawFiles().size();
                 int nFilesToSearch = nRawFiles + getMgfFiles().size();
                 int nProgress = 2 + nRawFiles;
@@ -2235,7 +2240,7 @@ public class SearchHandler {
                     if (ms2File != null) {
                         ms2File.delete();
                     }
-                    
+
                     if (enableNovor && !waitingHandler.isRunCanceled()) {
                         File novorOutputFile = new File(outputTempFolder, getNovorFileName(spectrumFileName));
                         novorProcessBuilder = new NovorProcessBuilder(novorLocation,
@@ -2259,7 +2264,7 @@ public class SearchHandler {
                             waitingHandler.increasePrimaryProgressCounter();
                         }
                     }
-                    
+
                     if (enableDirecTag && !waitingHandler.isRunCanceled()) {
                         File direcTagOutputFile = new File(outputTempFolder, getDirecTagFileName(spectrumFileName));
                         direcTagProcessBuilder = new DirecTagProcessBuilder(direcTagLocation,
@@ -2303,6 +2308,9 @@ public class SearchHandler {
                         }
                     }
                 }
+                
+                // save the ptm mappings for novor and directag
+                identificationParametersFactory.addIdentificationParameters(identificationParameters);
 
                 outputTimeStamp = getOutputDate();
 
@@ -3053,7 +3061,7 @@ public class SearchHandler {
             Util.deleteDir(tempOutputFolder);
         }
     }
-    
+
     /**
      * Adds the mgf and FASTA files to the zip file.
      *
@@ -3197,7 +3205,7 @@ public class SearchHandler {
 
         return totalUncompressedSize;
     }
-    
+
     /**
      * Get the total uncompressed size of the files to compress for the given
      * run.
@@ -3266,7 +3274,7 @@ public class SearchHandler {
 
         return totalUncompressedSize;
     }
-    
+
     /**
      * Get the total uncompressed size of the FASTA and spectrum files.
      *
@@ -3278,7 +3286,7 @@ public class SearchHandler {
 
     /**
      * Get the total uncompressed size of the FASTA and spectrum files.
-     * 
+     *
      * @param only add given mgfFile, null means add all
      *
      * @return the total uncompressed size of the FASTA and spectrum files

@@ -1,7 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.CommandLineUtils;
-import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -30,38 +29,18 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File spectrumFile;
     /**
-     * The search parameters.
-     */
-    private SearchParameters searchParameters;
-    /**
      * The post translational modifications factory.
      */
     private PTMFactory ptmFactory = PTMFactory.getInstance();
-    /**
-     * The path to the executable.
-     */
-    private File exeFolder;
-    /**
-     * The output path.
-     */
-    private File outputFolder;
-    /**
-     * The number of threads.
-     */
-    private int nThreads;
-    /**
-     * The command executed.
-     */
-    private String command = "";
     /**
      * The DirecTag modification index.
      */
     private int modIndex = 0;
 
     /**
-     * Constructor for the DirecTag algorithm job.
+     * Constructor.
      *
-     * @param exeFolder the path to the algorithm executable
+     * @param exeFolder the path to the executable
      * @param spectrumFile the spectrum file
      * @param nThreads the number of threads
      * @param outputFolder the output folder
@@ -70,11 +49,7 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
      * @param exceptionHandler the exception handler
      */
     public DirecTagProcessBuilder(File exeFolder, File spectrumFile, int nThreads, File outputFolder, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) {
-        this.exeFolder = exeFolder;
         this.spectrumFile = spectrumFile;
-        this.nThreads = nThreads;
-        this.outputFolder = outputFolder;
-        this.searchParameters = searchParameters;
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
 
@@ -227,8 +202,6 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(outputFolder.getAbsolutePath());
 
         process_name_array.trimToSize();
-
-        File outputFile = new File(outputFolder, Util.getFileName(spectrumFile) + "_directag.log"); // @TODO: check!
 
         // print the command to the log file
         System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "directag command: ");
