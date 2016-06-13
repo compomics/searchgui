@@ -27,9 +27,11 @@ import com.compomics.util.experiment.identification.identification_parameters.Se
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters;
+import com.compomics.util.experiment.identification.identification_parameters.tool_specific.DirecTagParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MsAmandaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MsgfParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MyriMatchParameters;
+import com.compomics.util.experiment.identification.identification_parameters.tool_specific.NovorParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.OmssaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.TideParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.XtandemParameters;
@@ -63,9 +65,11 @@ import com.compomics.util.gui.ptm.ModificationsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.SearchSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.AndromedaSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.CometSettingsDialog;
+import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.DirecTagSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.MsAmandaSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.MsgfSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.MyriMatchSettingsDialog;
+import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.NovorSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.OmssaSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.TideSettingsDialog;
 import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.XTandemSettingsDialog;
@@ -81,9 +85,11 @@ import com.compomics.util.preferences.SearchGuiOutputOption;
 import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
 import eu.isas.searchgui.processbuilders.CometProcessBuilder;
+import eu.isas.searchgui.processbuilders.DirecTagProcessBuilder;
 import eu.isas.searchgui.processbuilders.MsAmandaProcessBuilder;
 import eu.isas.searchgui.processbuilders.MsgfProcessBuilder;
 import eu.isas.searchgui.processbuilders.MyriMatchProcessBuilder;
+import eu.isas.searchgui.processbuilders.NovorProcessBuilder;
 import eu.isas.searchgui.processbuilders.OmssaclProcessBuilder;
 import eu.isas.searchgui.processbuilders.TandemProcessBuilder;
 import eu.isas.searchgui.processbuilders.TideSearchProcessBuilder;
@@ -333,6 +339,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             enableCometJCheckBox.setSelected(searchHandler.isCometEnabled());
             enableTideJCheckBox.setSelected(searchHandler.isTideEnabled());
             enableAndromedaJCheckBox.setSelected(searchHandler.isAndromedaEnabled());
+            enableNovorJCheckBox.setSelected(searchHandler.isNovorEnabled());
+            enableDirecTagJCheckBox.setSelected(searchHandler.isDirecTagEnabled());
 
             // add desktop shortcut?
             if (!getJarFilePath().equalsIgnoreCase(".")
@@ -371,8 +379,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             // update the horizontal padding for the titled borders
             ((TitledBorder) inputFilesPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Input & Output" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
-            ((TitledBorder) preProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Pre Processing (beta)" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
+            ((TitledBorder) preProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Pre Processing" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
             ((TitledBorder) searchEnginesLocationPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Search Engines" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
+            ((TitledBorder) deNovoPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "De Novo Algorithms" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
             ((TitledBorder) postProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Post Processing" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
 
             searchEnginesLocationPanel.repaint();
@@ -384,7 +393,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             String operatingSystem = System.getProperty("os.name").toLowerCase();
 
-            // disable myrimatch and comet if mac
+            // disable myrimatch, comet and directag if mac
             if (operatingSystem.contains("mac os")) {
                 enableMyriMatchJCheckBox.setSelected(false);
                 enableMyriMatchJCheckBox.setEnabled(false);
@@ -404,6 +413,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 cometSettingsButton.setEnabled(false);
                 cometSettingsButton.setToolTipText("Not available for Mac");
                 cometLinkLabel.setEnabled(false);
+                searchHandler.setCometEnabled(false);
+
+                enableDirecTagJCheckBox.setSelected(false);
+                enableDirecTagJCheckBox.setEnabled(false);
+                enableDirecTagJCheckBox.setToolTipText("Not available for Mac");
+                direcTagButton.setEnabled(false);
+                direcTagButton.setToolTipText("Not available for Mac");
+                direcTagSettingsButton.setEnabled(false);
+                direcTagSettingsButton.setToolTipText("Not available for Mac");
+                direcTagLinkLabel.setEnabled(false);
                 searchHandler.setCometEnabled(false);
             }
 
@@ -623,6 +642,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msconvertButton = new javax.swing.JButton();
         msconvertSettingsButton = new javax.swing.JButton();
         msconvertSupportButton = new javax.swing.JButton();
+        deNovoPanel = new javax.swing.JPanel();
+        enableNovorJCheckBox = new javax.swing.JCheckBox();
+        novorButton = new javax.swing.JButton();
+        novorSupportButton = new javax.swing.JButton();
+        novorLinkLabel = new javax.swing.JLabel();
+        novorSettingsButton = new javax.swing.JButton();
+        enableDirecTagJCheckBox = new javax.swing.JCheckBox();
+        direcTagButton = new javax.swing.JButton();
+        direcTagSupportButton = new javax.swing.JButton();
+        direcTagLinkLabel = new javax.swing.JLabel();
+        direcTagSettingsButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -751,12 +781,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         searchEnginesPanel.setBackground(new java.awt.Color(230, 230, 230));
 
-        omssaButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/omssa.png"))); // NOI18N
+        omssaButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        omssaButton.setText("OMSSA");
         omssaButton.setToolTipText("Enable OMSSA");
         omssaButton.setBorder(null);
         omssaButton.setBorderPainted(false);
         omssaButton.setContentAreaFilled(false);
         omssaButton.setEnabled(false);
+        omssaButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         omssaButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 omssaButtonMouseEntered(evt);
@@ -792,7 +824,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        enableTideJCheckBox.setSelected(true);
         enableTideJCheckBox.setToolTipText("Enable Tide");
         enableTideJCheckBox.setEnabled(false);
         enableTideJCheckBox.setOpaque(false);
@@ -858,12 +889,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        andromedaButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/andromeda.png"))); // NOI18N
+        andromedaButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        andromedaButton.setText("Andromeda");
         andromedaButton.setToolTipText("Enable Andromeda");
         andromedaButton.setBorder(null);
         andromedaButton.setBorderPainted(false);
         andromedaButton.setContentAreaFilled(false);
         andromedaButton.setEnabled(false);
+        andromedaButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         andromedaButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 andromedaButtonMouseEntered(evt);
@@ -914,12 +947,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        tideButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/tide.png"))); // NOI18N
+        tideButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        tideButton.setText("Tide");
         tideButton.setToolTipText("Enable Tide");
         tideButton.setBorder(null);
         tideButton.setBorderPainted(false);
         tideButton.setContentAreaFilled(false);
         tideButton.setEnabled(false);
+        tideButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         tideButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 tideButtonMouseEntered(evt);
@@ -939,7 +974,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msgfSupportButton.setBorderPainted(false);
         msgfSupportButton.setContentAreaFilled(false);
 
-        enableCometJCheckBox.setSelected(true);
         enableCometJCheckBox.setToolTipText("Enable Comet");
         enableCometJCheckBox.setEnabled(false);
         enableCometJCheckBox.setOpaque(false);
@@ -964,7 +998,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        enableMyriMatchJCheckBox.setSelected(true);
         enableMyriMatchJCheckBox.setToolTipText("Enable MyriMatch");
         enableMyriMatchJCheckBox.setEnabled(false);
         enableMyriMatchJCheckBox.setOpaque(false);
@@ -979,7 +1012,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         omssaSupportButton.setBorderPainted(false);
         omssaSupportButton.setContentAreaFilled(false);
 
-        enableMsAmandaJCheckBox.setSelected(true);
         enableMsAmandaJCheckBox.setToolTipText("Enable MS Amanda");
         enableMsAmandaJCheckBox.setEnabled(false);
         enableMsAmandaJCheckBox.setOpaque(false);
@@ -1030,7 +1062,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        enableMsgfJCheckBox.setSelected(true);
         enableMsgfJCheckBox.setToolTipText("Enable MS-GF+");
         enableMsgfJCheckBox.setEnabled(false);
         enableMsgfJCheckBox.setOpaque(false);
@@ -1040,7 +1071,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        xtandemButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/xtandem.png"))); // NOI18N
+        xtandemButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        xtandemButton.setText("X! Tandem");
         xtandemButton.setToolTipText("Enable X!Tandem");
         xtandemButton.setBorder(null);
         xtandemButton.setBorderPainted(false);
@@ -1081,12 +1113,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        myriMatchButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/myrimatch.png"))); // NOI18N
+        myriMatchButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        myriMatchButton.setText("MyriMatch");
         myriMatchButton.setToolTipText("Enable MyriMatch");
         myriMatchButton.setBorder(null);
         myriMatchButton.setBorderPainted(false);
         myriMatchButton.setContentAreaFilled(false);
         myriMatchButton.setEnabled(false);
+        myriMatchButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         myriMatchButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 myriMatchButtonMouseEntered(evt);
@@ -1121,7 +1155,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        enableXTandemJCheckBox.setSelected(true);
         enableXTandemJCheckBox.setToolTipText("Enable X!Tandem");
         enableXTandemJCheckBox.setEnabled(false);
         enableXTandemJCheckBox.setOpaque(false);
@@ -1152,12 +1185,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msAmandaButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/ms_amanda.png"))); // NOI18N
+        msAmandaButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        msAmandaButton.setText("MS Amanda");
         msAmandaButton.setToolTipText("Enable MS Amanda");
         msAmandaButton.setBorder(null);
         msAmandaButton.setBorderPainted(false);
         msAmandaButton.setContentAreaFilled(false);
         msAmandaButton.setEnabled(false);
+        msAmandaButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         msAmandaButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 msAmandaButtonMouseEntered(evt);
@@ -1269,12 +1304,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         cometSupportButton.setBorderPainted(false);
         cometSupportButton.setContentAreaFilled(false);
 
-        msgfButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/msgf.png"))); // NOI18N
+        msgfButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        msgfButton.setText("MS-GF+");
         msgfButton.setToolTipText("Enable MS-GF+");
         msgfButton.setBorder(null);
         msgfButton.setBorderPainted(false);
         msgfButton.setContentAreaFilled(false);
         msgfButton.setEnabled(false);
+        msgfButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         msgfButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 msgfButtonMouseEntered(evt);
@@ -1289,7 +1326,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        enableOmssaJCheckBox.setSelected(true);
         enableOmssaJCheckBox.setToolTipText("Enable OMSSA");
         enableOmssaJCheckBox.setEnabled(false);
         enableOmssaJCheckBox.setOpaque(false);
@@ -1299,12 +1335,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        cometButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/comet.png"))); // NOI18N
+        cometButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        cometButton.setText("Comet");
         cometButton.setToolTipText("Enable Comet");
         cometButton.setBorder(null);
         cometButton.setBorderPainted(false);
         cometButton.setContentAreaFilled(false);
         cometButton.setEnabled(false);
+        cometButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         cometButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 cometButtonMouseEntered(evt);
@@ -1324,46 +1362,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchEnginesPanelLayout.setHorizontalGroup(
             searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(14, 14, 14)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(enableXTandemJCheckBox)
+                    .addComponent(enableMyriMatchJCheckBox)
+                    .addComponent(enableMsAmandaJCheckBox)
+                    .addComponent(enableMsgfJCheckBox)
+                    .addComponent(enableOmssaJCheckBox)
+                    .addComponent(enableCometJCheckBox)
+                    .addComponent(enableTideJCheckBox)
+                    .addComponent(enableAndromedaJCheckBox))
+                .addGap(61, 61, 61)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                            .addGap(81, 81, 81)
-                            .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(enableMsAmandaJCheckBox)
-                        .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                            .addComponent(enableCometJCheckBox)
-                            .addGap(63, 63, 63)
-                            .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesPanelLayout.createSequentialGroup()
-                            .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(enableTideJCheckBox)
-                                .addComponent(enableAndromedaJCheckBox))
-                            .addGap(53, 53, 53)
-                            .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(andromedaButton)
-                                .addComponent(tideButton))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, searchEnginesPanelLayout.createSequentialGroup()
-                                .addComponent(enableXTandemJCheckBox)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, searchEnginesPanelLayout.createSequentialGroup()
-                                .addComponent(enableMyriMatchJCheckBox)
-                                .addGap(63, 63, 63)
-                                .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                                .addComponent(enableMsgfJCheckBox)
-                                .addGap(45, 45, 45)
-                                .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                                .addComponent(enableOmssaJCheckBox)
-                                .addGap(62, 62, 62)
-                                .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(34, 34, 34)))
+                    .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(andromedaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tideSupportButton)
                     .addComponent(xtandemSupportButton)
@@ -1373,17 +1392,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(cometSupportButton)
                     .addComponent(omssaSupportButton)
                     .addComponent(andromedaSupportButton))
-                .addGap(18, 18, 18)
+                .addGap(34, 34, 34)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cometLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
+                    .addComponent(cometLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1393,72 +1412,78 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(cometSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaSettingsButton))
-                .addContainerGap())
+                .addGap(10, 10, 10))
         );
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {msgfButton, xtandemButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaButton, cometButton, msAmandaButton, msgfButton, myriMatchButton, omssaButton, tideButton, xtandemButton});
+
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
 
         searchEnginesPanelLayout.setVerticalGroup(
             searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableXTandemJCheckBox)
-                    .addComponent(xtandemButton)
+                    .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xtandemSupportButton)
                     .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xtandemSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableMyriMatchJCheckBox)
-                    .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myrimatchSupportButton)
                     .addComponent(myriMatchLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableMsAmandaJCheckBox)
-                    .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaSupportButton))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableMsgfJCheckBox)
-                    .addComponent(msgfButton)
+                    .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfSupportButton))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableOmssaJCheckBox)
-                    .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaSupportButton))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableCometJCheckBox)
-                    .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometSupportButton))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableTideJCheckBox)
-                    .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideSupportButton))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableAndromedaJCheckBox)
-                    .addComponent(andromedaButton)
+                    .addComponent(andromedaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaSupportButton)
                     .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaSettingsButton))
-                .addContainerGap())
+                .addGap(0, 0, 0))
         );
+
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaButton, cometButton, msAmandaButton, msgfButton, myriMatchButton, omssaButton, tideButton, xtandemButton});
+
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
 
         searchEnginesScrollPane.setViewportView(searchEnginesPanel);
 
@@ -1467,13 +1492,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchEnginesLocationPanelLayout.setHorizontalGroup(
             searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(21, 21, 21)
                 .addComponent(searchEnginesScrollPane)
-                .addGap(24, 24, 24))
+                .addGap(25, 25, 25))
         );
         searchEnginesLocationPanelLayout.setVerticalGroup(
             searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesLocationPanelLayout.createSequentialGroup()
+            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
                 .addComponent(searchEnginesScrollPane))
         );
@@ -1586,24 +1611,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         inputFilesPanelLayout.setVerticalGroup(
             inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputFilesPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(2, 2, 2)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spectraFilesLabel)
                     .addComponent(spectraFilesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(clearSpectraButton)
                     .addComponent(addSpectraButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(2, 2, 2)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchSettingsLbl)
                     .addComponent(addSettingsButton)
                     .addComponent(settingsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editSettingsButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(2, 2, 2)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resultFolderLbl)
                     .addComponent(resultFolderBrowseButton)
                     .addComponent(outputFolderTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(2, 2, 2))
         );
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editSettingsButton, resultFolderBrowseButton});
@@ -1682,12 +1707,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        peptideShakerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/peptide-shaker-medium-orange-shadow.png"))); // NOI18N
+        peptideShakerButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        peptideShakerButton.setText("PeptideShaker");
         peptideShakerButton.setToolTipText("Enable PeptideShaker");
         peptideShakerButton.setBorder(null);
         peptideShakerButton.setBorderPainted(false);
         peptideShakerButton.setContentAreaFilled(false);
         peptideShakerButton.setEnabled(false);
+        peptideShakerButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         peptideShakerButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 peptideShakerButtonMouseEntered(evt);
@@ -1733,17 +1760,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         postProcessingPanelLayout.setHorizontalGroup(
             postProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(postProcessingPanelLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addGap(35, 35, 35)
                 .addComponent(peptideShakerCheckBox)
-                .addGap(57, 57, 57)
-                .addComponent(peptideShakerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(52, 52, 52)
+                .addGap(60, 60, 60)
+                .addComponent(peptideShakerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(peptideShakerSupportButton)
-                .addGap(20, 20, 20)
+                .addGap(34, 34, 34)
                 .addComponent(peptideShakerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(peptideShakerSettingsButton)
-                .addGap(35, 35, 35))
+                .addGap(39, 39, 39))
         );
         postProcessingPanelLayout.setVerticalGroup(
             postProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1751,14 +1778,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(0, 0, 0)
                 .addGroup(postProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(peptideShakerCheckBox)
-                    .addComponent(peptideShakerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(peptideShakerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(peptideShakerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(peptideShakerSettingsButton)
                     .addComponent(peptideShakerSupportButton))
                 .addGap(0, 0, 0))
         );
 
-        preProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Pre Processing (beta)"));
+        preProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Pre Processing"));
         preProcessingPanel.setOpaque(false);
 
         msconvertCheckBox.setToolTipText("Enable msconvert");
@@ -1771,7 +1798,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msconvertLabel.setText("<html>msconvert File Conversion - <a href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
+        msconvertLabel.setText("<html>MSConvert File Conversion - <a href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
         msconvertLabel.setToolTipText("Open the ProteoWizard web page");
         msconvertLabel.setEnabled(false);
         msconvertLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1786,14 +1813,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msconvertButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/msconvert.png"))); // NOI18N
+        msconvertButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        msconvertButton.setText("MSConvert");
         msconvertButton.setBorder(null);
         msconvertButton.setBorderPainted(false);
         msconvertButton.setContentAreaFilled(false);
         msconvertButton.setEnabled(false);
+        msconvertButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
         msconvertSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        msconvertSettingsButton.setToolTipText("Edit msconvert Settings");
+        msconvertSettingsButton.setToolTipText("Edit MSConvert Settings");
         msconvertSettingsButton.setBorder(null);
         msconvertSettingsButton.setBorderPainted(false);
         msconvertSettingsButton.setContentAreaFilled(false);
@@ -1823,17 +1852,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         preProcessingPanelLayout.setHorizontalGroup(
             preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(preProcessingPanelLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
+                .addGap(35, 35, 35)
                 .addComponent(msconvertCheckBox)
-                .addGap(55, 55, 55)
-                .addComponent(msconvertButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(60, 60, 60)
+                .addComponent(msconvertButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(msconvertSupportButton)
-                .addGap(21, 21, 21)
+                .addGap(34, 34, 34)
                 .addComponent(msconvertLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(msconvertSettingsButton)
-                .addGap(35, 35, 35))
+                .addGap(39, 39, 39))
         );
         preProcessingPanelLayout.setVerticalGroup(
             preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1841,11 +1870,211 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(0, 0, 0)
                 .addGroup(preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(msconvertCheckBox)
-                    .addComponent(msconvertButton, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msconvertButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msconvertLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msconvertSettingsButton)
-                    .addComponent(msconvertSupportButton)))
+                    .addComponent(msconvertSupportButton))
+                .addGap(0, 0, 0))
         );
+
+        deNovoPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("De Novo Algorithms"));
+        deNovoPanel.setOpaque(false);
+
+        enableNovorJCheckBox.setToolTipText("Enable Novor");
+        enableNovorJCheckBox.setEnabled(false);
+        enableNovorJCheckBox.setOpaque(false);
+        enableNovorJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableNovorJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        novorButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        novorButton.setText("Novor");
+        novorButton.setToolTipText("Enable Novor");
+        novorButton.setBorder(null);
+        novorButton.setBorderPainted(false);
+        novorButton.setContentAreaFilled(false);
+        novorButton.setEnabled(false);
+        novorButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        novorButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                novorButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                novorButtonMouseExited(evt);
+            }
+        });
+        novorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                novorButtonActionPerformed(evt);
+            }
+        });
+
+        novorSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        novorSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        novorSupportButton.setBorderPainted(false);
+        novorSupportButton.setContentAreaFilled(false);
+
+        novorLinkLabel.setText("<html>Novor De Novo Peptide Sequencing - <a href=\"http://rapidnovor.com\">Novor web page</a></html> ");
+        novorLinkLabel.setToolTipText("Open the Novor web page");
+        novorLinkLabel.setEnabled(false);
+        novorLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                novorLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                novorLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                novorLinkLabelMouseExited(evt);
+            }
+        });
+
+        novorSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        novorSettingsButton.setToolTipText("Edit Novor Advanced Settings");
+        novorSettingsButton.setBorder(null);
+        novorSettingsButton.setBorderPainted(false);
+        novorSettingsButton.setContentAreaFilled(false);
+        novorSettingsButton.setEnabled(false);
+        novorSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        novorSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                novorSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                novorSettingsButtonMouseExited(evt);
+            }
+        });
+        novorSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                novorSettingsButtonActionPerformed(evt);
+            }
+        });
+
+        enableDirecTagJCheckBox.setToolTipText("Enable DirecTag");
+        enableDirecTagJCheckBox.setEnabled(false);
+        enableDirecTagJCheckBox.setOpaque(false);
+        enableDirecTagJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableDirecTagJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        direcTagButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        direcTagButton.setText("DirecTag");
+        direcTagButton.setToolTipText("Enable DirecTag");
+        direcTagButton.setBorder(null);
+        direcTagButton.setBorderPainted(false);
+        direcTagButton.setContentAreaFilled(false);
+        direcTagButton.setEnabled(false);
+        direcTagButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        direcTagButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                direcTagButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                direcTagButtonMouseExited(evt);
+            }
+        });
+        direcTagButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                direcTagButtonActionPerformed(evt);
+            }
+        });
+
+        direcTagSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
+        direcTagSupportButton.setToolTipText("Supported on Windows and Linux");
+        direcTagSupportButton.setBorderPainted(false);
+        direcTagSupportButton.setContentAreaFilled(false);
+
+        direcTagLinkLabel.setText("<html>DirecTag MS/MS Sequence Tagging - <a href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/\">DirecTag web page</a></html> ");
+        direcTagLinkLabel.setToolTipText("Open the DirecTag web page");
+        direcTagLinkLabel.setEnabled(false);
+        direcTagLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                direcTagLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                direcTagLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                direcTagLinkLabelMouseExited(evt);
+            }
+        });
+
+        direcTagSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        direcTagSettingsButton.setToolTipText("Edit DirecTag Advanced Settings");
+        direcTagSettingsButton.setBorder(null);
+        direcTagSettingsButton.setBorderPainted(false);
+        direcTagSettingsButton.setContentAreaFilled(false);
+        direcTagSettingsButton.setEnabled(false);
+        direcTagSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        direcTagSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                direcTagSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                direcTagSettingsButtonMouseExited(evt);
+            }
+        });
+        direcTagSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                direcTagSettingsButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout deNovoPanelLayout = new javax.swing.GroupLayout(deNovoPanel);
+        deNovoPanel.setLayout(deNovoPanelLayout);
+        deNovoPanelLayout.setHorizontalGroup(
+            deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(deNovoPanelLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(enableNovorJCheckBox)
+                    .addComponent(enableDirecTagJCheckBox))
+                .addGap(60, 60, 60)
+                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(novorSupportButton)
+                    .addComponent(direcTagSupportButton))
+                .addGap(35, 35, 35)
+                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(37, 37, 37))
+        );
+
+        deNovoPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {direcTagButton, novorButton});
+
+        deNovoPanelLayout.setVerticalGroup(
+            deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(deNovoPanelLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableNovorJCheckBox)
+                    .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novorSupportButton))
+                .addGap(0, 0, 0)
+                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableDirecTagJCheckBox)
+                    .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagSupportButton))
+                .addGap(0, 0, 0))
+        );
+
+        deNovoPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {direcTagButton, novorButton});
 
         javax.swing.GroupLayout taskEditorPanelLayout = new javax.swing.GroupLayout(taskEditorPanel);
         taskEditorPanel.setLayout(taskEditorPanelLayout);
@@ -1855,16 +2084,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addContainerGap()
                 .addGroup(taskEditorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(searchEnginesLocationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 799, Short.MAX_VALUE)
+                    .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 829, Short.MAX_VALUE)
                     .addComponent(inputFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskEditorPanelLayout.createSequentialGroup()
                         .addComponent(aboutButton)
-                        .addGap(50, 50, 50)
+                        .addGap(46, 46, 46)
                         .addComponent(searchGUIPublicationLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12))
-                    .addComponent(preProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(preProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(deNovoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         taskEditorPanelLayout.setVerticalGroup(
@@ -1877,13 +2107,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchEnginesLocationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
+                .addComponent(deNovoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                .addGap(5, 5, 5)
                 .addGroup(taskEditorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(aboutButton)
                     .addComponent(searchGUIPublicationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGap(5, 5, 5))
         );
 
         fileMenu.setText("File");
@@ -1910,6 +2142,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
         editMenu.add(advancedSettingsMenuItem);
 
+        processingMenuItem.setMnemonic('R');
         processingMenuItem.setText("Processing Settings");
         processingMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1928,8 +2161,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
         editMenu.add(editModificationsEditMenuItem);
 
-        editSearchEngineLocationsMenuItem.setMnemonic('E');
-        editSearchEngineLocationsMenuItem.setText("Search Engines");
+        editSearchEngineLocationsMenuItem.setMnemonic('S');
+        editSearchEngineLocationsMenuItem.setText("Software Locations");
         editSearchEngineLocationsMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editSearchEngineLocationsMenuItemActionPerformed(evt);
@@ -1937,6 +2170,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
         editMenu.add(editSearchEngineLocationsMenuItem);
 
+        editIdSettingsFilesMenuItem.setMnemonic('I');
         editIdSettingsFilesMenuItem.setText("Identification Settings");
         editIdSettingsFilesMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2020,9 +2254,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(taskEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+            .addComponent(taskEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -2774,7 +3006,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void editSearchEngineLocationsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSearchEngineLocationsMenuItemActionPerformed
-        new SearchEnginesSettingsDialog(this, true);
+        new SoftwareLocationDialog(this, true);
     }//GEN-LAST:event_editSearchEngineLocationsMenuItemActionPerformed
 
     /**
@@ -2901,7 +3133,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableOmssaJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.omssa, searchHandler.getOmssaLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -2917,7 +3149,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableXTandemJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.xtandem, searchHandler.getXtandemLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -3214,7 +3446,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableMsgfJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.msgf, searchHandler.getMsgfLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -3305,7 +3537,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableMsAmandaJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.msAmanda, searchHandler.getMsAmandaLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -3405,7 +3637,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableMyriMatchJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.myriMatch, searchHandler.getMyriMatchLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -3485,7 +3717,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableCometJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.comet, searchHandler.getCometLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -3585,7 +3817,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableTideJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.tide, searchHandler.getTideLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -3676,7 +3908,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableAndromedaJCheckBox.isSelected()) {
             boolean valid = validateSearchEngineInstallation(Advocate.andromeda, searchHandler.getAndromedaLocation(), true);
             if (!valid) {
-                new SearchEnginesSettingsDialog(this, true);
+                new SoftwareLocationDialog(this, true);
             }
         }
         validateInput(false);
@@ -3841,7 +4073,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             "PTM Definition Changed", JOptionPane.WARNING_MESSAGE);
                 }
 
-                enableSearchEnginePanel(true);
+                enableSearchEngineAndDeNovoPanels(true);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
                         "Failed to import search parameters from: " + identificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
@@ -3849,14 +4081,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 e.printStackTrace();
             }
         } else {
-            enableSearchEnginePanel(false);
+            enableSearchEngineAndDeNovoPanels(false);
         }
 
         validateInput(false);
     }//GEN-LAST:event_settingsComboBoxActionPerformed
 
     /**
-     * Open the MS Convert settings dialog.
+     * Open the MSConvert settings dialog.
      *
      * @param evt
      */
@@ -4343,6 +4575,294 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         updateIdentificationSettingsDropDownMenu(false);
     }//GEN-LAST:event_editIdSettingsFilesMenuItemActionPerformed
 
+    /**
+     * Open the DirecTag advanced settings.
+     *
+     * @param evt
+     */
+    private void direcTagSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_direcTagSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        DirecTagParameters oldDirecTagParameters = (DirecTagParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.direcTag.getIndex());
+        DirecTagSettingsDialog direcTagParametersDialog = new DirecTagSettingsDialog(this, oldDirecTagParameters, true);
+
+        boolean direcTagParametersSet = false;
+
+        while (!direcTagParametersSet) {
+
+            if (!direcTagParametersDialog.isCancelled()) {
+                DirecTagParameters newDirecTagParameters = direcTagParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldDirecTagParameters.equals(newDirecTagParameters)) {
+
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.direcTag.getIndex(), newDirecTagParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                direcTagParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                            break;
+                        case JOptionPane.CANCEL_OPTION:
+                            direcTagParametersDialog = new DirecTagSettingsDialog(this, newDirecTagParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            direcTagParametersSet = true;
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    direcTagParametersSet = true;
+                }
+            } else {
+                direcTagParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_direcTagSettingsButtonActionPerformed
+
+    /**
+     * Changes the cursor back to the default cursor.
+     *
+     * @param evt
+     */
+    private void direcTagSettingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagSettingsButtonMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_direcTagSettingsButtonMouseExited
+
+    /**
+     * Changes the cursor into a hand cursor.
+     *
+     * @param evt
+     */
+    private void direcTagSettingsButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagSettingsButtonMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_direcTagSettingsButtonMouseEntered
+
+    /**
+     * Changes the cursor back to the default cursor.
+     *
+     * @param evt
+     */
+    private void direcTagLinkLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagLinkLabelMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_direcTagLinkLabelMouseExited
+
+    /**
+     * Changes the cursor into a hand cursor.
+     *
+     * @param evt
+     */
+    private void direcTagLinkLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagLinkLabelMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_direcTagLinkLabelMouseEntered
+
+    /**
+     * Open the DirecTag web page.
+     *
+     * @param evt
+     */
+    private void direcTagLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagLinkLabelMouseClicked
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        BareBonesBrowserLaunch.openURL("http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag");
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_direcTagLinkLabelMouseClicked
+
+    /**
+     * Enable/disable DirecTag.
+     *
+     * @param evt the action event
+     */
+    private void direcTagButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_direcTagButtonActionPerformed
+        enableDirecTagJCheckBox.setSelected(!enableDirecTagJCheckBox.isSelected());
+        enableDirecTagJCheckBoxActionPerformed(null);
+    }//GEN-LAST:event_direcTagButtonActionPerformed
+
+    /**
+     * Changes the cursor back to the default cursor.
+     *
+     * @param evt
+     */
+    private void direcTagButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagButtonMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_direcTagButtonMouseExited
+
+    /**
+     * Changes the cursor into a hand cursor.
+     *
+     * @param evt
+     */
+    private void direcTagButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagButtonMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_direcTagButtonMouseEntered
+
+    /**
+     * Set DirecTag enabled.
+     *
+     * @param evt the action event
+     */
+    private void enableDirecTagJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableDirecTagJCheckBoxActionPerformed
+        searchHandler.setDirecTagEnabled(enableDirecTagJCheckBox.isSelected());
+        if (enableDirecTagJCheckBox.isSelected()) {
+            boolean valid = validateSearchEngineInstallation(Advocate.direcTag, searchHandler.getDirecTagLocation(), true);
+            if (!valid) {
+                new SoftwareLocationDialog(this, true);
+            }
+        }
+        validateInput(false);
+    }//GEN-LAST:event_enableDirecTagJCheckBoxActionPerformed
+
+    /**
+     * Open the Novor advanced settings.
+     *
+     * @param evt
+     */
+    private void novorSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novorSettingsButtonActionPerformed
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        NovorParameters oldNovorParameters = (NovorParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
+        NovorSettingsDialog novorParametersDialog = new NovorSettingsDialog(this, oldNovorParameters, true);
+
+        boolean novorParametersSet = false;
+
+        while (!novorParametersSet) {
+
+            if (!novorParametersDialog.isCancelled()) {
+                NovorParameters newNovorParameters = novorParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (!oldNovorParameters.equals(newNovorParameters)) {
+
+                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
+                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+
+                    switch (value) {
+                        case JOptionPane.YES_OPTION:
+                            try {
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.novor.getIndex(), newNovorParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                novorParametersSet = true;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                            break;
+                        case JOptionPane.CANCEL_OPTION:
+                            novorParametersDialog = new NovorSettingsDialog(this, newNovorParameters, true);
+                            break;
+                        case JOptionPane.NO_OPTION:
+                            novorParametersSet = true;
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    novorParametersSet = true;
+                }
+            } else {
+                novorParametersSet = true;
+            }
+        }
+    }//GEN-LAST:event_novorSettingsButtonActionPerformed
+
+    /**
+     * Changes the cursor back to the default cursor.
+     *
+     * @param evt
+     */
+    private void novorSettingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorSettingsButtonMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_novorSettingsButtonMouseExited
+
+    /**
+     * Changes the cursor into a hand cursor.
+     *
+     * @param evt
+     */
+    private void novorSettingsButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorSettingsButtonMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_novorSettingsButtonMouseEntered
+
+    /**
+     * Changes the cursor back to the default cursor.
+     *
+     * @param evt
+     */
+    private void novorLinkLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorLinkLabelMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_novorLinkLabelMouseExited
+
+    /**
+     * Changes the cursor into a hand cursor.
+     *
+     * @param evt
+     */
+    private void novorLinkLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorLinkLabelMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_novorLinkLabelMouseEntered
+
+    /**
+     * Open the Novor web page.
+     *
+     * @param evt
+     */
+    private void novorLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorLinkLabelMouseClicked
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        BareBonesBrowserLaunch.openURL("http://rapidnovor.com");
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_novorLinkLabelMouseClicked
+
+    /**
+     * Enable/disable Novor.
+     *
+     * @param evt the action event
+     */
+    private void novorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novorButtonActionPerformed
+        enableNovorJCheckBox.setSelected(!enableNovorJCheckBox.isSelected());
+        enableNovorJCheckBoxActionPerformed(null);
+    }//GEN-LAST:event_novorButtonActionPerformed
+
+    /**
+     * Changes the cursor back to the default cursor.
+     *
+     * @param evt
+     */
+    private void novorButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorButtonMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_novorButtonMouseExited
+
+    /**
+     * Changes the cursor into a hand cursor.
+     *
+     * @param evt
+     */
+    private void novorButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorButtonMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_novorButtonMouseEntered
+
+    /**
+     * Set Novor enabled.
+     *
+     * @param evt the action event
+     */
+    private void enableNovorJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableNovorJCheckBoxActionPerformed
+        searchHandler.setNovorEnabled(enableNovorJCheckBox.isSelected());
+        if (enableNovorJCheckBox.isSelected()) {
+            boolean valid = validateSearchEngineInstallation(Advocate.novor, searchHandler.getNovorLocation(), true);
+            if (!valid) {
+                new SoftwareLocationDialog(this, true);
+            }
+        }
+        validateInput(false);
+    }//GEN-LAST:event_enableNovorJCheckBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
     private javax.swing.JMenuItem aboutMenuItem;
@@ -4358,6 +4878,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JLabel cometLinkLabel;
     private javax.swing.JButton cometSettingsButton;
     private javax.swing.JButton cometSupportButton;
+    private javax.swing.JPanel deNovoPanel;
+    private javax.swing.JButton direcTagButton;
+    private javax.swing.JLabel direcTagLinkLabel;
+    private javax.swing.JButton direcTagSettingsButton;
+    private javax.swing.JButton direcTagSupportButton;
     private javax.swing.JMenuItem editIdSettingsFilesMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem editModificationsEditMenuItem;
@@ -4367,9 +4892,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JButton editSettingsButton;
     private javax.swing.JCheckBox enableAndromedaJCheckBox;
     private javax.swing.JCheckBox enableCometJCheckBox;
+    private javax.swing.JCheckBox enableDirecTagJCheckBox;
     private javax.swing.JCheckBox enableMsAmandaJCheckBox;
     private javax.swing.JCheckBox enableMsgfJCheckBox;
     private javax.swing.JCheckBox enableMyriMatchJCheckBox;
+    private javax.swing.JCheckBox enableNovorJCheckBox;
     private javax.swing.JCheckBox enableOmssaJCheckBox;
     private javax.swing.JCheckBox enableTideJCheckBox;
     private javax.swing.JCheckBox enableXTandemJCheckBox;
@@ -4404,6 +4931,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JLabel myriMatchLinkLabel;
     private javax.swing.JButton myriMatchSettingsButton;
     private javax.swing.JButton myrimatchSupportButton;
+    private javax.swing.JButton novorButton;
+    private javax.swing.JLabel novorLinkLabel;
+    private javax.swing.JButton novorSettingsButton;
+    private javax.swing.JButton novorSupportButton;
     private javax.swing.JButton omssaButton;
     private javax.swing.JLabel omssaLinkLabel;
     private javax.swing.JButton omssaSettingsButton;
@@ -4599,6 +5130,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean cometValid = true;
         boolean tideValid = true;
         boolean andromedaValid = true;
+        boolean novorValid = true;
+        boolean direcTagValid = true;
 
         if (enableOmssaJCheckBox.isSelected()) {
             omssaValid = validateSearchEngineInstallation(Advocate.omssa, searchHandler.getOmssaLocation(), showMessage);
@@ -4624,12 +5157,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (enableAndromedaJCheckBox.isSelected()) {
             andromedaValid = validateSearchEngineInstallation(Advocate.andromeda, searchHandler.getAndromedaLocation(), showMessage);
         }
-
-        if (!omssaValid || !xtandemValid || !msgfValid || !msAmandaValid || !myriMatchValid || !cometValid || !tideValid || !andromedaValid) {
-            new SearchEnginesSettingsDialog(this, true);
+        if (enableNovorJCheckBox.isSelected()) {
+            novorValid = validateSearchEngineInstallation(Advocate.novor, searchHandler.getNovorLocation(), showMessage);
+        }
+        if (enableDirecTagJCheckBox.isSelected()) {
+            direcTagValid = validateSearchEngineInstallation(Advocate.direcTag, searchHandler.getDirecTagLocation(), showMessage);
         }
 
-        return omssaValid && xtandemValid && msgfValid && msAmandaValid && myriMatchValid && cometValid && tideValid && andromedaValid;
+        if (!omssaValid || !xtandemValid || !msgfValid || !msAmandaValid || !myriMatchValid
+                || !cometValid || !tideValid || !andromedaValid || !novorValid || !direcTagValid) {
+            new SoftwareLocationDialog(this, true);
+        }
+
+        return omssaValid && xtandemValid && msgfValid && msAmandaValid && myriMatchValid
+                && cometValid && tideValid && andromedaValid && novorValid && direcTagValid;
     }
 
     /**
@@ -4647,9 +5188,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 && !enableMyriMatchJCheckBox.isSelected()
                 && !enableCometJCheckBox.isSelected()
                 && !enableTideJCheckBox.isSelected()
-                && !enableAndromedaJCheckBox.isSelected()) {
+                && !enableAndromedaJCheckBox.isSelected()
+                && !enableNovorJCheckBox.isSelected()
+                && !enableDirecTagJCheckBox.isSelected()) {
             if (showMessage && valid) {
-                JOptionPane.showMessageDialog(this, "You need to select at least one search engine.", "No Search Engines Selected", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "You need to select at least one search engine or de novo algorithm.", "Input Error", JOptionPane.WARNING_MESSAGE);
             }
             valid = false;
         }
@@ -5428,7 +5971,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             JOptionPane.showMessageDialog(this, new String[]{"Unable to find folder: '" + folder.getAbsolutePath() + "'!",
                 "Could not save search engine locations."}, "Folder Not Found", JOptionPane.WARNING_MESSAGE);
         } else {
-            File output = new File(folder, SearchHandler.SEARCH_GUI_CONFIGURATION_FILE);
+            File output = new File(folder, SearchHandler.SEARCHGUI_CONFIGURATION_FILE);
             try {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(output));
                 bw.write("OMSSA Location:" + System.getProperty("line.separator"));
@@ -5447,6 +5990,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 bw.write(searchHandler.getTideLocation() + System.getProperty("line.separator") + searchHandler.isTideEnabled() + System.getProperty("line.separator"));
                 bw.write("Andromeda Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getAndromedaLocation() + System.getProperty("line.separator") + searchHandler.isAndromedaEnabled() + System.getProperty("line.separator"));
+                bw.write("Novor Location:" + System.getProperty("line.separator"));
+                bw.write(searchHandler.getNovorLocation() + System.getProperty("line.separator") + searchHandler.isNovorEnabled() + System.getProperty("line.separator"));
+                bw.write("DirecTag Location:" + System.getProperty("line.separator"));
+                bw.write(searchHandler.getDirecTagLocation() + System.getProperty("line.separator") + searchHandler.isDirecTagEnabled() + System.getProperty("line.separator"));
                 bw.write("makeblastdb Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getMakeblastdbLocation() + System.getProperty("line.separator") + System.getProperty("line.separator"));
                 bw.write("Modification use:" + System.getProperty("line.separator"));
@@ -5480,10 +6027,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param enableMyriMatch enable MyriMatch
      * @param enableComet enable Comet
      * @param enableTide enable Tide
-     * @param enableAndromeda enable Tide
+     * @param enableAndromeda enable Andromeda
+     * @param enableNovor enable Novor
+     * @param enableDirecTag enable DirecTag
      */
     public void enableSearchEngines(boolean enableOmssa, boolean enbleXTandem, boolean enableMsgf, boolean enableMsAmanda,
-            boolean enableMyriMatch, boolean enableComet, boolean enableTide, boolean enableAndromeda) {
+            boolean enableMyriMatch, boolean enableComet, boolean enableTide, boolean enableAndromeda,
+            boolean enableNovor, boolean enableDirecTag) {
+
         enableOmssaJCheckBox.setSelected(enableOmssa);
         enableXTandemJCheckBox.setSelected(enbleXTandem);
         enableMsgfJCheckBox.setSelected(enableMsgf);
@@ -5492,6 +6043,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         enableCometJCheckBox.setSelected(enableComet);
         enableTideJCheckBox.setSelected(enableTide);
         enableAndromedaJCheckBox.setSelected(enableAndromeda);
+        enableNovorJCheckBox.setSelected(enableNovor);
+        enableDirecTagJCheckBox.setSelected(enableDirecTag);
+
         searchHandler.setOmssaEnabled(enableOmssa);
         searchHandler.setXtandemEnabled(enbleXTandem);
         searchHandler.setMsgfEnabled(enableMsgf);
@@ -5500,6 +6054,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setCometEnabled(enableComet);
         searchHandler.setTideEnabled(enableTide);
         searchHandler.setAndromedaEnabled(enableAndromeda);
+        searchHandler.setNovorEnabled(enableNovor);
+        searchHandler.setDirecTagEnabled(enableDirecTag);
+
         validateInput(false);
     }
 
@@ -5544,8 +6101,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
     /**
      * Sets the path configuration.
-     * 
-     * @throws java.io.IOException exception thrown whenever an error occurs while reading or writing the paths configuration file
+     *
+     * @throws java.io.IOException exception thrown whenever an error occurs
+     * while reading or writing the paths configuration file
      */
     public static void setPathConfiguration() throws IOException {
         File pathConfigurationFile = new File(SearchGUI.getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
@@ -5647,7 +6205,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (!operatingSystem.contains("windows")) {
                 mono = "mono";
             }
-            return validateSearchEngineInstallation(Advocate.msAmanda, MsAmandaProcessBuilder.executableFileName, null, mono, searchEngineLocation, null, false, feedBackInDialog, msAmandaErrorMessage);
+            return validateSearchEngineInstallation(Advocate.msAmanda, MsAmandaProcessBuilder.EXECUTABLE_FILE_NAME, null, mono, searchEngineLocation, null, false, feedBackInDialog, msAmandaErrorMessage);
         } else if (advocate == Advocate.myriMatch) {
             return validateSearchEngineInstallation(Advocate.myriMatch, MyriMatchProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"myrimatch\"", false, feedBackInDialog);
         } else if (advocate == Advocate.comet) {
@@ -5656,6 +6214,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             return validateSearchEngineInstallation(Advocate.tide, TideSearchProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, false, feedBackInDialog);
         } else if (advocate == Advocate.andromeda) {
             return validateSearchEngineInstallation(Advocate.andromeda, AndromedaProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, false, feedBackInDialog);
+        } else if (advocate == Advocate.novor) {
+            return validateSearchEngineInstallation(Advocate.novor, NovorProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, true, feedBackInDialog);
+        } else if (advocate == Advocate.direcTag) {
+            return validateSearchEngineInstallation(Advocate.direcTag, DirecTagProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"directag\"", false, feedBackInDialog);
         }
 
         return false;
@@ -6000,52 +6562,67 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Enable/disable the search engine panel.
+     * Enable/disable the search engine and de novo panel.
      *
      * @param enable if true, the panel is enabled
      */
-    private void enableSearchEnginePanel(boolean enable) {
+    private void enableSearchEngineAndDeNovoPanels(boolean enable) {
+
+        // search engines
         xtandemSettingsButton.setEnabled(enable);
         msAmandaSettingsButton.setEnabled(enable);
         msgfSettingsButton.setEnabled(enable);
         omssaSettingsButton.setEnabled(enable);
         tideSettingsButton.setEnabled(enable);
-        peptideShakerSettingsButton.setEnabled(enable);
-        enableXTandemJCheckBox.setEnabled(enable);
 
+        enableXTandemJCheckBox.setEnabled(enable);
         enableMsAmandaJCheckBox.setEnabled(enable);
         enableMsgfJCheckBox.setEnabled(enable);
         enableOmssaJCheckBox.setEnabled(enable);
         enableTideJCheckBox.setEnabled(enable);
-        peptideShakerCheckBox.setEnabled(enable);
 
         xtandemButton.setEnabled(enable);
         msAmandaButton.setEnabled(enable);
         msgfButton.setEnabled(enable);
         omssaButton.setEnabled(enable);
         tideButton.setEnabled(enable);
-        xtandemButton.setEnabled(enable);
-        peptideShakerButton.setEnabled(enable);
 
         xtandemLinkLabel.setEnabled(enable);
         msAmandaLinkLabel.setEnabled(enable);
         msgfLinkLabel.setEnabled(enable);
         omssaLinkLabel.setEnabled(enable);
         tideLinkLabel.setEnabled(enable);
+
+        // de novo
+        novorSettingsButton.setEnabled(enable);
+        enableNovorJCheckBox.setEnabled(enable);
+        novorButton.setEnabled(enable);
+        novorLinkLabel.setEnabled(enable);
+
+        // peptideshaker
+        peptideShakerSettingsButton.setEnabled(enable);
+        peptideShakerCheckBox.setEnabled(enable);
+        peptideShakerButton.setEnabled(enable);
         peptideShakerLabel.setEnabled(enable);
 
         String operatingSystem = System.getProperty("os.name").toLowerCase();
 
-        // disable myrimatch and comet if mac
+        // disable myrimatch, comet and directag if mac
         if (!operatingSystem.contains("mac os")) {
             myriMatchSettingsButton.setEnabled(enable);
-            cometSettingsButton.setEnabled(enable);
-            enableMyriMatchJCheckBox.setEnabled(enable);
-            enableCometJCheckBox.setEnabled(enable);
             myriMatchButton.setEnabled(enable);
-            cometButton.setEnabled(enable);
             myriMatchLinkLabel.setEnabled(enable);
+            enableMyriMatchJCheckBox.setEnabled(enable);
+
+            cometSettingsButton.setEnabled(enable);
+            enableCometJCheckBox.setEnabled(enable);
+            cometButton.setEnabled(enable);
             cometLinkLabel.setEnabled(enable);
+
+            direcTagSettingsButton.setEnabled(enable);
+            direcTagButton.setEnabled(enable);
+            direcTagLinkLabel.setEnabled(enable);
+            enableDirecTagJCheckBox.setEnabled(enable);
         }
 
         // disable andromeda on non-windows platforms

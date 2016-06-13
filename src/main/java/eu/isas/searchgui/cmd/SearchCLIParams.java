@@ -29,6 +29,8 @@ public enum SearchCLIParams {
     COMET("comet", "Turn the Comet search on or off (0: off, 1: on, default is '1').", false),
     TIDE("tide", "Turn the Tide search on or off (0: off, 1: on, default is '1').", false),
     ANDROMEDA("andromeda", "Turn the Andromeda search on or off (0: off, 1: on, default is '1').", false),
+    NOVOR("novor", "Turn the Novor search on or off (0: off, 1: on, default is '1').", false),
+    DIRECTAG("directag", "Turn the DirecTag search on or off (0: off, 1: on, default is '1').", false),
     
     OMSSA_LOCATION("omssa_folder", "The folder where OMSSA is installed, defaults to the provided version for the given OS.", false),
     MAKEBLASTDB_LOCATION("makeblastdb_folder", "The folder where makeblastdb is installed, defaults to the provided version for the given OS.", false),
@@ -39,6 +41,8 @@ public enum SearchCLIParams {
     COMET_LOCATION("comet_folder", "The folder where Comet is installed, defaults to the included version.", false),
     TIDE_LOCATION("tide_folder", "The folder where Tide is installed, defaults to the included version.", false),
     ANDROMEDA_LOCATION("andromeda_folder", "The folder where Andromeda is installed, defaults to the included version.", false),
+    NOVOR_LOCATION("novor_folder", "The folder where Novor is installed, defaults to the included version.", false),
+    DIRECTAG_LOCATION("directag_folder", "The folder where DirecTag is installed, defaults to the included version.", false),
     
     MGF_CHECK_SIZE("mgf_check_size", "Turn the mgf size check on or off (0: off, 1: on, default is '0').", false),
     MGF_SPLITTING_LIMIT("mgf_splitting", "The maximum mgf file size in MB before splitting the mgf. Default is '1000'.", false),
@@ -126,6 +130,8 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, COMET.id) + " " + COMET.description + "\n";
         output += "-" + String.format(formatter, TIDE.id) + " " + TIDE.description + "\n";
         output += "-" + String.format(formatter, ANDROMEDA.id) + " " + ANDROMEDA.description + "\n";
+        output += "-" + String.format(formatter, NOVOR.id) + " " + NOVOR.description + "\n";
+        output += "-" + String.format(formatter, DIRECTAG.id) + " " + DIRECTAG.description + "\n";
 
         output += "\n\nTools Location:\n\n";
         output += "-" + String.format(formatter, OMSSA_LOCATION.id) + " " + OMSSA_LOCATION.description + "\n";
@@ -136,6 +142,8 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, COMET_LOCATION.id) + " " + COMET_LOCATION.description + "\n";
         output += "-" + String.format(formatter, TIDE_LOCATION.id) + " " + TIDE_LOCATION.description + "\n";
         output += "-" + String.format(formatter, ANDROMEDA_LOCATION.id) + " " + ANDROMEDA_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, NOVOR_LOCATION.id) + " " + NOVOR_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, DIRECTAG_LOCATION.id) + " " + DIRECTAG_LOCATION.description + "\n";
         output += "-" + String.format(formatter, MAKEBLASTDB_LOCATION.id) + " " + MAKEBLASTDB_LOCATION.description + "\n";
         
         output += "\n\nInput Files Handling:\n\n";

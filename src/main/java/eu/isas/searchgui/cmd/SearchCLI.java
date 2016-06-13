@@ -278,10 +278,12 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),
                     searchCLIInputBean.isTideEnabled(), searchCLIInputBean.isAndromedaEnabled(),
+                    searchCLIInputBean.isNovorEnabled(), searchCLIInputBean.isDirecTagEnabled(),
                     searchCLIInputBean.getOmssaLocation(), searchCLIInputBean.getXtandemLocation(),
                     searchCLIInputBean.getMsgfLocation(), searchCLIInputBean.getMsAmandaLocation(),
                     searchCLIInputBean.getMyriMatchLocation(), searchCLIInputBean.getCometLocation(),
                     searchCLIInputBean.getTideLocation(), searchCLIInputBean.getAndromedaLocation(),
+                    searchCLIInputBean.getNovorLocation(), searchCLIInputBean.getDirecTagLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
                     processingPreferences);
 

@@ -68,6 +68,14 @@ public class SearchCLIInputBean {
      */
     private boolean andromedaEnabled = true;
     /**
+     * If true, Novor is enabled.
+     */
+    private boolean novorEnabled = true;
+    /**
+     * If true, DirecTag is enabled.
+     */
+    private boolean direcTagEnabled = true;
+    /**
      * The folder where OMSSA is installed.
      */
     private File omssaLocation = null;
@@ -99,6 +107,14 @@ public class SearchCLIInputBean {
      * The folder where Andromeda is installed.
      */
     private File andromedaLocation = null;
+    /**
+     * The folder where Novor is installed.
+     */
+    private File novorLocation = null;
+    /**
+     * The folder where DirecTag is installed.
+     */
+    private File direcTagLocation = null;
     /**
      * The folder where makeblastdb is installed.
      */
@@ -245,6 +261,18 @@ public class SearchCLIInputBean {
                 andromedaEnabled = false;
             }
         }
+        if (aLine.hasOption(SearchCLIParams.NOVOR.id)) {
+            String novorOption = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
+            if (novorOption.trim().equals("0")) {
+                novorEnabled = false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.DIRECTAG.id)) {
+            String direcTagOption = aLine.getOptionValue(SearchCLIParams.DIRECTAG.id);
+            if (direcTagOption.trim().equals("0")) {
+                direcTagEnabled = false;
+            }
+        }
 
         // search engine folders
         if (aLine.hasOption(SearchCLIParams.OMSSA_LOCATION.id)) {
@@ -278,6 +306,14 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.ANDROMEDA_LOCATION.id)) {
             String andromedaFolder = aLine.getOptionValue(SearchCLIParams.ANDROMEDA_LOCATION.id);
             andromedaLocation = new File(andromedaFolder);
+        }
+        if (aLine.hasOption(SearchCLIParams.NOVOR_LOCATION.id)) {
+            String andromedaFolder = aLine.getOptionValue(SearchCLIParams.NOVOR_LOCATION.id);
+            novorLocation = new File(andromedaFolder);
+        }
+        if (aLine.hasOption(SearchCLIParams.DIRECTAG_LOCATION.id)) {
+            String andromedaFolder = aLine.getOptionValue(SearchCLIParams.DIRECTAG_LOCATION.id);
+            direcTagLocation = new File(andromedaFolder);
         }
 
         // makeblastdb folder
@@ -478,6 +514,24 @@ public class SearchCLIInputBean {
     public boolean isAndromedaEnabled() {
         return andromedaEnabled;
     }
+    
+    /**
+     * Returns true if Novor is to be used.
+     *
+     * @return if Novor is to be used
+     */
+    public boolean isNovorEnabled() {
+        return novorEnabled;
+    }
+    
+    /**
+     * Returns true if DirecTag is to be used.
+     *
+     * @return if DirecTag is to be used
+     */
+    public boolean isDirecTagEnabled() {
+        return direcTagEnabled;
+    }
 
     /**
      * Returns the OMSSA location, null if none is set.
@@ -549,6 +603,24 @@ public class SearchCLIInputBean {
      */
     public File getAndromedaLocation() {
         return andromedaLocation;
+    }
+    
+    /**
+     * Returns the Novor location.
+     *
+     * @return the Novor location
+     */
+    public File getNovorLocation() {
+        return novorLocation;
+    }
+    
+    /**
+     * Returns the DirecTag location.
+     *
+     * @return the DirecTag location
+     */
+    public File getDirecTagLocation() {
+        return direcTagLocation;
     }
 
     /**
@@ -777,6 +849,18 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
+        if (aLine.hasOption(SearchCLIParams.NOVOR.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.NOVOR.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.DIRECTAG.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.DIRECTAG.id);
+            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.DIRECTAG.id, input)) {
+                return false;
+            }
+        }
 
         // check the search engine folders
         if (aLine.hasOption(SearchCLIParams.OMSSA_LOCATION.id)) {
@@ -848,6 +932,22 @@ public class SearchCLIInputBean {
             File file = new File(input);
             if (!file.exists()) {
                 System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.ANDROMEDA_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.NOVOR_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.NOVOR_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.NOVOR_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.DIRECTAG_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.DIRECTAG_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.DIRECTAG_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
                 return false;
             }
         }

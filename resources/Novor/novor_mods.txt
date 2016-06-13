@@ -1,0 +1,2 @@
+Oxidation of M, 0, Oxidation of M, -r-, M, , 15.994915
+Carbamidomethylation of C, 1, Carbamidomethylation of C, -r-, C, , 57.021464

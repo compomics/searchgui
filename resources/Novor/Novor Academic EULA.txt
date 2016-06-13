@@ -1,0 +1,86 @@
+                   NOVOR ACADEMIC END USER LICENSE AGREEMENT
+
+The  software  and related  documentation  that you  are  about to  access  (the 
+"Software") is  offered by  Rapid Novor  Inc., an  Ontario Corporation,  to  you 
+(either  as an  individual  or  on behalf  of  the entity you represent,  if you 
+are authorized to  act on its  behalf) for use  in accordance with the terms and 
+conditions below.
+
+By downloading, installing, activating or using the Software, you represent that
+you have read, understand and  agree to be bound by the terms and  conditions of
+this agreement (this "License"). If you do not accept these terms and conditions
+then you are not granted a license and are not authorized to download,  install,
+activate, access or use any of the Software.
+
+1.  License.   Subject  to   the  terms   and  conditions   of  this  Agreement, 
+Rapid Novor Inc  grants  to  you  (Licensee) a limited, non-exclusive, personal, 
+non-sublicensable, non-transferable and indivisible license to install,  execute 
+and use   any number  of copies  of Novor  software on  any number of computers, 
+provided that: 
+
+(a) THE SOFTWARE IS BEING USED IN UNIVERSITIES  OR ACADEMIC RESEARCH INSTITUTES,
+
+    AND
+
+(b) THE ACTIVITIES DO NOT INCLUDE ANY USE IN  OR FOR ANY COMMERCIAL UNDERTAKING.
+
+If your  intention is to  evaluate  the Software for commercial use,  DO NOT USE
+THIS LICENSE. Please contact Rapid Novor Inc to obtain an Evaluation License.
+
+2. Ownership. The Software is a   proprietary product of Rapid Novor Inc  and is 
+protected  by copyright   laws  and   international   copyright   treaties,   as 
+well   as  other intellectual property laws and treaties. Rapid Novor Inc  shall 
+at  all times  own all   right, title  and interest  in and   to the   Software, 
+including all  intellectual property rights  therein.  You shall not remove  any 
+copyright  notice  or  other   proprietary  or  restrictive  notice  or   legend 
+contained or included  in the Software  and  you shall reproduce  and copy   all 
+such  information on  all copies   made hereunder, including such copies  as may 
+be necessary for archival or backup purposes. 
+
+3. Restrictions.  Licensee may  not use,  reproduce, transmit,  modify, adapt or 
+translate the  Software, in  whole or  in part,  to others,  except as otherwise 
+permitted  by  this Agreement.  Licensee  may not  reverse  engineer, decompile, 
+disassemble, or create derivative works based on the Software.  Licensee may not 
+use the Software  in any manner  whatsoever with the  result that access  to the 
+Software may be obtained through the Internet including, without limitation, any 
+web  page. Licensee  may not  rent, lease,  license, transfer,  assign, sell  or 
+otherwise provide access to the Software, in whole or in part, on a temporary or 
+permanent basis, except as otherwise permitted by this Agreement.  Licensee  may 
+not alter, remove or cover proprietary  notices in or on the Licensed  Software, 
+or storage media or use the Licensed Software in any unlawful manner whatsoever.
+
+4. Limitation of Warranty. THE LICENSED  SOFTWARE IS PROVIDED AS IS WITHOUT  ANY 
+WARRANTIES OR CONDITIONS OF ANY KIND, INCLUDING BUT NOT LIMITED TO WARRANTIES OR 
+CONDITIONS OF  MERCHANTABILITY OR  FITNESS FOR  A PARTICULAR  PURPOSE.  LICENSEE 
+ASSUMES  THE ENTIRE  RISK AS  TO THE  RESULTS AND  PERFORMANCE OF  THE  LICENSED 
+SOFTWARE.
+
+5. Limitation of Liability. IN NO EVENT WILL LICENSOR OR ITS SUPPLIERS BE LIABLE 
+TO  LICENSEE FOR  ANY INDIRECT,  INCIDENTAL, SPECIAL,  OR CONSEQUENTIAL  DAMAGES 
+WHATSOEVER, EVEN  IF THE  LICENSOR OR  ITS SUPPLIERS  HAVE BEEN  ADVISED OF  THE 
+POSSIBILITY OF SUCH  DAMAGE OR CLAIM,  OR IT IS  FORESEEABLE. LICENSOR'S MAXIMUM 
+AGGREGATE LIABILITY TO LICENSEE SHALL NOT EXCEED THE AMOUNT PAID BY LICENSEE FOR 
+THE SOFTWARE. THE  LIMITATIONS OF THIS  SECTION SHALL APPLY  WHETHER OR NOT  THE 
+ALLEGED BREACH OR DEFAULT IS A BREACH OF A FUNDAMENTAL CONDITION OR TERM.
+
+6. Termination.  This Agreement  is effective  until terminated.  This Agreement 
+will  terminate  immediately without  notice  if you  fail  to comply  with  any 
+provision of this  Agreement. Upon termination,  you must destroy  all copies of 
+the Software. Provisions  2,5,6,7 and 9  shall survive any  termination of  this
+Agreement.
+
+7. Export  Controls. The  Software is  subject at  all times  to all  applicable 
+export control laws  and regulations in  force from time  to time. You  agree to 
+comply strictly with all such laws and regulations and acknowledge that you have 
+the responsibility  to obtain  all necessary  licenses to  export, re-export  or 
+import as may be required.
+
+8. Maintenance  and Support.  Rapid Novor  Inc will   provide limited  technical
+support via email.  Further support may  be purchased on  a per incident  basis. 
+Please contact suppor@rapidnovor.com for detail.
+
+9.  Governing  Law.  This  Agreement shall  be  governed  by  and construed   in
+accordance with the  laws in force  in the Province  of Ontario and  the laws of 
+Canada applicable therein, without giving  effect to conflict of law  provisions 
+and without  giving effect  to United  Nations Convention  on contracts  for the 
+International Sale of Goods.

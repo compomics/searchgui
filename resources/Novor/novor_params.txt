@@ -1,0 +1,17 @@
+# Search parameters
+enzyme = Trypsin
+fragmentation = HCD
+massAnalyzer = FT
+fragmentIonErrorTol = 0.02Da
+precursorErrorTol = 10.0ppm
+
+# Variable modifications
+variableModifications = Oxidation of M
+
+# Fixed modifications
+fixedModifications = Carbamidomethylation of C
+
+# The residue which will not be used in de novo algorithm.
+# I is disabled as default because it is the same as L
+# U is disabled because it is very rare
+forbiddenResidues = I,U

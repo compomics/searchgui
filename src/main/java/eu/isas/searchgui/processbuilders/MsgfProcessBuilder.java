@@ -92,14 +92,15 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @param isCommandLine true if run from the command line, false if GUI
      *
      * @throws java.io.IOException exception thrown whenever an error occurred
-     * while getting the java home
+     * while getting the Java home
      * @throws java.io.FileNotFoundException exception thrown whenever an error
      * occurred while getting the java home
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
-    public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine) throws IOException, FileNotFoundException, ClassNotFoundException {
+    public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile, SearchParameters searchParameters, 
+            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine) 
+            throws IOException, FileNotFoundException, ClassNotFoundException {
 
         this.searchParameters = searchParameters;
         msgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());

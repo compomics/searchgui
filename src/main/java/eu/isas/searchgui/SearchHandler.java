@@ -63,10 +63,6 @@ public class SearchHandler {
      */
     private WaitingHandler waitingHandler;
     /**
-     * Default search engines location.
-     */
-    public static final String SEARCH_GUI_CONFIGURATION_FILE = "searchGUI_configuration.txt";
-    /**
      * Enzymes file.
      */
     private static String enzymeFile = "resources/conf/searchGUI_enzymes.xml";
@@ -98,35 +94,43 @@ public class SearchHandler {
     /**
      * If true, OMSSA will be used.
      */
-    private boolean enableOmssa = true;
+    private boolean enableOmssa = false;
     /**
-     * If true, X!Tandem will be used.
+     * If true, X! Tandem will be used.
      */
-    private boolean enableXtandem = true;
+    private boolean enableXtandem = false;
     /**
      * If true, MS-GF+ will be used.
      */
-    private boolean enableMsgf = true;
+    private boolean enableMsgf = false;
     /**
      * If true, MS Amanda will be used.
      */
-    private boolean enableMsAmanda = true;
+    private boolean enableMsAmanda = false;
     /**
      * If true, MyriMatch will be used.
      */
-    private boolean enableMyriMatch = true;
+    private boolean enableMyriMatch = false;
     /**
      * If true, Comet will be used.
      */
-    private boolean enableComet = true;
+    private boolean enableComet = false;
     /**
      * If true, Tide will be used.
      */
-    private boolean enableTide = true;
+    private boolean enableTide = false;
     /**
      * If true, Andromeda will be used.
      */
     private boolean enableAndromeda = false;
+    /**
+     * If true, Novor will be used.
+     */
+    private boolean enableNovor = false;
+    /**
+     * If true, DirecTag will be used.
+     */
+    private boolean enableDirecTag = false;
     /**
      * If true, PeptideShaker will be used.
      */
@@ -183,6 +187,14 @@ public class SearchHandler {
      * The Andromeda location.
      */
     private File andromedaLocation = null;
+    /**
+     * The Novor location.
+     */
+    private File novorLocation = null;
+    /**
+     * The DirecTag location.
+     */
+    private File direcTagLocation = null;
     /**
      * The makeblastdb location.
      */
@@ -251,6 +263,14 @@ public class SearchHandler {
      * The Andromeda process.
      */
     private AndromedaProcessBuilder andromedaProcessBuilder = null;
+    /**
+     * The Novor process.
+     */
+    private NovorProcessBuilder novorProcessBuilder = null;
+    /**
+     * The DirecTag process.
+     */
+    private DirecTagProcessBuilder direcTagProcessBuilder = null;
     /**
      * The PeptideShaker process.
      */
@@ -334,7 +354,8 @@ public class SearchHandler {
         enableComet = loadSearchEngineLocation(Advocate.comet, false, true, false, true, true, false, false);
         enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, true, false, true);
         enableAndromeda = loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false);
-        loadSearchEngineLocation(null, false, true, true, true, false, false, true);
+        enableNovor = loadSearchEngineLocation(Advocate.novor, true, true, true, true, false, false, false);
+        enableDirecTag = loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, false);
         this.identificationParametersFile = identificationParametersFile;
         this.processingPreferences = processingPreferences;
 
@@ -360,6 +381,8 @@ public class SearchHandler {
      * @param searchComet if true the Comet search is enabled
      * @param searchTide if true the Tide search is enabled
      * @param searchAndromeda if true the Andromeda search is enabled
+     * @param runNovor if true the Novor search is enabled
+     * @param runDirecTag if true the DirecTag search is enabled
      * @param omssaFolder the folder where OMSSA is installed, if null the
      * default location is used
      * @param xTandemFolder the folder where X!Tandem is installed, if null the
@@ -376,13 +399,19 @@ public class SearchHandler {
      * location is used
      * @param andromedaFolder the folder where Andromeda is installed, if null
      * the default location is used
+     * @param novorFolder the folder where Novor is installed, if null
+     * the default location is used
+     * @param direcTagFolder the folder where DirecTag is installed, if null
+     * the default location is used
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
      * @param processingPreferences the processing preferences
      */
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
-            File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder, File makeblastdbFolder,
+            boolean runNovor, boolean runDirecTag,
+            File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder, 
+            File novorFolder, File direcTagFolder, File makeblastdbFolder,
             ProcessingPreferences processingPreferences) {
 
         this.resultsFolder = resultsFolder;
@@ -396,6 +425,8 @@ public class SearchHandler {
         this.enableComet = searchComet;
         this.enableTide = searchTide;
         this.enableAndromeda = searchAndromeda;
+        this.enableNovor = runNovor;
+        this.enableDirecTag = runDirecTag;
 
         this.identificationParameters = identificationParameters;
         this.processingPreferences = processingPreferences;
@@ -447,6 +478,18 @@ public class SearchHandler {
             this.andromedaLocation = andromedaFolder;
         } else {
             loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false); // try to use the default
+        }
+        
+        if (novorFolder != null) {
+            this.novorLocation = novorFolder;
+        } else {
+            loadSearchEngineLocation(Advocate.novor, true, true, true, true, false, false, false); // try to use the default
+        }
+        
+        if (direcTagFolder != null) {
+            this.direcTagLocation = direcTagFolder;
+        } else {
+            loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, false); // try to use the default
         }
 
         if (makeblastdbFolder != null) {
@@ -732,7 +775,7 @@ public class SearchHandler {
         File searchEngineLoation = null;
 
         if (folder.exists()) {
-            File input = new File(folder, SEARCH_GUI_CONFIGURATION_FILE);
+            File input = new File(folder, SEARCHGUI_CONFIGURATION_FILE);
             try {
                 BufferedReader br = new BufferedReader(new FileReader(input));
                 String line;
@@ -830,6 +873,10 @@ public class SearchHandler {
                 tideLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.andromeda) {
                 andromedaLocation = searchEngineLoation;
+            } else if (searchEngineAdvocate == Advocate.novor) {
+                novorLocation = searchEngineLoation;
+            } else if (searchEngineAdvocate == Advocate.direcTag) {
+                direcTagLocation = searchEngineLoation;
             }
         } else {
             makeblastdbLocation = searchEngineLoation;
@@ -848,7 +895,7 @@ public class SearchHandler {
 
         File folder = new File(getJarFilePath() + File.separator + "resources" + File.separator + "conf" + File.separator);
         if (folder.exists()) {
-            File input = new File(folder, SEARCH_GUI_CONFIGURATION_FILE);
+            File input = new File(folder, SEARCHGUI_CONFIGURATION_FILE);
             try {
                 BufferedReader br = new BufferedReader(new FileReader(input));
                 String line;
@@ -963,6 +1010,28 @@ public class SearchHandler {
      */
     public static String getAndromedaFileName(String spectrumFileName) {
         return Util.removeExtension(spectrumFileName) + ".res";
+    }
+    
+    /**
+     * Returns the name of the Novor result file.
+     *
+     * @param spectrumFileName the name of the spectrum file searched
+     *
+     * @return the name of the Novor result file
+     */
+    public static String getNovorFileName(String spectrumFileName) {
+        return Util.removeExtension(spectrumFileName) + ".novor.csv";
+    }
+    
+    /**
+     * Returns the name of the DirecTag result file.
+     *
+     * @param spectrumFileName the name of the spectrum file searched
+     *
+     * @return the name of the DirecTag result file
+     */
+    public static String getDirecTagFileName(String spectrumFileName) {
+        return Util.removeExtension(spectrumFileName) + ".tags";
     }
 
     /**
@@ -1202,6 +1271,42 @@ public class SearchHandler {
     public void setAndromedaLocation(File andromedaLocation) {
         this.andromedaLocation = andromedaLocation;
     }
+    
+    /**
+     * Returns the Novor location.
+     *
+     * @return the Novor location
+     */
+    public File getNovorLocation() {
+        return novorLocation;
+    }
+
+    /**
+     * Set the Novor location.
+     *
+     * @param novorLocation the Novor location to set
+     */
+    public void setNovorLocation(File novorLocation) {
+        this.novorLocation = novorLocation;
+    }
+    
+    /**
+     * Returns the DirecTag location.
+     *
+     * @return the DirecTag location
+     */
+    public File getDirecTagLocation() {
+        return direcTagLocation;
+    }
+
+    /**
+     * Set the DirecTag location.
+     *
+     * @param direcTagLocation the DirecTag location to set
+     */
+    public void setDirecTagLocation(File direcTagLocation) {
+        this.direcTagLocation = direcTagLocation;
+    }
 
     /**
      * Returns the makeblastdb location.
@@ -1328,6 +1433,24 @@ public class SearchHandler {
     public boolean isAndromedaEnabled() {
         return enableAndromeda;
     }
+    
+    /**
+     * Returns true if Novor is to be used.
+     *
+     * @return if Novor is to be used
+     */
+    public boolean isNovorEnabled() {
+        return enableNovor;
+    }
+    
+    /**
+     * Returns true if DirecTag is to be used.
+     *
+     * @return if DirecTag is to be used
+     */
+    public boolean isDirecTagEnabled() {
+        return enableDirecTag;
+    }
 
     /**
      * Set if X!Tandem is to be used.
@@ -1390,6 +1513,24 @@ public class SearchHandler {
      */
     public void setAndromedaEnabled(boolean runAndromeda) {
         this.enableAndromeda = runAndromeda;
+    }
+    
+    /**
+     * Set if Novor is to be used.
+     *
+     * @param runNovor run Novor?
+     */
+    public void setNovorEnabled(boolean runNovor) {
+        this.enableNovor = runNovor;
+    }
+    
+    /**
+     * Set if DirecTag is to be used.
+     *
+     * @param runDirecTag run DirecTag?
+     */
+    public void setDirecTagEnabled(boolean runDirecTag) {
+        this.enableDirecTag = runDirecTag;
     }
 
     /**
@@ -1595,6 +1736,12 @@ public class SearchHandler {
             if (andromedaProcessBuilder != null) {
                 andromedaProcessBuilder.endProcess();
             }
+            if (novorProcessBuilder != null) {
+                novorProcessBuilder.endProcess();
+            }
+            if (direcTagProcessBuilder != null) {
+                direcTagProcessBuilder.endProcess();
+            }
             if (peptideShakerProcessBuilder != null) {
                 peptideShakerProcessBuilder.endProcess();
             }
@@ -1679,7 +1826,7 @@ public class SearchHandler {
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
                     AndromedaProcessBuilder.createPtmFile(andromedaLocation, identificationParameters, identificationParametersFile);
                 }
-
+                
                 int nRawFiles = getRawFiles().size();
                 int nFilesToSearch = nRawFiles + getMgfFiles().size();
                 int nProgress = 2 + nRawFiles;
@@ -1706,6 +1853,12 @@ public class SearchHandler {
                     nProgress++; // the tide indexing
                 }
                 if (enableAndromeda) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableNovor) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableDirecTag) {
                     nProgress += nFilesToSearch;
                 }
                 if (enablePeptideShaker) {
@@ -2075,11 +2228,60 @@ public class SearchHandler {
                         }
                     }
 
+                    // delete the temp apl and ms2 files
                     if (aplFile != null) {
                         aplFile.delete();
                     }
                     if (ms2File != null) {
                         ms2File.delete();
+                    }
+                    
+                    if (enableNovor && !waitingHandler.isRunCanceled()) {
+                        File novorOutputFile = new File(outputTempFolder, getNovorFileName(spectrumFileName));
+                        novorProcessBuilder = new NovorProcessBuilder(novorLocation,
+                                spectrumFile, novorOutputFile, searchParameters, useCommandLine, waitingHandler, exceptionHandler);
+                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.novor.getName() + ".", true, true);
+                        waitingHandler.appendReportEndLine();
+                        novorProcessBuilder.startProcess();
+
+                        if (!waitingHandler.isRunCanceled()) {
+                            HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+                            if (runIdentificationFiles == null) {
+                                runIdentificationFiles = new HashMap<Integer, File>();
+                                identificationFiles.put(spectrumFileName, runIdentificationFiles);
+                            }
+                            if (novorOutputFile.exists()) {
+                                runIdentificationFiles.put(Advocate.novor.getIndex(), novorOutputFile);
+                                idFileToSpectrumFileMap.put(novorOutputFile.getName(), spectrumFile);
+                            } else {
+                                waitingHandler.appendReport("Could not find " + Advocate.novor.getName() + " result file for " + spectrumFileName + ".", true, true);
+                            }
+                            waitingHandler.increasePrimaryProgressCounter();
+                        }
+                    }
+                    
+                    if (enableDirecTag && !waitingHandler.isRunCanceled()) {
+                        File direcTagOutputFile = new File(outputTempFolder, getDirecTagFileName(spectrumFileName));
+                        direcTagProcessBuilder = new DirecTagProcessBuilder(direcTagLocation,
+                                spectrumFile, processingPreferences.getnThreads(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler);
+                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.direcTag.getName() + ".", true, true);
+                        waitingHandler.appendReportEndLine();
+                        direcTagProcessBuilder.startProcess();
+
+                        if (!waitingHandler.isRunCanceled()) {
+                            HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+                            if (runIdentificationFiles == null) {
+                                runIdentificationFiles = new HashMap<Integer, File>();
+                                identificationFiles.put(spectrumFileName, runIdentificationFiles);
+                            }
+                            if (direcTagOutputFile.exists()) {
+                                runIdentificationFiles.put(Advocate.direcTag.getIndex(), direcTagOutputFile);
+                                idFileToSpectrumFileMap.put(direcTagOutputFile.getName(), spectrumFile);
+                            } else {
+                                waitingHandler.appendReport("Could not find " + Advocate.direcTag.getName() + " result file for " + spectrumFileName + ".", true, true);
+                            }
+                            waitingHandler.increasePrimaryProgressCounter();
+                        }
                     }
                 }
 
@@ -2191,6 +2393,22 @@ public class SearchHandler {
                                 identificationFilesList.add(outputFile);
                             } else {
                                 waitingHandler.appendReport("Could not find " + Advocate.andromeda.getName() + " results.", true, true);
+                            }
+                        }
+                        if (enableNovor) {
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.novor.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            if (outputFile.exists()) {
+                                identificationFilesList.add(outputFile);
+                            } else {
+                                waitingHandler.appendReport("Could not find " + Advocate.novor.getName() + " results.", true, true);
+                            }
+                        }
+                        if (enableDirecTag) {
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.direcTag.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            if (outputFile.exists()) {
+                                identificationFilesList.add(outputFile);
+                            } else {
+                                waitingHandler.appendReport("Could not find " + Advocate.direcTag.getName() + " results.", true, true);
                             }
                         }
                     } else if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.run) {

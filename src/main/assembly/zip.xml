@@ -22,6 +22,7 @@
                 <exclude>${project.basedir}/resources/MS Amanda/osx/**</exclude>
                 <exclude>${project.basedir}/resources/Tide/linux/**</exclude>
                 <exclude>${project.basedir}/resources/Tide/osx/**</exclude>
+                <exclude>${project.basedir}/resources/DirecTag/linux/**</exclude>
             </excludes>
         </fileSet>
     </fileSets>

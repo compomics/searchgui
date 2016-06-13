@@ -18,6 +18,7 @@
                 <exclude>${project.basedir}/resources/MS Amanda/windows/**</exclude>
                 <exclude>${project.basedir}/resources/Tide/windows/**</exclude>
                 <exclude>${project.basedir}/resources/Andromeda/windows/**</exclude>
+                <exclude>${project.basedir}/resources/DirecTag/windows/**</exclude>
             </excludes>
             <fileMode>0755</fileMode>
         </fileSet>

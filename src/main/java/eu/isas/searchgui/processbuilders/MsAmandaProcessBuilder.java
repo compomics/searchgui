@@ -49,7 +49,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The name of the MS Amanda executable.
      */
-    public static String executableFileName = "MSAmanda.exe";
+    public static final String EXECUTABLE_FILE_NAME = "MSAmanda.exe";
     /**
      * The database file.
      */
@@ -205,7 +205,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         createSettingsFile();
 
         // make sure that the ms amanda exe file is executable
-        File msAmanda = new File(msAmandaFolder.getAbsolutePath() + File.separator + executableFileName);
+        File msAmanda = new File(msAmandaFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
         msAmanda.setExecutable(true);
 
         // full path to executable

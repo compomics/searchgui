@@ -1,0 +1,25 @@
+#=================== N-O-V-O-R ===================#
+#   NOVOR: Peptide de Novo Sequencing Software    #
+#          Free Academic Edition, v1.1beta        #
+#                  (2015.05.31)                   #
+#=============== www.rapidnovor.org ==============#
+
+Introduction
+
+Novor is a real time peptide denovo sequencing tool. To run Novor, Sun's Java Running Environment (JRE) (7.0 and up) is required. If JRE is not installed, please go to http://www.oracle.com/technetwork/java/javase/downloads/index.html to download and install the JRE.
+
+Packing list
+
+0. novor.sh: a shell script in UNIX used to run novor.
+1. /lib/novor.jar: the jar which will do denovo sequencing with specified parameters and output peptides.
+2. /data/test.mgf: sample MS/MS spectrum data.
+3. params.txt: sample parameter configuration file. To run novor with your own data, please modify the inputFiles parameters and experiment related parameters.
+4. Novor Academic EULA.txt: end-user license agreement
+
+Quick Start
+
+The easiest way to run novor is use the following command line:
+./novor.sh -p params.txt data/test.mgf -f
+
+A sample params.txt can be found under the software package. Please visit www.rapidnovor.org for user's manual, updates, programming API, and citation information.
+
