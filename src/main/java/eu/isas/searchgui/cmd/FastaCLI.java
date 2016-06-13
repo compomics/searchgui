@@ -106,8 +106,12 @@ public class FastaCLI {
             writeDbProperties();
 
             if (fastaCLIInputBean.isDecoy()) {
-                UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-                userPreferences.setTargetDecoyFileNameTag(fastaCLIInputBean.getDecoySuffix() + ".fasta");
+
+                String decoySuffix = fastaCLIInputBean.getDecoySuffix();
+                if (decoySuffix != null) {
+                    UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                    userPreferences.setTargetDecoyFileNameSuffix(decoySuffix + ".fasta");
+                }
                 boolean success = generateTargetDecoyDatabase(waitingHandlerCLIImpl);
                 if (success) {
                     System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));

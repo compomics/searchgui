@@ -27,7 +27,7 @@ public class FastaCLIInputBean {
     /**
      * The tag added after adding decoy sequences to a FASTA file.
      */
-    private String decoySuffix;
+    private String decoySuffix = null;
 
     /**
      * Constructor.
@@ -44,11 +44,8 @@ public class FastaCLIInputBean {
         }
         if (aLine.hasOption(FastaCLIParams.decoy_suffix.id)) {
             decoySuffix = aLine.getOptionValue(FastaCLIParams.decoy_suffix.id);
-        } else {
-            UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-            decoySuffix = userPreferences.getTargetDecoyFileNameTag();
         }
-
+        
         // Path settings
         pathSettingsCLIInputBean = new PathSettingsCLIInputBean(aLine);
     }
