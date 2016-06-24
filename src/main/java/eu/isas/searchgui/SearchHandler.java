@@ -576,7 +576,7 @@ public class SearchHandler {
     public static File getEnzymesFile(String jarFilePath) {
         File result = new File(jarFilePath, enzymeFile);
         if (!result.exists()) {
-            JOptionPane.showMessageDialog(null, enzymeFile + " not found.", "Enzymes File Error", JOptionPane.ERROR_MESSAGE);
+            throw new IllegalArgumentException(enzymeFile + " not found.");
         }
         return result;
     }
