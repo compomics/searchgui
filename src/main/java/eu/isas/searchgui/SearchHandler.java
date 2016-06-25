@@ -139,7 +139,7 @@ public class SearchHandler {
     /**
      * If true, Reporter will be used.
      */
-    private boolean enableReporter = true;
+    private boolean enableReporter = false;
     /**
      * The identification parameters.
      */

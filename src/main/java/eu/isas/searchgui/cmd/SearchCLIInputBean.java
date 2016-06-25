@@ -38,43 +38,43 @@ public class SearchCLIInputBean {
     /**
      * If true, OMSSA is enabled.
      */
-    private boolean omssaEnabled = true;
+    private boolean omssaEnabled = false;
     /**
      * If true, X!Tandem is enabled.
      */
-    private boolean xtandemEnabled = true;
+    private boolean xtandemEnabled = false;
     /**
      * If true, MS-GF+ is enabled.
      */
-    private boolean msgfEnabled = true;
+    private boolean msgfEnabled = false;
     /**
      * If true, MS Amanda is enabled.
      */
-    private boolean msAmandaEnabled = true;
+    private boolean msAmandaEnabled = false;
     /**
      * If true, MyriMatch is enabled.
      */
-    private boolean myriMatchEnabled = true;
+    private boolean myriMatchEnabled = false;
     /**
      * If true, Comet is enabled.
      */
-    private boolean cometEnabled = true;
+    private boolean cometEnabled = false;
     /**
      * If true, Tide is enabled.
      */
-    private boolean tideEnabled = true;
+    private boolean tideEnabled = false;
     /**
      * If true, Andromeda is enabled.
      */
-    private boolean andromedaEnabled = true;
+    private boolean andromedaEnabled = false;
     /**
      * If true, Novor is enabled.
      */
-    private boolean novorEnabled = true;
+    private boolean novorEnabled = false;
     /**
      * If true, DirecTag is enabled.
      */
-    private boolean direcTagEnabled = true;
+    private boolean direcTagEnabled = false;
     /**
      * The folder where OMSSA is installed.
      */
@@ -215,63 +215,43 @@ public class SearchCLIInputBean {
         // see which search engines to use
         if (aLine.hasOption(SearchCLIParams.OMSSA.id)) {
             String omssaOption = aLine.getOptionValue(SearchCLIParams.OMSSA.id);
-            if (omssaOption.trim().equals("0")) {
-                omssaEnabled = false;
-            }
+            omssaEnabled = omssaOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.XTANDEM.id)) {
             String xtandemOption = aLine.getOptionValue(SearchCLIParams.XTANDEM.id);
-            if (xtandemOption.trim().equals("0")) {
-                xtandemEnabled = false;
-            }
+            xtandemEnabled = xtandemOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.MSGF.id)) {
             String msgfOption = aLine.getOptionValue(SearchCLIParams.MSGF.id);
-            if (msgfOption.trim().equals("0")) {
-                msgfEnabled = false;
-            }
+            msgfEnabled = msgfOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.MS_AMANDA.id)) {
             String msAmandaOption = aLine.getOptionValue(SearchCLIParams.MS_AMANDA.id);
-            if (msAmandaOption.trim().equals("0")) {
-                msAmandaEnabled = false;
-            }
+            msAmandaEnabled = msAmandaOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.MYRIMATCH.id)) {
             String myriMatchOption = aLine.getOptionValue(SearchCLIParams.MYRIMATCH.id);
-            if (myriMatchOption.trim().equals("0")) {
-                myriMatchEnabled = false;
-            }
+            myriMatchEnabled = myriMatchOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.COMET.id)) {
             String cometOption = aLine.getOptionValue(SearchCLIParams.COMET.id);
-            if (cometOption.trim().equals("0")) {
-                cometEnabled = false;
-            }
+            cometEnabled = cometOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.TIDE.id)) {
             String tideOption = aLine.getOptionValue(SearchCLIParams.TIDE.id);
-            if (tideOption.trim().equals("0")) {
-                tideEnabled = false;
-            }
+            tideEnabled = tideOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.ANDROMEDA.id)) {
             String andromedaOption = aLine.getOptionValue(SearchCLIParams.ANDROMEDA.id);
-            if (andromedaOption.trim().equals("0")) {
-                andromedaEnabled = false;
-            }
+            andromedaEnabled = andromedaOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.NOVOR.id)) {
             String novorOption = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
-            if (novorOption.trim().equals("0")) {
-                novorEnabled = false;
-            }
+            novorEnabled = novorOption.trim().equals("1");
         }
         if (aLine.hasOption(SearchCLIParams.DIRECTAG.id)) {
             String direcTagOption = aLine.getOptionValue(SearchCLIParams.DIRECTAG.id);
-            if (direcTagOption.trim().equals("0")) {
-                direcTagEnabled = false;
-            }
+            direcTagEnabled = direcTagOption.trim().equals("1");
         }
 
         // search engine folders
