@@ -1,6 +1,7 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.software.CommandLineUtils;
+import com.compomics.software.cli.CommandLineUtils;
+import com.compomics.software.cli.CommandParameter;
 import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersInputBean;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.SearchGuiOutputOption;
@@ -174,17 +175,16 @@ public class SearchCLIInputBean {
     private String targetDecoyFileNameTag = "_concatenated_target_decoy";
 
     /**
-     * Takes all the arguments from a command line.
+     * Parses the arguments of a command line.
      *
      * @param aLine the command line
-     * @throws FileNotFoundException thrown if the spectrum, search parameter or
-     * FASTA files are not found
+     * 
      * @throws IOException thrown if an error occurred while reading the FASTA
      * file
      * @throws ClassNotFoundException thrown if the search parameters cannot be
      * converted
      */
-    public SearchCLIInputBean(CommandLine aLine) throws FileNotFoundException, IOException, ClassNotFoundException {
+    public SearchCLIInputBean(CommandLine aLine) throws IOException, ClassNotFoundException {
 
         // get the files needed for the search
         String spectrumFilesTxt = aLine.getOptionValue(SearchCLIParams.SPECTRUM_FILES.id);
@@ -742,7 +742,7 @@ public class SearchCLIInputBean {
         // check the output data option
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATA.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_DATA.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.OUTPUT_DATA.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.OUTPUT_DATA.id, input)) {
                 return false;
             }
         }
@@ -750,7 +750,7 @@ public class SearchCLIInputBean {
         // check the output date option
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATE.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_DATE.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.OUTPUT_DATE.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.OUTPUT_DATE.id, input)) {
                 return false;
             }
         }
@@ -758,7 +758,7 @@ public class SearchCLIInputBean {
         // check the rename xtandem output option
         if (aLine.hasOption(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id, input)) {
                 return false;
             }
         }
@@ -775,7 +775,7 @@ public class SearchCLIInputBean {
         // check the number of threads
         if (aLine.hasOption(SearchCLIParams.THREADS.id)) {
             String arg = aLine.getOptionValue(SearchCLIParams.THREADS.id);
-            if (!IdentificationParametersInputBean.isPositiveInteger(SearchCLIParams.THREADS.id, arg, false)) {
+            if (!CommandParameter.isPositiveInteger(SearchCLIParams.THREADS.id, arg, false)) {
                 return false;
             }
         }
@@ -783,61 +783,61 @@ public class SearchCLIInputBean {
         // check the search engine on/off status
         if (aLine.hasOption(SearchCLIParams.OMSSA.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.OMSSA.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.OMSSA.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.OMSSA.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.XTANDEM.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.XTANDEM.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.XTANDEM.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.XTANDEM.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.MSGF.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MSGF.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MSGF.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.MSGF.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.MS_AMANDA.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MS_AMANDA.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MS_AMANDA.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.MS_AMANDA.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.MYRIMATCH.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MYRIMATCH.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MYRIMATCH.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.MYRIMATCH.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.COMET.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.COMET.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.COMET.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.COMET.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.TIDE.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.TIDE.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.TIDE.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.TIDE.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.ANDROMEDA.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.ANDROMEDA.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.ANDROMEDA.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.ANDROMEDA.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.NOVOR.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.NOVOR.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.NOVOR.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.DIRECTAG.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.DIRECTAG.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.DIRECTAG.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.DIRECTAG.id, input)) {
                 return false;
             }
         }
@@ -935,19 +935,19 @@ public class SearchCLIInputBean {
         // check the mgf size filters
         if (aLine.hasOption(SearchCLIParams.MGF_CHECK_SIZE.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MGF_CHECK_SIZE.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MGF_CHECK_SIZE.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.MGF_CHECK_SIZE.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.MGF_SPLITTING_LIMIT.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MGF_SPLITTING_LIMIT.id);
-            if (!IdentificationParametersInputBean.isPositiveDouble(SearchCLIParams.MGF_CHECK_SIZE.id, input, false)) {
+            if (!CommandParameter.isPositiveDouble(SearchCLIParams.MGF_CHECK_SIZE.id, input, false)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.MGF_MAX_SPECTRA.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MGF_MAX_SPECTRA.id);
-            if (!IdentificationParametersInputBean.isPositiveInteger(SearchCLIParams.MGF_MAX_SPECTRA.id, input, false)) {
+            if (!CommandParameter.isPositiveInteger(SearchCLIParams.MGF_MAX_SPECTRA.id, input, false)) {
                 return false;
             }
         }
@@ -955,13 +955,13 @@ public class SearchCLIInputBean {
         // check the spectrum title options
         if (aLine.hasOption(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id, input)) {
                 return false;
             }
         }
         if (aLine.hasOption(SearchCLIParams.MISSING_TITLE_HANDLING.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MISSING_TITLE_HANDLING.id);
-            if (!IdentificationParametersInputBean.isBooleanInput(SearchCLIParams.MISSING_TITLE_HANDLING.id, input)) {
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.MISSING_TITLE_HANDLING.id, input)) {
                 return false;
             }
         }
@@ -969,13 +969,13 @@ public class SearchCLIInputBean {
         // check the reference mass
         if (aLine.hasOption(SearchCLIParams.REFERENCE_MASS.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.REFERENCE_MASS.id);
-            if (!IdentificationParametersInputBean.isPositiveDouble(SearchCLIParams.REFERENCE_MASS.id, input, false)) {
+            if (!CommandParameter.isPositiveDouble(SearchCLIParams.REFERENCE_MASS.id, input, false)) {
                 return false;
             }
         }
 
         // check the identification parameters
-        if (!IdentificationParametersInputBean.isValidStartup(aLine, false)) {
+        if (!CommandParameter.isValidStartup(aLine, false)) {
             return false;
         }
 
