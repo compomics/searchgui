@@ -975,7 +975,7 @@ public class SearchCLIInputBean {
         }
 
         // check the identification parameters
-        if (!CommandParameter.isValidStartup(aLine, false)) {
+        if (!IdentificationParametersInputBean.isValidStartup(aLine, false)) {
             return false;
         }
 
