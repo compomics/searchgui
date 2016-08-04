@@ -1,6 +1,6 @@
 package eu.isas.searchgui.gui;
 
-import com.compomics.software.CommandLineUtils;
+import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.ToolFactory;
 import com.compomics.software.autoupdater.MavenJarFile;

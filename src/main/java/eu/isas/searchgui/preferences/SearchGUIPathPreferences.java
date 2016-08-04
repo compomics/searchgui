@@ -198,7 +198,7 @@ public class SearchGUIPathPreferences {
      * @param searchGUIPathKey the key of the path
      * @param jarFilePath path to the jar file
      *
-     * @return the path to be set
+     * @return the path 
      */
     public static String getPathPreference(SearchGUIPathKey searchGUIPathKey, String jarFilePath) {
         switch (searchGUIPathKey) {
