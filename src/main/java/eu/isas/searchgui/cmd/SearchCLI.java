@@ -2,6 +2,7 @@ package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
+import com.compomics.software.settings.UtilitiesPathPreferences;
 import com.compomics.util.experiment.biology.*;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
@@ -16,7 +17,6 @@ import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.searchgui.SearchHandler;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
-import eu.isas.searchgui.gui.SearchGUI;
 import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
 import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
@@ -118,7 +118,10 @@ public class SearchCLI implements Callable {
             pathSettingsCLI.setPathSettings();
         } else {
             try {
-                SearchGUI.setPathConfiguration();
+                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+                if (pathConfigurationFile.exists()) {
+                    SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
+                }
             } catch (Exception e) {
                 System.out.println("An error occurred when setting path configuration. Default paths will be used.");
                 e.printStackTrace();
