@@ -1,6 +1,6 @@
 package eu.isas.searchgui;
 
-import com.compomics.software.CommandLineUtils;
+import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
@@ -576,7 +576,7 @@ public class SearchHandler {
     public static File getEnzymesFile(String jarFilePath) {
         File result = new File(jarFilePath, enzymeFile);
         if (!result.exists()) {
-            JOptionPane.showMessageDialog(null, enzymeFile + " not found.", "Enzymes File Error", JOptionPane.ERROR_MESSAGE);
+            throw new IllegalArgumentException(enzymeFile + " not found.");
         }
         return result;
     }

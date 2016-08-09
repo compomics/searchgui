@@ -1,6 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
-import com.compomics.software.CommandLineUtils;
+import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;

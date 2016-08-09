@@ -1,6 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
-import com.compomics.software.CommandLineUtils;
+import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.massspectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.massspectrometry.proteowizard.MsFormat;
