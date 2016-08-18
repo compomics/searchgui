@@ -37,11 +37,12 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
      * @param spectrumFile the spectrum file
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
+     * @param nThreads the number of threads to use
      *
      * @throws IOException thrown of there are problems creating the Tide
      * parameter file
      */
-    public TideSearchProcessBuilder(File tideFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException {
+    public TideSearchProcessBuilder(File tideFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -123,8 +124,8 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(tideParameters.getSpectrumCharges());
         
         // max precursor charge
-        //process_name_array.add("--max-precursor-charge"); // The maximum charge state of a spectra to consider in search. Default = 5.
-        //process_name_array.add(tideParameters.getMaxPrecursorCharge()); // @TODO: implement me?
+        process_name_array.add("--max-precursor-charge");
+        process_name_array.add("" + searchParameters.getMaxChargeSearched().value);
         //
         // scan number 
         //process_name_array.add("--scan-number");
@@ -169,6 +170,18 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         // mz bin offset
         process_name_array.add("--mz-bin-offset");
         process_name_array.add(tideParameters.getMzBinOffset().toString());
+//        
+//        // peptide centric search 
+//        process_name_array.add("--peptide-centric-search"); // @TODO: implement?
+//        if (tideParameters.getPeptideCentricSearch()) {
+//            process_name_array.add("T");
+//        } else {
+//            process_name_array.add("F");
+//        }
+
+        // number of threads
+        process_name_array.add("--num-threads");
+        process_name_array.add("" + nThreads);
 
         // concatinate target and decoy results
         process_name_array.add("--concat");
@@ -183,6 +196,19 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("--store-spectra");
             process_name_array.add(tideParameters.getStoreSpectraFileName());
         }
+//        
+//        // store index
+//        if (tideParameters.getStoreSpectraFileName() != null) { // @TODO: implement?
+//            process_name_array.add("--store-index");
+//            process_name_array.add(tideParameters.getStoreIndex());
+//        }
+//
+//        // use z line
+//        if (tideParameters.getUseZLine()) { // @TODO: implement?
+//            process_name_array.add("T");
+//        } else {
+//            process_name_array.add("F");
+//        }
 
         // text output
         process_name_array.add("--txt-output");

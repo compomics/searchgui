@@ -2160,7 +2160,8 @@ public class SearchHandler {
 
                         // perform the tide search
                         if (!waitingHandler.isRunCanceled()) {
-                            tideSearchProcessBuilder = new TideSearchProcessBuilder(tideLocation, searchParameters, ms2File, waitingHandler, exceptionHandler);
+                            tideSearchProcessBuilder = new TideSearchProcessBuilder(tideLocation, searchParameters, 
+                                    ms2File, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
                             waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.tide.getName() + ".", true, true);
                             waitingHandler.appendReportEndLine();
                             tideSearchProcessBuilder.startProcess();

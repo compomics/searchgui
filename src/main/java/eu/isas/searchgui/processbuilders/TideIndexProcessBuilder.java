@@ -132,7 +132,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         //
         // output verbosity
         process_name_array.add("--verbosity");
-        process_name_array.add("" + tideParameters.getVerbosity());
+        process_name_array.add(tideParameters.getVerbosity().toString());
 
         // peptide lengths
         process_name_array.add("--min-length");
@@ -146,12 +146,12 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("--max-mass");
         process_name_array.add(tideParameters.getMaxPrecursorMass().toString());
 
-        // monoisotopic precursor mass
-        process_name_array.add("--monoisotopic-precursor");
+        // isotopic masses type used when calculating the peptide mass
+        process_name_array.add("--isotopic-mass");
         if (tideParameters.getMonoisotopicPrecursor()) {
-            process_name_array.add("T");
+            process_name_array.add("mono");
         } else {
-            process_name_array.add("F");
+            process_name_array.add("average");
         }
 
         // include starting peptide both with and without the initial m
