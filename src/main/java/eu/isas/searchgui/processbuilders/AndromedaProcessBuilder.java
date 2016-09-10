@@ -259,7 +259,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param andromedaFolder the Andromeda installation folder
      * @param identificationParameters the identification parameters
-     * @param identificationParametersFile the file where to save the search parameters
+     * @param identificationParametersFile the file where to save the search
+     * parameters
      *
      * @throws IOException exception thrown whenever an error occurs while
      * writing to the file.
@@ -283,12 +284,23 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             bw.write("<modifications xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
             bw.newLine();
+
+            // add the default ptms
             for (String ptmName : ptmFactory.getDefaultModifications()) {
                 PTM ptm = ptmFactory.getPTM(ptmName);
                 writePtm(bw, date, ptm, index);
                 andromedaParameters.setPtmIndex(ptmName, index);
                 index++;
             }
+
+            // add the user ptms
+            for (String ptmName : ptmFactory.getUserModifications()) {
+                PTM ptm = ptmFactory.getPTM(ptmName);
+                writePtm(bw, date, ptm, index);
+                andromedaParameters.setPtmIndex(ptmName, index);
+                index++;
+            }
+
             bw.write("</modifications>");
             bw.newLine();
         } finally {
@@ -557,7 +569,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Create the parameters file.
-     * 
+     *
      * @param searchParametersFile the file where to save the search parameters
      *
      * @return the parameters file
@@ -586,12 +598,10 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             if (enzyme.isUnspecific()) {
                 bw.write("enzyme mode=unspecific");
+            } else if (enzyme.isSemiSpecific()) {
+                bw.write("enzyme mode=semispecific"); //@TODO: support: Semispecific Free N-terminus and Semispecific Free C-terminus
             } else {
-                if (enzyme.isSemiSpecific()) {
-                    bw.write("enzyme mode=semispecific"); //@TODO: support: Semispecific Free N-terminus and Semispecific Free C-terminus
-                } else {
-                    bw.write("enzyme mode=specific");
-                }
+                bw.write("enzyme mode=specific");
             }
             bw.newLine();
             PtmSettings modificationProfile = searchParameters.getPtmSettings();
