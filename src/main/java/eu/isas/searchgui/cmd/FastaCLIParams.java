@@ -78,5 +78,8 @@ public enum FastaCLIParams {
         for (FastaCLIParams param : values()) {
             aOptions.addOption(param.id, param.hasArgument, param.description);
         }
+        
+        // Path setup
+        PathSettingsCLIParams.createOptionsCLI(aOptions);
     }
 }
