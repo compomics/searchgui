@@ -101,7 +101,7 @@ public enum SearchCLIParams {
         SearchCLIdentificationParametersCLIParams.createOptionsCLI(aOptions);
         
         // Path setup
-        aOptions.addOption(PathSettingsCLIParams.ALL.id, true, PathSettingsCLIParams.ALL.description);
+        PathSettingsCLIParams.createOptionsCLI(aOptions);
     }
 
     /**

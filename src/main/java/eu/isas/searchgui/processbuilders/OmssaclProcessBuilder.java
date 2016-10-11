@@ -2,6 +2,7 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.NeutralLoss;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
@@ -11,6 +12,8 @@ import com.compomics.util.experiment.identification.identification_parameters.Se
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.OmssaParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.preferences.DigestionPreferences;
+import com.compomics.util.preferences.DigestionPreferences.Specificity;
 import com.compomics.util.preferences.IdentificationParameters;
 import java.io.BufferedWriter;
 
@@ -93,9 +96,20 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
             process_name_array.add("-teppm");
         }
-        if (searchParameters.getEnzyme().getId() != -1) {
-            process_name_array.add("-e");
-            process_name_array.add(Integer.toString(searchParameters.getEnzyme().getId()));
+        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+        int enzymeIndex = getEnzymeIndex(digestionPreferences);
+        process_name_array.add("-e");
+        process_name_array.add(Integer.toString(enzymeIndex));
+        Integer missedCleavages = null;
+        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+            int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+            if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                missedCleavages = enzymeMissedCleavages;
+            }
+        }
+        if (missedCleavages != null) {
+            process_name_array.add("-v");
+            process_name_array.add(Integer.toString(missedCleavages));
         }
         if (searchParameters.getMinChargeSearched() != null) {
             process_name_array.add("-zl");
@@ -227,8 +241,6 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-ii");
             process_name_array.add(Double.toString(omssaParameters.getIterativeSpectrumEvalue()));
         }
-        process_name_array.add("-v");
-        process_name_array.add(Integer.toString(searchParameters.getnMissedCleavages()));
         process_name_array.add("-he");
         process_name_array.add(Double.toString(omssaParameters.getMaxEValue()));
         process_name_array.add("-tez");
@@ -265,8 +277,14 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("0");
         // look for b and y ions
         process_name_array.add("-i");
-        process_name_array.add(getIonId(PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched1())) + ","
-                + getIonId(PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched2()))); // @TODO: add support for more ion types...
+        StringBuilder ions = new StringBuilder();
+        for (Integer ion : searchParameters.getForwardIons()) {
+            if (ions.length() > 0) {
+                ions.append(",");
+            }
+            ions.append(getIonId(PeptideFragmentIon.getSubTypeAsString(ion)));
+        }
+        process_name_array.add(ions.toString());
 
         String modificationIndexes = "";
         for (Integer index : getSearchedModificationsIds(modificationProfile.getFixedModifications(), omssaParameters)) {
@@ -531,5 +549,87 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         }
         result += "\t</MSModSpec>\n";
         return result;
+    }
+
+    /**
+     * Returns the OMSSA enzyme index corresponding to the digestion
+     * preferences. Unspecific if not found.
+     *
+     * @param digestionPreferences the digestion preferences
+     *
+     * @return the OMSSA enzyme index corresponding to the digestion preferences
+     */
+    private int getEnzymeIndex(DigestionPreferences digestionPreferences) {
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+            return 11;
+        }
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+            return 17;
+        }
+        if (digestionPreferences.getEnzymes().size() > 1) {
+            return 17;
+        }
+        Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+        String enzymeName = enzyme.getName();
+        Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
+        if (enzymeName.equals("Trypsin")) {
+            if (specificity == Specificity.specific) {
+                return 0;
+            } else {
+                return 16;
+            }
+        }
+        if (enzymeName.equals("Trypsin (no P rule)")) {
+            return 10;
+        }
+        if (enzymeName.equals("Arg-C") || enzymeName.equals("Arg-C (no P rule)")) {
+                return 1;
+        }
+        if (enzymeName.equals("Glu-C")) {
+            if (specificity == Specificity.specific) {
+                return 13;
+            } else {
+                return 24;
+            }
+        }
+        if (enzymeName.equals("Lys-C")) {
+            return 5;
+        }
+        if (enzymeName.equals("Lys-C (no P rule)")) {
+            return 6;
+        }
+        if (enzymeName.equals("Lys-N")) {
+            return 21;
+        }
+        if (enzymeName.equals("Asp-N")) {
+            return 12;
+        }
+        if (enzymeName.equals("Asp-N Ammonium Bicarbonate")) {
+            return 19;
+        }
+        if (enzymeName.equals("Chymotrypsin")) {
+            if (specificity == Specificity.specific) {
+                return 3;
+            } else {
+                return 23;
+            }
+        }
+        if (enzymeName.equals("Chymotrypsin (no P rule)")) {
+            if (specificity == Specificity.specific) {
+                return 18;
+            } else {
+                return 23;
+            }
+        }
+        if (enzymeName.equals("Pepsin A")) {
+            return 7;
+        }
+        if (enzymeName.equals("CNBr")) {
+            return 2;
+        }
+        if (enzymeName.equals("Thermolysin")) {
+            return 22;
+        }
+        return 17;
     }
 }

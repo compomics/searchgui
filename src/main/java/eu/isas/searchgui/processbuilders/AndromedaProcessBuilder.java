@@ -18,6 +18,7 @@ import com.compomics.util.experiment.identification.identification_parameters.Se
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.protein.Header;
 import com.compomics.util.waiting.WaitingHandler;
@@ -259,7 +260,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param andromedaFolder the Andromeda installation folder
      * @param identificationParameters the identification parameters
-     * @param identificationParametersFile the file where to save the search parameters
+     * @param identificationParametersFile the file where to save the search
+     * parameters
      *
      * @throws IOException exception thrown whenever an error occurs while
      * writing to the file.
@@ -283,12 +285,23 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             bw.write("<modifications xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
             bw.newLine();
+
+            // add the default ptms
             for (String ptmName : ptmFactory.getDefaultModifications()) {
                 PTM ptm = ptmFactory.getPTM(ptmName);
                 writePtm(bw, date, ptm, index);
                 andromedaParameters.setPtmIndex(ptmName, index);
                 index++;
             }
+
+            // add the user ptms
+            for (String ptmName : ptmFactory.getUserModifications()) {
+                PTM ptm = ptmFactory.getPTM(ptmName);
+                writePtm(bw, date, ptm, index);
+                andromedaParameters.setPtmIndex(ptmName, index);
+                index++;
+            }
+
             bw.write("</modifications>");
             bw.newLine();
         } finally {
@@ -557,7 +570,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Create the parameters file.
-     * 
+     *
      * @param searchParametersFile the file where to save the search parameters
      *
      * @return the parameters file
@@ -580,18 +593,31 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
 
         try {
-            Enzyme enzyme = searchParameters.getEnzyme();
-            String enzymeName = enzyme.getName();
-            bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
-            bw.newLine();
-            if (enzyme.isUnspecific()) {
+            DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+            if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+                Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+                String enzymeName = enzyme.getName();
+                bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
+                bw.newLine();
+            }
+            if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
                 bw.write("enzyme mode=unspecific");
-            } else {
-                if (enzyme.isSemiSpecific()) {
-                    bw.write("enzyme mode=semispecific"); //@TODO: support: Semispecific Free N-terminus and Semispecific Free C-terminus
-                } else {
-                    bw.write("enzyme mode=specific");
+                bw.newLine();
+            }
+
+            boolean semiSpecific = false;
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                    semiSpecific = true;
+                    break;
                 }
+            }
+            if (semiSpecific) {
+                bw.write("enzyme mode=semispecific"); //@TODO: support: Semispecific Free N-terminus and Semispecific Free C-terminus
+            } else {
+                bw.write("enzyme mode=specific");
             }
             bw.newLine();
             PtmSettings modificationProfile = searchParameters.getPtmSettings();
@@ -661,7 +687,14 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             bw.write("top peaks window=" + andromedaParameters.getTopPeaksWindow());
             bw.newLine();
-            bw.write("max missed cleavages=" + searchParameters.getnMissedCleavages());
+            Integer missedCleavages = null;
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+                if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                    missedCleavages = enzymeMissedCleavages;
+                }
+            }
+            bw.write("max missed cleavages=" + missedCleavages);
             bw.newLine();
             bw.write("fasta file=\"" + searchParameters.getFastaFile().getAbsolutePath() + "\"");
             bw.newLine();

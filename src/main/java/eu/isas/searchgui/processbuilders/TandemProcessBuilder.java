@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
@@ -8,6 +9,7 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.XtandemParameters;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.waiting.WaitingHandler;
 
 import java.io.BufferedWriter;
@@ -16,6 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * This class will build files and start a process to perform an X!Tandem
@@ -148,7 +151,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The ion types.
      */
-    private String ion1, ion2;
+    private HashSet<Integer> selectedIons;
     /**
      * The post translational modifications factory.
      */
@@ -267,18 +270,33 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                 }
             }
         }
-        enzymeCleaveSiteAsText = searchParameters.getEnzyme().getXTandemFormat();
-        if (searchParameters.getEnzyme().isSemiSpecific()) {
+        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+        enzymeCleaveSiteAsText = digestionPreferences.getXTandemFormat();
+        boolean semiSpecific = false;
+        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+            if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
+                    || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
+                    || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                semiSpecific = true;
+                break;
+            }
+        }
+        if (semiSpecific) {
             enzymeIsSemiSpecific = "yes";
         } else {
             enzymeIsSemiSpecific = "no";
         }
-        missedCleavages = searchParameters.getnMissedCleavages();
-//        if (searchParameters.getEnzyme().isUnspecific()) { // unspecific cleavage
-//            missedCleavages = 50;
-//        }
-        ion1 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched1());
-        ion2 = PeptideFragmentIon.getSubTypeAsString(searchParameters.getIonSearched2());
+        Integer missedCleavages = null;
+        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+            int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+            if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                missedCleavages = enzymeMissedCleavages;
+            }
+        }
+        this.missedCleavages = missedCleavages;
+        selectedIons = new HashSet<Integer>();
+        selectedIons.addAll(searchParameters.getForwardIons());
+        selectedIons.addAll(searchParameters.getRewindIons());
 
         createInputFile();
         createTaxonomyFile();
@@ -518,7 +536,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"output, parameters\">yes</note>" + System.getProperty("line.separator")
                     + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, performance\">yes</note>" + System.getProperty("line.separator")
-                    + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")      
+                    + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, spectra\">" + outputSpectra + "</note>" + System.getProperty("line.separator")
                     + "\t\t<note>values = yes|no</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, histograms\">" + outputHistograms + "</note>" + System.getProperty("line.separator")
@@ -909,7 +927,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the x ions are to be searched for.
      */
     public String getXSelected() {
-        if (ion1.equals("x") || ion2.equals("x")) {
+        if (selectedIons.contains(PeptideFragmentIon.X_ION)) {
             return "yes";
         } else {
             return "no";
@@ -922,7 +940,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the y ions are to be searched for.
      */
     public String getYSelected() {
-        if (ion1.equals("y") || ion2.equals("y")) {
+        if (selectedIons.contains(PeptideFragmentIon.Y_ION)) {
             return "yes";
         } else {
             return "no";
@@ -935,7 +953,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the z ions are to be searched for.
      */
     public String getZSelected() {
-        if (ion1.equals("z") || ion2.equals("z")) {
+        if (selectedIons.contains(PeptideFragmentIon.Z_ION)) {
             return "yes";
         } else {
             return "no";
@@ -948,7 +966,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the a ions are to be searched for.
      */
     public String getASelected() {
-        if (ion1.equals("a") || ion2.equals("a")) {
+        if (selectedIons.contains(PeptideFragmentIon.A_ION)) {
             return "yes";
         } else {
             return "no";
@@ -961,7 +979,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the b ions are to be searched for.
      */
     public String getBSelected() {
-        if (ion1.equals("b") || ion2.equals("b")) {
+        if (selectedIons.contains(PeptideFragmentIon.B_ION)) {
             return "yes";
         } else {
             return "no";
@@ -974,7 +992,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the c ions are to be searched for.
      */
     public String getCSelected() {
-        if (ion1.equals("c") || ion2.equals("c")) {
+        if (selectedIons.contains(PeptideFragmentIon.C_ION)) {
             return "yes";
         } else {
             return "no";

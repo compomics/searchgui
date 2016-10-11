@@ -37,4 +37,8 @@
                 <profiler.action>profile</profiler.action>
             </properties>
         </action>
+        <action>
+            <actionName>CUSTOM-deploy</actionName>
+            <displayName>deploy</displayName>
+        </action>
     </actions>
