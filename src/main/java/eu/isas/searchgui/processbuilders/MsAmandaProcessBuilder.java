@@ -10,6 +10,8 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MsAmandaParameters;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.preferences.DigestionPreferences;
+import com.compomics.util.preferences.DigestionPreferences.Specificity;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
 
@@ -181,18 +183,25 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         minCharge = searchParameters.getMinChargeSearched().value;
         maxCharge = searchParameters.getMaxChargeSearched().value;
 
-        // set the enzyme
-        Enzyme enzyme = searchParameters.getEnzyme();
-        enzymeName = searchParameters.getEnzyme().getName();
-        if (enzymeName.equalsIgnoreCase("No Enzyme")) {
-            enzymeName = "Unspecific"; // backwards compatibility
-        }
-        if (enzyme.isSemiSpecific()) { // @TODO: support SEMI(N) and SEMI(C)?
-            enzymeSpecificity = "SEMI";
+        // set the digestion preferences
+        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+            Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+            enzymeName = enzyme.getName();
+            Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
+            if (specificity == Specificity.specific) {
+                enzymeSpecificity = "FULL";
+            } else if (specificity == Specificity.semiSpecific) {
+                enzymeSpecificity = "SEMI";
+            } else if (specificity == Specificity.specificCTermOnly) {
+                enzymeSpecificity = "SEMI(C)";
+            } else if (specificity == Specificity.specificNTermOnly) {
+                enzymeSpecificity = "SEMI(N)";
+            }
+            missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
         } else {
-            enzymeSpecificity = "FULL";
+            enzymeName = digestionPreferences.getCleavagePreference().toString();
         }
-        missedCleavages = searchParameters.getnMissedCleavages();
 
         // set the modifications
         modificationsAsString = getModificationsAsString(searchParameters.getPtmSettings());
@@ -259,55 +268,56 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
             for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
 
-                if (!enzyme.getName().equalsIgnoreCase("Asp-N + Glu-C")) { // Asp-N + Glu-C is not supported
+                bw.write("  <enzyme>" + System.getProperty("line.separator"));
+                bw.write("    <name>" + enzyme.getName() + "</name>" + System.getProperty("line.separator"));
 
-                    bw.write("  <enzyme>" + System.getProperty("line.separator"));
-                    bw.write("    <name>" + enzyme.getName() + "</name>" + System.getProperty("line.separator"));
+                String cleavageType;
+                String cleavageSite = "";
+                String restriction = "";
 
-                    if (enzyme.isWholeProtein()) { // whole protein and top-down
-                        bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
-                    } else if (enzyme.isUnspecific()) { // unspecific cleavage
-                        bw.write("    <cleavage_sites>X</cleavage_sites>" + System.getProperty("line.separator"));
-                    } else {
-
-                        String cleavageType;
-                        String cleavageSite = "";
-                        String restriction = "";
-
-                        if (enzyme.getAminoAcidBefore().isEmpty()) {
-                            cleavageType = "before";
-                            for (Character character : enzyme.getAminoAcidAfter()) {
-                                cleavageSite += character;
-                            }
-                            if (!enzyme.getRestrictionBefore().isEmpty()) {
-                                restriction = "";
-                                for (Character character : enzyme.getRestrictionBefore()) {
-                                    restriction += character;
-                                }
-                            }
-                        } else {
-                            cleavageType = "after";
-                            for (Character character : enzyme.getAminoAcidBefore()) {
-                                cleavageSite += character;
-                            }
-                            if (!enzyme.getRestrictionAfter().isEmpty()) {
-                                restriction = "";
-                                for (Character character : enzyme.getRestrictionAfter()) {
-                                    restriction += character;
-                                }
-                            }
-                        }
-
-                        bw.write("    <cleavage_sites>" + cleavageSite + "</cleavage_sites>" + System.getProperty("line.separator"));
-                        if (!restriction.isEmpty()) {
-                            bw.write("    <inhibitors>" + restriction + "</inhibitors>" + System.getProperty("line.separator"));
-                        }
-                        bw.write("    <position>" + cleavageType + "</position>" + System.getProperty("line.separator"));
+                if (enzyme.getAminoAcidBefore().isEmpty()) {
+                    cleavageType = "before";
+                    for (Character character : enzyme.getAminoAcidAfter()) {
+                        cleavageSite += character;
                     }
-
-                    bw.write("  </enzyme>" + System.getProperty("line.separator"));
+                    if (!enzyme.getRestrictionBefore().isEmpty()) {
+                        restriction = "";
+                        for (Character character : enzyme.getRestrictionBefore()) {
+                            restriction += character;
+                        }
+                    }
+                } else {
+                    cleavageType = "after";
+                    for (Character character : enzyme.getAminoAcidBefore()) {
+                        cleavageSite += character;
+                    }
+                    if (!enzyme.getRestrictionAfter().isEmpty()) {
+                        restriction = "";
+                        for (Character character : enzyme.getRestrictionAfter()) {
+                            restriction += character;
+                        }
+                    }
                 }
+
+                bw.write("    <cleavage_sites>" + cleavageSite + "</cleavage_sites>" + System.getProperty("line.separator"));
+                if (!restriction.isEmpty()) {
+                    bw.write("    <inhibitors>" + restriction + "</inhibitors>" + System.getProperty("line.separator"));
+                }
+                bw.write("    <position>" + cleavageType + "</position>" + System.getProperty("line.separator"));
+
+                bw.write("  </enzyme>" + System.getProperty("line.separator"));
             }
+
+            bw.write("  <enzyme>" + System.getProperty("line.separator"));
+            bw.write("    <name>" + DigestionPreferences.CleavagePreference.wholeProtein + "</name>" + System.getProperty("line.separator"));
+            bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
+            bw.write("  </enzyme>" + System.getProperty("line.separator"));
+
+            bw.write("  <enzyme>" + System.getProperty("line.separator"));
+            bw.write("    <name>" + DigestionPreferences.CleavagePreference.unSpecific + "</name>" + System.getProperty("line.separator"));
+            bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
+            bw.write("  </enzyme>" + System.getProperty("line.separator"));
+
             bw.write("</enzymes>" + System.getProperty("line.separator"));
 
             bw.flush();
@@ -425,7 +435,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             case PTM.MODAA:
                 // not terminal
                 break;
-            case PTM.MODC: 
+            case PTM.MODC:
             case PTM.MODCAA:
                 //proteinTag = " protein=\"true\""; // note: MS Amanda Manual: "Protein level modifications are only valid in combination with n‐terminal modifications"
                 cTermTag = " cterm=\"true\"";

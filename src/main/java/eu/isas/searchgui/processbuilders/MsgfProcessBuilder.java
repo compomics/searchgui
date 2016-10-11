@@ -10,6 +10,7 @@ import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MsgfParameters;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
@@ -41,8 +42,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File msgfEnzymesFile;
     /**
-     * The MS-GF+ enzyme map. Key: utilities enzyme name, element: MyriMatch
-     * enzyme number.
+     * The MS-GF+ enzyme map. Key: utilities enzyme name, element: ms-gf+ index.
      */
     private HashMap<String, Integer> enzymeMap = new HashMap<String, Integer>();
     /**
@@ -98,8 +98,8 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
-    public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile, SearchParameters searchParameters, 
-            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine) 
+    public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile, SearchParameters searchParameters,
+            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine)
             throws IOException, FileNotFoundException, ClassNotFoundException {
 
         this.searchParameters = searchParameters;
@@ -203,7 +203,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("" + msgfParameters.getFragmentationType());
 
         // set the enzyme
-        Integer msgfEnzyme = enzymeMapping(searchParameters.getEnzyme());
+        Integer msgfEnzyme = getEnzymeMapping(searchParameters.getDigestionPreferences());
         if (msgfEnzyme != null) {
             process_name_array.add("-e");
             process_name_array.add(msgfEnzyme.toString());
@@ -263,35 +263,36 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Creates the MS-GF+ modifications file.
      *
-     * @throws IllegalArgumentException if the modification file could not be
-     * created
+     * @throws IOException if the modification file could not be created
      */
-    private void createModificationsFile() throws IllegalArgumentException {
+    private void createModificationsFile() throws IOException {
 
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(msgfModFile));
+            try {
+                // add the number of modifications per peptide
+                bw.write("#max number of modifications per peptide\n");
+                bw.write("NumMods=" + msgfParameters.getNumberOfPtmsPerPeptide() + "\n\n");
 
-            // add the number of modifications per peptide
-            bw.write("#max number of modifications per peptide\n");
-            bw.write("NumMods=" + msgfParameters.getNumberOfPtmsPerPeptide() + "\n\n");
+                // add the fixed modifications
+                bw.write("#fixed modifications\n");
+                ArrayList<String> fixedPtms = searchParameters.getPtmSettings().getFixedModifications();
+                for (String ptmName : fixedPtms) {
+                    bw.write(getPtmFormattedForMsgf(ptmName, true) + "\n");
+                }
+                bw.write("\n");
 
-            // add the fixed modifications
-            bw.write("#fixed modifications\n");
-            ArrayList<String> fixedPtms = searchParameters.getPtmSettings().getFixedModifications();
-            for (String ptmName : fixedPtms) {
-                bw.write(getPtmFormattedForMsgf(ptmName, true) + "\n");
+                // add the variable modifications
+                bw.write("#variable modifications\n");
+                ArrayList<String> variablePtms = searchParameters.getPtmSettings().getVariableModifications();
+                for (String ptmName : variablePtms) {
+                    bw.write(getPtmFormattedForMsgf(ptmName, false) + "\n");
+                }
+
+                bw.flush();
+            } finally {
+                bw.close();
             }
-            bw.write("\n");
-
-            // add the variable modifications
-            bw.write("#variable modifications\n");
-            ArrayList<String> variablePtms = searchParameters.getPtmSettings().getVariableModifications();
-            for (String ptmName : variablePtms) {
-                bw.write(getPtmFormattedForMsgf(ptmName, false) + "\n");
-            }
-
-            bw.flush();
-            bw.close();
         } catch (IOException ioe) {
             throw new IllegalArgumentException("Could not create MS-GF+ modifications file. Unable to write file: '" + ioe.getMessage() + "'!");
         }
@@ -300,9 +301,9 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Creates the MS-GF+ enzymes file.
      *
-     * @throws IllegalArgumentException if the enzymes file could not be read
+     * @throws IOException if the enzymes file could not be written
      */
-    private void createEnzymesFile() throws IllegalArgumentException {
+    private void createEnzymesFile() throws IOException {
 
         // Format: ShortName,CleaveAt,Terminus (https://bix-lab.ucsd.edu/display/CCMStools/enzymes.txt)
         // - ShortName: an unique short name of the enzyme (e.g. Tryp). No space is allowed.
@@ -310,55 +311,55 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // - Terminus: Whether the enzyme cleaves C-term (C) or N-term (N)
         // - Description: description of the enzyme
         // Example: Tryp,KR,C,Trypsin
-
         enzymeMap = new HashMap<String, Integer>();
 
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(msgfEnzymesFile));
+            try {
 
-            EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
-            int myrimatcEnzymeCounter = 10; // as there are ten default ms-gf+ enzymes
+                EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
+                int enzymeCounter = 10; // as there are ten default ms-gf+ enzymes
 
-            for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
+                for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
 
-                String enzymeName = enzyme.getName();
+                    String enzymeName = enzyme.getName();
 
-                Integer enzymeIndex = enzymeMapping(enzyme);
+                    Integer enzymeIndex = getEnzymeMapping(enzyme);
 
-                if (enzymeIndex == null) {
+                    if (enzymeIndex == null) {
 
-                    String cleavageType;
-                    String cleavageSite = "";
+                        String cleavageType;
+                        String cleavageSite = "";
 
-                    if (!enzyme.getAminoAcidBefore().isEmpty()) {
-                        cleavageType = "C";
-                        for (Character character : enzyme.getAminoAcidBefore()) {
-                            cleavageSite += character;
+                        if (!enzyme.getAminoAcidBefore().isEmpty()) {
+                            cleavageType = "C";
+                            for (Character character : enzyme.getAminoAcidBefore()) {
+                                cleavageSite += character;
+                            }
+                        } else {
+                            cleavageType = "N";
+                            for (Character character : enzyme.getAminoAcidAfter()) {
+                                cleavageSite += character;
+                            }
                         }
-                    } else {
-                        cleavageType = "N";
-                        for (Character character : enzyme.getAminoAcidAfter()) {
-                            cleavageSite += character;
-                        }
+
+                        String nameWithoutComma = enzymeName;
+                        nameWithoutComma = nameWithoutComma.replaceAll(",", "");
+                        String nameWithoutCommaAndSpaces = nameWithoutComma.replaceAll(" ", "_");
+
+                        bw.write(nameWithoutCommaAndSpaces + ",");
+                        bw.write(cleavageSite + ",");
+                        bw.write(cleavageType + ",");
+                        bw.write(nameWithoutComma + System.getProperty("line.separator"));
+
+                        enzymeMap.put(enzymeName, enzymeCounter++);
                     }
-
-                    String nameWithoutComma = enzymeName;
-                    nameWithoutComma = nameWithoutComma.replaceAll(",", "");
-                    String nameWithoutCommaAndSpaces = nameWithoutComma.replaceAll(" ", "_");
-
-                    bw.write(nameWithoutCommaAndSpaces + ",");
-                    bw.write(cleavageSite + ",");
-                    bw.write(cleavageType + ",");
-                    bw.write(nameWithoutComma + System.getProperty("line.separator"));
-
-                    enzymeMap.put(enzymeName, myrimatcEnzymeCounter++);
                 }
+            } finally {
+                bw.close();
             }
-
-            bw.flush();
-            bw.close();
         } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not create MS-GF+ enzymes file. Unable to write file: '" + ioe.getMessage() + "'!");
+            throw new IOException("Could not create MS-GF+ enzymes file. Unable to write file: '" + ioe.getMessage() + "'.");
         }
     }
 
@@ -444,42 +445,64 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Tries to map the utilities enzyme to the enzymes supported by MS-GF+.
+     * Tries to map the utilities digestion preferences to the default enzymes
+     * supported by MS-GF+. Null if not found.
      *
-     * @param enzyme the utilities enzyme
-     * @return the index of the MS-GF+ enzyme as a string, or null of no mapping
-     * is found
+     * @param digestionPreferences the utilities digestion preferences
+     *
+     * @return the index of the MS-GF+ enzyme
      */
-    private Integer enzymeMapping(Enzyme enzyme) {
+    private Integer getEnzymeMapping(DigestionPreferences digestionPreferences) {
 
-        Integer msgfEnzymeIndex = null;
-
-        String enzymeName = enzyme.getName();
-        if (enzyme.isUnspecific()) { // "No Enzyme"  or "Unspecific"
-            msgfEnzymeIndex = 0;
-        } else if (enzymeName.equalsIgnoreCase("Trypsin")) {
-            msgfEnzymeIndex = 1;
-        } else if (enzymeName.equalsIgnoreCase("Chymotrypsin (FYWL)")) {
-            msgfEnzymeIndex = 2;
-        } else if (enzymeName.equalsIgnoreCase("Lys-C")) {
-            msgfEnzymeIndex = 3;
-        } else if (enzymeName.equalsIgnoreCase("Lys-N (K)")) {
-            msgfEnzymeIndex = 4;
-        } else if (enzymeName.equalsIgnoreCase("Glu-C")) {
-            msgfEnzymeIndex = 5;
-        } else if (enzymeName.equalsIgnoreCase("Arg-C")) {
-            msgfEnzymeIndex = 6;
-        } else if (enzymeName.equalsIgnoreCase("Asp-N")) {
-            msgfEnzymeIndex = 7;
-        } // else if (enzymeName.equalsIgnoreCase("alphaLP")) { // alphaLP: Alpha-lytic protease (aLP) is an alternative specificity protease for proteomics applications.
-        //      msgfEnzymeIndex = 8;                        //          cleaves after T, A, S, and V residues. It generates peptides of similar average length as trypsin.
-        // }
-        else if (enzymeName.equalsIgnoreCase("Top-Down") || enzymeName.equalsIgnoreCase("Whole Protein")) {
-            msgfEnzymeIndex = 9;
-        } else if (enzymeMap.containsKey(enzymeName)) {
-            return enzymeMap.get(enzymeName);
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+            return 9;
+        }
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+            return 0;
+        }
+        if (digestionPreferences.getEnzymes().size() > 1) {
+            return 0;
         }
 
-        return msgfEnzymeIndex;
+        Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+        return getEnzymeMapping(enzyme);
+    }
+
+    /**
+     * Tries to map the utilities enzyme to the default enzymes supported by
+     * MS-GF+. Null if not found.
+     *
+     * @param enzyme the utilities enzyme
+     *
+     * @return the index of the MS-GF+ enzyme
+     */
+    private Integer getEnzymeMapping(Enzyme enzyme) {
+
+        String enzymeName = enzyme.getName();
+        if (enzymeName.equalsIgnoreCase("Trypsin")) {
+            return 1;
+        }
+        if (enzymeName.equalsIgnoreCase("Chymotrypsin")) {
+            return 2;
+        }
+        if (enzymeName.equalsIgnoreCase("Lys-C")) {
+            return 3;
+        }
+        if (enzymeName.equalsIgnoreCase("Lys-N")) {
+            return 4;
+        }
+        if (enzymeName.equalsIgnoreCase("Glu-C")) {
+            return 5;
+        }
+        if (enzymeName.equalsIgnoreCase("Arg-C")) {
+            return 6;
+        }
+        if (enzymeName.equalsIgnoreCase("Asp-N")) {
+            return 7;
+        } // else if (enzymeName.equalsIgnoreCase("alphaLP")) { // alphaLP: Alpha-lytic protease (aLP) is an alternative specificity protease for proteomics applications.
+        //      msgfEnzymeIndex = 8;                        //          cleaves after T, A, S, and V residues. It generates peptides of similar average length as trypsin.
+        // };
+
+        return enzymeMap.get(enzyme.getName());
     }
 }

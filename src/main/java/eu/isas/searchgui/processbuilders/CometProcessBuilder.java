@@ -12,11 +12,13 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters.CometOutputFormat;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -179,9 +181,46 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             clip_nterm_methionine = "0";
         }
 
+        int enzymeId = -1;
+        Integer nMissedCleavages = 2;
+        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
         Integer enzymeType = cometParameters.getEnzymeType();
-        if (searchParameters.getEnzyme().isSemiSpecific()) {
+        ArrayList<Enzyme> enzymes = EnzymeFactory.getInstance().getEnzymes();
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+            Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+            String enzymeName = enzyme.getName();
+            nMissedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
+            if (nMissedCleavages > 5) {
+                nMissedCleavages = 5;
+            }
+            DigestionPreferences.Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
+            if (specificity == DigestionPreferences.Specificity.semiSpecific) {
+                enzymeType = 1;
+            } else if (specificity == DigestionPreferences.Specificity.specific) {
+                enzymeType = 2;
+            } else if (specificity == DigestionPreferences.Specificity.specificNTermOnly) {
+                enzymeType = 8;
+            } else if (specificity == DigestionPreferences.Specificity.specificCTermOnly) {
+                enzymeType = 9;
+            }
+            boolean found = false;
+            for (int i = 1; i < enzymes.size(); i++) {
+                Enzyme tempEnzyme = enzymes.get(i - 1);
+                if (enzyme.equals(tempEnzyme)) {
+                    enzymeId = i;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                throw new IllegalArgumentException("No index found for enzyme " + enzymeName + ".");
+            }
+        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+            enzymeType = 2;
+            enzymeId = enzymes.size() + 1;
+        } else {
             enzymeType = 1;
+            enzymeId = enzymes.size() + 2;
         }
 
         try {
@@ -222,9 +261,9 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "#" + System.getProperty("line.separator")
                     + "# search enzyme" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
-                    + "search_enzyme_number = " + searchParameters.getEnzyme().getId() + "           # choose from list at end of this params file" + System.getProperty("line.separator")
+                    + "search_enzyme_number = " + enzymeId + "           # choose from list at end of this params file" + System.getProperty("line.separator")
                     + "num_enzyme_termini = " + enzymeType + "           # valid values are 1 (semi-digested), 2 (fully digested, default), 8 N-term, 9 C-term" + System.getProperty("line.separator")
-                    + "allowed_missed_cleavage = " + searchParameters.getnMissedCleavages() + "           # maximum value is 5; for enzyme search" + System.getProperty("line.separator")
+                    + "allowed_missed_cleavage = " + nMissedCleavages + "           # maximum value is 5; for enzyme search" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // variable modifications
@@ -262,7 +301,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "print_expect_score = " + Util.convertBooleanToInteger(cometParameters.getPrintExpectScore()) + "                 # 0=no, 1=yes to replace Sp with expect in out & sqt" + System.getProperty("line.separator")
                     + "num_output_lines = " + cometParameters.getNumberOfSpectrumMatches() + "                 # num peptide results to show" + System.getProperty("line.separator")
                     + "show_fragment_ions = 0                 # 0=no, 1=yes for out files only" + System.getProperty("line.separator")
-                    + "sample_enzyme_number = " + searchParameters.getEnzyme().getId() + "               # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator") // @TODO: set enzyme!
+                    + "sample_enzyme_number = " + enzymeId + "               # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator") // @TODO: set enzyme!
                     + "                                       # Used to calculate NTT & NMC in pepXML output (default=1 for trypsin)." + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
@@ -328,53 +367,51 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String getIonsSearched() {
 
-        String ions = "";
-
-        if (null != searchParameters.getIonSearched1()) {
-            switch (searchParameters.getIonSearched1()) {
-                case PeptideFragmentIon.A_ION:
-                    ions += "use_A_ions = 1" + System.getProperty("line.separator");
-                    ions += "use_B_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_C_ions = 0" + System.getProperty("line.separator");
-                    break;
-                case PeptideFragmentIon.B_ION:
-                    ions += "use_A_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_B_ions = 1" + System.getProperty("line.separator");
-                    ions += "use_C_ions = 0" + System.getProperty("line.separator");
-                    break;
-                case PeptideFragmentIon.C_ION:
-                    ions += "use_A_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_B_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_C_ions = 1" + System.getProperty("line.separator");
-                    break;
-                default:
-                    break;
-            }
+        StringBuilder ions = new StringBuilder();
+        ions.append("use_A_ions = ");
+        if (searchParameters.getForwardIons().contains(PeptideFragmentIon.A_ION)) {
+            ions.append("1");
+        } else {
+            ions.append("0");
         }
-
-        if (null != searchParameters.getIonSearched2()) {
-            switch (searchParameters.getIonSearched2()) {
-                case PeptideFragmentIon.X_ION:
-                    ions += "use_X_ions = 1" + System.getProperty("line.separator");
-                    ions += "use_Y_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_Z_ions = 0" + System.getProperty("line.separator");
-                    break;
-                case PeptideFragmentIon.Y_ION:
-                    ions += "use_X_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_Y_ions = 1" + System.getProperty("line.separator");
-                    ions += "use_Z_ions = 0" + System.getProperty("line.separator");
-                    break;
-                case PeptideFragmentIon.Z_ION:
-                    ions += "use_X_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_Y_ions = 0" + System.getProperty("line.separator");
-                    ions += "use_Z_ions = 1" + System.getProperty("line.separator");
-                    break;
-                default:
-                    break;
-            }
+        ions.append(System.getProperty("line.separator"));
+        ions.append("use_B_ions = ");
+        if (searchParameters.getForwardIons().contains(PeptideFragmentIon.B_ION)) {
+            ions.append("1");
+        } else {
+            ions.append("0");
         }
+        ions.append(System.getProperty("line.separator"));
+        ions.append("use_C_ions = ");
+        if (searchParameters.getForwardIons().contains(PeptideFragmentIon.C_ION)) {
+            ions.append("1");
+        } else {
+            ions.append("0");
+        }
+        ions.append(System.getProperty("line.separator"));
+        ions.append("use_X_ions = ");
+        if (searchParameters.getRewindIons().contains(PeptideFragmentIon.X_ION)) {
+            ions.append("1");
+        } else {
+            ions.append("0");
+        }
+        ions.append(System.getProperty("line.separator"));
+        ions.append("use_Y_ions = ");
+        if (searchParameters.getRewindIons().contains(PeptideFragmentIon.Y_ION)) {
+            ions.append("1");
+        } else {
+            ions.append("0");
+        }
+        ions.append(System.getProperty("line.separator"));
+        ions.append("use_Z_ions = ");
+        if (searchParameters.getRewindIons().contains(PeptideFragmentIon.Z_ION)) {
+            ions.append("1");
+        } else {
+            ions.append("0");
+        }
+        ions.append(System.getProperty("line.separator"));
 
-        return ions;
+        return ions.toString();
     }
 
     /**
@@ -728,66 +765,67 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 + "[COMET_ENZYME_INFO]" + System.getProperty("line.separator");
 
         EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
-        TreeMap<Integer, String> enzymeMap = new TreeMap<Integer, String>();
+        HashMap<Integer, String> enzymeMap = new HashMap<Integer, String>(enzymeFactory.getEnzymes().size() + 2);
+        ArrayList<Enzyme> enzymes = enzymeFactory.getEnzymes();
+        for (int i = 1; i <= enzymes.size(); i++) {
 
-        for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
+            Enzyme enzyme = enzymes.get(i - 1);
+            String cleavageType;
+            String cleavageSite = "";
+            String restriction = "-";
 
-            if (enzyme.isWholeProtein()) { // whole protein and top-down
-                String enzymeAsString = enzyme.getId() + ". "
-                        + enzyme.getName().replaceAll(" ", "_") + " "
-                        + "0 "
-                        + "$ "
-                        + "- "
-                        + System.getProperty("line.separator");
-                enzymeMap.put(enzyme.getId(), enzymeAsString);
-            } else if (enzyme.isUnspecific()) { // unspecific cleavage
-                String enzymeAsString = enzyme.getId() + ". "
-                        + enzyme.getName().replaceAll(" ", "_") + " "
-                        + "0 "
-                        + "- "
-                        + "- "
-                        + System.getProperty("line.separator");
-                enzymeMap.put(enzyme.getId(), enzymeAsString);
-            } else {
-
-                String cleavageType;
-                String cleavageSite = "";
-                String restriction = "-";
-
-                if (enzyme.getAminoAcidBefore().isEmpty()) {
-                    cleavageType = "0";
-                    for (Character character : enzyme.getAminoAcidAfter()) {
-                        cleavageSite += character;
-                    }
-                    if (!enzyme.getRestrictionBefore().isEmpty()) {
-                        restriction = "";
-                        for (Character character : enzyme.getRestrictionBefore()) {
-                            restriction += character;
-                        }
-                    }
-                } else {
-                    cleavageType = "1";
-                    for (Character character : enzyme.getAminoAcidBefore()) {
-                        cleavageSite += character;
-                    }
-                    if (!enzyme.getRestrictionAfter().isEmpty()) {
-                        restriction = "";
-                        for (Character character : enzyme.getRestrictionAfter()) {
-                            restriction += character;
-                        }
+            if (enzyme.getAminoAcidBefore().isEmpty()) {
+                cleavageType = "0";
+                for (Character character : enzyme.getAminoAcidAfter()) {
+                    cleavageSite += character;
+                }
+                if (!enzyme.getRestrictionBefore().isEmpty()) {
+                    restriction = "";
+                    for (Character character : enzyme.getRestrictionBefore()) {
+                        restriction += character;
                     }
                 }
-
-                String enzymeAsString = enzyme.getId() + ". "
-                        + enzyme.getName().replaceAll(" ", "_") + " "
-                        + cleavageType + " "
-                        + cleavageSite + " "
-                        + restriction
-                        + System.getProperty("line.separator");
-
-                enzymeMap.put(enzyme.getId(), enzymeAsString);
+            } else {
+                cleavageType = "1";
+                for (Character character : enzyme.getAminoAcidBefore()) {
+                    cleavageSite += character;
+                }
+                if (!enzyme.getRestrictionAfter().isEmpty()) {
+                    restriction = "";
+                    for (Character character : enzyme.getRestrictionAfter()) {
+                        restriction += character;
+                    }
+                }
             }
+
+            String enzymeAsString = i + ". "
+                    + enzyme.getName().replaceAll(" ", "_") + " "
+                    + cleavageType + " "
+                    + cleavageSite + " "
+                    + restriction
+                    + System.getProperty("line.separator");
+
+            enzymeMap.put(enzyme.getId(), enzymeAsString);
         }
+
+        // whole protein
+        int id = enzymes.size() + 1;
+        String enzymeAsString = id + ". "
+                + "Whole_Protein "
+                + "0 "
+                + "$ "
+                + "- "
+                + System.getProperty("line.separator");
+        enzymeMap.put(id, enzymeAsString);
+        id++;
+        // unspecific cleavage
+        enzymeAsString = id + ". "
+                + "Unspecific "
+                + "0 "
+                + "- "
+                + "- "
+                + System.getProperty("line.separator");
+        enzymeMap.put(id, enzymeAsString);
 
         Iterator<Integer> keys = enzymeMap.keySet().iterator();
         while (keys.hasNext()) {

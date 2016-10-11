@@ -2,11 +2,13 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MyriMatchParameters;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.waiting.WaitingHandler;
 
 import java.io.File;
@@ -232,22 +234,30 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // set the enzyme
-        String myriMatchEnzyme = MyriMatchParameters.enzymeMapping(searchParameters.getEnzyme());
-        if (myriMatchEnzyme != null) {
-            process_name_array.add("-CleavageRules");
-            if (myriMatchEnzyme.equalsIgnoreCase("unspecific cleavage")) {
-                process_name_array.add("\"" + "Trypsin" + "\""); // trick to support unspecific cleavage, MinTerminiCleavages is set to 0 below instead
-            } else {
-                process_name_array.add("\"" + myriMatchEnzyme + "\"");
-            }
+        process_name_array.add("-CleavageRules");
+        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+            process_name_array.add("\"" + "Trypsin" + "\""); // trick to support unspecific cleavage, MinTerminiCleavages is set to 0 below instead
+        } else {
+            String myriMatchEnzyme = MyriMatchParameters.enzymeMapping(digestionPreferences);
+            process_name_array.add("\"" + myriMatchEnzyme + "\"");
         }
 
         // set the minimum termini cleavages
         process_name_array.add("-MinTerminiCleavages");
-        if (myriMatchEnzyme != null && myriMatchEnzyme.equalsIgnoreCase("unspecific cleavage")) {
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
             process_name_array.add("0");
         } else {
-            if (searchParameters.getEnzyme().isSemiSpecific()) {
+            boolean semiSpecific = false;
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                    semiSpecific = true;
+                    break;
+                }
+            }
+            if (semiSpecific) {
                 process_name_array.add("1"); // note that this overrides the MinTerminiCleavages setting from the user 
             } else {
                 process_name_array.add("" + myriMatchParameters.getMinTerminiCleavages());
@@ -256,8 +266,15 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the maximum missed cleavages
         process_name_array.add("-MaxMissedCleavages");
-        process_name_array.add("" + searchParameters.getnMissedCleavages());
-            // advanced settings not used:
+        Integer missedCleavages = null;
+        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+            int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+            if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                missedCleavages = enzymeMissedCleavages;
+            }
+        }
+        process_name_array.add("" + missedCleavages);
+        // advanced settings not used:
         //  ProteinSampleSize
         //  FragmentationAutoRule - automatically choose the fragmentation rule based on the activation type of each MSn spectrum
         //  ThreadCountMultiplier - multithreading database search setting

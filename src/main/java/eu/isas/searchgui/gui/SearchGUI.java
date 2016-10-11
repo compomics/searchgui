@@ -77,6 +77,7 @@ import com.compomics.util.gui.parameters.identification_parameters.algorithm_set
 import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.LastSelectedFolder;
 import com.compomics.util.preferences.ProcessingPreferences;
@@ -291,12 +292,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (!newVersion) {
 
             // load enzymes
-            try {
-                enzymeFactory.importEnzymes(SearchHandler.getEnzymesFile(getJarFilePath()));
-            } catch (Exception e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Error while reading " + SearchHandler.getEnzymeFile() + ".", "Enzyme File Error", JOptionPane.ERROR_MESSAGE);
-            }
+            enzymeFactory = EnzymeFactory.getInstance();
 
             // load gene mappings
             GeneFactory geneFactory = GeneFactory.getInstance();
@@ -2545,67 +2541,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        Enzyme enzyme = searchParameters.getEnzyme();
-
-        // check if the choosen enzyme is valid for ms-gf+
-        if (enableMsgfJCheckBox.isSelected() && enzyme != null) {
-            String enzymeName = enzyme.getName();
-            if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
-                JOptionPane.showMessageDialog(this,
-                        "The selected enzyme is not yet supported for MS-GF+.\n\n"
-                        + "Please choose a different enzyme or disable MS-GF+.",
-                        "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
-        // check if the choosen enzyme is valid for ms amanda
-        if (enableMsAmandaJCheckBox.isSelected() && enzyme != null) {
-            String enzymeName = enzyme.getName();
-            if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
-                JOptionPane.showMessageDialog(this,
-                        "The selected enzyme is not yet supported for MS Amanda.\n\n"
-                        + "Please choose a different enzyme or disable MS Amanda.",
-                        "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
-        // check if the choosen enzyme is valid for myrimatch
-        if (enableMyriMatchJCheckBox.isSelected() && enzyme != null) {
-            String enzymeName = enzyme.getName();
-            if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
-                JOptionPane.showMessageDialog(this,
-                        "The selected enzyme is not yet supported for MyriMatch.\n\n"
-                        + "Please choose a different enzyme or disable MyriMatch.",
-                        "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
-        // check if the choosen enzyme is valid for tide
-        if (enableTideJCheckBox.isSelected() && enzyme != null) {
-            String enzymeName = enzyme.getName();
-
-            if (enzymeName.equalsIgnoreCase("Asp-N + Glu-C")) {
-                JOptionPane.showMessageDialog(this,
-                        "The selected enzyme is not yet supported for Tide.\n\n"
-                        + "Please choose a different enzyme or disable Tide.",
-                        "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
-
-        // check if the choosen enzyme is valid for omssa
-        if (enableOmssaJCheckBox.isSelected() && enzyme != null) {
-            if (enzyme.getId() > 24) {
-                JOptionPane.showMessageDialog(this,
-                        "The selected enzyme is not supported for OMSSA.\n\n"
-                        + "Please choose a different enzyme or disable OMSSA.",
-                        "Unsupported Enzyme", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        }
 
         // check if the file paths for xtandem are xml compatible
         if (enableXTandemJCheckBox.isSelected()) {

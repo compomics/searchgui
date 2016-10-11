@@ -45,7 +45,7 @@ public class SearchCLI implements Callable {
     /**
      * The enzyme factory.
      */
-    private EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
+    private EnzymeFactory enzymeFactory;
     /**
      * The spectrum factory.
      */
@@ -61,13 +61,6 @@ public class SearchCLI implements Callable {
     public SearchCLI(String[] args) {
 
         try {
-            // load enzymes
-            try {
-                enzymeFactory.importEnzymes(SearchHandler.getEnzymesFile(getJarFilePath()));
-            } catch (Exception e) {
-                System.out.println("An error occurred while loading the enzymes.");
-                e.printStackTrace();
-            }
 
             try {
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
@@ -139,6 +132,9 @@ public class SearchCLI implements Callable {
                 System.out.println("Unable to load the path configurations. Default pathswill be used.");
             }
         }
+        
+            // load enzymes
+            enzymeFactory = EnzymeFactory.getInstance();
 
         try {
             // @TODO: not sure if this is the best place to perform the mgf validation and splitting??

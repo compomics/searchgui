@@ -40,11 +40,6 @@ public class IdentificationParametersCLI extends AbstractIdentificationParameter
     }
 
     @Override
-    protected File getEnzymeFile() {
-        return SearchHandler.getEnzymesFile(getJarFilePath());
-    }
-
-    @Override
     protected void createOptionsCLI(Options options) {
         SearchCLIdentificationParametersCLIParams.createOptionsCLI(options);
     }
