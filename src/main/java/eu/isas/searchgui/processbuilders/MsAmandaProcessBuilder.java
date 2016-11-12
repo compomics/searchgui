@@ -105,8 +105,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String enzymeName;
     /**
-     * The enzyme specificity: FULL, SEMI, SEMI(N) or SEMI(C). // @TODO: support
-     * SEMI(N) and SEMI(C)?
+     * The enzyme specificity: FULL, SEMI, SEMI(N) or SEMI(C).
      */
     private String enzymeSpecificity;
     /**

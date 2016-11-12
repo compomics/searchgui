@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.TreeMap;
 
 /**
  * ProcessBuilder for the Comet search engine.
@@ -194,14 +193,21 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 nMissedCleavages = 5;
             }
             DigestionPreferences.Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
-            if (specificity == DigestionPreferences.Specificity.semiSpecific) {
-                enzymeType = 1;
-            } else if (specificity == DigestionPreferences.Specificity.specific) {
-                enzymeType = 2;
-            } else if (specificity == DigestionPreferences.Specificity.specificNTermOnly) {
-                enzymeType = 8;
-            } else if (specificity == DigestionPreferences.Specificity.specificCTermOnly) {
-                enzymeType = 9;
+            if (null != specificity) switch (specificity) {
+                case semiSpecific:
+                    enzymeType = 1;
+                    break;
+                case specific:
+                    enzymeType = 2;
+                    break;
+                case specificNTermOnly:
+                    enzymeType = 8;
+                    break;
+                case specificCTermOnly:
+                    enzymeType = 9;
+                    break;
+                default:
+                    break;
             }
             boolean found = false;
             for (int i = 1; i < enzymes.size(); i++) {
