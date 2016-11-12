@@ -284,6 +284,12 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             }
             ions.append(getIonId(PeptideFragmentIon.getSubTypeAsString(ion)));
         }
+        for (Integer ion : searchParameters.getRewindIons()) {
+            if (ions.length() > 0) {
+                ions.append(",");
+            }
+            ions.append(getIonId(PeptideFragmentIon.getSubTypeAsString(ion)));
+        }
         process_name_array.add(ions.toString());
 
         String modificationIndexes = "";
