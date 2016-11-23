@@ -103,7 +103,7 @@ public class FastaCLI {
 
         try {
             WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
-            SequenceFactory sequenceFactory = SequenceFactory.getInstance(1000);
+            SequenceFactory sequenceFactory = SequenceFactory.getInstance();
             File fastaFile = fastaCLIInputBean.getInputFile();
             sequenceFactory.loadFastaFile(fastaFile, waitingHandlerCLIImpl);
             System.out.println("Input: " + fastaFile.getAbsolutePath() + System.getProperty("line.separator"));

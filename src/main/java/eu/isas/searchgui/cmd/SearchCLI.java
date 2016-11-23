@@ -267,7 +267,7 @@ public class SearchCLI implements Callable {
             UtilitiesUserPreferences.saveUserPreferences(userPreferences);
 
             File fastaFile = searchParameters.getFastaFile();
-            SequenceFactory.getInstance(1000000).loadFastaFile(fastaFile);
+            SequenceFactory.getInstance().loadFastaFile(fastaFile);
 
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
