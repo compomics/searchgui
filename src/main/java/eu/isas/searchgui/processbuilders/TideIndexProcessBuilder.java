@@ -206,6 +206,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
                     process_name_array.add("--custom-enzyme");
                     process_name_array.add(digestionPreferences.getXTandemFormat());
                 }
+                process_name_array.add("--missed-cleavages");
                 Integer missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
                 process_name_array.add("" + missedCleavages);
             } else {
