@@ -185,29 +185,34 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
         Integer enzymeType = cometParameters.getEnzymeType();
         ArrayList<Enzyme> enzymes = EnzymeFactory.getInstance().getEnzymes();
+
         if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+
             Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
             String enzymeName = enzyme.getName();
             nMissedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
             if (nMissedCleavages > 5) {
                 nMissedCleavages = 5;
             }
+
             DigestionPreferences.Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
-            if (null != specificity) switch (specificity) {
-                case semiSpecific:
-                    enzymeType = 1;
-                    break;
-                case specific:
-                    enzymeType = 2;
-                    break;
-                case specificNTermOnly:
-                    enzymeType = 8;
-                    break;
-                case specificCTermOnly:
-                    enzymeType = 9;
-                    break;
-                default:
-                    break;
+            if (null != specificity) {
+                switch (specificity) {
+                    case semiSpecific:
+                        enzymeType = 1;
+                        break;
+                    case specific:
+                        enzymeType = 2;
+                        break;
+                    case specificNTermOnly:
+                        enzymeType = 8;
+                        break;
+                    case specificCTermOnly:
+                        enzymeType = 9;
+                        break;
+                    default:
+                        break;
+                }
             }
             boolean found = false;
             for (int i = 1; i < enzymes.size(); i++) {
@@ -773,6 +778,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
         HashMap<Integer, String> enzymeMap = new HashMap<Integer, String>(enzymeFactory.getEnzymes().size() + 2);
         ArrayList<Enzyme> enzymes = enzymeFactory.getEnzymes();
+
         for (int i = 1; i <= enzymes.size(); i++) {
 
             Enzyme enzyme = enzymes.get(i - 1);
@@ -804,14 +810,14 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 }
             }
 
-            String enzymeAsString = i + ". "
+            String currentEnzymeAsString = i + ". "
                     + enzyme.getName().replaceAll(" ", "_") + " "
                     + cleavageType + " "
                     + cleavageSite + " "
                     + restriction
                     + System.getProperty("line.separator");
 
-            enzymeMap.put(enzyme.getId(), enzymeAsString);
+            enzymeMap.put(i, currentEnzymeAsString);
         }
 
         // whole protein
@@ -824,6 +830,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 + System.getProperty("line.separator");
         enzymeMap.put(id, enzymeAsString);
         id++;
+
         // unspecific cleavage
         enzymeAsString = id + ". "
                 + "Unspecific "
