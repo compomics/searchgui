@@ -593,27 +593,27 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
 
         try {
+            boolean semiSpecific = false;
             DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+
             if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
                 Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
                 String enzymeName = enzyme.getName();
                 bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
                 bw.newLine();
-            }
-            if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
-                bw.write("enzyme mode=unspecific");
-                bw.newLine();
-            }
-
-            boolean semiSpecific = false;
-            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
                 if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
                         || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
                         || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
                     semiSpecific = true;
-                    break;
                 }
+            } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+                bw.write("enzyme mode=unspecific");
+                bw.newLine();
+            } else {
+                // whole enzyme
+                // @TODO: what to put here..?
             }
+
             if (semiSpecific) {
                 bw.write("enzyme mode=semispecific"); //@TODO: support: Semispecific Free N-terminus and Semispecific Free C-terminus
             } else {
@@ -687,15 +687,19 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             bw.write("top peaks window=" + andromedaParameters.getTopPeaksWindow());
             bw.newLine();
-            Integer missedCleavages = null;
-            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-                int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
-                if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
-                    missedCleavages = enzymeMissedCleavages;
+
+            if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+                Integer missedCleavages = null;
+                for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                    int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+                    if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                        missedCleavages = enzymeMissedCleavages;
+                    }
                 }
+                bw.write("max missed cleavages=" + missedCleavages);
+                bw.newLine();
             }
-            bw.write("max missed cleavages=" + missedCleavages);
-            bw.newLine();
+
             bw.write("fasta file=\"" + searchParameters.getFastaFile().getAbsolutePath() + "\"");
             bw.newLine();
             bw.write("decoy mode=" + andromedaParameters.getDecoyMode());

@@ -101,10 +101,12 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("-e");
         process_name_array.add(Integer.toString(enzymeIndex));
         Integer missedCleavages = null;
-        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-            int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
-            if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
-                missedCleavages = enzymeMissedCleavages;
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+                if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                    missedCleavages = enzymeMissedCleavages;
+                }
             }
         }
         if (missedCleavages != null) {

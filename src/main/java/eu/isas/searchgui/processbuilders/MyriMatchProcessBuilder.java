@@ -247,6 +247,8 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("-MinTerminiCleavages");
         if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
             process_name_array.add("0");
+        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+              process_name_array.add("0");
         } else {
             boolean semiSpecific = false;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
@@ -265,15 +267,17 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // set the maximum missed cleavages
-        process_name_array.add("-MaxMissedCleavages");
-        Integer missedCleavages = null;
-        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-            int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
-            if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
-                missedCleavages = enzymeMissedCleavages;
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+            process_name_array.add("-MaxMissedCleavages");
+            Integer missedCleavages = null;
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+                if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                    missedCleavages = enzymeMissedCleavages;
+                }
             }
+            process_name_array.add("" + missedCleavages);
         }
-        process_name_array.add("" + missedCleavages);
         // advanced settings not used:
         //  ProteinSampleSize
         //  FragmentationAutoRule - automatically choose the fragmentation rule based on the activation type of each MSn spectrum
