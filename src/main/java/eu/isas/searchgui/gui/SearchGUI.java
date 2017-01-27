@@ -5235,7 +5235,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (parametersName == null) {
                 parametersName = Util.removeExtension(identificationParametersFile.getName());
             }
-            SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, identificationParameters.getSearchParameters(),
+            SearchParameters searchParameters = identificationParameters.getSearchParameters();
+            SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, searchParameters,
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
                     false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
@@ -5250,6 +5251,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     searchSettingsLbl.setToolTipText("Please check the search settings");
                 }
             } else {
+                
+                searchParameters.setRefMass(utilitiesUserPreferences.getRefMass());
                 searchSettingsLbl.setToolTipText(null);
                 searchSettingsLbl.setForeground(Color.BLACK);
             }
