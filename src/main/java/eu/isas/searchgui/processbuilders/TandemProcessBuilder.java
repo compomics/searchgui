@@ -272,28 +272,39 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         }
         DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
         enzymeCleaveSiteAsText = digestionPreferences.getXTandemFormat();
-        boolean semiSpecific = false;
-        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-            if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
-                    || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
-                    || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
-                semiSpecific = true;
-                break;
+
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+
+            boolean semiSpecific = false;
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                    semiSpecific = true;
+                    break;
+                }
             }
-        }
-        if (semiSpecific) {
-            enzymeIsSemiSpecific = "yes";
-        } else {
+            if (semiSpecific) {
+                enzymeIsSemiSpecific = "yes";
+            } else {
+                enzymeIsSemiSpecific = "no";
+            }
+            Integer missedCleavages = null;
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+                if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                    missedCleavages = enzymeMissedCleavages;
+                }
+            }
+            this.missedCleavages = missedCleavages;
+        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
             enzymeIsSemiSpecific = "no";
+            this.missedCleavages = 50;
+        } else { // whole protien
+            enzymeIsSemiSpecific = "no";
+            this.missedCleavages = 0;
         }
-        Integer missedCleavages = null;
-        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-            int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
-            if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
-                missedCleavages = enzymeMissedCleavages;
-            }
-        }
-        this.missedCleavages = missedCleavages;
+
         selectedIons = new HashSet<Integer>();
         selectedIons.addAll(searchParameters.getForwardIons());
         selectedIons.addAll(searchParameters.getRewindIons());

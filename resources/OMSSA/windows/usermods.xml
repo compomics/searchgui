@@ -13,7 +13,7 @@ xs:schemaLocation="http://www.ncbi.nlm.nih.gov OMSSA.xsd"
 			<MSModType value="modaa">0</MSModType>
 		</MSModSpec_type>
 		<MSModSpec_name>Carbamidomethylation of C</MSModSpec_name>
-		<MSModSpec_monomass>57.02146372057</MSModSpec_monomass>
+		<MSModSpec_monomass>57.021464</MSModSpec_monomass>
 		<MSModSpec_averagemass>0</MSModSpec_averagemass>
 		<MSModSpec_n15mass>0</MSModSpec_n15mass>
 		<MSModSpec_residues>
@@ -28,56 +28,11 @@ xs:schemaLocation="http://www.ncbi.nlm.nih.gov OMSSA.xsd"
 			<MSModType value="modaa">0</MSModType>
 		</MSModSpec_type>
 		<MSModSpec_name>Oxidation of M</MSModSpec_name>
-		<MSModSpec_monomass>15.99491461956</MSModSpec_monomass>
+		<MSModSpec_monomass>15.994915</MSModSpec_monomass>
 		<MSModSpec_averagemass>0</MSModSpec_averagemass>
 		<MSModSpec_n15mass>0</MSModSpec_n15mass>
 		<MSModSpec_residues>
 			<MSModSpec_residues_E>M</MSModSpec_residues_E>
-		</MSModSpec_residues>
-	</MSModSpec>
-	<MSModSpec>
-		<MSModSpec_mod>
-			<MSMod value="usermod3">121</MSMod>
-		</MSModSpec_mod>
-		<MSModSpec_type>
-			<MSModType value="modaa">0</MSModType>
-		</MSModSpec_type>
-		<MSModSpec_name>Phosphorylation of S</MSModSpec_name>
-		<MSModSpec_monomass>79.96633052074999</MSModSpec_monomass>
-		<MSModSpec_averagemass>0</MSModSpec_averagemass>
-		<MSModSpec_n15mass>0</MSModSpec_n15mass>
-		<MSModSpec_residues>
-			<MSModSpec_residues_E>S</MSModSpec_residues_E>
-		</MSModSpec_residues>
-	</MSModSpec>
-	<MSModSpec>
-		<MSModSpec_mod>
-			<MSMod value="usermod4">122</MSMod>
-		</MSModSpec_mod>
-		<MSModSpec_type>
-			<MSModType value="modaa">0</MSModType>
-		</MSModSpec_type>
-		<MSModSpec_name>Phosphorylation of T</MSModSpec_name>
-		<MSModSpec_monomass>79.96633052074999</MSModSpec_monomass>
-		<MSModSpec_averagemass>0</MSModSpec_averagemass>
-		<MSModSpec_n15mass>0</MSModSpec_n15mass>
-		<MSModSpec_residues>
-			<MSModSpec_residues_E>T</MSModSpec_residues_E>
-		</MSModSpec_residues>
-	</MSModSpec>
-	<MSModSpec>
-		<MSModSpec_mod>
-			<MSMod value="usermod5">123</MSMod>
-		</MSModSpec_mod>
-		<MSModSpec_type>
-			<MSModType value="modaa">0</MSModType>
-		</MSModSpec_type>
-		<MSModSpec_name>Phosphorylation of Y</MSModSpec_name>
-		<MSModSpec_monomass>79.96633052074999</MSModSpec_monomass>
-		<MSModSpec_averagemass>0</MSModSpec_averagemass>
-		<MSModSpec_n15mass>0</MSModSpec_n15mass>
-		<MSModSpec_residues>
-			<MSModSpec_residues_E>Y</MSModSpec_residues_E>
 		</MSModSpec_residues>
 	</MSModSpec>
 </MSModSpecSet>

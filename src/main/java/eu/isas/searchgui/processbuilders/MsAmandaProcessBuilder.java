@@ -198,8 +198,14 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                 enzymeSpecificity = "SEMI(N)";
             }
             missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
-        } else {
+        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
             enzymeName = digestionPreferences.getCleavagePreference().toString();
+            enzymeSpecificity = "FULL";
+            missedCleavages = 50; // @TODO: is this correct?
+        } else { // whole protein
+            enzymeName = digestionPreferences.getCleavagePreference().toString();
+            enzymeSpecificity = "FULL";
+            missedCleavages = 0; 
         }
 
         // set the modifications
@@ -314,7 +320,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
             bw.write("  <enzyme>" + System.getProperty("line.separator"));
             bw.write("    <name>" + DigestionPreferences.CleavagePreference.unSpecific + "</name>" + System.getProperty("line.separator"));
-            bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
+            bw.write("    <cleavage_sites>X</cleavage_sites>" + System.getProperty("line.separator"));
             bw.write("  </enzyme>" + System.getProperty("line.separator"));
 
             bw.write("</enzymes>" + System.getProperty("line.separator"));

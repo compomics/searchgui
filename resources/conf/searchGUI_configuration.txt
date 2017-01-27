@@ -1,35 +1,35 @@
 OMSSA Location:
-Not Selected
-false
+.\resources\OMSSA\windows
+true
 X!Tandem Location:
-Not Selected
-false
+.\resources\XTandem\windows\windows_64bit
+true
 MS-GF+ Location:
-Not Selected
+.\resources\MS-GF+
 false
 MS Amanda Location:
-Not Selected
+.\resources\MS Amanda\windows
 false
 MyriMatch Location:
-Not Selected
+.\resources\MyriMatch\windows\windows_64bit
 false
 Comet Location:
-Not Selected
+.\resources\Comet\windows\windows_64bit
 false
 Tide Location:
-Not Selected
+.\resources\Tide\windows\windows_64bit
 false
 Andromeda Location:
-Not Selected
+.\resources\Andromeda\windows
 false
 Novor Location:
-Not Selected
+.\resources\Novor
 false
 DirecTag Location:
-Not Selected
+.\resources\DirecTag\windows\windows_64bit
 false
 makeblastdb Location:
-Not Selected
+null
 
 Modification use:
 Acetylation of K//Acetylation of protein N-term//Carbamidomethylation of C//Oxidation of M//Phosphorylation of S//Phosphorylation of T//Phosphorylation of Y//iTRAQ 4-plex of peptide N-term//iTRAQ 4-plex of K//iTRAQ 4-plex of Y//iTRAQ 8-plex of peptide N-term//iTRAQ 8-plex of K//iTRAQ 8-plex of Y//TMT 6-plex of peptide N-term//TMT 6-plex of K//TMT 10-plex of peptide N-term//TMT 10-plex of K//Pyrolidone from E//Pyrolidone from Q//Pyrolidone from carbamidomethylated C//Deamidation of N//Deamidation of Q//

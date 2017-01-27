@@ -162,9 +162,12 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
         if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+            process_name_array.add("--custom-enzyme");
+            process_name_array.add("{X}|{X}");
+        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
             process_name_array.add("--enzyme");
             process_name_array.add("no-enzyme");
-        } else {
+        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
             if (digestionPreferences.getEnzymes().size() == 1) {
                 Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
                 String enzymeName = enzyme.getName();
@@ -228,12 +231,14 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         // full or partial enzyme digestion
         boolean semiSpecific = false;
-        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-            if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
-                    || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
-                    || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
-                semiSpecific = true;
-                break;
+        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                    semiSpecific = true;
+                    break;
+                }
             }
         }
         process_name_array.add("--digestion");
