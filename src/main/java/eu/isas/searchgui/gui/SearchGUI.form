@@ -89,7 +89,6 @@
         <Component class="javax.swing.JCheckBox" name="reporterCheckBox">
           <Properties>
             <Property name="iconTextGap" type="int" value="15"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="reporterLabel">
@@ -310,7 +309,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="searchEnginesLocationPanel" alignment="0" max="32767" attributes="0"/>
-                      <Component id="postProcessingPanel" alignment="0" pref="829" max="32767" attributes="0"/>
+                      <Component id="postProcessingPanel" alignment="0" pref="878" max="32767" attributes="0"/>
                       <Component id="inputFilesPanel" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="aboutButton" min="-2" max="-2" attributes="0"/>
@@ -387,7 +386,6 @@
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
-                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
@@ -582,7 +580,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable Tide"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableTideJCheckBoxActionPerformed"/>
@@ -734,7 +731,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable Comet"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableCometJCheckBoxActionPerformed"/>
@@ -756,7 +752,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable MyriMatch"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableMyriMatchJCheckBoxActionPerformed"/>
@@ -776,7 +771,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable MS Amanda"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableMsAmandaJCheckBoxActionPerformed"/>
@@ -830,7 +824,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable MS-GF+"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableMsgfJCheckBoxActionPerformed"/>
@@ -926,7 +919,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable X!Tandem"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableXTandemJCheckBoxActionPerformed"/>
@@ -1023,7 +1015,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable Andromeda"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableAndromedaJCheckBoxActionPerformed"/>
@@ -1108,7 +1099,6 @@
                       <Properties>
                         <Property name="toolTipText" type="java.lang.String" value="Enable OMSSA"/>
                         <Property name="enabled" type="boolean" value="false"/>
-                        <Property name="opaque" type="boolean" value="false"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableOmssaJCheckBoxActionPerformed"/>
@@ -1424,7 +1414,6 @@
                 <Property name="toolTipText" type="java.lang.String" value="Enable PeptideShaker"/>
                 <Property name="enabled" type="boolean" value="false"/>
                 <Property name="iconTextGap" type="int" value="15"/>
-                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="peptideShakerCheckBoxActionPerformed"/>
@@ -1547,7 +1536,6 @@
                 <Property name="toolTipText" type="java.lang.String" value="Enable msconvert"/>
                 <Property name="enabled" type="boolean" value="false"/>
                 <Property name="iconTextGap" type="int" value="15"/>
-                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="msconvertCheckBoxActionPerformed"/>
@@ -1686,7 +1674,6 @@
               <Properties>
                 <Property name="toolTipText" type="java.lang.String" value="Enable Novor"/>
                 <Property name="enabled" type="boolean" value="false"/>
-                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableNovorJCheckBoxActionPerformed"/>
@@ -1761,7 +1748,6 @@
               <Properties>
                 <Property name="toolTipText" type="java.lang.String" value="Enable DirecTag"/>
                 <Property name="enabled" type="boolean" value="false"/>
-                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableDirecTagJCheckBoxActionPerformed"/>
