@@ -5250,8 +5250,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     searchSettingsLbl.setForeground(Color.RED);
                     searchSettingsLbl.setToolTipText("Please check the search settings");
                 }
-            } else {
-                
+            } else {                
                 searchParameters.setRefMass(utilitiesUserPreferences.getRefMass());
                 searchSettingsLbl.setToolTipText(null);
                 searchSettingsLbl.setForeground(Color.BLACK);
