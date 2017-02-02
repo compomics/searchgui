@@ -409,11 +409,11 @@ public class SearchCLI implements Callable {
 
         try {
             logFolder.mkdirs();
-            File file = new File(logFolder, "PeptideShaker.log");
+            File file = new File(logFolder, "SearchGUI.log");
             System.setErr(new java.io.PrintStream(new FileOutputStream(file, true)));
 
             System.err.println(System.getProperty("line.separator") + System.getProperty("line.separator") + new Date()
-                    + ": PeptideShaker version " + new Properties().getVersion() + ".");
+                    + ": SearchGUI version " + new Properties().getVersion() + ".");
             System.err.println("Memory given to the Java virtual machine: " + Runtime.getRuntime().maxMemory() + ".");
             System.err.println("Total amount of memory in the Java virtual machine: " + Runtime.getRuntime().totalMemory() + ".");
             System.err.println("Free memory: " + Runtime.getRuntime().freeMemory() + ".");
