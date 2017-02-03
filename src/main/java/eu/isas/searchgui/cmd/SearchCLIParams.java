@@ -1,6 +1,6 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.util.experiment.identification.parameters_cli.IdentificationParametersCLIParams;
+import com.compomics.cli.identification_parameters.IdentificationParametersCLIParams;
 import com.compomics.util.preferences.SearchGuiOutputOption;
 import org.apache.commons.cli.Options;
 
