@@ -16,8 +16,8 @@
 
 |   |   |   |
 | :------------------------- | :--------------- | :--: |
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.2.6/SearchGUI-3.2.6-windows.zip) | *v3.2.6 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.2.6/SearchGUI-3.2.6-mac_and_linux.tar.gz) | *v3.2.6 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.2.7/SearchGUI-3.2.7-windows.zip) | *v3.2.7 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.2.7/SearchGUI-3.2.7-mac_and_linux.tar.gz) | *v3.2.7 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
 
 ----
 
@@ -86,7 +86,7 @@ Replace X.Y.Z with the wanted SearchGUI version number.
 
 ### User Defined Modifications
 
-It is straightforward to add/edit modifications via the graphical user interface. Modifications will be available in other instances of SearchGUI and [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html) for the same user/computer. Not all modifications are correctly handled by the search engines. For example, X!Tandem is not compatible with modifications at termini on specific amino acids. Using such a modification will result in nonsense matches which can be filtered out afterwards. This functionality is available by default in [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html).
+It is straightforward to add/edit modifications via the graphical user interface. Modifications will be available in other instances of SearchGUI and [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html) for the same user/computer. Not all modifications are correctly handled by the search engines. For example, X! Tandem is not compatible with modifications at termini on specific amino acids. Using such a modification will result in nonsense matches which can be filtered out afterwards. This functionality is available by default in [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html).
 
 [Go to top of page](#searchgui)
 
