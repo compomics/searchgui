@@ -494,7 +494,7 @@ public class SearchHandler {
         if (direcTagFolder != null) {
             this.direcTagLocation = direcTagFolder;
         } else {
-            loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, false); // try to use the default
+            loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, true); // try to use the default
         }
 
         if (makeblastdbFolder != null) {
