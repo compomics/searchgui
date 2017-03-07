@@ -1147,7 +1147,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * Novor location. It auto-validates the Novor location.
      */
     public void browseNovorLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.novor, NovorProcessBuilder.EXECUTABLE_FILE_NAME, andromedaLocationTxt);
+        browseSearchEngineLocationPressed(Advocate.novor, NovorProcessBuilder.EXECUTABLE_FILE_NAME, novorLocationTxt);
     }
 
     /**
@@ -1155,7 +1155,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * DirecTag location. It auto-validates the DirecTag location.
      */
     public void browseDirecTagLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.direcTag, DirecTagProcessBuilder.EXECUTABLE_FILE_NAME, andromedaLocationTxt);
+        browseSearchEngineLocationPressed(Advocate.direcTag, DirecTagProcessBuilder.EXECUTABLE_FILE_NAME, direcTagLocationTxt);
     }
 
     /**

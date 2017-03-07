@@ -6174,7 +6174,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
             return validateSearchEngineInstallation(Advocate.msAmanda, MsAmandaProcessBuilder.EXECUTABLE_FILE_NAME, null, mono, searchEngineLocation, null, false, feedBackInDialog, msAmandaErrorMessage);
         } else if (advocate == Advocate.myriMatch) {
-            return validateSearchEngineInstallation(Advocate.myriMatch, MyriMatchProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"myrimatch\"", false, feedBackInDialog);
+            return validateSearchEngineInstallation(Advocate.myriMatch, MyriMatchProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"myrimatch\"", false, feedBackInDialog); // @TODO: the usage part seems to not be picked up?
         } else if (advocate == Advocate.comet) {
             return validateSearchEngineInstallation(Advocate.comet, CometProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, false, feedBackInDialog);
         } else if (advocate == Advocate.tide) {
@@ -6184,7 +6184,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         } else if (advocate == Advocate.novor) {
             return validateSearchEngineInstallation(Advocate.novor, NovorProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, true, feedBackInDialog);
         } else if (advocate == Advocate.direcTag) {
-            return validateSearchEngineInstallation(Advocate.direcTag, DirecTagProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"directag\"", false, feedBackInDialog);
+            return validateSearchEngineInstallation(Advocate.direcTag, DirecTagProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"directag\"", false, feedBackInDialog);  // @TODO: the usage part seems to not be picked up? // @TODO: why the \" ???
         }
 
         return false;
