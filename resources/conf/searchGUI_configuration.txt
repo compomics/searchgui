@@ -1,35 +1,35 @@
 OMSSA Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/OMSSA/linux
+Not Selected
 false
 X!Tandem Location:
-/home/dominik.kopczynski/Downloads/SearchGUI-3.0.3/resources/XTandem/linux/linux_64bit
-true
+Not Selected
+false
 MS-GF+ Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/MS-GF+
+Not Selected
 false
 MS Amanda Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/MS Amanda/linux
+Not Selected
 false
 MyriMatch Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/MyriMatch/linux/linux_64bit
+Not Selected
 false
 Comet Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/Comet/linux
+Not Selected
 false
 Tide Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/Tide/linux/linux_64bit
+Not Selected
 false
 Andromeda Location:
-
+Not Selected
 false
 Novor Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/Novor
+Not Selected
 false
 DirecTag Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/DirecTag/linux
+Not Selected
 false
 makeblastdb Location:
-/home/dominik.kopczynski/NetBeansProjects/searchgui/./resources/makeblastdb/linux/linux_64bit
+Not Selected
 
 Modification use:
 Acetylation of K//Acetylation of protein N-term//Carbamidomethylation of C//Oxidation of M//Phosphorylation of S//Phosphorylation of T//Phosphorylation of Y//iTRAQ 4-plex of peptide N-term//iTRAQ 4-plex of K//iTRAQ 4-plex of Y//iTRAQ 8-plex of peptide N-term//iTRAQ 8-plex of K//iTRAQ 8-plex of Y//TMT 6-plex of peptide N-term//TMT 6-plex of K//TMT 10-plex of peptide N-term//TMT 10-plex of K//Pyrolidone from E//Pyrolidone from Q//Pyrolidone from carbamidomethylated C//Deamidation of N//Deamidation of Q//

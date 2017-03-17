@@ -29,8 +29,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import org.apache.commons.cli.*;
-
-// for data acquisition
 import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -137,9 +135,9 @@ public class SearchCLI implements Callable {
                 System.out.println("Unable to load the path configurations. Default pathswill be used.");
             }
         }
-        
-            // load enzymes
-            enzymeFactory = EnzymeFactory.getInstance();
+
+        // load enzymes
+        enzymeFactory = EnzymeFactory.getInstance();
 
         try {
             // @TODO: not sure if this is the best place to perform the mgf validation and splitting??
@@ -296,22 +294,23 @@ public class SearchCLI implements Callable {
                 searchHandler.setLogFolder(logFolder);
             }
 
-            // incrementing the counter for a new PeptideShaker start
-            final String COLLECT_URL = "http://www.google-analytics.com/collect";
-            final String POST = "v=1&tid=UA-36198780-2&cid=35119a79-1a05-49d7-b876-bb88420f825b&uid=asuueffeqqss&t=event&ec=usage&ea=startrun-cl&el=searchgui";
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(COLLECT_URL).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setConnectTimeout(3000);
-                connection.setDoOutput(true);
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(POST);
-                int response = connection.getResponseCode();
-            } catch (IOException ex) {
-                System.out.println("GA connection refused");
+            // incrementing the counter for a new SearchGUI start
+            if (userPreferences.isAutoUpdate()) {
+                final String COLLECT_URL = "http://www.google-analytics.com/collect";
+                final String POST = "v=1&tid=UA-36198780-2&cid=35119a79-1a05-49d7-b876-bb88420f825b&uid=asuueffeqqss&t=event&ec=usage&ea=startrun-cl&el=searchgui";
+                try {
+                    HttpURLConnection connection = (HttpURLConnection) new URL(COLLECT_URL).openConnection();
+                    connection.setRequestMethod("POST");
+                    connection.setConnectTimeout(3000);
+                    connection.setDoOutput(true);
+                    DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                    wr.writeBytes(POST);
+                    int response = connection.getResponseCode();
+                } catch (IOException ex) {
+                    System.out.println("GA connection refused");
+                }
             }
-            
+
             searchHandler.startSearch(waitingHandlerCLIImpl);
         } catch (Exception e) {
             e.printStackTrace();
