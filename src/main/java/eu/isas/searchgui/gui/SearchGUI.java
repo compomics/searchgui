@@ -98,8 +98,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import net.jimmc.jshortcut.JShellLink;
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
 
 /**
  * The main frame of SearchGUI.
@@ -481,19 +479,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             // incrementing the counter for a new SearchGUI start
             if (utilitiesUserPreferences.isAutoUpdate()) {
-                final String COLLECT_URL = "http://www.google-analytics.com/collect";
-                final String POST = "v=1&tid=UA-36198780-2&cid=35119a79-1a05-49d7-b876-bb88420f825b&uid=asuueffeqqss&t=event&ec=usage&ea=toolstart&el=searchgui";
-                try {
-                    HttpURLConnection connection = (HttpURLConnection) new URL(COLLECT_URL).openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setConnectTimeout(3000);
-                    connection.setDoOutput(true);
-                    DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                    wr.writeBytes(POST);
-                    int response = connection.getResponseCode();
-                } catch (IOException ex) {
-                    System.out.println("GA connection refused");
-                }
+                Util.sendGAUpdate("UA-36198780-2", "toolstart", "searchgui");
             }
         }
     }
@@ -2850,20 +2836,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // incrementing the counter for a new SearchGUI start
         if (utilitiesUserPreferences.isAutoUpdate()) {
-            final String COLLECT_URL = "http://www.google-analytics.com/collect";
-            final String POST = "v=1&tid=UA-36198780-2&cid=35119a79-1a05-49d7-b876-bb88420f825b&uid=asuueffeqqss&t=event&ec=usage&ea=startrun-gui&el=searchgui";
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(COLLECT_URL).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setConnectTimeout(3000);
-                connection.setDoOutput(true);
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(POST);
-                int response = connection.getResponseCode();
-            } catch (IOException ex) {
-                System.out.println("GA connection refused");
-            }
+            Util.sendGAUpdate("UA-36198780-2", "startrun-gui", "searchgui");
         }
 
         startSearch();

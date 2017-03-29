@@ -3,6 +3,7 @@ package eu.isas.searchgui.cmd;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
 import com.compomics.software.settings.UtilitiesPathPreferences;
+import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.*;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
@@ -29,9 +30,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import org.apache.commons.cli.*;
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * This class can be used to control SearchGUI in command line.
@@ -296,19 +294,7 @@ public class SearchCLI implements Callable {
 
             // incrementing the counter for a new SearchGUI start
             if (userPreferences.isAutoUpdate()) {
-                final String COLLECT_URL = "http://www.google-analytics.com/collect";
-                final String POST = "v=1&tid=UA-36198780-2&cid=35119a79-1a05-49d7-b876-bb88420f825b&uid=asuueffeqqss&t=event&ec=usage&ea=startrun-cl&el=searchgui";
-                try {
-                    HttpURLConnection connection = (HttpURLConnection) new URL(COLLECT_URL).openConnection();
-                    connection.setRequestMethod("POST");
-                    connection.setConnectTimeout(3000);
-                    connection.setDoOutput(true);
-                    DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                    wr.writeBytes(POST);
-                    int response = connection.getResponseCode();
-                } catch (IOException ex) {
-                    System.out.println("GA connection refused");
-                }
+                Util.sendGAUpdate("UA-36198780-2", "startrun-cl", "searchgui");
             }
 
             searchHandler.startSearch(waitingHandlerCLIImpl);
