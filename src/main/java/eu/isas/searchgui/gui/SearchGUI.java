@@ -476,10 +476,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             setLocationRelativeTo(null);
             setVisible(true);
-
+            
             // incrementing the counter for a new SearchGUI start
             if (utilitiesUserPreferences.isAutoUpdate()) {
-                Util.sendGAUpdate("UA-36198780-2", "toolstart", "searchgui");
+                Util.sendGAUpdate("UA-36198780-2", "toolstart", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
             }
         }
     }
@@ -2836,7 +2836,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // incrementing the counter for a new SearchGUI start
         if (utilitiesUserPreferences.isAutoUpdate()) {
-            Util.sendGAUpdate("UA-36198780-2", "startrun-gui", "searchgui");
+            Util.sendGAUpdate("UA-36198780-2", "startrun-gui", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
         }
 
         startSearch();
