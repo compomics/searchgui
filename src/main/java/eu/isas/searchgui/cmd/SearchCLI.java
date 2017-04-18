@@ -294,7 +294,7 @@ public class SearchCLI implements Callable {
 
             // incrementing the counter for a new SearchGUI start
             if (userPreferences.isAutoUpdate()) {
-                Util.sendGAUpdate("UA-36198780-2", "startrun-cl", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
+                Util.sendGAUpdate("UA-36198780-2", "startrun-cl", "searchgui-" + (new Properties().getVersion()));
             }
 
             searchHandler.startSearch(waitingHandlerCLIImpl);
