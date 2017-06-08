@@ -239,8 +239,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param outputFolder the output folder (can be null)
      * @param species the species (can be null)
      * @param speciesType the species type (can be null)
+     * @param projectName the PeptideShaker project name
      */
-    public SearchGUI(ArrayList<File> spectrumFiles, ArrayList<File> rawFiles, File aIdentificationParametersFile, File outputFolder, String species, String speciesType) {
+    public SearchGUI(ArrayList<File> spectrumFiles, ArrayList<File> rawFiles, File aIdentificationParametersFile, File outputFolder, String species, String speciesType, String projectName) {
 
         this.identificationParametersFile = aIdentificationParametersFile;
 
@@ -440,20 +441,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if ((spectrumFiles != null && !spectrumFiles.isEmpty()) || (rawFiles != null && !rawFiles.isEmpty())) {
                 setSpectrumFiles(spectrumFiles, rawFiles);
 
+                String experimentLabel = "PeptideShakerProject";
+                
                 // set default peptideshaker experiment details
-                String experimentLabel = "";
+                if (projectName != null) {
+                    experimentLabel = projectName;
+                }
+
                 ArrayList<File> tempFiles;
                 if (spectrumFiles != null) {
                     tempFiles = spectrumFiles;
                 } else {
                     tempFiles = rawFiles;
-                }
-                for (File tempFile : tempFiles) {
-                    String fileName = tempFile.getName();
-                    if (experimentLabel.length() > 0) {
-                        experimentLabel += "_";
-                    }
-                    experimentLabel += fileName.substring(0, fileName.lastIndexOf("."));
                 }
 
                 searchHandler.setExperimentLabel(experimentLabel);
@@ -5719,8 +5718,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         ArrayList<File> rawFiles = null;
         File searchParametersFile = null;
         File outputFolder = null;
-        String currentSpecies = null, currentSpeciesType = null;
-        boolean spectrum = false, raw = false, parameters = false, output = false, species = false, speciesType = false;
+        String currentSpecies = null, currentSpeciesType = null, currentProjectName = null;
+        boolean spectrum = false, raw = false, parameters = false, output = false, species = false, speciesType = false, projectName = false;
 
         for (String arg : args) {
             if (spectrum) {
@@ -5777,6 +5776,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 currentSpeciesType = arg;
                 speciesType = false;
             }
+            if (projectName) {
+                currentProjectName = arg;
+                projectName = false;
+            }
             if (arg.equals(ToolFactory.searchGuiSpectrumFileOption)) {
                 spectrum = true;
             }
@@ -5795,9 +5798,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (arg.equals(ToolFactory.speciesTypeOption)) {
                 speciesType = true;
             }
+            if (arg.equals(ToolFactory.projectNameOption)) {
+                projectName = true;
+            }
         }
 
-        new SearchGUI(spectrumFiles, rawFiles, searchParametersFile, outputFolder, currentSpecies, currentSpeciesType);
+        new SearchGUI(spectrumFiles, rawFiles, searchParametersFile, outputFolder, currentSpecies, currentSpeciesType, currentProjectName);
     }
 
     /**

@@ -570,7 +570,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         new HelpDialog(this, getClass().getResource("/helpFiles/AdvancedSettingsDialog.html"),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/help.GIF")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                "SearchGUI - Help", 500, 50);
+                "Advanced Settings - Help", 500, 50);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_openDialogHelpJButtonActionPerformed
 
