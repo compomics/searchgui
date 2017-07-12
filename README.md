@@ -94,7 +94,11 @@ It is straightforward to add/edit modifications via the graphical user interface
 
 ### Converting Spectrum Data
 
-SearchGUI currently only supports mgf files as the input format for the spectra. To convert your raw data to mgf we recommend using [msconvert](http://proteowizard.sourceforge.net) from [ProteoWizard](http://proteowizard.sourceforge.net).
+SearchGUI supports mgf files as the direct input format for the spectra as this is what is supported by all the search engines.
+
+However, by referring to the location of your [ProteoWizard](http://proteowizard.sourceforge.net) installtion you can also provide your raw files as input, which will then be converted to mgf using [msconvert](http://proteowizard.sourceforge.net).
+
+Note that this option is only available via the graphical user interface. From the command line you have to run the msconvert command line separatelty.
 
 [Go to top of page](#searchgui)
 
