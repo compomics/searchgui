@@ -811,7 +811,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             case UniProt:
                 return "&gt;.*\\|(.*)\\|";
             case NCBI:
-                return "&gt;(gi\\|[0-9]*)";
+                return "&gt;..\\|(.*)\\|";
             case IPI:
                 return "&gt;IPI:([^\\| .]*)";
             case H_Invitation:

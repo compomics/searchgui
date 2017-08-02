@@ -45,6 +45,5 @@ Want to learn more?<br><br>Check out our <a href="http://compomics.com/bioinform
 X's in your database?<br><br>X's in protein sequences make it difficult for <b>PeptideShaker</b> to interpret your results. Peptides with more than 75% X's will be ignored.
 Unexpected peptide-protein mapping?<br><br><b>PeptideShaker</b> remaps every peptide to your sequence database. The peptide to protein mapping can be different - and more comprehensive - than the search engines.
 Cannot find your peptide in the protein sequence using a text editor?<br><br><b>PeptideShaker</b> accounts for indistinguishable amino acids (like I and L) or amino acid groups (like B, J Z or X).
-Running out of disc space?<br><br>An index file is created for every protein database. You can select the folder where to store these indexes and clean it using the <i>Advanced</i> button of the database selection dialog.
 When should I update my tool?<br><br>New versions are regularly released for a constant improvement of our tools. You will be notified if the tool can connect the internet and it is advised to always keep your tools up to date.
 How do results compare between versions?<br><br>Results cannot be compared between major releases (big number change) but between minor releases (small number change).
