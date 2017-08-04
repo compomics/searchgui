@@ -433,7 +433,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         ArrayList<String> atoms = new ArrayList<String>();
 
         for (AtomImpl atomImpl : atomChain.getAtomChain()) {
-            String atom = atomImpl.getAtom().getLetter();
+            String atom = atomImpl.getAtomSymbol();
             if (!atoms.contains(atom)) {
                 atoms.add(atom);
             }
@@ -497,7 +497,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         if (atomChainAdded != null) {
             for (AtomImpl atomImpl : atomChainAdded.getAtomChain()) {
-                String atom = atomImpl.getAtom().getLetter();
+                String atom = atomImpl.getAtomSymbol();
                 if (!atoms.contains(atom)) {
                     atoms.add(atom);
                 }
@@ -519,7 +519,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         if (atomChainRemoved != null) {
             for (AtomImpl atomImpl : atomChainRemoved.getAtomChain()) {
-                String atom = atomImpl.getAtom().getLetter();
+                String atom = atomImpl.getAtomSymbol();
                 if (!atoms.contains(atom)) {
                     atoms.add(atom);
                 }
