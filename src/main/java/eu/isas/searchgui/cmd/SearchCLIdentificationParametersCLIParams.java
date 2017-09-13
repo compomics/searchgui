@@ -115,7 +115,17 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_INSTRUMENT.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_INSTRUMENT.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_RANK.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_RANK.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MONOISOTOPIC.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MONOISOTOPIC.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_LOW_MEM_MODE.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_LOW_MEM_MODE.description + "\n";
+        
+        // @TODO: re-add when updating to the new backend
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_PERFORM_DEISOTOPING.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_PERFORM_DEISOTOPING.description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_MOD.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_MOD.description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_VAR_MOD.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_VAR_MOD.description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_MOD_SITES.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_MOD_SITES.description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_NEUTRAL_LOSSES.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_NEUTRAL_LOSSES.description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_NEUTRAL_LOSSES_MODIFICATIONS.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_NEUTRAL_LOSSES_MODIFICATIONS.description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MIN_PEPTIDE_LENGTH.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MIN_PEPTIDE_LENGTH.description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_LOADED_PROTEINS.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_LOADED_PROTEINS   .description + "\n";
+//        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_LOADED_SPECTRA.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_LOADED_SPECTRA.description + "\n";
 
         output += "\n\nMS-GF+ advanced parameters:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MSGF_DECOY.id) + " " + IdentificationParametersCLIParams.MSGF_DECOY.description + "\n";

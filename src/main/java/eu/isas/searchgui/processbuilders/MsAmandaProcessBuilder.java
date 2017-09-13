@@ -123,8 +123,48 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     private boolean generateDecoys;
     /**
      * Defines whether the low memory mode is used.
+     *
+     * @deprecated since MS Amanda 2.0
      */
-    private boolean lowMemoryMode = true;
+    private Boolean lowMemoryMode = true;
+    /**
+     * Defines whether deisotoping is to be performed.
+     */
+    private Boolean performDeisotoping = true;
+    /**
+     * Maximum number of occurrences of a specific modification on a peptide
+     * (0-10).
+     */
+    private Integer maxModifications = 3;
+    /**
+     * Maximum number of variable modifications per peptide (0-10).
+     */
+    private Integer maxVariableModifications = 4;
+    /**
+     * Maximum number of potential modification sites per modification per
+     * peptide (0-20).
+     */
+    private Integer maxModificationSites = 6;
+    /**
+     * Maximum number of water and ammonia losses per peptide (0-5).
+     */
+    private Integer maxNeutralLosses = 1;
+    /**
+     * Maximum number identical modification specific losses per peptide (0-5).
+     */
+    private Integer maxNeutralLossesPerModification = 2;
+    /**
+     * Minimum peptide length.
+     */
+    private Integer minPeptideLength = 6;
+    /**
+     * Maximum number of proteins loaded into memory (1000-500000).
+     */
+    private Integer maxLoadedProteins = 100000;
+    /**
+     * Maximum number of spectra loaded into memory (1000-500000).
+     */
+    private Integer maxLoadedSpectra = 2000;
     /**
      * The path to the folder where the MS Amanda temp files are stored. Set to
      * DEFAULT to use the default location for MS Amanda.
@@ -161,8 +201,18 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         maxRank = msAmandaParameters.getMaxRank();
         generateDecoys = msAmandaParameters.generateDecoy();
-        lowMemoryMode = msAmandaParameters.isLowMemoryMode();
         monoisotopic = msAmandaParameters.isMonoIsotopic();
+        
+        // @TODO: re-add when updating to the new backend
+//        performDeisotoping = msAmandaParameters.isPerformDeisotoping();
+//        maxModifications = msAmandaParameters.getMaxModifications();
+//        maxVariableModifications = msAmandaParameters.getMaxVariableModifications();
+//        maxModificationSites = msAmandaParameters.getMaxModificationSites();
+//        maxNeutralLosses = msAmandaParameters.getMaxNeutralLosses();
+//        maxNeutralLossesPerModification = msAmandaParameters.getMaxNeutralLossesPerModification();
+//        minPeptideLength = msAmandaParameters.getMinPeptideLength();
+//        maxLoadedProteins = msAmandaParameters.getMaxLoadedProteins();
+//        maxLoadedSpectra = msAmandaParameters.getMaxLoadedSpectra();
 
         // set the mass accuracies
         fragmentMassError = searchParameters.getFragmentIonAccuracy();
@@ -353,6 +403,16 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<ms2_tol unit=\"" + fragmentUnit + "\">" + fragmentMassError + "</ms2_tol> " + System.getProperty("line.separator")
                     + "\t\t<max_rank>" + maxRank + "</max_rank> " + System.getProperty("line.separator")
                     + "\t\t<generate_decoy>" + generateDecoys + "</generate_decoy> " + System.getProperty("line.separator")
+                        
+                    // @TODO: re-add when updating to the new backend        
+//                    + "\t\t<PerformDeisotoping>" + performDeisotoping + "</PerformDeisotoping> " + System.getProperty("line.separator")
+//                    + "\t\t<MaxNoModifs>" + maxModifications + "</MaxNoModifs> " + System.getProperty("line.separator")
+//                    + "\t\t<MaxNoDynModifs>" + maxVariableModifications + "</MaxNoDynModifs> " + System.getProperty("line.separator")        
+//                    + "\t\t<MaxNumberModSites>" + maxModificationSites + "</MaxNumberModSites> " + System.getProperty("line.separator") 
+//                    + "\t\t<MaxNumberNeutralLoss>" + maxNeutralLosses + "</MaxNumberNeutralLoss> " + System.getProperty("line.separator") 
+//                    + "\t\t<MaxNumberNeutralLossModifications>" + maxNeutralLosses + "</MaxNumberNeutralLossModifications> " + System.getProperty("line.separator")
+//                    + "\t\t<MinimumPepLength>" + minPeptideLength + "</MinimumPepLength> " + System.getProperty("line.separator")
+                       
                     + "\t</search_settings> " + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     + "\t<basic_settings> " + System.getProperty("line.separator")
@@ -361,7 +421,11 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<enzyme_file>" + new File(msAmandaFolder, ENZYMES_FILE).getAbsolutePath() + "</enzyme_file> " + System.getProperty("line.separator")
                     + "\t\t<monoisotopic>" + monoisotopic + "</monoisotopic> " + System.getProperty("line.separator")
                     + "\t\t<considered_charges>" + getChargeRangeAsString() + "</considered_charges> " + System.getProperty("line.separator")
-                    + "\t\t<low_ram_mode>" + lowMemoryMode + "</low_ram_mode> " + System.getProperty("line.separator")
+                    
+                    // @TODO: re-add when updating to the new backend
+//                    + "\t\t<LoadedProteinsAtOnce>" + maxLoadedProteins + "</LoadedProteinsAtOnce> " + System.getProperty("line.separator")
+//                    + "\t\t<LoadedSpectraAtOnce>" + maxLoadedSpectra + "</LoadedSpectraAtOnce> " + System.getProperty("line.separator")
+                            
                     + "\t\t<data_folder>" + msAmandaTempFolder + "</data_folder> " + System.getProperty("line.separator")
                     + "\t</basic_settings> " + System.getProperty("line.separator")
                     + "</settings>"
