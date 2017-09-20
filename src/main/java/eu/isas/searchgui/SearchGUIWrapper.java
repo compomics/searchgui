@@ -2,8 +2,8 @@ package eu.isas.searchgui;
 
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathPreferences;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import com.compomics.software.settings.UtilitiesPathParameters;
+import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.utilities.Properties;
 import java.io.*;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class SearchGUIWrapper extends CompomicsWrapper {
             System.out.println("Unable to load the path configurations. Default paths will be used.");
         }
         try {
-            ArrayList<PathKey> errorKeys = SearchGUIPathPreferences.getErrorKeys(getJarFilePath());
+            ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
             if (!errorKeys.isEmpty()) {
                 System.out.println("Unable to write in the following configuration folders. Please edit the configuration paths.");
                 for (PathKey pathKey : errorKeys) {
@@ -67,9 +67,9 @@ public class SearchGUIWrapper extends CompomicsWrapper {
      * Sets the path configuration.
      */
     private void setPathConfiguration() throws IOException {
-        File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+        File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
         if (pathConfigurationFile.exists()) {
-            SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
+            SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
         }
     }
 

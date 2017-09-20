@@ -2,23 +2,22 @@ package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathPreferences;
+import com.compomics.software.settings.UtilitiesPathParameters;
 import com.compomics.util.Util;
-import com.compomics.util.experiment.biology.*;
+import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
-import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
-import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
-import com.compomics.util.experiment.io.massspectrometry.MgfIndex;
-import com.compomics.util.experiment.io.massspectrometry.MgfReader;
-import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
+import com.compomics.util.experiment.io.mass_spectrometry.MgfIndex;
+import com.compomics.util.experiment.io.mass_spectrometry.MgfReader;
+import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
 import com.compomics.util.gui.filehandling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
-import com.compomics.util.preferences.IdentificationParameters;
-import com.compomics.util.preferences.ProcessingPreferences;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.tools.ProcessingParameters;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import eu.isas.searchgui.SearchHandler;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -112,16 +111,16 @@ public class SearchCLI implements Callable {
             pathSettingsCLI.setPathSettings();
         } else {
             try {
-                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
                 if (pathConfigurationFile.exists()) {
-                    SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
+                    SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
                 }
             } catch (Exception e) {
                 System.out.println("An error occurred when setting path configuration. Default paths will be used.");
                 e.printStackTrace();
             }
             try {
-                ArrayList<PathKey> errorKeys = SearchGUIPathPreferences.getErrorKeys(getJarFilePath());
+                ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
                 if (!errorKeys.isEmpty()) {
                     System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
                             + "the path configuration command line, or edit the configuration paths from the graphical interface.");
@@ -234,8 +233,8 @@ public class SearchCLI implements Callable {
             }
 
             // Processing
-            ProcessingPreferences processingPreferences = new ProcessingPreferences();
-            processingPreferences.setnThreads(searchCLIInputBean.getNThreads());
+            ProcessingParameters processingParameters = new ProcessingParameters();
+            processingParameters.setnThreads(searchCLIInputBean.getNThreads());
 
             // Identification parameters
             IdentificationParameters identificationParameters = searchCLIInputBean.getIdentificationParameters();
@@ -258,17 +257,16 @@ public class SearchCLI implements Callable {
                 System.out.println(error);
             }
 
-            UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-            userPreferences.setTargetDecoyFileNameSuffix(searchCLIInputBean.getTargetDecoyFileNameTag());
-            userPreferences.setRefMass(searchCLIInputBean.getRefMass());
-            userPreferences.setRenameXTandemFile(searchCLIInputBean.renameXTandemFile());
-            userPreferences.setOutputOption(searchCLIInputBean.getOutputOption());
-            userPreferences.setOutputData(searchCLIInputBean.isOutputData());
-            userPreferences.setIncludeDateInOutputName(searchCLIInputBean.isOutputDate());
-            UtilitiesUserPreferences.saveUserPreferences(userPreferences);
+            UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
+            userParameters.setTargetDecoyFileNameSuffix(searchCLIInputBean.getTargetDecoyFileNameTag());
+            userParameters.setRefMass(searchCLIInputBean.getRefMass());
+            userParameters.setRenameXTandemFile(searchCLIInputBean.renameXTandemFile());
+            userParameters.setSearchGuiOutputParameters(searchCLIInputBean.getOutputOption());
+            userParameters.setOutputData(searchCLIInputBean.isOutputData());
+            userParameters.setIncludeDateInOutputName(searchCLIInputBean.isOutputDate());
+            UtilitiesUserParameters.saveUserParameters(userParameters);
 
             File fastaFile = searchParameters.getFastaFile();
-            SequenceFactory.getInstance().loadFastaFile(fastaFile);
 
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
@@ -285,7 +283,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getTideLocation(), searchCLIInputBean.getAndromedaLocation(),
                     searchCLIInputBean.getNovorLocation(), searchCLIInputBean.getDirecTagLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
-                    processingPreferences);
+                    processingParameters);
 
             File logFolder = pathSettingsCLIInputBean.getLogFolder();
             if (logFolder != null) {
@@ -293,7 +291,7 @@ public class SearchCLI implements Callable {
             }
 
             // incrementing the counter for a new SearchGUI start
-            if (userPreferences.isAutoUpdate()) {
+            if (userParameters.isAutoUpdate()) {
                 Util.sendGAUpdate("UA-36198780-2", "startrun-cl", "searchgui-" + (new Properties().getVersion()));
             }
 

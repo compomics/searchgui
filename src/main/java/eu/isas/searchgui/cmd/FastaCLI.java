@@ -2,13 +2,10 @@ package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathPreferences;
-import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
-import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
+import com.compomics.software.settings.UtilitiesPathParameters;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
 import static eu.isas.searchgui.cmd.SearchCLI.redirectErrorStream;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -79,16 +76,16 @@ public class FastaCLI {
             pathSettingsCLI.setPathSettings();
         } else {
             try {
-                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
                 if (pathConfigurationFile.exists()) {
-                    SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
+                    SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
                 }
             } catch (Exception e) {
                 System.out.println("An error occurred when setting path configuration. Default paths will be used.");
                 e.printStackTrace();
             }
             try {
-                ArrayList<PathKey> errorKeys = SearchGUIPathPreferences.getErrorKeys(getJarFilePath());
+                ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
                 if (!errorKeys.isEmpty()) {
                     System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
                             + "the path configuration command line, or edit the configuration paths from the graphical interface.");

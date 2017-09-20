@@ -1,7 +1,7 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.software.settings.UtilitiesPathPreferences;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import com.compomics.software.settings.UtilitiesPathParameters;
+import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
 import java.util.HashMap;
 import org.apache.commons.cli.CommandLine;
@@ -41,13 +41,13 @@ public class PathSettingsCLIInputBean {
             tempFolder = aLine.getOptionValue(PathSettingsCLIParams.ALL.id);
         }
 
-        for (SearchGUIPathPreferences.SearchGUIPathKey searchGUIPathKey : SearchGUIPathPreferences.SearchGUIPathKey.values()) {
+        for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
             String id = searchGUIPathKey.getId();
             if (aLine.hasOption(id)) {
                 paths.put(id, aLine.getOptionValue(id));
             }
         }
-        for (UtilitiesPathPreferences.UtilitiesPathKey utilitiesPathKey : UtilitiesPathPreferences.UtilitiesPathKey.values()) {
+        for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
             String id = utilitiesPathKey.getId();
             if (aLine.hasOption(id)) {
                 paths.put(id, aLine.getOptionValue(id));

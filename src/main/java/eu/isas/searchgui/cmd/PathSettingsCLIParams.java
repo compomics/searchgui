@@ -1,7 +1,7 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.software.settings.UtilitiesPathPreferences;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import com.compomics.software.settings.UtilitiesPathParameters;
+import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import org.apache.commons.cli.Options;
 
 /**
@@ -43,10 +43,10 @@ public enum PathSettingsCLIParams {
         for (PathSettingsCLIParams pathSettingsCLIParam : values()) {
             aOptions.addOption(pathSettingsCLIParam.id, true, pathSettingsCLIParam.description);
         }
-        for (SearchGUIPathPreferences.SearchGUIPathKey searchGUIPathKey : SearchGUIPathPreferences.SearchGUIPathKey.values()) {
+        for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
             aOptions.addOption(searchGUIPathKey.getId(), true, searchGUIPathKey.getDescription());
         }
-        for (UtilitiesPathPreferences.UtilitiesPathKey utilitiesPathKey : UtilitiesPathPreferences.UtilitiesPathKey.values()) {
+        for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
             aOptions.addOption(utilitiesPathKey.getId(), true, utilitiesPathKey.getDescription());
         }
     }
@@ -68,10 +68,10 @@ public enum PathSettingsCLIParams {
         output += "-" + String.format(formatter, ALL.id) + " " + ALL.description + "\n";
 
         output += "\n\nSpecific Path Setting:\n\n";
-        for (SearchGUIPathPreferences.SearchGUIPathKey searchGUIPathKey : SearchGUIPathPreferences.SearchGUIPathKey.values()) {
+        for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
             output += "-" + String.format(formatter, searchGUIPathKey.getId()) + " " + searchGUIPathKey.getDescription() + System.getProperty("line.separator");
         }
-        for (UtilitiesPathPreferences.UtilitiesPathKey utilitiesPathKey : UtilitiesPathPreferences.UtilitiesPathKey.values()) {
+        for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
             output += "-" + String.format(formatter, utilitiesPathKey.getId()) + " " + utilitiesPathKey.getDescription() + System.getProperty("line.separator");
         }
 

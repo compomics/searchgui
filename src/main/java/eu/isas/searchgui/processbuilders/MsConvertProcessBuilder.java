@@ -2,10 +2,6 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
-import com.compomics.util.experiment.massspectrometry.proteowizard.MsConvertParameters;
-import com.compomics.util.experiment.massspectrometry.proteowizard.MsFormat;
-import com.compomics.util.experiment.massspectrometry.proteowizard.ProteoWizardFilter;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.FileNotFoundException;

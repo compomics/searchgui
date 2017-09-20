@@ -1,8 +1,8 @@
-package eu.isas.searchgui.preferences;
+package eu.isas.searchgui.parameters;
 
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathPreferences;
+import com.compomics.software.settings.UtilitiesPathParameters;
 import eu.isas.searchgui.SearchHandler;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
 import eu.isas.searchgui.processbuilders.CometProcessBuilder;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  *
  * @author Marc Vaudel
  */
-public class SearchGUIPathPreferences {
+public class SearchGUIPathParameters {
 
     /**
      * Enum of the paths which can be set in SearchGUI.
@@ -108,14 +108,14 @@ public class SearchGUIPathPreferences {
      * @throws FileNotFoundException thrown if the input file is not found
      * @throws IOException thrown if there are problems reading the input file
      */
-    public static void loadPathPreferencesFromFile(File inputFile) throws FileNotFoundException, IOException {
+    public static void loadPathParametersFromFile(File inputFile) throws FileNotFoundException, IOException {
         BufferedReader br = new BufferedReader(new FileReader(inputFile));
         try {
             String line;
             while ((line = br.readLine()) != null) {
                 line = line.trim();
                 if (!line.equals("") && !line.startsWith("#")) {
-                    loadPathPreferenceFromLine(line);
+                    loadPathParameterFromLine(line);
                 }
             }
         } finally {
@@ -127,20 +127,21 @@ public class SearchGUIPathPreferences {
      * Loads a path to be set from a line.
      *
      * @param line the line where to read the path from
+     * 
      * @throws FileNotFoundException thrown if the file the path refers to
      * cannot be found
      */
-    public static void loadPathPreferenceFromLine(String line) throws FileNotFoundException {
-        String id = UtilitiesPathPreferences.getPathID(line);
+    public static void loadPathParameterFromLine(String line) throws FileNotFoundException {
+        String id = UtilitiesPathParameters.getPathID(line);
         if (id.equals("")) {
             throw new IllegalArgumentException("Impossible to parse path in " + line + ".");
         }
         SearchGUIPathKey searchGUIPathKey = SearchGUIPathKey.getKeyFromId(id);
         if (searchGUIPathKey == null) {
-            UtilitiesPathPreferences.loadPathPreferenceFromLine(line);
+            UtilitiesPathParameters.loadPathParameterFromLine(line);
         } else {
-            String path = UtilitiesPathPreferences.getPath(line);
-            if (!path.equals(UtilitiesPathPreferences.defaultPath)) {
+            String path = UtilitiesPathParameters.getPath(line);
+            if (!path.equals(UtilitiesPathParameters.defaultPath)) {
                 File file = new File(path);
                 if (!file.exists()) {
                     throw new FileNotFoundException("File " + path + " not found.");
@@ -148,7 +149,7 @@ public class SearchGUIPathPreferences {
                 if (searchGUIPathKey.isDirectory && !file.isDirectory()) {
                     throw new FileNotFoundException("Found a file when expecting a directory for " + searchGUIPathKey.id + ".");
                 }
-                setPathPreference(searchGUIPathKey, path);
+                setPathParameter(searchGUIPathKey, path);
             }
         }
     }
@@ -159,7 +160,7 @@ public class SearchGUIPathPreferences {
      * @param searchGUIPathKey the key of the path
      * @param path the path to be set
      */
-    public static void setPathPreference(SearchGUIPathKey searchGUIPathKey, String path) {
+    public static void setPathParameter(SearchGUIPathKey searchGUIPathKey, String path) {
         switch (searchGUIPathKey) {
             case tempDirectory:
                 SearchHandler.setTempFolderPath(path);
@@ -181,12 +182,12 @@ public class SearchGUIPathPreferences {
      * @param pathKey the key of the path
      * @param path the path to be set
      */
-    public static void setPathPreference(PathKey pathKey, String path) {
+    public static void setPathParameter(PathKey pathKey, String path) {
         if (pathKey instanceof SearchGUIPathKey) {
-            setPathPreference((SearchGUIPathKey) pathKey, path);
-        } else if (pathKey instanceof UtilitiesPathPreferences.UtilitiesPathKey) {
-            UtilitiesPathPreferences.UtilitiesPathKey utilitiesPathKey = (UtilitiesPathPreferences.UtilitiesPathKey) pathKey;
-            UtilitiesPathPreferences.setPathPreference(utilitiesPathKey, path);
+            setPathParameter((SearchGUIPathKey) pathKey, path);
+        } else if (pathKey instanceof UtilitiesPathParameters.UtilitiesPathKey) {
+            UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey = (UtilitiesPathParameters.UtilitiesPathKey) pathKey;
+            UtilitiesPathParameters.setPathParameter(utilitiesPathKey, path);
         } else {
             throw new UnsupportedOperationException("Path " + pathKey.getId() + " not implemented.");
         }
@@ -200,7 +201,7 @@ public class SearchGUIPathPreferences {
      *
      * @return the path 
      */
-    public static String getPathPreference(SearchGUIPathKey searchGUIPathKey, String jarFilePath) {
+    public static String getPathParameter(SearchGUIPathKey searchGUIPathKey, String jarFilePath) {
         switch (searchGUIPathKey) {
             case tempDirectory:
                 return SearchHandler.getTempFolderPath(jarFilePath);
@@ -231,9 +232,9 @@ public class SearchGUIPathPreferences {
             if (!newFile.exists()) {
                 throw new FileNotFoundException(newFile.getAbsolutePath() + " could not be created.");
             }
-            setPathPreference(searchGUIPathKey, newFile.getAbsolutePath());
+            setPathParameter(searchGUIPathKey, newFile.getAbsolutePath());
         }
-        UtilitiesPathPreferences.setAllPathsIn(path);
+        UtilitiesPathParameters.setAllPathsIn(path);
     }
 
     /**
@@ -265,7 +266,7 @@ public class SearchGUIPathPreferences {
         for (SearchGUIPathKey pathKey : SearchGUIPathKey.values()) {
             writePathToFile(bw, pathKey, jarFilePath);
         }
-        UtilitiesPathPreferences.writeConfigurationToFile(bw);
+        UtilitiesPathParameters.writeConfigurationToFile(bw);
     }
 
     /**
@@ -278,26 +279,26 @@ public class SearchGUIPathPreferences {
      * @throws IOException thrown of the file cannot be found
      */
     public static void writePathToFile(BufferedWriter bw, SearchGUIPathKey pathKey, String jarFilePath) throws IOException {
-        bw.write(pathKey.id + UtilitiesPathPreferences.separator);
+        bw.write(pathKey.id + UtilitiesPathParameters.separator);
         switch (pathKey) {
             case tempDirectory:
                 String toWrite = SearchHandler.getTempFolderPath(jarFilePath);
                 if (toWrite == null) {
-                    toWrite = UtilitiesPathPreferences.defaultPath;
+                    toWrite = UtilitiesPathParameters.defaultPath;
                 }
                 bw.write(toWrite);
                 break;
             case cometDirectory:
                 toWrite = CometProcessBuilder.getTempFolder();
                 if (toWrite == null) {
-                    toWrite = UtilitiesPathPreferences.defaultPath;
+                    toWrite = UtilitiesPathParameters.defaultPath;
                 }
                 bw.write(toWrite);
                 break;
             case andromedaDirectory:
                 toWrite = AndromedaProcessBuilder.getTempFolderPath();
                 if (toWrite == null) {
-                    toWrite = UtilitiesPathPreferences.defaultPath;
+                    toWrite = UtilitiesPathParameters.defaultPath;
                 }
                 bw.write(toWrite);
                 break;
@@ -322,12 +323,12 @@ public class SearchGUIPathPreferences {
     public static ArrayList<PathKey> getErrorKeys(String jarFilePath) throws IOException {
         ArrayList<PathKey> result = new ArrayList<PathKey>();
         for (SearchGUIPathKey pathKey : SearchGUIPathKey.values()) {
-            String folder = SearchGUIPathPreferences.getPathPreference(pathKey, jarFilePath);
-            if (folder != null && !UtilitiesPathPreferences.testPath(folder)) {
+            String folder = SearchGUIPathParameters.getPathParameter(pathKey, jarFilePath);
+            if (folder != null && !UtilitiesPathParameters.testPath(folder)) {
                 result.add(pathKey);
             }
         }
-        result.addAll(UtilitiesPathPreferences.getErrorKeys());
+        result.addAll(UtilitiesPathParameters.getErrorKeys());
         return result;
     }
     

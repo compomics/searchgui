@@ -1,7 +1,7 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.cli.identification_parameters.IdentificationParametersCLIParams;
-import com.compomics.util.preferences.SearchGuiOutputOption;
+import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
 import org.apache.commons.cli.Options;
 
 /**
@@ -52,7 +52,7 @@ public enum SearchCLIParams {
     
     REFERENCE_MASS("ref_mass", "Reference mass for the conversion of the fragment ion tolerance from ppm to Dalton. Default is '2000'.", false),
     
-    OUTPUT_OPTION("output_option", "Optional result file compression (" + SearchGuiOutputOption.getCommandLineOptions() + "), default is '0'.", false),
+    OUTPUT_OPTION("output_option", "Optional result file compression (" + SearchGuiOutputParameters.getCommandLineOptions() + "), default is '0'.", false),
     OUTPUT_DATA("output_data", "Include mgf and FASTA file in zipped output (0: no, 1: yes, default is '0').", false),
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
     RENAME_XTANDEM_OUTPUT("rename_xtandem", "Turn the renaming of the X! Tandem files on/off. (0: off, 1: on, default is '1').", false),

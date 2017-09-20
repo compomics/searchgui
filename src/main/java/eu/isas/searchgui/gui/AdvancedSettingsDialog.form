@@ -409,7 +409,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="8" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -450,7 +450,7 @@
             <Component class="javax.swing.JComboBox" name="groupResultFilesCmb">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(SearchGuiOutputOption.getOutputOptionsNames())" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(SearchGuiOutputParameters.getOutputParametersNames())" type="code"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Output files grouping options"/>
               </Properties>

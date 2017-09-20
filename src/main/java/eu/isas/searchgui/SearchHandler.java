@@ -4,31 +4,28 @@ import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
-import com.compomics.util.experiment.biology.PTMFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
-import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
-import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MyriMatchParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.OmssaParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.TideParameters;
-import com.compomics.util.experiment.io.massspectrometry.export.AplExporter;
-import com.compomics.util.experiment.io.massspectrometry.export.Ms2Exporter;
-import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
-import com.compomics.util.experiment.massspectrometry.proteowizard.MsConvertParameters;
+import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
+import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.gui.filehandling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
-import com.compomics.util.io.ConfigurationFile;
 import com.compomics.util.io.compression.ZipUtils;
-import com.compomics.util.preferences.IdentificationParameters;
-import com.compomics.util.preferences.ProcessingPreferences;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.AndromedaParameters;
+import com.compomics.util.parameters.identification.tool_specific.CometParameters;
+import com.compomics.util.parameters.identification.tool_specific.MyriMatchParameters;
+import com.compomics.util.parameters.identification.tool_specific.OmssaParameters;
+import com.compomics.util.parameters.identification.tool_specific.TideParameters;
+import com.compomics.util.parameters.tools.ProcessingParameters;
+import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import com.compomics.util.waiting.Duration;
-import com.compomics.util.preferences.SearchGuiOutputOption;
 import eu.isas.searchgui.processbuilders.*;
 import javax.swing.*;
 import java.awt.*;
@@ -81,13 +78,9 @@ public class SearchHandler {
      */
     private static boolean useCommandLine = false;
     /**
-     * The worker which will coordinate the searches.
+     * The worker running the searches.
      */
     private SearchWorker searchWorker;
-    /**
-     * Worker which indexes files.
-     */
-    private IndexingWorker indexingWorker;
     /**
      * The results folder.
      */
@@ -277,9 +270,9 @@ public class SearchHandler {
      */
     private PeptideShakerProcessBuilder peptideShakerProcessBuilder = null;
     /**
-     * The processing preferences.
+     * The processing parameters.
      */
-    private ProcessingPreferences processingPreferences = new ProcessingPreferences();
+    private ProcessingParameters processingParameters = new ProcessingParameters();
     /**
      * The msconvert parameters.
      */
@@ -340,11 +333,11 @@ public class SearchHandler {
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
      * @param identificationParametersFile the identification parameters file
-     * @param processingPreferences the processing preferences
+     * @param processingParameters the processing parameters
      * @param exceptionHandler a handler for exceptions
      */
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles,
-            ArrayList<File> rawFiles, File identificationParametersFile, ProcessingPreferences processingPreferences,
+            ArrayList<File> rawFiles, File identificationParametersFile, ProcessingParameters processingParameters,
             ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
@@ -362,7 +355,7 @@ public class SearchHandler {
         enableNovor = loadSearchEngineLocation(Advocate.novor, true, true, true, true, false, false, false);
         enableDirecTag = loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, false);
         this.identificationParametersFile = identificationParametersFile;
-        this.processingPreferences = processingPreferences;
+        this.processingParameters = processingParameters;
 
         this.identificationParameters = identificationParameters;
         searchDuration = new Duration();
@@ -410,14 +403,14 @@ public class SearchHandler {
      * default location is used
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
-     * @param processingPreferences the processing preferences
+     * @param processingParameters the processing preferences
      */
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             boolean runNovor, boolean runDirecTag,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder,
             File novorFolder, File direcTagFolder, File makeblastdbFolder,
-            ProcessingPreferences processingPreferences) {
+            ProcessingParameters processingParameters) {
 
         this.resultsFolder = resultsFolder;
         this.mgfFiles = mgfFiles;
@@ -434,7 +427,7 @@ public class SearchHandler {
         this.enableDirecTag = runDirecTag;
 
         this.identificationParameters = identificationParameters;
-        this.processingPreferences = processingPreferences;
+        this.processingParameters = processingParameters;
         this.identificationParametersFile = identificationParametersFile;
 
         if (omssaFolder != null) {
@@ -505,10 +498,10 @@ public class SearchHandler {
 
         // set this version as the default SearchGUI version
         if (!getJarFilePath().equalsIgnoreCase(".")) {
-            UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+            UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
             String versionNumber = new eu.isas.searchgui.utilities.Properties().getVersion();
-            utilitiesUserPreferences.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
-            UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
+            utilitiesUserParameters.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
+            UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
         }
 
         searchDuration = new Duration();
@@ -528,9 +521,6 @@ public class SearchHandler {
 
         searchWorker = new SearchWorker(waitingHandler);
         searchWorker.execute();
-
-        indexingWorker = new IndexingWorker(waitingHandler);
-        indexingWorker.execute();
 
         // display the waiting dialog
         if (waitingHandler != null && waitingHandler instanceof WaitingDialog) {
@@ -586,7 +576,7 @@ public class SearchHandler {
      */
     private void searchCompleted() {
 
-        if (searchWorker.isFinished() && indexingWorker.isFinished()) {
+        if (searchWorker.isFinished()) {
 
             if (waitingHandler != null) {
                 if (waitingHandler instanceof WaitingDialog) {
@@ -608,10 +598,10 @@ public class SearchHandler {
             if (enablePeptideShaker) {
                 if (peptideShakerFile.exists()) {
                     try {
-                        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
                         CompomicsWrapper wrapper = new CompomicsWrapper();
-                        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserPreferences.getPeptideShakerPath());
+                        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getPeptideShakerPath());
 
                         ArrayList process_name_array = new ArrayList();
                         process_name_array.add(javaHomeAndOptions.get(0)); // set java home
@@ -622,7 +612,7 @@ public class SearchHandler {
                         }
 
                         process_name_array.add("-jar");
-                        process_name_array.add(new File(utilitiesUserPreferences.getPeptideShakerPath()).getName());
+                        process_name_array.add(new File(utilitiesUserParameters.getPeptideShakerPath()).getName());
                         process_name_array.add("-cps");
                         process_name_array.add(CommandLineUtils.getCommandLineArgument(peptideShakerFile));
 
@@ -637,7 +627,7 @@ public class SearchHandler {
 
                         System.out.println(System.getProperty("line.separator"));
 
-                        File psFolder = new File(utilitiesUserPreferences.getPeptideShakerPath()).getParentFile();
+                        File psFolder = new File(utilitiesUserParameters.getPeptideShakerPath()).getParentFile();
                         openPeptideShakerProcess.directory(psFolder);
 
                         // set error out and std out to same stream
@@ -657,11 +647,6 @@ public class SearchHandler {
                 System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "Search Completed." + System.getProperty("line.separator"));
                 System.exit(0);
             }
-        } else if (!indexingWorker.isFinished()) {
-            waitingHandler.appendReport("Search completed. Waiting for the file indexing to finish.", true, true);
-            waitingHandler.appendReportEndLine();
-            waitingHandler.appendReport("Please do not close SearchGUI.", true, true);
-            waitingHandler.appendReportEndLine();
         }
     }
 
@@ -1756,12 +1741,12 @@ public class SearchHandler {
         protected Object doInBackground() {
 
             try {
-                UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
                 File outputFolder = getResultsFolder();
                 File outputTempFolder;
 
-                if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.no_zip) {
+                if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.no_zip) {
                     outputTempFolder = outputFolder;
                 } else {
                     try {
@@ -1885,7 +1870,7 @@ public class SearchHandler {
                 }
 
                 // convert raw files
-                ExecutorService pool = Executors.newFixedThreadPool(processingPreferences.getnThreads());
+                ExecutorService pool = Executors.newFixedThreadPool(processingParameters.getnThreads());
 
                 ArrayList<File> rawFiles = getRawFiles();
 
@@ -1979,14 +1964,14 @@ public class SearchHandler {
                         File xTandemOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".t.xml");
                         xTandemProcessBuilder = new TandemProcessBuilder(xtandemLocation,
                                 spectrumFile.getAbsolutePath(), xTandemOutputFile.getAbsolutePath(),
-                                searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                                searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
 
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.xtandem.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         xTandemProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
-                            if (utilitiesUserPreferences.renameXTandemFile()) {
+                            if (utilitiesUserParameters.renameXTandemFile()) {
                                 ArrayList<File> result = getXTandemFiles(outputTempFolder, spectrumFileName);
                                 if (result.size() == 1) {
                                     File xTandemFile = result.get(0);
@@ -2019,7 +2004,7 @@ public class SearchHandler {
                     if (enableMyriMatch && !waitingHandler.isRunCanceled()) {
                         File myriMatchOutputFile = new File(outputTempFolder, getMyriMatchFileName(spectrumFileName));
                         myriMatchProcessBuilder = new MyriMatchProcessBuilder(myriMatchLocation,
-                                spectrumFile.getAbsolutePath(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                                spectrumFile.getAbsolutePath(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.myriMatch.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         myriMatchProcessBuilder.startProcess();
@@ -2044,7 +2029,7 @@ public class SearchHandler {
                         File msAmandaOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".ms-amanda.csv");
                         String filePath = msAmandaOutputFile.getAbsolutePath();
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(msAmandaLocation,
-                                spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                                spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msAmanda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msAmandaProcessBuilder.startProcess();
@@ -2068,7 +2053,7 @@ public class SearchHandler {
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
                         File msgfOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".msgf.mzid");
                         msgfProcessBuilder = new MsgfProcessBuilder(msgfLocation,
-                                spectrumFile.getAbsolutePath(), msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, processingPreferences.getnThreads(), useCommandLine);
+                                spectrumFile.getAbsolutePath(), msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads(), useCommandLine);
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msgfProcessBuilder.startProcess();
@@ -2093,7 +2078,7 @@ public class SearchHandler {
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
                         omssaProcessBuilder = new OmssaclProcessBuilder(omssaLocation,
                                 spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler,
-                                utilitiesUserPreferences.getRefMass(), processingPreferences.getnThreads());
+                                utilitiesUserParameters.getRefMass(), processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         omssaProcessBuilder.startProcess();
@@ -2122,7 +2107,7 @@ public class SearchHandler {
                             cometOutputFile.delete();
                         }
                         cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, spectrumFile, waitingHandler, exceptionHandler,
-                                processingPreferences.getnThreads(), utilitiesUserPreferences.getRefMass());
+                                processingParameters.getnThreads(), utilitiesUserParameters.getRefMass());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         cometProcessBuilder.startProcess();
@@ -2161,7 +2146,7 @@ public class SearchHandler {
                         // perform the tide search
                         if (!waitingHandler.isRunCanceled()) {
                             tideSearchProcessBuilder = new TideSearchProcessBuilder(tideLocation, searchParameters, 
-                                    ms2File, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                                    ms2File, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                             waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.tide.getName() + ".", true, true);
                             waitingHandler.appendReportEndLine();
                             tideSearchProcessBuilder.startProcess();
@@ -2201,7 +2186,7 @@ public class SearchHandler {
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, identificationParametersFile, aplFile, waitingHandler, exceptionHandler, processingPreferences.getnThreads());
+                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, identificationParametersFile, aplFile, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         andromedaProcessBuilder.startProcess();
@@ -2269,7 +2254,7 @@ public class SearchHandler {
                     if (enableDirecTag && !waitingHandler.isRunCanceled()) {
                         File direcTagOutputFile = new File(outputTempFolder, getDirecTagFileName(spectrumFileName));
                         direcTagProcessBuilder = new DirecTagProcessBuilder(direcTagLocation,
-                                spectrumFile, processingPreferences.getnThreads(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler);
+                                spectrumFile, processingParameters.getnThreads(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler);
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.direcTag.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         direcTagProcessBuilder.startProcess();
@@ -2317,13 +2302,13 @@ public class SearchHandler {
 
                 if (!waitingHandler.isRunCanceled()) {
                     // organize the output files
-                    if (utilitiesUserPreferences.getOutputOption() != SearchGuiOutputOption.no_zip) {
+                    if (utilitiesUserParameters.getSearchGuiOutputParameters() != SearchGuiOutputParameters.no_zip) {
                         waitingHandler.appendReport("Zipping output files.", true, true);
                     } else {
                         waitingHandler.appendReport("Preparing output files.", true, true);
                     }
                     waitingHandler.appendReportEndLine();
-                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, utilitiesUserPreferences.isIncludeDateInOutputName());
+                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, utilitiesUserParameters.isIncludeDateInOutputName());
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
@@ -2332,16 +2317,16 @@ public class SearchHandler {
                     ArrayList<File> identificationFilesList = new ArrayList<File>();
                     identificationFilesList.addAll(mascotFiles);
 
-                    if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.grouped) {
-                        File outputFile = getDefaultOutputFile(outputFolder, utilitiesUserPreferences.isIncludeDateInOutputName());
+                    if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.grouped) {
+                        File outputFile = getDefaultOutputFile(outputFolder, utilitiesUserParameters.isIncludeDateInOutputName());
                         if (outputFile.exists()) {
                             identificationFilesList.add(outputFile);
                         } else {
                             waitingHandler.appendReport("Could not find SearchGUI results.", true, true);
                         }
-                    } else if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.algorithm) {
+                    } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.algorithm) {
                         if (enableMsAmanda) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2349,7 +2334,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableMsgf) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2357,7 +2342,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableMyriMatch) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2365,7 +2350,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableOmssa) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2373,7 +2358,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableXtandem) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2381,7 +2366,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableComet) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.comet.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.comet.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2389,7 +2374,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableTide) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.tide.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.tide.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2397,7 +2382,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableAndromeda) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.andromeda.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.andromeda.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2405,7 +2390,7 @@ public class SearchHandler {
                             }
                         }
                         if (enableNovor) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.novor.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.novor.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2413,17 +2398,17 @@ public class SearchHandler {
                             }
                         }
                         if (enableDirecTag) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.direcTag.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.direcTag.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
                                 waitingHandler.appendReport("Could not find " + Advocate.direcTag.getName() + " results.", true, true);
                             }
                         }
-                    } else if (utilitiesUserPreferences.getOutputOption() == SearchGuiOutputOption.run) {
+                    } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.run) {
                         for (String run : identificationFiles.keySet()) {
                             String runName = Util.removeExtension(run);
-                            File outputFile = getDefaultOutputFile(outputFolder, runName, utilitiesUserPreferences.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(outputFolder, runName, utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -2438,14 +2423,14 @@ public class SearchHandler {
                         }
                     }
 
-                    if (utilitiesUserPreferences.getPeptideShakerPath() == null || !new File(utilitiesUserPreferences.getPeptideShakerPath()).exists()) {
+                    if (utilitiesUserParameters.getPeptideShakerPath() == null || !new File(utilitiesUserParameters.getPeptideShakerPath()).exists()) {
                         waitingHandler.appendReport("PeptideShaker not found! Please check the PeptideShaker path.", true, true);
                         waitingHandler.appendReportEndLine();
                         waitingHandler.setRunCanceled();
                     } else if (!identificationFiles.isEmpty()) {
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                 waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
-                                identificationParameters, identificationParametersFile, peptideShakerFile, true, processingPreferences, utilitiesUserPreferences.outputData());
+                                identificationParameters, identificationParametersFile, peptideShakerFile, true, processingParameters, utilitiesUserParameters.outputData());
                         waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
                         peptideShakerProcessBuilder.startProcess();
@@ -2566,63 +2551,6 @@ public class SearchHandler {
     }
 
     /**
-     * Worker which indexes files when necessary.
-     */
-    private class IndexingWorker extends SwingWorker {
-
-        /**
-         * The waiting handler displaying feedback to the user.
-         */
-        private WaitingHandler waitingHandler;
-        /**
-         * Boolean indicating that the processing is finished.
-         */
-        private boolean finished = false;
-
-        /**
-         * Constructor of the worker.
-         *
-         * @param waitingHandler
-         */
-        public IndexingWorker(WaitingHandler waitingHandler) {
-            this.waitingHandler = waitingHandler;
-
-            if (waitingHandler instanceof WaitingDialog) {
-                // make sure the icon is set to the waiting icon
-                ((JFrame) ((WaitingDialog) waitingHandler).getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-            }
-        }
-
-        @Override
-        protected Object doInBackground() throws Exception {
-
-            File fastaFile = identificationParameters.getSearchParameters().getFastaFile();
-            File indexFile = new File(fastaFile.getParent(), fastaFile.getName() + ".cui");
-
-            if (!indexFile.exists()) {
-                SequenceFactory.getInstance().loadFastaFile(fastaFile, waitingHandler);
-            }
-
-            finished = true;
-
-            if (!waitingHandler.isRunCanceled()) {
-                searchCompleted();
-            }
-
-            return 0;
-        }
-
-        /**
-         * Returns a boolean indicating whether the indexing is finished.
-         *
-         * @return a boolean indicating whether the indexing is finished
-         */
-        public boolean isFinished() {
-            return finished;
-        }
-    }
-
-    /**
      * Set the identification parameters.
      *
      * @param identificationParameters the identification parameters
@@ -2661,19 +2589,19 @@ public class SearchHandler {
     /**
      * Returns the processing preferences.
      *
-     * @return the processingPreferences
+     * @return the processingParameters
      */
-    public ProcessingPreferences getProcessingPreferences() {
-        return processingPreferences;
+    public ProcessingParameters getProcessingParameters() {
+        return processingParameters;
     }
 
     /**
      * Set the processing preferences.
      *
-     * @param processingPreferences the processingPreferences to set
+     * @param processingParameters the processingParameters to set
      */
-    public void setProcessingPreferences(ProcessingPreferences processingPreferences) {
-        this.processingPreferences = processingPreferences;
+    public void setProcessingParameters(ProcessingParameters processingParameters) {
+        this.processingParameters = processingParameters;
     }
 
     /**
@@ -2800,9 +2728,9 @@ public class SearchHandler {
      */
     public void organizeOutput(File outputFolder, File tempOutputFolder, HashMap<String, HashMap<Integer, File>> identificationFiles, File parametersFile, boolean includeDate) throws IOException {
 
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
-        switch (utilitiesUserPreferences.getOutputOption()) {
+        switch (utilitiesUserParameters.getSearchGuiOutputParameters()) {
 
             case grouped:
 
@@ -2861,7 +2789,7 @@ public class SearchHandler {
                                 }
                             }
 
-                            if (utilitiesUserPreferences.outputData()) {
+                            if (utilitiesUserParameters.outputData()) {
                                 addDataToZip(out, totalUncompressedSize);
                             }
                         } finally {
@@ -2944,7 +2872,7 @@ public class SearchHandler {
                                     ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
                                 }
 
-                                if (utilitiesUserPreferences.outputData()) {
+                                if (utilitiesUserParameters.outputData()) {
                                     addDataToZip(out, totalUncompressedSize);
                                 }
 
@@ -3024,7 +2952,7 @@ public class SearchHandler {
                                     ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
                                 }
 
-                                if (utilitiesUserPreferences.outputData()) {
+                                if (utilitiesUserParameters.outputData()) {
                                     addDataToZip(out, totalUncompressedSize, mgfFileName);
                                 }
 
@@ -3044,7 +2972,7 @@ public class SearchHandler {
             default: // no zipping
 
                 // add data files if needed
-                if (utilitiesUserPreferences.outputData()) {
+                if (utilitiesUserParameters.outputData()) {
                     // create the data folder
                     File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
@@ -3146,10 +3074,10 @@ public class SearchHandler {
             }
         }
 
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
         // output data
-        if (utilitiesUserPreferences.outputData()) {
+        if (utilitiesUserParameters.outputData()) {
             totalUncompressedSize += getTotalUncompressedSizeOfData();
         }
 
@@ -3197,10 +3125,10 @@ public class SearchHandler {
             totalUncompressedSize += identificationFile.length();
         }
 
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
         // output data
-        if (utilitiesUserPreferences.outputData()) {
+        if (utilitiesUserParameters.outputData()) {
             totalUncompressedSize += getTotalUncompressedSizeOfData();
         }
 
@@ -3266,10 +3194,10 @@ public class SearchHandler {
             totalUncompressedSize += identificationFile.length();
         }
 
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
         // output data
-        if (utilitiesUserPreferences.outputData()) {
+        if (utilitiesUserParameters.outputData()) {
             totalUncompressedSize += getTotalUncompressedSizeOfData(mgfFile);
         }
 
@@ -3305,17 +3233,6 @@ public class SearchHandler {
         }
 
         return totalUncompressedSize;
-    }
-
-    /**
-     * Returns the configuration file.
-     *
-     * @return the configuration file
-     */
-    public ConfigurationFile getConfigurationFile() {
-        File folder = new File(getJarFilePath() + File.separator + "resources" + File.separator + "conf" + File.separator); // @TODO: make this more generic?
-        File file = new File(folder, SEARCHGUI_CONFIGURATION_FILE);
-        return new ConfigurationFile(file);
     }
 
     /**
@@ -3391,7 +3308,7 @@ public class SearchHandler {
      */
     public static String loadModifications(SearchParameters searchParameters) {
         String error = null;
-        ArrayList<String> toCheck = PTMFactory.getInstance().loadBackedUpModifications(searchParameters, true);
+        ArrayList<String> toCheck = ModificationFactory.getInstance().loadBackedUpModifications(searchParameters, true);
         if (!toCheck.isEmpty()) {
             error = "The definition of the following PTM(s) seems to have changed and were overwritten:\n";
             for (int i = 0; i < toCheck.size(); i++) {

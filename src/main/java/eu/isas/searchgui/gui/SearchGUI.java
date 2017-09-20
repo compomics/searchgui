@@ -9,39 +9,15 @@ import com.compomics.software.dialogs.JavaSettingsDialog;
 import com.compomics.software.dialogs.PeptideShakerSetupDialog;
 import com.compomics.software.dialogs.ProteoWizardSetupDialog;
 import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathPreferences;
-import com.compomics.software.settings.gui.PathSettingsDialog;
+import com.compomics.software.settings.UtilitiesPathParameters;
+import com.compomics.software.settings.gui.PathParametersDialog;
 import com.compomics.util.Util;
-import com.compomics.util.db.DerbyUtil;
 import com.compomics.util.examples.BareBonesBrowserLaunch;
 import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
-import com.compomics.util.experiment.biology.EnzymeFactory;
-import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.genes.GeneFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
-import com.compomics.util.experiment.identification.protein_sequences.FastaIndex;
-import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
-import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.AndromedaParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.CometParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.DirecTagParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MsAmandaParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MsgfParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MyriMatchParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.NovorParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.OmssaParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.TideParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.XtandemParameters;
-import com.compomics.util.experiment.io.massspectrometry.MgfIndex;
-import com.compomics.util.experiment.io.massspectrometry.MgfReader;
-import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
-import com.compomics.util.experiment.massspectrometry.proteowizard.MsConvertParameters;
-import com.compomics.util.experiment.massspectrometry.proteowizard.MsFormat;
-import com.compomics.util.experiment.massspectrometry.proteowizard.ProteoWizardFilter;
-import com.compomics.util.experiment.massspectrometry.proteowizard.gui.MsConvertParametersDialog;
 import com.compomics.util.gui.JOptionEditorPane;
 import com.compomics.util.gui.PrivacySettingsDialog;
 import com.compomics.util.gui.UtilitiesGUIDefaults;
@@ -58,31 +34,11 @@ import javax.swing.filechooser.FileFilter;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.filehandling.FileDisplayDialog;
 import com.compomics.util.gui.filehandling.TempFilesManager;
-import com.compomics.util.gui.parameters.IdentificationParametersEditionDialog;
-import com.compomics.util.gui.parameters.IdentificationParametersOverviewDialog;
-import com.compomics.util.gui.parameters.ProcessingPreferencesDialog;
-import com.compomics.util.gui.ptm.ModificationsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.SearchSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.AndromedaSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.CometSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.DirecTagSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.MsAmandaSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.MsgfSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.MyriMatchSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.NovorSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.OmssaSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.TideSettingsDialog;
-import com.compomics.util.gui.parameters.identification_parameters.algorithm_settings.XTandemSettingsDialog;
 import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
-import com.compomics.util.preferences.IdentificationParameters;
-import com.compomics.util.preferences.LastSelectedFolder;
-import com.compomics.util.preferences.ProcessingPreferences;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
 import eu.isas.searchgui.SearchGUIWrapper;
-import com.compomics.util.preferences.SearchGuiOutputOption;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
 import eu.isas.searchgui.processbuilders.CometProcessBuilder;
 import eu.isas.searchgui.processbuilders.DirecTagProcessBuilder;
@@ -252,7 +208,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // Will be taken care of next 
         }
         try {
-            if (!SearchGUIPathPreferences.getErrorKeys(getJarFilePath()).isEmpty()) {
+            if (!SearchGUIPathParameters.getErrorKeys(getJarFilePath()).isEmpty()) {
                 editPathSettings();
             }
         } catch (Exception e) {
@@ -4971,13 +4927,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     public void editPathSettings() {
         try {
             HashMap<PathKey, String> pathSettings = new HashMap<PathKey, String>();
-            for (SearchGUIPathPreferences.SearchGUIPathKey searchGUIPathKey : SearchGUIPathPreferences.SearchGUIPathKey.values()) {
-                pathSettings.put(searchGUIPathKey, SearchGUIPathPreferences.getPathPreference(searchGUIPathKey, getJarFilePath()));
+            for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
+                pathSettings.put(searchGUIPathKey, SearchGUIPathParameters.getPathParameter(searchGUIPathKey, getJarFilePath()));
             }
-            for (UtilitiesPathPreferences.UtilitiesPathKey utilitiesPathKey : UtilitiesPathPreferences.UtilitiesPathKey.values()) {
-                pathSettings.put(utilitiesPathKey, UtilitiesPathPreferences.getPathPreference(utilitiesPathKey));
+            for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
+                pathSettings.put(utilitiesPathKey, UtilitiesPathParameters.getPathParameter(utilitiesPathKey));
             }
-            PathSettingsDialog pathSettingsDialog = new PathSettingsDialog(this, "SearchGUI", pathSettings);
+            PathParametersDialog pathSettingsDialog = new PathParametersDialog(this, "SearchGUI", pathSettings);
             if (!pathSettingsDialog.isCanceled()) {
                 HashMap<PathKey, String> newSettings = pathSettingsDialog.getKeyToPathMap();
                 for (PathKey pathKey : pathSettings.keySet()) {
@@ -4986,13 +4942,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     if (oldPath == null && newPath != null
                             || oldPath != null && newPath == null
                             || oldPath != null && newPath != null && !oldPath.equals(newPath)) {
-                        SearchGUIPathPreferences.setPathPreference(pathKey, newPath);
+                        SearchGUIPathParameters.setPathParameter(pathKey, newPath);
                     }
                 }
                 // write path file preference
-                File destinationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+                File destinationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
                 try {
-                    SearchGUIPathPreferences.writeConfigurationToFile(destinationFile, getJarFilePath());
+                    SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getJarFilePath());
                     restart();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -6088,9 +6044,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * while reading or writing the paths configuration file
      */
     public void setPathConfiguration() throws IOException {
-        File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+        File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
         if (pathConfigurationFile.exists()) {
-            SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
+            SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
         }
     }
 
@@ -6614,5 +6570,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             andromedaButton.setEnabled(enable);
             andromedaLinkLabel.setEnabled(enable);
         }
+    }
+
+    Object getUtilitiesUserParameters() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

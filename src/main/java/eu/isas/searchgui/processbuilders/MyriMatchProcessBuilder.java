@@ -2,13 +2,7 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
-import com.compomics.util.experiment.biology.Enzyme;
-import com.compomics.util.experiment.biology.PTM;
-import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.Advocate;
-import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.MyriMatchParameters;
-import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.waiting.WaitingHandler;
 
 import java.io.File;

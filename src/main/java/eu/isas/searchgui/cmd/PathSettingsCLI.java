@@ -1,8 +1,8 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
-import com.compomics.software.settings.UtilitiesPathPreferences;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
+import com.compomics.software.settings.UtilitiesPathParameters;
+import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class PathSettingsCLI {
         String path = pathSettingsCLIInputBean.getTempFolder();
         if (!path.equals("")) {
             try {
-                SearchGUIPathPreferences.setAllPathsIn(path);
+                SearchGUIPathParameters.setAllPathsIn(path);
             } catch (Exception e) {
                 System.out.println("An error occurred when setting the temporary folder path.");
                 e.printStackTrace();
@@ -64,16 +64,16 @@ public class PathSettingsCLI {
         HashMap<String, String> pathInput = pathSettingsCLIInputBean.getPaths();
         for (String id : pathInput.keySet()) {
             try {
-                SearchGUIPathPreferences.SearchGUIPathKey searchGUIPathKey = SearchGUIPathPreferences.SearchGUIPathKey.getKeyFromId(id);
+                SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey = SearchGUIPathParameters.SearchGUIPathKey.getKeyFromId(id);
                 if (searchGUIPathKey == null) {
-                    UtilitiesPathPreferences.UtilitiesPathKey utilitiesPathKey = UtilitiesPathPreferences.UtilitiesPathKey.getKeyFromId(id);
+                    UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey = UtilitiesPathParameters.UtilitiesPathKey.getKeyFromId(id);
                     if (utilitiesPathKey == null) {
                         System.out.println("Path id " + id + " not recognized.");
                     } else {
-                        UtilitiesPathPreferences.setPathPreference(utilitiesPathKey, pathInput.get(id));
+                        UtilitiesPathParameters.setPathParameter(utilitiesPathKey, pathInput.get(id));
                     }
                 } else {
-                    SearchGUIPathPreferences.setPathPreference(searchGUIPathKey, pathInput.get(id));
+                    SearchGUIPathParameters.setPathParameter(searchGUIPathKey, pathInput.get(id));
                 }
             } catch (Exception e) {
                 System.out.println("An error occurred when setting the path " + id + ".");
@@ -82,9 +82,9 @@ public class PathSettingsCLI {
         }
 
         // write path file preference
-        File destinationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
+        File destinationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
         try {
-            SearchGUIPathPreferences.writeConfigurationToFile(destinationFile, getJarFilePath());
+            SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getJarFilePath());
         } catch (Exception e) {
             System.out.println("An error occurred when saving the path preference to " + destinationFile.getAbsolutePath() + ".");
             e.printStackTrace();

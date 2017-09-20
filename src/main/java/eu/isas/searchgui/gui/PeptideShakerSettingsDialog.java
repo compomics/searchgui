@@ -9,7 +9,6 @@ import com.compomics.software.dialogs.PeptideShakerSetupDialog;
 import com.compomics.util.Util;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.File;
@@ -66,7 +65,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
 
         // check for 64 bit java and for at least 4 gb memory 
         boolean java64bit = CompomicsWrapper.is64BitJava();
-        boolean memoryOk = (searchGUI.getUtilitiesUserPreferences().getMemoryPreference() >= 4000);
+        boolean memoryOk = (searchGUI.getUtilitiesUserParameters().getMemoryParameters() >= 4000);
         String javaVersion = System.getProperty("java.version");
         boolean javaVersionWarning = javaVersion.startsWith("1.5") || javaVersion.startsWith("1.6");
         if (java64bit && memoryOk && !javaVersionWarning) {

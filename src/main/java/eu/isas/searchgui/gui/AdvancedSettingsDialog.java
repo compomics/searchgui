@@ -2,8 +2,8 @@ package eu.isas.searchgui.gui;
 
 import com.compomics.util.gui.GuiUtilities;
 import com.compomics.util.gui.error_handlers.HelpDialog;
-import com.compomics.util.preferences.UtilitiesUserPreferences;
-import com.compomics.util.preferences.SearchGuiOutputOption;
+import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import java.awt.Color;
 import java.awt.Toolkit;
 import javax.swing.DefaultComboBoxModel;
@@ -28,47 +28,47 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
         super(searchGUI, modal);
         initComponents();
 
-        UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
 
-        mgfMaxSizeTxt.setText(userPreferences.getMgfMaxSize() + "");
-        mgfReducedSizeTxt.setText(userPreferences.getMgfNSpectra() + "");
-        if (userPreferences.renameXTandemFile()) {
+        mgfMaxSizeTxt.setText(userParameters.getMgfMaxSize() + "");
+        mgfReducedSizeTxt.setText(userParameters.getMgfNSpectra() + "");
+        if (userParameters.renameXTandemFile()) {
             renameCmb.setSelectedIndex(0);
         } else {
             renameCmb.setSelectedIndex(1);
         }
-        if (userPreferences.checkPeakPicking()) {
+        if (userParameters.checkPeakPicking()) {
             peakPickingComboBox.setSelectedIndex(0);
         } else {
             peakPickingComboBox.setSelectedIndex(1);
         }
-        if (userPreferences.checkDuplicateTitles()) {
+        if (userParameters.checkDuplicateTitles()) {
             duplicateTitlesComboBox.setSelectedIndex(0);
         } else {
             duplicateTitlesComboBox.setSelectedIndex(1);
         }
-        if (userPreferences.checkMgfSize()) {
+        if (userParameters.checkMgfSize()) {
             checkMgfFileSizeComboBox.setSelectedIndex(0);
         } else {
             checkMgfFileSizeComboBox.setSelectedIndex(1);
         }
-        if (userPreferences.isCheckSpectrumCharges()) {
+        if (userParameters.isCheckSpectrumCharges()) {
             checkSpectrumChargesComboBox.setSelectedIndex(0);
         } else {
             checkSpectrumChargesComboBox.setSelectedIndex(1);
         }
         
-        lowSpectrumChargeRangeTxt.setText(userPreferences.getMinSpectrumChargeRange() + "");
-        highSpectrumChargeRangeTxt.setText(userPreferences.getMaxSpectrumChargeRange() + "");
+        lowSpectrumChargeRangeTxt.setText(userParameters.getMinSpectrumChargeRange() + "");
+        highSpectrumChargeRangeTxt.setText(userParameters.getMaxSpectrumChargeRange() + "");
         
-        refMassTxt.setText(userPreferences.getRefMass() + "");
-        groupResultFilesCmb.setSelectedIndex(userPreferences.getOutputOption().id);
-        if (userPreferences.outputData()) {
+        refMassTxt.setText(userParameters.getRefMass() + "");
+        groupResultFilesCmb.setSelectedIndex(userParameters.getSearchGuiOutputParameters().id);
+        if (userParameters.outputData()) {
             includeDataCmb.setSelectedIndex(0);
         } else {
             includeDataCmb.setSelectedIndex(1);
         }
-        if (userPreferences.isIncludeDateInOutputName()) {
+        if (userParameters.isIncludeDateInOutputName()) {
             includeDateCmb.setSelectedIndex(0);
         } else {
             includeDateCmb.setSelectedIndex(1);
@@ -342,7 +342,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
 
         groupResultFilesTxt.setText("Group Identification Files");
 
-        groupResultFilesCmb.setModel(new DefaultComboBoxModel(SearchGuiOutputOption.getOutputOptionsNames()));
+        groupResultFilesCmb.setModel(new DefaultComboBoxModel(SearchGuiOutputParameters.getOutputParametersNames()));
         groupResultFilesCmb.setToolTipText("Output files grouping options");
         groupResultFilesCmb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -529,23 +529,23 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         if (validateAdvancedParametersInput(true)) {
 
-            UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-            userPreferences.setRenameXTandemFile(renameCmb.getSelectedIndex() == 0);
-            userPreferences.setCheckPeakPicking(peakPickingComboBox.getSelectedIndex() == 0);
-            userPreferences.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
-            userPreferences.setCheckMgfSize(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
-            userPreferences.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
-            userPreferences.setMgfNSpectra(new Integer(mgfReducedSizeTxt.getText().trim()));
-            SearchGuiOutputOption outputOption = SearchGuiOutputOption.getOutputOption(groupResultFilesCmb.getSelectedIndex());
-            userPreferences.setOutputOption(outputOption);
-            userPreferences.setOutputData(includeDataCmb.getSelectedIndex() == 0);
-            userPreferences.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
-            userPreferences.setRefMass(new Double(refMassTxt.getText()));
-            userPreferences.setCheckSpectrumCharges(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
-            userPreferences.setMinSpectrumChargeRange(new Integer(lowSpectrumChargeRangeTxt.getText()));
-            userPreferences.setMaxSpectrumChargeRange(new Integer(highSpectrumChargeRangeTxt.getText()));
+            UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
+            userParameters.setRenameXTandemFile(renameCmb.getSelectedIndex() == 0);
+            userParameters.setCheckPeakPicking(peakPickingComboBox.getSelectedIndex() == 0);
+            userParameters.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
+            userParameters.setCheckMgfSize(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
+            userParameters.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
+            userParameters.setMgfNSpectra(new Integer(mgfReducedSizeTxt.getText().trim()));
+            SearchGuiOutputParameters outputParameters = SearchGuiOutputParameters.getOutputParameters(groupResultFilesCmb.getSelectedIndex());
+            userParameters.setSearchGuiOutputParameters(outputParameters);
+            userParameters.setOutputData(includeDataCmb.getSelectedIndex() == 0);
+            userParameters.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
+            userParameters.setRefMass(new Double(refMassTxt.getText()));
+            userParameters.setCheckSpectrumCharges(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
+            userParameters.setMinSpectrumChargeRange(new Integer(lowSpectrumChargeRangeTxt.getText()));
+            userParameters.setMaxSpectrumChargeRange(new Integer(highSpectrumChargeRangeTxt.getText()));
 
-            UtilitiesUserPreferences.saveUserPreferences(userPreferences);
+            UtilitiesUserParameters.saveUserParameters(userParameters);
 
             dispose();
         }
@@ -724,8 +724,9 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void groupResultFilesCmbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_groupResultFilesCmbActionPerformed
-        includeDataTxt.setEnabled(!((String) groupResultFilesCmb.getSelectedItem()).equalsIgnoreCase(SearchGuiOutputOption.no_zip.name));
-        includeDataCmb.setEnabled(!((String) groupResultFilesCmb.getSelectedItem()).equalsIgnoreCase(SearchGuiOutputOption.no_zip.name));
+        boolean enabled = !((String) groupResultFilesCmb.getSelectedItem()).equalsIgnoreCase(SearchGuiOutputParameters.no_zip.name);
+        includeDataTxt.setEnabled(enabled);
+        includeDataCmb.setEnabled(enabled);
     }//GEN-LAST:event_groupResultFilesCmbActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

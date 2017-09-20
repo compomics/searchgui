@@ -3,8 +3,6 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.identification.Advocate;
-import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
-import com.compomics.util.experiment.identification.identification_parameters.tool_specific.TideParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
