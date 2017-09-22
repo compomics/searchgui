@@ -69,6 +69,7 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
     public void startProcess() throws IOException {
 
         if (waitingHandler == null || !waitingHandler.isRunCanceled()) {
+            
             Duration processDuration = new Duration();
             processDuration.start();
 

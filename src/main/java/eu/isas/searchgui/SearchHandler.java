@@ -65,6 +65,10 @@ public class SearchHandler {
      */
     private static String enzymeFile = "resources/conf/searchGUI_enzymes.xml";
     /**
+     * Default SearchGUI configurations.
+     */
+    public static final String SEARCHGUI_CONFIGURATION_FILE = "searchGUI_configuration.txt";
+    /**
      * Folder where the output is stored before packaging.
      */
     public final static String OUTPUT_TEMP_FOLDER_NAME = ".SearchGUI_temp";
@@ -289,10 +293,6 @@ public class SearchHandler {
      * The name of the folder where to save the mgf and FASTA file.
      */
     public final static String DEFAULT_DATA_FOLDER = "data";
-    /**
-     * Default SearchGUI configurations.
-     */
-    public static final String SEARCHGUI_CONFIGURATION_FILE = "searchGUI_configuration.txt";
     /**
      * Handler for exceptions.
      */
@@ -873,38 +873,6 @@ public class SearchHandler {
         }
 
         return enableSearchEngine;
-    }
-
-    /**
-     * Returns a string with the modifications used.
-     *
-     * @return a string with the modifications used.
-     */
-    public String loadModificationsUse() {
-        String result = "";
-
-        File folder = new File(getJarFilePath() + File.separator + "resources" + File.separator + "conf" + File.separator);
-        if (folder.exists()) {
-            File input = new File(folder, SEARCHGUI_CONFIGURATION_FILE);
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(input));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    // Skip empty lines and comment ('#') lines.
-                    line = line.trim();
-                    if (line.equals("") || line.startsWith("#")) {
-                    } else if (line.equals("Modification use:")) {
-                        result = br.readLine().trim();
-                    }
-                }
-                br.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace(); // @TODO: this exception should be thrown to the GUI!
-                JOptionPane.showMessageDialog(null, "An error occurred when trying to load the modifications preferences.",
-                        "Configuration Import Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-        return result;
     }
 
     /**

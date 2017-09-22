@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.stream.XMLStreamException;
 import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 
 /**
  * A dialog for editing the PeptideShaker settings required when starting
@@ -31,7 +32,7 @@ import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downl
  * @author Harald Barsnes
  * @author Marc Vaudel
  */
-public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
+public class PeptideShakerParametersDialog extends javax.swing.JDialog {
 
     /**
      * The SearchGUI parent.
@@ -57,15 +58,17 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
      * @param modal if the dialog is to be modal
      * @param mascotFiles the mascot dat files
      */
-    public PeptideShakerSettingsDialog(SearchGUI searchGUI, boolean modal, ArrayList<File> mascotFiles) {
+    public PeptideShakerParametersDialog(SearchGUI searchGUI, boolean modal, ArrayList<File> mascotFiles) {
         super(searchGUI, modal);
         this.searchGUI = searchGUI;
 
         initComponents();
 
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+
         // check for 64 bit java and for at least 4 gb memory 
         boolean java64bit = CompomicsWrapper.is64BitJava();
-        boolean memoryOk = (searchGUI.getUtilitiesUserParameters().getMemoryParameters() >= 4000);
+        boolean memoryOk = utilitiesUserParameters.getMemoryParameter() >= 4000;
         String javaVersion = System.getProperty("java.version");
         boolean javaVersionWarning = javaVersion.startsWith("1.5") || javaVersion.startsWith("1.6");
         if (java64bit && memoryOk && !javaVersionWarning) {
@@ -99,12 +102,10 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
             outputFileTextField.setText(searchGUI.getSearchHandler().getPeptideShakerFile().getAbsolutePath());
         }
 
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-
         // display the current peptide shaker path
-        if (utilitiesUserPreferences != null) {
-            peptideShakerInstallationJTextField.setText(utilitiesUserPreferences.getPeptideShakerPath());
-            String peptideShakerJarPath = utilitiesUserPreferences.getPeptideShakerPath();
+        if (utilitiesUserParameters != null) {
+            peptideShakerInstallationJTextField.setText(utilitiesUserParameters.getPeptideShakerPath());
+            String peptideShakerJarPath = utilitiesUserParameters.getPeptideShakerPath();
             if (peptideShakerJarPath != null && peptideShakerJarPath.lastIndexOf("-beta") == -1 && new File(peptideShakerJarPath).exists()) {
                 // check the peptide shaker version
                 boolean newVersion = checkForNewVersion(peptideShakerJarPath);
@@ -119,8 +120,8 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
                         boolean success = downloadPeptideShaker();
 
                         if (success) {
-                            utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-                            peptideShakerInstallationJTextField.setText(utilitiesUserPreferences.getPeptideShakerPath());
+                            utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+                            peptideShakerInstallationJTextField.setText(utilitiesUserParameters.getPeptideShakerPath());
                         }
                     } else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
                         dispose();
@@ -524,12 +525,12 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         try {
             new PeptideShakerSetupDialog(searchGUI, true);
 
-            UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+            UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
             // display the current peptide shaker path
-            if (utilitiesUserPreferences != null) {
-                peptideShakerInstallationJTextField.setText(utilitiesUserPreferences.getPeptideShakerPath());
-                //lastSelectedFolder = utilitiesUserPreferences.getPeptideShakerPath();
+            if (utilitiesUserParameters != null) {
+                peptideShakerInstallationJTextField.setText(utilitiesUserParameters.getPeptideShakerPath());
+                //lastSelectedFolder = utilitiesUserParameters.getPeptideShakerPath();
             }
 
         } catch (FileNotFoundException ex) {
@@ -689,7 +690,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_clearMascotFilesButtonActionPerformed
 
     /**
-     * Open the ProcessingPreferencesDialog.
+     * Open the ProcessingParametersDialog.
      *
      * @param evt
      */
@@ -754,8 +755,8 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
 
     /**
      * Cancel the dialog.
-     * 
-     * @param evt 
+     *
+     * @param evt
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         canceled = true;
@@ -944,11 +945,13 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
         boolean firstTimeInstall = true;
         String installPath = null;
 
-        if (searchGUI.getUtilitiesUserPreferences().getPeptideShakerPath() != null) {
-            if (new File(searchGUI.getUtilitiesUserPreferences().getPeptideShakerPath()).getParentFile() != null
-                    && new File(searchGUI.getUtilitiesUserPreferences().getPeptideShakerPath()).getParentFile().getParentFile() != null) {
-                installPath = new File(searchGUI.getUtilitiesUserPreferences().getPeptideShakerPath()).getParentFile().getParent();
-            }
+        final UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+
+        String peptideShakerPath = utilitiesUserParameters.getPeptideShakerPath();
+
+        if (peptideShakerPath != null && new File(peptideShakerPath).getParentFile() != null
+                && new File(peptideShakerPath).getParentFile().getParentFile() != null) {
+            installPath = new File(peptideShakerPath).getParentFile().getParent();
         }
 
         final File downloadFolder;
@@ -992,7 +995,7 @@ public class PeptideShakerSettingsDialog extends javax.swing.JDialog {
                             downloadLatestZipFromRepo(downloadFolder, "PeptideShaker", "eu.isas.peptideshaker", "PeptideShaker", "peptide-shaker.ico",
                                     null, jarRepository, false, true, new GUIFileDAO(), progressDialog);
                         } else {
-                            downloadLatestZipFromRepo(new File(searchGUI.getUtilitiesUserPreferences().getPeptideShakerPath()).toURI().toURL(), "PeptideShaker", false,
+                            downloadLatestZipFromRepo(new File(utilitiesUserParameters.getPeptideShakerPath()).toURI().toURL(), "PeptideShaker", false,
                                     "peptide-shaker.ico", null, jarRepository, false, true, new GUIFileDAO(), progressDialog);
                         }
                     } catch (IOException e) {

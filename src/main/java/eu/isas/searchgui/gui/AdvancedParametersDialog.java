@@ -16,7 +16,7 @@ import javax.swing.SwingConstants;
  * @author Harald Barsnes
  * @author Marc Vaudel
  */
-public class AdvancedSettingsDialog extends javax.swing.JDialog {
+public class AdvancedParametersDialog extends javax.swing.JDialog {
 
     /**
      * Creates a new AdvancedSettingsDialog.
@@ -24,7 +24,7 @@ public class AdvancedSettingsDialog extends javax.swing.JDialog {
      * @param searchGUI the SearchGUI main frame
      * @param modal if the dialog is to be modal
      */
-    public AdvancedSettingsDialog(SearchGUI searchGUI, boolean modal) {
+    public AdvancedParametersDialog(SearchGUI searchGUI, boolean modal) {
         super(searchGUI, modal);
         initComponents();
 

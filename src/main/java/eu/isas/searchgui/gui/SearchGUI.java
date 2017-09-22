@@ -5,7 +5,7 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.ToolFactory;
 import com.compomics.software.autoupdater.MavenJarFile;
 import com.compomics.software.dialogs.JavaHomeOrMemoryDialogParent;
-import com.compomics.software.dialogs.JavaSettingsDialog;
+import com.compomics.software.dialogs.JavaParametersDialog;
 import com.compomics.software.dialogs.PeptideShakerSetupDialog;
 import com.compomics.software.dialogs.ProteoWizardSetupDialog;
 import com.compomics.software.settings.PathKey;
@@ -14,12 +14,23 @@ import com.compomics.software.settings.gui.PathParametersDialog;
 import com.compomics.util.Util;
 import com.compomics.util.examples.BareBonesBrowserLaunch;
 import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
+import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.genes.GeneFactory;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
+import com.compomics.util.experiment.io.mass_spectrometry.MgfIndex;
+import com.compomics.util.experiment.io.mass_spectrometry.MgfReader;
+import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsFormat;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardFilter;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.gui.MsConvertParametersDialog;
 import com.compomics.util.gui.JOptionEditorPane;
-import com.compomics.util.gui.PrivacySettingsDialog;
+import com.compomics.util.gui.PrivacyParametersDialog;
 import com.compomics.util.gui.UtilitiesGUIDefaults;
 import com.compomics.util.gui.error_handlers.BugReport;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
@@ -34,9 +45,40 @@ import javax.swing.filechooser.FileFilter;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.filehandling.FileDisplayDialog;
 import com.compomics.util.gui.filehandling.TempFilesManager;
+import com.compomics.util.gui.modification.ModificationsDialog;
+import com.compomics.util.gui.parameters.identification.IdentificationParametersEditionDialog;
+import com.compomics.util.gui.parameters.identification.IdentificationParametersOverviewDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.AndromedaParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.CometParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.DirecTagParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.MsAmandaParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.MsgfParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.MyriMatchParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.NovorParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.OmssaParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.TideParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.XTandemParametersDialog;
+import com.compomics.util.gui.parameters.identification.search.SearchParametersDialog;
+import com.compomics.util.gui.parameters.tools.ProcessingParametersDialog;
 import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
+import com.compomics.util.io.file.LastSelectedFolder;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.AndromedaParameters;
+import com.compomics.util.parameters.identification.tool_specific.CometParameters;
+import com.compomics.util.parameters.identification.tool_specific.DirecTagParameters;
+import com.compomics.util.parameters.identification.tool_specific.MsAmandaParameters;
+import com.compomics.util.parameters.identification.tool_specific.MsgfParameters;
+import com.compomics.util.parameters.identification.tool_specific.MyriMatchParameters;
+import com.compomics.util.parameters.identification.tool_specific.NovorParameters;
+import com.compomics.util.parameters.identification.tool_specific.OmssaParameters;
+import com.compomics.util.parameters.identification.tool_specific.TideParameters;
+import com.compomics.util.parameters.identification.tool_specific.XtandemParameters;
+import com.compomics.util.parameters.tools.ProcessingParameters;
+import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import eu.isas.searchgui.SearchGUIWrapper;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
@@ -84,9 +126,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private ArrayList<File> rawFiles = new ArrayList<File>();
     /**
-     * The post translational modifications factory.
+     * The modifications factory.
      */
-    private PTMFactory ptmFactory;
+    private ModificationFactory modificationFactory;
     /**
      * The spectrum factory.
      */
@@ -104,7 +146,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private MgfReader mgfReader;
     /**
-     * A boolean indicating if the user has visited the Settings tab. If the
+     * A boolean indicating if the user has visited the Parameters tab. If the
      * user does not visit the settings tab before starting the search a warning
      * is displayed.s
      */
@@ -120,7 +162,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * The processing preferences.
      */
-    private ProcessingPreferences processingPreferences;
+    private ProcessingParameters processingParameters;
     /**
      * The msconvert parameters.
      */
@@ -140,9 +182,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private WaitingDialog waitingDialog;
     /**
-     * The utilities user preferences.
+     * The utilities user parameters.
      */
-    private UtilitiesUserPreferences utilitiesUserPreferences = null;
+    private UtilitiesUserParameters utilitiesUserParameters = null;
     /**
      * Reference for the separation of modifications.
      */
@@ -154,7 +196,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * The list of the default modifications.
      */
-    private ArrayList<String> modificationUse = new ArrayList<String>();
+    private HashSet<String> defaultModifications = new HashSet<String>();
     /**
      * If true, then one of the currently processed spectra has duplicate
      * titles.
@@ -209,13 +251,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
         try {
             if (!SearchGUIPathParameters.getErrorKeys(getJarFilePath()).isEmpty()) {
-                editPathSettings();
+                editPathParameters();
             }
         } catch (Exception e) {
-            editPathSettings();
+            editPathParameters();
         }
 
-        ptmFactory = PTMFactory.getInstance();
+        modificationFactory = ModificationFactory.getInstance();
         spectrumFactory = SpectrumFactory.getInstance();
         enzymeFactory = EnzymeFactory.getInstance();
 
@@ -227,12 +269,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         setUpLogFile();
 
-        // turn off the derby log file
-        DerbyUtil.disableDerbyLog();
-
         // load the utilities user preferences
         try {
-            utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+            utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred when reading the user preferences.", "File Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -240,7 +279,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if a newer version of SearchGUI is available
         boolean newVersion = false;
-        if (!getJarFilePath().equalsIgnoreCase(".") && utilitiesUserPreferences.isAutoUpdate()) {
+        if (!getJarFilePath().equalsIgnoreCase(".") && utilitiesUserParameters.isAutoUpdate()) {
             newVersion = checkForNewVersion();
         }
 
@@ -250,7 +289,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             enzymeFactory = EnzymeFactory.getInstance();
 
             // load gene mappings
-            GeneFactory geneFactory = GeneFactory.getInstance();
+            GeneFactory geneFactory = new GeneFactory();
             try {
                 geneFactory.initialize(getJarFilePath());
             } catch (Exception e) {
@@ -270,18 +309,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // set this version as the default SearchGUI version
             if (!getJarFilePath().equalsIgnoreCase(".")) {
                 String versionNumber = new eu.isas.searchgui.utilities.Properties().getVersion();
-                utilitiesUserPreferences.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
-                UtilitiesUserPreferences.saveUserPreferences(utilitiesUserPreferences);
+                utilitiesUserParameters.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
+                UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
             }
 
             // set the processing preferences
-            processingPreferences = new ProcessingPreferences();
-            processingPreferences.setnThreads(Runtime.getRuntime().availableProcessors());
+            processingParameters = new ProcessingParameters();
+            processingParameters.setnThreads(Runtime.getRuntime().availableProcessors());
 
             // set the search parameters
-            updateIdentificationSettingsDropDownMenu(true);
+            updateIdentificationParametersDropDownMenu(true);
 
-            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, identificationParametersFile, processingPreferences, exceptionHandler);
+            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, identificationParametersFile, processingParameters, exceptionHandler);
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
             enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());
@@ -341,7 +380,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             mgfReader = new MgfReader();
 
-            loadModificationUse(searchHandler.loadModificationsUse());
+            defaultModifications = utilitiesUserParameters.getDefaultModifications();
 
             String operatingSystem = System.getProperty("os.name").toLowerCase();
 
@@ -433,21 +472,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             setVisible(true);
             
             // incrementing the counter for a new SearchGUI start
-            if (utilitiesUserPreferences.isAutoUpdate()) {
+            if (utilitiesUserParameters.isAutoUpdate()) {
                 Util.sendGAUpdate("UA-36198780-2", "toolstart", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
             }
         }
     }
 
     /**
-     * Update the Identification Settings dropdown menu.
+     * Update the Identification Parameters dropdown menu.
      */
-    private void updateIdentificationSettingsDropDownMenu(boolean loadSettings) {
+    private void updateIdentificationParametersDropDownMenu(boolean loadParameters) {
 
         Vector parameterList = new Vector();
         parameterList.add("-- Select --");
 
-        if (identificationParametersFile != null && loadSettings) {
+        if (identificationParametersFile != null && loadParameters) {
 
             try {
                 identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
@@ -461,7 +500,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
                 if (identificationParametersFactory.getParametersList().contains(identificationParameters.getName())) {
-                    identificationParameters.setName(getIdentificationSettingsFileName());
+                    identificationParameters.setName(getIdentificationParametersFileName());
                 }
 
                 identificationParametersFactory.addIdentificationParameters(identificationParameters);
@@ -495,7 +534,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @return the name to use for the identification settings file
      */
-    private String getIdentificationSettingsFileName() {
+    private String getIdentificationParametersFileName() {
 
         String name = identificationParameters.getName();
         int counter = 2;
@@ -2401,7 +2440,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     checkProteoWizard();
 
                     // verify the sizes of the mgf files
-                    if (utilitiesUserPreferences.checkMgfSize()) {
+                    if (utilitiesUserParameters.checkMgfSize()) {
                         verifyMgfFilesSize();
                     }
 
@@ -2545,7 +2584,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         // check if there are not too many PTMs for OMSSA
-        if (enableOmssaJCheckBox.isSelected() && searchParameters.getPtmSettings().getAllModifications().size() > 30) {
+        if (enableOmssaJCheckBox.isSelected() && searchParameters.getModificationParameters().getAllModifications().size() > 30) {
             JOptionPane.showMessageDialog(this,
                     "OMSSA cannot be operated with >30 modifications.", "Unsupported parameters", JOptionPane.WARNING_MESSAGE);
             return;
@@ -2565,27 +2604,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if there are less than 10 ptms (variable and fixed) for novor
         if (enableNovorJCheckBox.isSelected()) {
-            if ((searchParameters.getPtmSettings().getFixedModifications().size() + searchParameters.getPtmSettings().getVariableModifications().size()) > 10) {
+            if ((searchParameters.getModificationParameters().getFixedModifications().size() + searchParameters.getModificationParameters().getVariableModifications().size()) > 10) {
                 JOptionPane.showMessageDialog(this, "Maximum ten modifications are allowed when running Novor.\n"
-                        + "Please remove some of the modifications or disable Novor.", "Settings Error", JOptionPane.WARNING_MESSAGE);
+                        + "Please remove some of the modifications or disable Novor.", "Parameters Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
         }
 
         // check if all ptms are valid for DirecTag
         if (enableDirecTagJCheckBox.isSelected()) {
-            boolean terminalPtmsSelected = false;
-            for (String tempPtm : searchParameters.getPtmSettings().getAllModifications()) {
-                PTM currentPtm = ptmFactory.getPTM(tempPtm);
-                if (currentPtm.isCTerm() || currentPtm.isNTerm()) {
-                    terminalPtmsSelected = true;
-                }
-            }
+            
+            boolean terminalModificationsSelected = searchParameters.getModificationParameters().getAllModifications().stream()
+                    .map(modName -> modificationFactory.getModification(modName))
+                    .anyMatch(modification -> modification.getModificationType() != ModificationType.modaa);
 
-            if (terminalPtmsSelected) {
+            if (terminalModificationsSelected) {
                 int option = JOptionPane.showConfirmDialog(this,
                         "Terminal modifications are not supported for DirecTag and will be ignored.\n"
-                        + "Do you still want to continue?", "Settings Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                        + "Do you still want to continue?", "Parameters Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (option == JOptionPane.NO_OPTION) {
                     return;
                 }
@@ -2601,25 +2637,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (peptideShakerCheckBox.isSelected() && enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
                     "The selected OMSSA output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
-                    + "OMSSA OMX format in the Advanced Settings, or disable OMSSA or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else if (peptideShakerCheckBox.isSelected() && enableMyriMatchJCheckBox.isSelected() && myriMatchParameters.getOutputFormat().equals("pepXML")) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
                     "The selected MyriMatch output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "mzIdentML in the Advanced Settings, or disable MyriMatch or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    + "mzIdentML in the Advanced Parameters, or disable MyriMatch or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else if (peptideShakerCheckBox.isSelected() && enableTideJCheckBox.isSelected() && !tideParameters.getTextOutput()) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
                     "The selected Tide output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "Tide text output in the Advanced Settings, or disable Tide or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    + "Tide text output in the Advanced Parameters, or disable Tide or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else if (peptideShakerCheckBox.isSelected() && enableCometJCheckBox.isSelected() && cometParameters.getSelectedOutputFormat() != CometParameters.CometOutputFormat.PepXML) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
                     "The selected Comet output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "Comet PepXML output in the Advanced Settings, or disable Comet or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    + "Comet PepXML output in the Advanced Parameters, or disable Comet or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else {
@@ -2640,7 +2676,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     }
                 }
 
-                if (searchHandler.isXtandemEnabled() && utilitiesUserPreferences.renameXTandemFile()
+                if (searchHandler.isXtandemEnabled() && utilitiesUserParameters.renameXTandemFile()
                         && !searchHandler.getXTandemFiles(outputFolder, spectrumFileName).isEmpty()) {
                     fileFound = true;
                     break;
@@ -2697,53 +2733,53 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             searchHandler.setOutputTimeStamp(SearchHandler.getOutputDate());
 
-            SearchGuiOutputOption outputOption = utilitiesUserPreferences.getOutputOption();
+            SearchGuiOutputParameters outputOption = utilitiesUserParameters.getSearchGuiOutputParameters();
 
-            if (outputOption == SearchGuiOutputOption.grouped) {
-                File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, utilitiesUserPreferences.isIncludeDateInOutputName());
+            if (outputOption == SearchGuiOutputParameters.grouped) {
+                File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, utilitiesUserParameters.isIncludeDateInOutputName());
                 if (outputFile.exists()) {
                     fileFound = true;
                 }
-            } else if (outputOption == SearchGuiOutputOption.algorithm) {
+            } else if (outputOption == SearchGuiOutputParameters.algorithm) {
 
                 if (searchHandler.isOmssaEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isXtandemEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isMsgfEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isMsAmandaEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
 
                 if (searchHandler.isMyriMatchEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserPreferences.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                     }
                 }
-            } else if (outputOption == SearchGuiOutputOption.run) {
+            } else if (outputOption == SearchGuiOutputParameters.run) {
                 for (File spectrumFile : spectrumFiles) {
                     String runName = Util.removeExtension(spectrumFile.getName());
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, runName, utilitiesUserPreferences.isIncludeDateInOutputName());
+                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, runName, utilitiesUserParameters.isIncludeDateInOutputName());
                     if (outputFile.exists()) {
                         fileFound = true;
                         break;
@@ -2761,7 +2797,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // check if the xtandem files can be renamed
-            if (searchHandler.isXtandemEnabled() && utilitiesUserPreferences.renameXTandemFile()) {
+            if (searchHandler.isXtandemEnabled() && utilitiesUserParameters.renameXTandemFile()) {
                 for (File spectrumFile : spectrumFiles) {
                     String spectrumFileName = spectrumFile.getName();
 
@@ -2782,7 +2818,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         saveConfigurationFile(); // save the search engine locations and ptms used
         searchHandler.setIdentificationParameters(identificationParameters);
         searchHandler.setIdentificationParametersFile(identificationParametersFile);
-        searchHandler.setProcessingPreferences(processingPreferences);
+        searchHandler.setProcessingParameters(processingParameters);
         searchHandler.setMgfFiles(mgfFiles);
         searchHandler.setRawFiles(rawFiles);
         searchHandler.setResultsFolder(outputFolder);
@@ -2790,7 +2826,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setMsConvertParameters(msConvertParameters); //@TODO: check that proteowizard in installed?
 
         // incrementing the counter for a new SearchGUI start
-        if (utilitiesUserPreferences.isAutoUpdate()) {
+        if (utilitiesUserParameters.isAutoUpdate()) {
             Util.sendGAUpdate("UA-36198780-2", "startrun-gui", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
         }
 
@@ -2827,7 +2863,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_aboutButtonActionPerformed
 
     /**
-     * Open the SettingsDialog.
+     * Open the ParametersDialog.
      *
      * @param evt the action event
      */
@@ -2843,7 +2879,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void addSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSettingsButtonActionPerformed
 
         IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
-                this, null, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                this, null, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
 
         if (!identificationParametersEditionDialog.isCanceled()) {
@@ -2880,8 +2916,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void advancedSettingsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advancedSettingsMenuItemActionPerformed
-        new AdvancedSettingsDialog(this, true);
-        utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        new AdvancedParametersDialog(this, true);
+        utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
     }//GEN-LAST:event_advancedSettingsMenuItemActionPerformed
 
     /**
@@ -3262,7 +3298,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void peptideShakerCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peptideShakerCheckBoxActionPerformed
-        openPeptideShakerSettings(false);
+        openPeptideShakerParameters(false);
     }//GEN-LAST:event_peptideShakerCheckBoxActionPerformed
 
     /**
@@ -3271,7 +3307,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void javaSettingsJMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_javaSettingsJMenuItemActionPerformed
-        new JavaSettingsDialog(this, this, null, "SearchGUI", true);
+        new JavaParametersDialog(this, this, null, "SearchGUI", true);
     }//GEN-LAST:event_javaSettingsJMenuItemActionPerformed
 
     /**
@@ -3548,12 +3584,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_msAmandaSettingsButtonMouseExited
 
     /**
-     * Open the PrivacySettingsDialog.
+     * Open the PrivacyParametersDialog.
      *
      * @param evt the action event
      */
     private void privacyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privacyMenuItemActionPerformed
-        new PrivacySettingsDialog(this, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
+        new PrivacyParametersDialog(this, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
     }//GEN-LAST:event_privacyMenuItemActionPerformed
 
     /**
@@ -3733,7 +3769,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void resourceSettingsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resourceSettingsMenuItemActionPerformed
-        editPathSettings();
+        editPathParameters();
     }//GEN-LAST:event_resourceSettingsMenuItemActionPerformed
 
     /**
@@ -3975,9 +4011,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_msconvertCheckBoxActionPerformed
 
     private void processingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processingMenuItemActionPerformed
-        ProcessingPreferencesDialog processingPreferencesDialog = new ProcessingPreferencesDialog(this, processingPreferences, true);
-        if (!processingPreferencesDialog.isCanceled()) {
-            processingPreferences = processingPreferencesDialog.getProcessingPreferences();
+        ProcessingParametersDialog processingParametersDialog = new ProcessingParametersDialog(this, processingParameters, true);
+        if (!processingParametersDialog.isCanceled()) {
+            processingParameters = processingParametersDialog.getProcessingParameters();
         }
     }//GEN-LAST:event_processingMenuItemActionPerformed
 
@@ -3987,6 +4023,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void settingsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsComboBoxActionPerformed
+        
         editSettingsButton.setEnabled(settingsComboBox.getSelectedIndex() != 0);
 
         if (settingsComboBox.getSelectedIndex() != 0) {
@@ -4023,7 +4060,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void msconvertSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msconvertSettingsButtonActionPerformed
         boolean canceled = false;
-        if (utilitiesUserPreferences.getProteoWizardPath() == null) {
+        if (utilitiesUserParameters.getProteoWizardPath() == null) {
             canceled = !editProteoWizardInstallation();
         }
         if (!canceled) {
@@ -4040,21 +4077,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void xtandemSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonActionPerformed
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
-        XTandemSettingsDialog xtandemSettingsDialog = new XTandemSettingsDialog(this, oldXtandemParameters, searchParameters.getPtmSettings(),
-                searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserPreferences.getRefMass()), true);
+        XTandemParametersDialog xtandemParametersDialog = new XTandemParametersDialog(this, oldXtandemParameters, searchParameters.getModificationParameters(),
+                searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserParameters.getRefMass()), true);
 
         boolean xtandemParametersSet = false;
 
         while (!xtandemParametersSet) {
 
-            if (!xtandemSettingsDialog.isCancelled()) {
-                XtandemParameters newXtandemParameters = xtandemSettingsDialog.getInput();
+            if (!xtandemParametersDialog.isCancelled()) {
+                XtandemParameters newXtandemParameters = xtandemParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
-                if (!oldXtandemParameters.equals(newXtandemParameters) || xtandemSettingsDialog.modProfileEdited()) {
+                if (!oldXtandemParameters.equals(newXtandemParameters) || xtandemParametersDialog.modProfileEdited()) {
 
                     int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
@@ -4063,7 +4100,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         case JOptionPane.YES_OPTION:
                             try {
                                 searchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
-                                searchParameters.setPtmSettings(xtandemSettingsDialog.getModificationProfile());
+                                searchParameters.setModificationParameters(xtandemParametersDialog.getModificationProfile());
                                 identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
                                 xtandemParametersSet = true;
                             } catch (Exception e) {
@@ -4073,8 +4110,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            xtandemSettingsDialog = new XTandemSettingsDialog(this, newXtandemParameters, searchParameters.getPtmSettings(),
-                                    searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserPreferences.getRefMass()), true);
+                            xtandemParametersDialog = new XTandemParametersDialog(this, newXtandemParameters, searchParameters.getModificationParameters(),
+                                    searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserParameters.getRefMass()), true);
                             break;
                         case JOptionPane.NO_OPTION:
                             xtandemParametersSet = true;
@@ -4099,7 +4136,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void myriMatchSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myriMatchSettingsButtonActionPerformed
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MyriMatchParameters oldMyriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
-        MyriMatchSettingsDialog myriMatchParametersDialog = new MyriMatchSettingsDialog(this, oldMyriMatchParameters, true);
+        MyriMatchParametersDialog myriMatchParametersDialog = new MyriMatchParametersDialog(this, oldMyriMatchParameters, true);
 
         boolean myriMatchParametersSet = false;
 
@@ -4127,7 +4164,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            myriMatchParametersDialog = new MyriMatchSettingsDialog(this, newMyriMatchParameters, true);
+                            myriMatchParametersDialog = new MyriMatchParametersDialog(this, newMyriMatchParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             myriMatchParametersSet = true;
@@ -4152,7 +4189,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void msAmandaSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msAmandaSettingsButtonActionPerformed
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
-        MsAmandaSettingsDialog msAmandaParametersDialog = new MsAmandaSettingsDialog(this, oldMsAmandaParameters, true);
+        MsAmandaParametersDialog msAmandaParametersDialog = new MsAmandaParametersDialog(this, oldMsAmandaParameters, true);
 
         boolean msAmandaParametersSet = false;
 
@@ -4180,7 +4217,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            msAmandaParametersDialog = new MsAmandaSettingsDialog(this, newMsAmandaParameters, true);
+                            msAmandaParametersDialog = new MsAmandaParametersDialog(this, newMsAmandaParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             msAmandaParametersSet = true;
@@ -4208,7 +4245,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldMsgfParameters == null) { //backward compatibility check
             oldMsgfParameters = new MsgfParameters();
         }
-        MsgfSettingsDialog msgfParametersDialog = new MsgfSettingsDialog(this, oldMsgfParameters, true);
+        MsgfParametersDialog msgfParametersDialog = new MsgfParametersDialog(this, oldMsgfParameters, true);
 
         boolean msgfParametersSet = false;
 
@@ -4236,7 +4273,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            msgfParametersDialog = new MsgfSettingsDialog(this, newMsgfParameters, true);
+                            msgfParametersDialog = new MsgfParametersDialog(this, newMsgfParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             msgfParametersSet = true;
@@ -4264,7 +4301,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldOmssaParameters == null) { //backward compatibility check
             oldOmssaParameters = new OmssaParameters();
         }
-        OmssaSettingsDialog omssaParametersDialog = new OmssaSettingsDialog(this, oldOmssaParameters, true);
+        OmssaParametersDialog omssaParametersDialog = new OmssaParametersDialog(this, oldOmssaParameters, true);
 
         boolean omssaParametersSet = false;
 
@@ -4292,7 +4329,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            omssaParametersDialog = new OmssaSettingsDialog(this, newOmssaParameters, true);
+                            omssaParametersDialog = new OmssaParametersDialog(this, newOmssaParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             omssaParametersSet = true;
@@ -4317,14 +4354,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void cometSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cometSettingsButtonActionPerformed
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         CometParameters oldCometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
-        CometSettingsDialog cometSettingsDialog = new CometSettingsDialog(this, oldCometParameters, true);
+        CometParametersDialog cometParametersDialog = new CometParametersDialog(this, oldCometParameters, true);
 
         boolean cometParametersSet = false;
 
         while (!cometParametersSet) {
 
-            if (!cometSettingsDialog.isCancelled()) {
-                CometParameters newCometParameters = cometSettingsDialog.getInput();
+            if (!cometParametersDialog.isCancelled()) {
+                CometParameters newCometParameters = cometParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldCometParameters.equals(newCometParameters)) {
@@ -4345,7 +4382,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            cometSettingsDialog = new CometSettingsDialog(this, newCometParameters, true);
+                            cometParametersDialog = new CometParametersDialog(this, newCometParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             cometParametersSet = true;
@@ -4373,7 +4410,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldTideParameters == null) { //backward compatibility check
             oldTideParameters = new TideParameters();
         }
-        TideSettingsDialog tideParametersDialog = new TideSettingsDialog(this, oldTideParameters, true);
+        TideParametersDialog tideParametersDialog = new TideParametersDialog(this, oldTideParameters, true);
 
         boolean tideParametersSet = false;
 
@@ -4401,7 +4438,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            tideParametersDialog = new TideSettingsDialog(this, newTideParameters, true);
+                            tideParametersDialog = new TideParametersDialog(this, newTideParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             tideParametersSet = true;
@@ -4429,7 +4466,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (oldAndromedaParameters == null) { //backward compatibility check
             oldAndromedaParameters = new AndromedaParameters();
         }
-        AndromedaSettingsDialog andromedaParametersDialog = new AndromedaSettingsDialog(this, oldAndromedaParameters, true);
+        AndromedaParametersDialog andromedaParametersDialog = new AndromedaParametersDialog(this, oldAndromedaParameters, true);
 
         boolean andromedaParametersSet = false;
 
@@ -4457,7 +4494,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            andromedaParametersDialog = new AndromedaSettingsDialog(this, newAndromedaParameters, true);
+                            andromedaParametersDialog = new AndromedaParametersDialog(this, newAndromedaParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             andromedaParametersSet = true;
@@ -4480,7 +4517,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void peptideShakerSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_peptideShakerSettingsButtonActionPerformed
-        openPeptideShakerSettings(true);
+        openPeptideShakerParameters(true);
     }//GEN-LAST:event_peptideShakerSettingsButtonActionPerformed
 
     /**
@@ -4501,7 +4538,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void editIdSettingsFilesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editIdSettingsFilesMenuItemActionPerformed
         new IdentificationParametersOverviewDialog(this);
-        updateIdentificationSettingsDropDownMenu(false);
+        updateIdentificationParametersDropDownMenu(false);
     }//GEN-LAST:event_editIdSettingsFilesMenuItemActionPerformed
 
     /**
@@ -4512,7 +4549,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void direcTagSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_direcTagSettingsButtonActionPerformed
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         DirecTagParameters oldDirecTagParameters = (DirecTagParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.direcTag.getIndex());
-        DirecTagSettingsDialog direcTagParametersDialog = new DirecTagSettingsDialog(this, oldDirecTagParameters, true);
+        DirecTagParametersDialog direcTagParametersDialog = new DirecTagParametersDialog(this, oldDirecTagParameters, true);
 
         boolean direcTagParametersSet = false;
 
@@ -4540,7 +4577,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            direcTagParametersDialog = new DirecTagSettingsDialog(this, newDirecTagParameters, true);
+                            direcTagParametersDialog = new DirecTagParametersDialog(this, newDirecTagParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             direcTagParametersSet = true;
@@ -4656,7 +4693,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void novorSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novorSettingsButtonActionPerformed
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         NovorParameters oldNovorParameters = (NovorParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
-        NovorSettingsDialog novorParametersDialog = new NovorSettingsDialog(this, oldNovorParameters, true);
+        NovorParametersDialog novorParametersDialog = new NovorParametersDialog(this, oldNovorParameters, true);
 
         boolean novorParametersSet = false;
 
@@ -4684,7 +4721,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             }
                             break;
                         case JOptionPane.CANCEL_OPTION:
-                            novorParametersDialog = new NovorSettingsDialog(this, newNovorParameters, true);
+                            novorParametersDialog = new NovorParametersDialog(this, newNovorParameters, true);
                             break;
                         case JOptionPane.NO_OPTION:
                             novorParametersSet = true;
@@ -4911,7 +4948,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void editIdentificationParameters() {
 
         IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
-                this, identificationParameters, searchHandler.getConfigurationFile(), Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                this, identificationParameters, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
 
         if (!identificationParametersEditionDialog.isCanceled()) {
@@ -4924,21 +4961,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * Opens a dialog allowing the setting of paths.
      */
-    public void editPathSettings() {
+    public void editPathParameters() {
         try {
-            HashMap<PathKey, String> pathSettings = new HashMap<PathKey, String>();
+            HashMap<PathKey, String> pathParameters = new HashMap<PathKey, String>();
             for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
-                pathSettings.put(searchGUIPathKey, SearchGUIPathParameters.getPathParameter(searchGUIPathKey, getJarFilePath()));
+                pathParameters.put(searchGUIPathKey, SearchGUIPathParameters.getPathParameter(searchGUIPathKey, getJarFilePath()));
             }
             for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
-                pathSettings.put(utilitiesPathKey, UtilitiesPathParameters.getPathParameter(utilitiesPathKey));
+                pathParameters.put(utilitiesPathKey, UtilitiesPathParameters.getPathParameter(utilitiesPathKey));
             }
-            PathParametersDialog pathSettingsDialog = new PathParametersDialog(this, "SearchGUI", pathSettings);
-            if (!pathSettingsDialog.isCanceled()) {
-                HashMap<PathKey, String> newSettings = pathSettingsDialog.getKeyToPathMap();
-                for (PathKey pathKey : pathSettings.keySet()) {
-                    String oldPath = pathSettings.get(pathKey);
-                    String newPath = newSettings.get(pathKey);
+            PathParametersDialog pathParametersDialog = new PathParametersDialog(this, "SearchGUI", pathParameters);
+            if (!pathParametersDialog.isCanceled()) {
+                HashMap<PathKey, String> newParameters = pathParametersDialog.getKeyToPathMap();
+                for (PathKey pathKey : pathParameters.keySet()) {
+                    String oldPath = pathParameters.get(pathKey);
+                    String newPath = newParameters.get(pathKey);
                     if (oldPath == null && newPath != null
                             || oldPath != null && newPath == null
                             || oldPath != null && newPath != null && !oldPath.equals(newPath)) {
@@ -4964,15 +5001,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * Opens a dialog allowing the user to edit the PeptideShaker settings.
      */
-    private void editPeptideShakerSettings() {
+    private void editPeptideShakerParameters() {
 
-        PeptideShakerSettingsDialog psSettingsDialog = new PeptideShakerSettingsDialog(this, true, searchHandler.getMascotFiles());
-        if (!psSettingsDialog.isCanceled()) {
-            searchHandler.setExperimentLabel(psSettingsDialog.getProjectName());
-            searchHandler.setSampleLabel(psSettingsDialog.getSampleName());
-            searchHandler.setReplicateNumber(psSettingsDialog.getReplicateNumber());
-            searchHandler.setPeptideShakerFile(psSettingsDialog.getPeptideShakerOutputFile());
-            searchHandler.setMascotFiles(psSettingsDialog.getMascotFiles());
+        PeptideShakerParametersDialog psParametersDialog = new PeptideShakerParametersDialog(this, true, searchHandler.getMascotFiles());
+        if (!psParametersDialog.isCanceled()) {
+            searchHandler.setExperimentLabel(psParametersDialog.getProjectName());
+            searchHandler.setSampleLabel(psParametersDialog.getSampleName());
+            searchHandler.setReplicateNumber(psParametersDialog.getReplicateNumber());
+            searchHandler.setPeptideShakerFile(psParametersDialog.getPeptideShakerOutputFile());
+            searchHandler.setMascotFiles(psParametersDialog.getMascotFiles());
         } else {
             peptideShakerCheckBox.setSelected(false);
         }
@@ -5200,10 +5237,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 parametersName = Util.removeExtension(identificationParametersFile.getName());
             }
             SearchParameters searchParameters = identificationParameters.getSearchParameters();
-            SearchSettingsDialog settingsDialog = new SearchSettingsDialog(this, searchParameters,
+            SearchParametersDialog settingsDialog = new SearchParametersDialog(this, searchParameters,
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                    false, true, searchHandler.getConfigurationFile(), lastSelectedFolder, parametersName, true);
+                    false, true, lastSelectedFolder, parametersName, true);
             boolean valid = settingsDialog.validateParametersInput(false);
 
             if (!valid) {
@@ -5215,7 +5252,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     searchSettingsLbl.setToolTipText("Please check the search settings");
                 }
             } else {
-                searchParameters.setRefMass(utilitiesUserPreferences.getRefMass());
+                searchParameters.setRefMass(utilitiesUserParameters.getRefMass());
                 searchSettingsLbl.setToolTipText(null);
                 searchSettingsLbl.setForeground(Color.BLACK);
             }
@@ -5314,7 +5351,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // check for lack of peak picking
-            if (utilitiesUserPreferences.checkPeakPicking() && !spectrumFactory.getIndex(indexFile).isPeakPicked()) {
+            if (utilitiesUserParameters.checkPeakPicking() && !spectrumFactory.getIndex(indexFile).isPeakPicked()) {
 
                 this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
@@ -5359,7 +5396,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // check for duplicate titles
             HashMap<String, Integer> duplicatedSpectrumTitles = spectrumFactory.getIndex(indexFile).getDuplicatedSpectrumTitles();
 
-            if (utilitiesUserPreferences.checkDuplicateTitles() && duplicatedSpectrumTitles != null && duplicatedSpectrumTitles.size() > 0) {
+            if (utilitiesUserParameters.checkDuplicateTitles() && duplicatedSpectrumTitles != null && duplicatedSpectrumTitles.size() > 0) {
 
                 this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
@@ -5399,7 +5436,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // check for missing precursor charges
-            if (utilitiesUserPreferences.isCheckSpectrumCharges() && spectrumFactory.getIndex(indexFile).isPrecursorChargesMissing()) {
+            if (utilitiesUserParameters.isCheckSpectrumCharges() && spectrumFactory.getIndex(indexFile).isPrecursorChargesMissing()) {
 
                 this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
@@ -5457,7 +5494,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void verifyMgfFilesSize() {
         ArrayList<File> fatFiles = new ArrayList<File>();
         for (File file : mgfFiles) {
-            if (file.length() > (((long) utilitiesUserPreferences.getMgfMaxSize()) * 1048576)) {
+            if (file.length() > (((long) utilitiesUserParameters.getMgfMaxSize()) * 1048576)) {
                 fatFiles.add(file);
             }
         }
@@ -5544,7 +5581,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     progressDialog.setPrimaryProgressCounterIndeterminate(false);
 
                     try {
-                        indexes = mgfReader.splitFile(originalFile, utilitiesUserPreferences.getMgfNSpectra(), progressDialog);
+                        indexes = mgfReader.splitFile(originalFile, utilitiesUserParameters.getMgfNSpectra(), progressDialog);
                     } catch (FileNotFoundException e) {
                         progressDialog.setRunFinished();
                         JOptionPane.showMessageDialog(finalRef,
@@ -5635,7 +5672,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param settingsDisplayed boolean indicating whether the settings have
      * been displayed
      */
-    public void setSettingsDisplayed(boolean settingsDisplayed) {
+    public void setParametersDisplayed(boolean settingsDisplayed) {
         this.settingsTabDisplayed = settingsDisplayed;
     }
 
@@ -5770,7 +5807,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     public LastSelectedFolder getLastSelectedFolder() {
         if (lastSelectedFolder == null) {
             lastSelectedFolder = new LastSelectedFolder();
-            utilitiesUserPreferences.setLastSelectedFolder(lastSelectedFolder);
+            utilitiesUserParameters.setLastSelectedFolder(lastSelectedFolder);
         }
         return lastSelectedFolder;
     }
@@ -6058,41 +6095,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     @Override
-    public UtilitiesUserPreferences getUtilitiesUserPreferences() {
-        return utilitiesUserPreferences;
-    }
-
-    /**
-     * Loads the use of modifications from a line.
-     *
-     * @param aLine modification use line from the configuration file
-     */
-    private void loadModificationUse(String aLine) {
-        ArrayList<String> modificationUses = new ArrayList<String>();
-
-        // Split the different modifications.
-        int start;
-
-        while ((start = aLine.indexOf(MODIFICATION_SEPARATOR)) >= 0) {
-            String name = aLine.substring(0, start);
-            aLine = aLine.substring(start + 2);
-            if (!name.trim().equals("")) {
-                modificationUses.add(name);
-            }
-        }
-
-        for (String name : modificationUses) {
-            start = name.indexOf("_");
-            String modificationName = name;
-
-            if (start != -1) {
-                modificationName = name.substring(0, start); // old format, remove usage statistics
-            }
-
-            if (ptmFactory.containsPTM(modificationName)) {
-                modificationUse.add(modificationName);
-            }
-        }
+    public UtilitiesUserParameters getUtilitiesUserParameters() {
+        return utilitiesUserParameters;
     }
 
     /**
@@ -6102,7 +6106,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public String getModificationUseAsString() {
         String result = "";
-        for (String name : modificationUse) {
+        for (String name : defaultModifications) {
             result += name + MODIFICATION_SEPARATOR;
         }
         return result;
@@ -6113,8 +6117,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @return a list with the most used modifications
      */
-    public ArrayList<String> getModificationUse() {
-        return modificationUse;
+    public HashSet<String> getDefaultModifications() {
+        return defaultModifications;
     }
 
     /**
@@ -6222,10 +6226,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // add java home
                 if (isJava) {
-                    UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                    UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
                     CompomicsWrapper wrapper = new CompomicsWrapper();
-                    if (utilitiesUserPreferences.getSearchGuiPath() != null) {
-                        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserPreferences.getSearchGuiPath());
+                    if (utilitiesUserParameters.getSearchGuiPath() != null) {
+                        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getSearchGuiPath());
                         process_name_array.add(javaHomeAndOptions.get(0)); // set java home
                     } else {
                         process_name_array.add("java");
@@ -6391,7 +6395,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param openAlways if true the dialog will be opened even if PeptideShaker
      * is not enabled
      */
-    private void openPeptideShakerSettings(boolean openAlways) {
+    private void openPeptideShakerParameters(boolean openAlways) {
 
         boolean checkPeptideShaker = true;
 
@@ -6400,7 +6404,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
                 JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
                         "The selected OMSSA output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
-                        + "OMSSA OMX format in the Advanced Settings, or disable OMSSA or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                        + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                         "Format Warning", JOptionPane.ERROR_MESSAGE);
                 peptideShakerCheckBox.setSelected(false);
                 checkPeptideShaker = false;
@@ -6411,8 +6415,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             new Thread(new Runnable() {
                 public void run() {
                     // check if peptideshaker is installed
-                    if (utilitiesUserPreferences.getPeptideShakerPath() == null
-                            || !(new File(utilitiesUserPreferences.getPeptideShakerPath()).exists())) {
+                    if (utilitiesUserParameters.getPeptideShakerPath() == null
+                            || !(new File(utilitiesUserParameters.getPeptideShakerPath()).exists())) {
                         try {
                             PeptideShakerSetupDialog peptideShakerSetupDialog = new PeptideShakerSetupDialog(SearchGUI.this, true);
                             boolean canceled = peptideShakerSetupDialog.isDialogCanceled();
@@ -6421,13 +6425,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                                 // reload the user preferences as these may have been changed by other tools
                                 try {
-                                    utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                                    utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
                                 } catch (Exception e) {
                                     JOptionPane.showMessageDialog(null, "An error occurred when reading the user preferences.", "File Error", JOptionPane.ERROR_MESSAGE);
                                     e.printStackTrace();
                                 }
 
-                                editPeptideShakerSettings();
+                                editPeptideShakerParameters();
                             } else {
                                 peptideShakerCheckBox.setSelected(false);
                             }
@@ -6435,7 +6439,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             e.printStackTrace();
                         }
                     } else {
-                        editPeptideShakerSettings();
+                        editPeptideShakerParameters();
                     }
                 }
             }, "PeptideShakerDownload").start();
@@ -6460,7 +6464,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // reload the user preferences as these may have been changed by other tools
                 try {
-                    utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+                    utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(null, "An error occurred when reading the user preferences.", "File Error", JOptionPane.ERROR_MESSAGE);
                     e.printStackTrace();
@@ -6479,7 +6483,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Check that the ProteoWizard folder is set.
      */
     private void checkProteoWizard() {
-        if (!rawFiles.isEmpty() && utilitiesUserPreferences.getProteoWizardPath() == null) {
+        if (!rawFiles.isEmpty() && utilitiesUserParameters.getProteoWizardPath() == null) {
             boolean folderSet = editProteoWizardInstallation();
             if (!folderSet) {
                 JOptionPane.showMessageDialog(this, "ProteoWizard folder not set. Raw file(s) not selected.", "Raw File Error", JOptionPane.WARNING_MESSAGE);
@@ -6492,7 +6496,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Enable/disable the msconvert options.
      */
     private void enableMsConvertPanel() {
-        msconvertSettingsButton.setEnabled(!rawFiles.isEmpty());
+        msconvertParametersButton.setEnabled(!rawFiles.isEmpty());
         msconvertCheckBox.setEnabled(!rawFiles.isEmpty());
         msconvertButton.setEnabled(!rawFiles.isEmpty());
         msconvertLabel.setEnabled(!rawFiles.isEmpty());
@@ -6507,11 +6511,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void enableSearchEngineAndDeNovoPanels(boolean enable) {
 
         // search engines
-        xtandemSettingsButton.setEnabled(enable);
-        msAmandaSettingsButton.setEnabled(enable);
-        msgfSettingsButton.setEnabled(enable);
-        omssaSettingsButton.setEnabled(enable);
-        tideSettingsButton.setEnabled(enable);
+        xtandemParametersButton.setEnabled(enable);
+        msAmandaParametersButton.setEnabled(enable);
+        msgfParametersButton.setEnabled(enable);
+        omssaParametersButton.setEnabled(enable);
+        tideParametersButton.setEnabled(enable);
 
         enableXTandemJCheckBox.setEnabled(enable);
         enableMsAmandaJCheckBox.setEnabled(enable);
@@ -6570,9 +6574,5 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             andromedaButton.setEnabled(enable);
             andromedaLinkLabel.setEnabled(enable);
         }
-    }
-
-    Object getUtilitiesUserParameters() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
