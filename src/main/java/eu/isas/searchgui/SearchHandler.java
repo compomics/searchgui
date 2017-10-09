@@ -7,6 +7,7 @@ import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
+import com.compomics.util.experiment.io.mass_spectrometry.export.AplExporter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
@@ -216,7 +217,7 @@ public class SearchHandler {
     /**
      * The mascot dat files.
      */
-    private ArrayList<File> mascotFiles = new ArrayList<File>();
+    private ArrayList<File> mascotFiles = new ArrayList<>();
     /**
      * The msconvert process.
      */
@@ -1075,7 +1076,7 @@ public class SearchHandler {
     public ArrayList<File> getXTandemFiles(File folder, String spectrumFileName) {
         String regex = ".*\\d{4}_\\d{2}[_]\\d{2}[_]\\d{2}[_]\\d{2}[_]\\d{2}[.]t[.]xml";
         Pattern pattern = Pattern.compile(regex);
-        ArrayList<File> result = new ArrayList<File>();
+        ArrayList<File> result = new ArrayList<>();
         for (File file : folder.listFiles()) {
             String fileName = file.getName();
             Matcher matcher = pattern.matcher(fileName);
@@ -1847,7 +1848,7 @@ public class SearchHandler {
                     waitingHandler.resetSecondaryProgressCounter();
                     waitingHandler.setMaxSecondaryProgressCounter(rawFiles.size() * 100);
 
-                    msConvertProcessBuilders = new ArrayList<MsConvertProcessBuilder>();
+                    msConvertProcessBuilders = new ArrayList<>();
 
                     Duration conversionDuration = new Duration();
                     if (rawFiles.size() > 1) {
@@ -1911,10 +1912,10 @@ public class SearchHandler {
                 }
 
                 // keep track of the identification files created in a map: spectrum file name -> algorithm index -> identification file
-                HashMap<String, HashMap<Integer, File>> identificationFiles = new HashMap<String, HashMap<Integer, File>>(mgfFiles.size());
+                HashMap<String, HashMap<Integer, File>> identificationFiles = new HashMap<>(mgfFiles.size());
 
                 // keep track of the spectrum files used to generate the id files
-                idFileToSpectrumFileMap = new HashMap<String, File>();
+                idFileToSpectrumFileMap = new HashMap<>();
 
                 for (int i = 0; i < getMgfFiles().size() && !waitingHandler.isRunCanceled(); i++) {
 
@@ -1956,7 +1957,7 @@ public class SearchHandler {
                             }
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (xTandemOutputFile.exists()) {
@@ -1980,7 +1981,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (myriMatchOutputFile.exists()) {
@@ -2005,7 +2006,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (msAmandaOutputFile.exists()) {
@@ -2029,7 +2030,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (msgfOutputFile.exists()) {
@@ -2054,7 +2055,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (omssaOutputFile.exists()) {
@@ -2088,7 +2089,7 @@ public class SearchHandler {
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (cometOutputFile.exists()) {
@@ -2130,7 +2131,7 @@ public class SearchHandler {
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (tideOutputFile.exists()) {
@@ -2148,7 +2149,7 @@ public class SearchHandler {
                         waitingHandler.appendReport("Converting spectrum file " + spectrumFileName + " for Andromeda.", true, true);
                         aplFile = new File(getPeakListFolder(getJarFilePath()), Util.removeExtension(spectrumFileName) + ".apl");
                         AndromedaParameters andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
-                        AplExporter.mgfToApl(spectrumFile, aplFile, andromedaParameters.getFragmentationMethod(), searchParameters.getMinChargeSearched().value, searchParameters.getMaxChargeSearched().value);
+                        AplExporter.mgfToApl(spectrumFile, aplFile, andromedaParameters.getFragmentationMethod(), searchParameters.getMinChargeSearched(), searchParameters.getMaxChargeSearched());
                     }
 
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
@@ -2171,7 +2172,7 @@ public class SearchHandler {
                                 }
                                 HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                                 if (runIdentificationFiles == null) {
-                                    runIdentificationFiles = new HashMap<Integer, File>();
+                                    runIdentificationFiles = new HashMap<>();
                                     identificationFiles.put(spectrumFileName, runIdentificationFiles);
                                 }
                                 if (andromedaOutputFile.exists()) {
@@ -2206,7 +2207,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (novorOutputFile.exists()) {
@@ -2230,7 +2231,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
                             if (runIdentificationFiles == null) {
-                                runIdentificationFiles = new HashMap<Integer, File>();
+                                runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
                             }
                             if (direcTagOutputFile.exists()) {
@@ -2282,7 +2283,7 @@ public class SearchHandler {
 
                 if (enablePeptideShaker && !waitingHandler.isRunCanceled()) { // @TODO: the output file checks below don't work when the date is added to the file name... 
 
-                    ArrayList<File> identificationFilesList = new ArrayList<File>();
+                    ArrayList<File> identificationFilesList = new ArrayList<>();
                     identificationFilesList.addAll(mascotFiles);
 
                     if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.grouped) {
@@ -2474,8 +2475,8 @@ public class SearchHandler {
     public void saveInputFile(File folder) {
 
         File outputFile = getInputFile(folder);
-        ArrayList<File> tempMgfFiles = new ArrayList<File>(this.mgfFiles);
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<File> tempMgfFiles = new ArrayList<>(this.mgfFiles);
+        ArrayList<String> names = new ArrayList<>();
         for (File file : tempMgfFiles) {
             names.add(file.getName());
         }
@@ -2502,7 +2503,7 @@ public class SearchHandler {
             } catch (IOException ioe) {
                 ioe.printStackTrace();
                 // ignore error
-                tempMgfFiles = new ArrayList<File>(this.mgfFiles);
+                tempMgfFiles = new ArrayList<>(this.mgfFiles);
             }
         }
         try {
@@ -2775,12 +2776,12 @@ public class SearchHandler {
             case algorithm:
 
                 // group files according to the search engine used
-                HashMap<Integer, ArrayList<File>> algorithmToFileMap = new HashMap<Integer, ArrayList<File>>();
+                HashMap<Integer, ArrayList<File>> algorithmToFileMap = new HashMap<>();
                 for (HashMap<Integer, File> fileMap : identificationFiles.values()) {
                     for (Integer algorithm : fileMap.keySet()) {
                         ArrayList<File> files = algorithmToFileMap.get(algorithm);
                         if (files == null) {
-                            files = new ArrayList<File>();
+                            files = new ArrayList<>();
                             algorithmToFileMap.put(algorithm, files);
                         }
                         files.add(fileMap.get(algorithm));

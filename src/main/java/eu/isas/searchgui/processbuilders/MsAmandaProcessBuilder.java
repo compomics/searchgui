@@ -2,7 +2,17 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
+import com.compomics.util.parameters.identification.search.DigestionParameters.Specificity;
+import com.compomics.util.parameters.identification.search.ModificationParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.MsAmandaParameters;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
 
@@ -16,6 +26,7 @@ import java.io.IOException;
  * search.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -86,7 +97,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The post translational modifications factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
      * The modifications as an XML string.
      */
@@ -220,12 +231,12 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // set the charge range
-        minCharge = searchParameters.getMinChargeSearched().value;
-        maxCharge = searchParameters.getMaxChargeSearched().value;
+        minCharge = searchParameters.getMinChargeSearched();
+        maxCharge = searchParameters.getMaxChargeSearched();
 
         // set the digestion preferences
-        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+        DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
             Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
             enzymeName = enzyme.getName();
             Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
@@ -239,7 +250,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                 enzymeSpecificity = "SEMI(N)";
             }
             missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
-        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
             enzymeName = digestionPreferences.getCleavagePreference().toString();
             enzymeSpecificity = "FULL";
             missedCleavages = 50; // @TODO: is this correct?
@@ -250,7 +261,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // set the modifications
-        modificationsAsString = getModificationsAsString(searchParameters.getPtmSettings());
+        modificationsAsString = getModificationsAsString(searchParameters.getModificationParameters());
         instrument = msAmandaParameters.getInstrumentID();
 
         // create the enzyme file
@@ -355,12 +366,12 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             bw.write("  <enzyme>" + System.getProperty("line.separator"));
-            bw.write("    <name>" + DigestionPreferences.CleavagePreference.wholeProtein + "</name>" + System.getProperty("line.separator"));
+            bw.write("    <name>" + DigestionParameters.CleavagePreference.wholeProtein + "</name>" + System.getProperty("line.separator"));
             bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
             bw.write("  </enzyme>" + System.getProperty("line.separator"));
 
             bw.write("  <enzyme>" + System.getProperty("line.separator"));
-            bw.write("    <name>" + DigestionPreferences.CleavagePreference.unSpecific + "</name>" + System.getProperty("line.separator"));
+            bw.write("    <name>" + DigestionParameters.CleavagePreference.unSpecific + "</name>" + System.getProperty("line.separator"));
             bw.write("    <cleavage_sites>X</cleavage_sites>" + System.getProperty("line.separator"));
             bw.write("  </enzyme>" + System.getProperty("line.separator"));
 
@@ -453,18 +464,18 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @param modificationProfile
      * @return the modifications as an XML tag
      */
-    private String getModificationsAsString(PtmSettings modificationProfile) {
+    private String getModificationsAsString(ModificationParameters modificationProfile) {
 
         String temp = "\t\t<modifications>" + System.getProperty("line.separator");
 
-        for (String ptmName : modificationProfile.getFixedModifications()) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            temp += getModificationAsString(ptm, true) + System.getProperty("line.separator");
+        for (String modificationName : modificationProfile.getFixedModifications()) {
+            Modification modification = modificationFactory.getModification(modificationName);
+            temp += getModificationAsString(modification, true) + System.getProperty("line.separator");
         }
 
-        for (String ptmName : modificationProfile.getVariableModifications()) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            temp += getModificationAsString(ptm, false) + System.getProperty("line.separator");
+        for (String modificationName : modificationProfile.getVariableModifications()) {
+            Modification modification = modificationFactory.getModification(modificationName);
+            temp += getModificationAsString(modification, false) + System.getProperty("line.separator");
         }
 
         temp += "\t\t</modifications>" + System.getProperty("line.separator");
@@ -475,10 +486,10 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Returns a single modification as a string.
      *
-     * @param ptm the modification to convert
+     * @param modification the modification to convert
      * @return the modification as a string
      */
-    private String getModificationAsString(PTM ptm, boolean fixed) {
+    private String getModificationAsString(Modification modification, boolean fixed) {
 
         String nTermTag = "";
         String cTermTag = "";
@@ -491,26 +502,26 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // get the terminal tags
-        switch (ptm.getType()) {
-            case PTM.MODAA:
+        switch (modification.getModificationType()) {
+            case modaa:
                 // not terminal
                 break;
-            case PTM.MODC:
-            case PTM.MODCAA:
+            case modc_protein:
+            case modcaa_protein:
                 //proteinTag = " protein=\"true\""; // note: MS Amanda Manual: "Protein level modifications are only valid in combination with n‐terminal modifications"
                 cTermTag = " cterm=\"true\"";
                 break;
-            case PTM.MODCP:
-            case PTM.MODCPAA:
+            case modc_peptide:
+            case modcaa_peptide:
                 cTermTag = " cterm=\"true\"";
                 break;
-            case PTM.MODN:
-            case PTM.MODNAA:
+            case modn_protein:
+            case modnaa_protein:
                 proteinTag = " protein=\"true\"";
                 nTermTag = " nterm=\"true\"";
                 break;
-            case PTM.MODNP:
-            case PTM.MODNPAA:
+            case modn_peptide:
+            case modnaa_peptide:
                 nTermTag = " nterm=\"true\"";
                 break;
         }
@@ -518,12 +529,12 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         String aminoAcidsAtTarget = "";
 
         // get the targeted amino acids
-        if (ptm.getType() == PTM.MODAA
-                || ptm.getType() == PTM.MODCAA
-                || ptm.getType() == PTM.MODCPAA
-                || ptm.getType() == PTM.MODNAA
-                || ptm.getType() == PTM.MODNPAA) {
-            for (Character aa : ptm.getPattern().getAminoAcidsAtTarget()) {
+        if (modification.getModificationType() == ModificationType.modaa
+                || modification.getModificationType() == ModificationType.modcaa_peptide
+                || modification.getModificationType() == ModificationType.modcaa_protein
+                || modification.getModificationType() == ModificationType.modnaa_peptide
+                || modification.getModificationType() == ModificationType.modnaa_protein) {
+            for (Character aa : modification.getPattern().getAminoAcidsAtTarget()) {
                 if (!aminoAcidsAtTarget.isEmpty()) {
                     aminoAcidsAtTarget += ",";
                 }
@@ -536,14 +547,14 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // use unimod name if possible
-        CvTerm cvTerm = ptm.getCvTerm();
+        CvTerm cvTerm = modification.getCvTerm();
 
         if (cvTerm != null) {
             return "\t\t\t<modification" + fixedTag
                     + nTermTag + cTermTag + proteinTag + ">" + cvTerm.getName() + aminoAcidsAtTarget + "</modification>";
         } else {
-            return "\t\t\t<modification delta_mass=\"" + ptm.getRoundedMass() + "\"" + fixedTag
-                    + nTermTag + cTermTag + proteinTag + ">" + ptm.getName() + aminoAcidsAtTarget + "</modification>";
+            return "\t\t\t<modification delta_mass=\"" + modification.getRoundedMass() + "\"" + fixedTag
+                    + nTermTag + cTermTag + proteinTag + ">" + modification.getName() + aminoAcidsAtTarget + "</modification>";
         }
     }
 

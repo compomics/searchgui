@@ -3,6 +3,8 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.TideParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +13,7 @@ import java.io.IOException;
  * ProcessBuilder for the Tide search command.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -123,7 +126,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         
         // max precursor charge
         process_name_array.add("--max-precursor-charge");
-        process_name_array.add("" + searchParameters.getMaxChargeSearched().value);
+        process_name_array.add("" + searchParameters.getMaxChargeSearched());
         //
         // scan number 
         //process_name_array.add("--scan-number");

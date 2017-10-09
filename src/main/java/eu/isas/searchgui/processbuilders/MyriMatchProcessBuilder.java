@@ -2,7 +2,14 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.MyriMatchParameters;
 import com.compomics.util.waiting.WaitingHandler;
 
 import java.io.File;
@@ -13,13 +20,14 @@ import java.util.HashMap;
  * This class will set up and start a process to perform a MyriMatch search.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * The post translational modifications factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
      * The name of the MyriMatch executable.
      */
@@ -116,7 +124,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the fragment ion tolerance
         process_name_array.add("-FragmentMzTolerance");
-        String fragemtnTolerance = searchParameters.getFragmentIonAccuracy().toString();
+        String fragemtnTolerance = Double.toString(searchParameters.getFragmentIonAccuracy());
         if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
             fragemtnTolerance += " daltons";
         } else {
@@ -126,7 +134,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the mono precursor tolerance
         process_name_array.add("-MonoPrecursorMzTolerance");
-        String precursorTolerance = searchParameters.getPrecursorAccuracy().toString();
+        String precursorTolerance = Double.toString(searchParameters.getPrecursorAccuracy());
         if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
             precursorTolerance += " daltons";
         } else {
@@ -139,18 +147,18 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("\"" + "mono" + "\"");
 
         // filter the modifications and convert fixed to variable if needed
-        HashMap<String, ArrayList<String>> filteredPtms = filterFixedPtms();
+        HashMap<String, ArrayList<String>> filteredModifications = filterFixedModifications();
 
         // set the fixed modifications
-        if (!filteredPtms.get("Fixed").isEmpty()) {
+        if (!filteredModifications.get("Fixed").isEmpty()) {
             process_name_array.add("-StaticMods");
-            process_name_array.add(getFixedModificationsAsString(filteredPtms.get("Fixed")));
+            process_name_array.add(getFixedModificationsAsString(filteredModifications.get("Fixed")));
         }
 
         // set the variable modifications
-        if (!filteredPtms.get("Variable").isEmpty()) {
+        if (!filteredModifications.get("Variable").isEmpty()) {
             process_name_array.add("-DynamicMods");
-            process_name_array.add(getVariableModificationsAsString(filteredPtms.get("Variable")));
+            process_name_array.add(getVariableModificationsAsString(filteredModifications.get("Variable")));
         }
 
         // set the maximum number of variable modifications
@@ -229,8 +237,8 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the enzyme
         process_name_array.add("-CleavageRules");
-        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+        DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
             process_name_array.add("\"" + "Trypsin" + "\""); // trick to support unspecific cleavage, MinTerminiCleavages is set to 0 below instead
         } else {
             String myriMatchEnzyme = MyriMatchParameters.enzymeMapping(digestionPreferences);
@@ -239,16 +247,16 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the minimum termini cleavages
         process_name_array.add("-MinTerminiCleavages");
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
             process_name_array.add("0");
-        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
               process_name_array.add("0");
         } else {
             boolean semiSpecific = false;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                     break;
                 }
@@ -261,7 +269,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // set the maximum missed cleavages
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
             process_name_array.add("-MaxMissedCleavages");
             Integer missedCleavages = null;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
@@ -301,87 +309,98 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Returns the fixed modification as a string in the MyriMatch format.
      *
-     * @param fixedPtms the list of fixed PTMs
+     * @param fixedModifications the list of fixed modifications
      * @return the fixed modification as a string
      */
-    private String getFixedModificationsAsString(ArrayList<String> fixedPtms) {
+    private String getFixedModificationsAsString(ArrayList<String> fixedModifications) {
 
-        String fixedModifications = "";
+        String fixedModificationsAsString = "";
 
         // @TODO: is the code generic enough?
-        for (String ptmName : fixedPtms) {
-            PTM tempPtm = ptmFactory.getPTM(ptmName);
+        for (String modName : fixedModifications) {
+            
+            Modification tempModification = modificationFactory.getModification(modName);
 
-            if (tempPtm.getType() == PTM.MODAA) {
-                for (Character aa : tempPtm.getPattern().getAminoAcidsAtTarget()) {
-                    fixedModifications += aa + " " + tempPtm.getRoundedMass() + " ";
+            if (tempModification.getModificationType() == ModificationType.modaa) {
+                
+                for (Character aa : tempModification.getPattern().getAminoAcidsAtTarget()) {
+                    
+                    fixedModificationsAsString += aa + " " + tempModification.getRoundedMass() + " ";
+                    
                 }
             } else {
 
-                if (tempPtm.getType() == PTM.MODNP) { // peptide n term
-                    fixedModifications += "( " + tempPtm.getRoundedMass() + " ";
-                } else if (tempPtm.getType() == PTM.MODCP) { // peptide c term 
-                    fixedModifications += ") " + tempPtm.getRoundedMass() + " ";
+                if (tempModification.getModificationType() == ModificationType.modn_peptide) { // peptide n term
+                    
+                    fixedModificationsAsString += "( " + tempModification.getRoundedMass() + " ";
+                    
+                } else if (tempModification.getModificationType() == ModificationType.modc_peptide) { // peptide c term 
+                    
+                    fixedModificationsAsString += ") " + tempModification.getRoundedMass() + " ";
+                    
                 }
 
                 // note: the ptms below should have been converted to variable via filterFixedPtms()
-//                else if (tempPtm.getType() == PTM.MODN) { // protein n term
+//                else if (modificationType == PTM.MODN) { // protein n term
 //                    // @TODO: treated as a peptide ptm, should be variable instead?
-//                } else if (tempPtm.getType() == PTM.MODNAA) { // protein n term specific amino acid
+//                } else if (modificationType == PTM.MODNAA) { // protein n term specific amino acid
 //                    // @TODO: note suported? should be variable instead?
-//                } else if (tempPtm.getType() == PTM.MODNPAA) { // peptide n term specifc amino acid
+//                } else if (modificationType == PTM.MODNPAA) { // peptide n term specifc amino acid
 //                    // @TODO: note suported? should be variable instead?
-//                } else if (tempPtm.getType() == PTM.MODC) { // protein c term
+//                } else if (modificationType == PTM.MODC) { // protein c term
 //                    // @TODO: treated as a peptide ptm, should be variable instead?
-//                } else if (tempPtm.getType() == PTM.MODCAA) { // protein c term specific amino acid
+//                } else if (modificationType == PTM.MODCAA) { // protein c term specific amino acid
 //                    // @TODO: note suported? should be variable instead?
-//                } else if (tempPtm.getType() == PTM.MODCPAA) { // peptide c term specific amino acid
+//                } else if (modificationType == PTM.MODCPAA) { // peptide c term specific amino acid
 //                    // @TODO: note suported? should be variable instead?
 //                }
             }
         }
 
-        fixedModifications = fixedModifications.trim();
-        fixedModifications = "\"" + fixedModifications + "\"";
+        fixedModificationsAsString = fixedModificationsAsString.trim();
+        fixedModificationsAsString = "\"" + fixedModificationsAsString + "\"";
 
-        return fixedModifications;
+        return fixedModificationsAsString;
     }
 
     /**
      * Returns the variable modification as a string in the MyriMatch format.
      *
-     * @param variablePtms the list of variable PTMs
+     * @param variableModifications the list of variable modifications
+     * 
      * @return the variable modification as a string
      */
-    private String getVariableModificationsAsString(ArrayList<String> variablePtms) {
+    private String getVariableModificationsAsString(ArrayList<String> variableModifications) {
 
-        String variableModifications = "";
+        String variableModificationsAsString = "";
         char[] symbols = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '^', '@', '|', '§', '+', '-', '&', '%', '='}; // @TODO: add more symbols?
         int symbolsCounter = 0;
 
         // @TODO: is the code generic enough?
-        for (String ptmName : variablePtms) {
-            PTM tempPtm = ptmFactory.getPTM(ptmName);
+        for (String modName : variableModifications) {
+            
+            Modification modification = modificationFactory.getModification(modName);
 
             String nTerm = "";
             String cTerm = "";
 
-            if (tempPtm.getType() == PTM.MODNAA
-                    || tempPtm.getType() == PTM.MODNPAA
-                    || tempPtm.getType() == PTM.MODN
-                    || tempPtm.getType() == PTM.MODNP) { // note: does not separate peptide and protein n term
+            ModificationType modificationType = modification.getModificationType();
+            if (modificationType == ModificationType.modn_peptide
+                    || modificationType == ModificationType.modn_protein
+                    || modificationType == ModificationType.modnaa_peptide
+                    || modificationType == ModificationType.modnaa_protein) { // note: does not separate peptide and protein n term
                 nTerm = "(";
-            } else if (tempPtm.getType() == PTM.MODCPAA
-                    || tempPtm.getType() == PTM.MODCAA
-                    || tempPtm.getType() == PTM.MODC
-                    || tempPtm.getType() == PTM.MODCP) { // note: does not separate peptide and protein c term
+            } else if (modificationType == ModificationType.modc_peptide
+                    || modificationType == ModificationType.modc_protein
+                    || modificationType == ModificationType.modcaa_peptide
+                    || modificationType == ModificationType.modcaa_protein) { // note: does not separate peptide and protein c term
                 cTerm = ")";
             }
 
             // get the targeted amino acids
             String aminoAcidsAtTarget = "";
-            if (tempPtm.getPattern() != null) {
-                for (Character aa : tempPtm.getPattern().getAminoAcidsAtTarget()) {
+            if (modification.getPattern() != null) {
+                for (Character aa : modification.getPattern().getAminoAcidsAtTarget()) {
                     aminoAcidsAtTarget += aa;
                 }
             }
@@ -389,13 +408,13 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
                 aminoAcidsAtTarget = "[" + aminoAcidsAtTarget + "]";
             }
 
-            variableModifications += nTerm + aminoAcidsAtTarget + cTerm + " " + symbols[symbolsCounter++] + " " + tempPtm.getRoundedMass() + " ";
+            variableModificationsAsString += nTerm + aminoAcidsAtTarget + cTerm + " " + symbols[symbolsCounter++] + " " + modification.getRoundedMass() + " ";
         }
 
-        variableModifications = variableModifications.trim();
-        variableModifications = "\"" + variableModifications + "\"";
+        variableModificationsAsString = variableModificationsAsString.trim();
+        variableModificationsAsString = "\"" + variableModificationsAsString + "\"";
 
-        return variableModifications;
+        return variableModificationsAsString;
     }
 
     /**
@@ -423,41 +442,61 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @return a map of the filtered modifications, keys: "Fixed" and "Variable"
      */
-    private HashMap<String, ArrayList<String>> filterFixedPtms() {
+    private HashMap<String, ArrayList<String>> filterFixedModifications() {
 
-        HashMap<String, ArrayList<String>> newPtms = new HashMap<String, ArrayList<String>>();
-        ArrayList<String> filteredFixedPtms = new ArrayList<String>();
-        ArrayList<String> variablePtms = new ArrayList<String>();
-        variablePtms.addAll(searchParameters.getPtmSettings().getVariableModifications());
+        HashMap<String, ArrayList<String>> newModifications = new HashMap<>();
+        ArrayList<String> filteredFixedModifications = new ArrayList<>();
+        ArrayList<String> variableModifications = new ArrayList<>();
+        variableModifications.addAll(searchParameters.getModificationParameters().getVariableModifications());
 
-        for (String ptmName : searchParameters.getPtmSettings().getFixedModifications()) {
+        for (String modName : searchParameters.getModificationParameters().getFixedModifications()) {
 
-            PTM tempPtm = ptmFactory.getPTM(ptmName);
+            Modification modification = modificationFactory.getModification(modName);
 
-            if (tempPtm.getType() == PTM.MODAA) { // particular amino acid
-                filteredFixedPtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODN) { // protein n term
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODNAA) { // protein n term specific amino acid
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODNP) { // peptide n term
-                filteredFixedPtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODNPAA) { // peptide n term specifc amino acid
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODC) { // protein c term
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODCAA) { // protein c term specific amino acid
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODCP) { // peptide c term 
-                filteredFixedPtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODCPAA) { // peptide c term specific amino acid
-                variablePtms.add(ptmName);
+            ModificationType modificationType = modification.getModificationType();
+
+            if (modificationType == ModificationType.modaa) {
+                
+                filteredFixedModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modn_protein) {
+                
+                variableModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modnaa_protein) {
+                
+                variableModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modn_peptide) {
+                
+                filteredFixedModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modnaa_peptide) {
+                
+                variableModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modc_protein) {
+                
+                variableModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modcaa_protein) {
+                
+                variableModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modc_peptide) {
+                
+                filteredFixedModifications.add(modName);
+                
+            } else if (modificationType == ModificationType.modcaa_peptide) {
+                
+                variableModifications.add(modName);
+                
             }
         }
 
-        newPtms.put("Fixed", filteredFixedPtms);
-        newPtms.put("Variable", variablePtms);
+        newModifications.put("Fixed", filteredFixedModifications);
+        newModifications.put("Variable", variableModifications);
 
-        return newPtms;
+        return newModifications;
     }
 }

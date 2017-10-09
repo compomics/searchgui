@@ -3,10 +3,17 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
+import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.NovorParameters;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -20,6 +27,7 @@ import javax.swing.JOptionPane;
  * This class will set up and start a process to run Novor.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class NovorProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -50,12 +58,12 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The post translational modifications factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificatoinFactory = ModificationFactory.getInstance();
     /**
-     * The Novor to utilities PTM map. Key: Novor PTM short name, element:
-     * utilities PTM name.
+     * The Novor to utilities modification map. Key: Novor modification short
+     * name, element: utilities modification name.
      */
-    private HashMap<String, String> novorPtmMap;
+    private HashMap<String, String> novorModificationMap;
 
     /**
      * Constructor.
@@ -67,16 +75,14 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
      * @param isCommandLine true if run from the command line, false if GUI
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the exception handler
-     * 
+     *
      * @throws java.io.IOException exception thrown whenever an error occurred
      * while getting the Java home
-     * @throws java.io.FileNotFoundException exception thrown whenever an error
-     * occurred while getting the java home
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
-    public NovorProcessBuilder(File novorFolder, File mgfFile, File outputFile, SearchParameters searchParameters, boolean isCommandLine, 
-            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException, FileNotFoundException, ClassNotFoundException {
+    public NovorProcessBuilder(File novorFolder, File mgfFile, File outputFile, SearchParameters searchParameters, boolean isCommandLine,
+            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException, ClassNotFoundException {
 
         this.novorFolder = novorFolder;
         this.spectrumFile = mgfFile;
@@ -89,9 +95,9 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
         novorExecutable.setExecutable(true);
 
         // set java home
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
         CompomicsWrapper wrapper = new CompomicsWrapper();
-        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserPreferences.getSearchGuiPath());
+        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getSearchGuiPath());
         process_name_array.add(javaHomeAndOptions.get(0)); // set java home
 
         // set java options
@@ -156,9 +162,8 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
 
         // get the Novoe specific parameters
         NovorParameters novorParameters = (NovorParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
-        try {
-            FileWriter parameterWriter = new FileWriter(novorFolder.getAbsolutePath() + File.separator + parameterFileName);
-            BufferedWriter bufferedParameterWriter = new BufferedWriter(parameterWriter);
+
+        try (BufferedWriter bufferedParameterWriter = new BufferedWriter(new FileWriter(novorFolder.getAbsolutePath() + File.separator + parameterFileName))) {
 
             bufferedParameterWriter.write("# Search parameters" + System.getProperty("line.separator"));
 
@@ -196,22 +201,27 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
             BufferedWriter bufferedModsWriter = new BufferedWriter(modsWriter);
 
             // create map for mapping back to the utilities ptms used
-            novorPtmMap = new HashMap<String, String>();
+            novorModificationMap = new HashMap<>();
 
             // variable modifications
-            if (!searchParameters.getPtmSettings().getVariableModifications().isEmpty()) {
+            if (!searchParameters.getModificationParameters().getVariableModifications().isEmpty()) {
                 bufferedParameterWriter.write("# Variable modifications" + System.getProperty("line.separator"));
                 String variableModsAsString = "";
 
-                for (String variableModification : searchParameters.getPtmSettings().getVariableModifications()) {
-                    PTM ptm = ptmFactory.getPTM(variableModification);
-                    addModification(bufferedModsWriter, ptm);
+                for (String variableModification : searchParameters.getModificationParameters().getVariableModifications()) {
+
+                    Modification modification = modificatoinFactory.getModification(variableModification);
+                    addModification(bufferedModsWriter, modification);
 
                     // update the modifications string
                     if (!variableModsAsString.isEmpty()) {
+
                         variableModsAsString += ", ";
+
                     }
-                    variableModsAsString += ptm.getName();
+
+                    variableModsAsString += modification.getName();
+
                 }
 
                 // add the modification to the parameter file
@@ -220,27 +230,34 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             // fixed modifications
-            if (!searchParameters.getPtmSettings().getFixedModifications().isEmpty()) {
+            if (!searchParameters.getModificationParameters().getFixedModifications().isEmpty()) {
+
                 bufferedParameterWriter.write("# Fixed modifications" + System.getProperty("line.separator"));
                 String fixedModsAsString = "";
 
-                for (String fixedModification : searchParameters.getPtmSettings().getFixedModifications()) {
-                    PTM ptm = ptmFactory.getPTM(fixedModification);
-                    addModification(bufferedModsWriter, ptm);
+                for (String fixedModification : searchParameters.getModificationParameters().getFixedModifications()) {
+
+                    Modification modification = modificatoinFactory.getModification(fixedModification);
+                    addModification(bufferedModsWriter, modification);
 
                     // update the modifications string
                     if (!fixedModsAsString.isEmpty()) {
+
                         fixedModsAsString += ", ";
+
                     }
-                    fixedModsAsString += ptm.getName();
+
+                    fixedModsAsString += modification.getName();
+
                 }
 
                 // add the modification to the parameter file
                 fixedModsAsString = "fixedModifications = " + fixedModsAsString;
                 bufferedParameterWriter.write(fixedModsAsString + System.getProperty("line.separator") + System.getProperty("line.separator"));
+
             }
 
-            novorParameters.setNovorPtmMap(novorPtmMap);
+            novorParameters.setNovorPtmMap(novorModificationMap);
 
             // close the mods writer
             bufferedModsWriter.close();
@@ -267,42 +284,52 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
      * Converts a modification to the Novor format.
      *
      * @param bufferedModsWriter the writer to add the modification to
-     * @param ptm the current PTM
+     * @param modification the current modification
      * @param modsAsString the current modifications as a string
+     *
      * @throws IOException thrown if an IOException occurs
      */
-    private void addModification(BufferedWriter bufferedModsWriter, PTM ptm) throws IOException {
+    private void addModification(BufferedWriter bufferedModsWriter, Modification modification) throws IOException {
 
         // modification id
-        bufferedModsWriter.write(ptm.getName() + ", ");
+        bufferedModsWriter.write(modification.getName() + ", ");
 
         // short name
-        bufferedModsWriter.write(novorPtmMap.keySet().size() + ", ");
-        novorPtmMap.put("" + novorPtmMap.keySet().size(), ptm.getName());
+        bufferedModsWriter.write(novorModificationMap.keySet().size() + ", ");
+        novorModificationMap.put("" + novorModificationMap.keySet().size(), modification.getName());
 
         // long name
-        bufferedModsWriter.write(ptm.getName() + ", ");
+        bufferedModsWriter.write(modification.getName() + ", ");
 
         // the groups involved in the modification
-        if (ptm.isNTerm()) {
-            if (ptm.getType() == PTM.MODNAA || ptm.getType() == PTM.MODNPAA) {
+        ModificationType modificationType = modification.getModificationType();
+
+        switch (modificationType) {
+            case modaa:
+                bufferedModsWriter.write("-r-, ");
+                break;
+            case modnaa_peptide:
+            case modnaa_protein:
                 bufferedModsWriter.write("nr-, ");
-            } else {
+                break;
+            case modn_peptide:
+            case modn_protein:
                 bufferedModsWriter.write("n--, ");
-            }
-        } else if (ptm.isCTerm()) {
-            if (ptm.getType() == PTM.MODCAA || ptm.getType() == PTM.MODCPAA) {
-                bufferedModsWriter.write("-rc, ");
-            } else {
-                bufferedModsWriter.write("--c, ");
-            }
-        } else {
-            bufferedModsWriter.write("-r-, ");
+            case modcaa_peptide:
+            case modcaa_protein:
+            bufferedModsWriter.write("-rc, ");
+                break;
+            case modc_peptide:
+            case modc_protein:
+            bufferedModsWriter.write("--c, ");
+                break;
+            default:
+                throw new UnsupportedOperationException("Modification type " + modificationType + " not supported.");
         }
 
         // the affected residues
-        if (ptm.getPattern() != null) {
-            for (Character target : ptm.getPattern().getAminoAcidsAtTarget()) {
+        if (modification.getPattern() != null) {
+            for (Character target : modification.getPattern().getAminoAcidsAtTarget()) {
                 bufferedModsWriter.write(target);
             }
             bufferedModsWriter.write(", ");
@@ -314,7 +341,7 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
         bufferedModsWriter.write(", "); // @TOOD: we use this one instead of the mass?
 
         // the mass change
-        bufferedModsWriter.write("" + ptm.getRoundedMass());
+        bufferedModsWriter.write("" + modification.getRoundedMass());
 
         // add new line
         bufferedModsWriter.write(System.getProperty("line.separator"));

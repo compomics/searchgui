@@ -2,7 +2,22 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.aminoacids.AminoAcid;
+import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
+import com.compomics.util.experiment.biology.atoms.AtomChain;
+import com.compomics.util.experiment.biology.atoms.AtomImpl;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
+import com.compomics.util.experiment.biology.ions.NeutralLoss;
+import com.compomics.util.experiment.biology.ions.impl.ReporterIon;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
+import com.compomics.util.parameters.identification.search.ModificationParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.AndromedaParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -203,13 +218,13 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.newLine();
                 bw.write("      <specificity>");
                 bw.newLine();
-                ArrayList<Character> aaBefore = new ArrayList<Character>(enzyme.getAminoAcidBefore());
+                ArrayList<Character> aaBefore = new ArrayList<>(enzyme.getAminoAcidBefore());
                 if (aaBefore.isEmpty()) {
                     for (char aa : AminoAcid.getUniqueAminoAcids()) {
                         aaBefore.add(aa);
                     }
                 }
-                ArrayList<Character> aaAfter = new ArrayList<Character>(enzyme.getAminoAcidAfter());
+                ArrayList<Character> aaAfter = new ArrayList<>(enzyme.getAminoAcidAfter());
                 if (aaAfter.isEmpty()) {
                     for (char aa : AminoAcid.getUniqueAminoAcids()) {
                         aaAfter.add(aa);
@@ -258,7 +273,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         int index = 0;
         String date = "0001-01-01T00:00:00";
 
-        PTMFactory ptmFactory = PTMFactory.getInstance();
+        ModificationFactory ptmFactory = ModificationFactory.getInstance();
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         AndromedaParameters andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
 
@@ -270,7 +285,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
             // add the default ptms
             for (String ptmName : ptmFactory.getDefaultModifications()) {
-                PTM ptm = ptmFactory.getPTM(ptmName);
+                Modification ptm = ptmFactory.getModification(ptmName);
                 writePtm(bw, date, ptm, index);
                 andromedaParameters.setPtmIndex(ptmName, index);
                 index++;
@@ -278,7 +293,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
             // add the user ptms
             for (String ptmName : ptmFactory.getUserModifications()) {
-                PTM ptm = ptmFactory.getPTM(ptmName);
+                Modification ptm = ptmFactory.getModification(ptmName);
                 writePtm(bw, date, ptm, index);
                 andromedaParameters.setPtmIndex(ptmName, index);
                 index++;
@@ -294,57 +309,69 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Writes the XML bloc corresponding to the PTM via the given writer.
+     * Writes the XML bloc corresponding to the modification via the given writer.
      *
      * @param bw a buffered writer
      * @param date the date to use as creation
-     * @param ptm the PTM to write
-     * @param index the index of the PTM in the list
+     * @param modification the modification to write
+     * @param index the index of the modification in the list
      *
      * @throws IOException exception thrown whenever an error occurs while
      * writing to the file.
      */
-    private static void writePtm(BufferedWriter bw, String date, PTM ptm, int index) throws IOException {
+    private static void writePtm(BufferedWriter bw, String date, Modification modification, int index) throws IOException {
 
         bw.write("   <modification index=\"" + index
-                + "\" title=\"" + ptm.getName()
-                + "\" description=\"" + ptm.getName()
+                + "\" title=\"" + modification.getName()
+                + "\" description=\"" + modification.getName()
                 + "\" create_date=\"" + date
                 + "\" last_modified_date=\"" + date
                 + "\" user=\"SearchGUI\" "
                 + "reporterCorrectionM2=\"0\" reporterCorrectionM1=\"0\" reporterCorrectionP1=\"0\" reporterCorrectionP2=\"0\" "
-                + "composition=\"" + getComposition(ptm) + "\" multi_modification=\"false\">");
+                + "composition=\"" + getComposition(modification) + "\" multi_modification=\"false\">");
         bw.newLine();
-        if (ptm.getType() == PTM.MODAA) {
-            bw.write("      <position>anywhere</position>");
-        } else if (ptm.getType() == PTM.MODN) {
-            bw.write("      <position>proteinNterm</position>");
-        } else if (ptm.getType() == PTM.MODNAA) {
-            bw.write("      <position>proteinNterm</position>");
-        } else if (ptm.getType() == PTM.MODNP) {
-            bw.write("      <position>anyNterm</position>");
-        } else if (ptm.getType() == PTM.MODNPAA) {
-            bw.write("      <position>anyNterm</position>");
-        } else if (ptm.getType() == PTM.MODC) {
-            bw.write("      <position>proteinCterm</position>");
-        } else if (ptm.getType() == PTM.MODCAA) {
-            bw.write("      <position>proteinCterm</position>");
-        } else if (ptm.getType() == PTM.MODCP) {
-            bw.write("      <position>anyCterm</position>");
-        } else if (ptm.getType() == PTM.MODCPAA) {
-            bw.write("      <position>anyCterm</position>");
-        } else {
-            throw new IllegalArgumentException("Export not implemented for PTM of type " + ptm.getType() + ".");
+        if (null == modification.getModificationType()) {
+            throw new IllegalArgumentException("Export not implemented for PTM of type " + modification.getModificationType() + ".");
+        } else switch (modification.getModificationType()) {
+            case modaa:
+                bw.write("      <position>anywhere</position>");
+                break;
+            case modn_protein:
+                bw.write("      <position>proteinNterm</position>");
+                break;
+            case modnaa_protein:
+                bw.write("      <position>proteinNterm</position>");
+                break;
+            case modn_peptide:
+                bw.write("      <position>anyNterm</position>");
+                break;
+            case modnaa_peptide:
+                bw.write("      <position>anyNterm</position>");
+                break;
+            case modc_protein:
+                bw.write("      <position>proteinCterm</position>");
+                break;
+            case modcaa_protein:
+                bw.write("      <position>proteinCterm</position>");
+                break;
+            case modc_peptide:
+                bw.write("      <position>anyCterm</position>");
+                break;
+            case modcaa_peptide:
+                bw.write("      <position>anyCterm</position>");
+                break;
+            default:
+                throw new IllegalArgumentException("Export not implemented for PTM of type " + modification.getModificationType() + ".");
         }
         bw.newLine();
         int siteIndex = 0;
-        AminoAcidPattern aminoAcidPattern = ptm.getPattern();
+        AminoAcidPattern aminoAcidPattern = modification.getPattern();
         if (aminoAcidPattern != null && !aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
             for (Character aa : aminoAcidPattern.getAminoAcidsAtTarget()) {
                 bw.write("      <modification_site index=\"" + siteIndex + "\" site=\"" + aa + "\">");
                 bw.newLine();
                 siteIndex++;
-                ArrayList<NeutralLoss> neutralLosses = ptm.getNeutralLosses();
+                ArrayList<NeutralLoss> neutralLosses = modification.getNeutralLosses();
                 if (!neutralLosses.isEmpty()) {
                     bw.write("         <neutralloss_collection>");
                     bw.newLine();
@@ -362,7 +389,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                     bw.write("         <neutralloss_collection />");
                     bw.newLine();
                 }
-                ArrayList<ReporterIon> reporterIons = ptm.getReporterIons();
+                ArrayList<ReporterIon> reporterIons = modification.getReporterIons();
                 if (!reporterIons.isEmpty()) {
                     bw.write("         <diagnostic_collection>");
                     bw.newLine();
@@ -410,9 +437,9 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private static String getComposition(AtomChain atomChain) {
 
-        HashMap<String, Integer> monoisotopic = new HashMap<String, Integer>();
-        HashMap<String, Integer> isotopic = new HashMap<String, Integer>();
-        ArrayList<String> atoms = new ArrayList<String>();
+        HashMap<String, Integer> monoisotopic = new HashMap<>();
+        HashMap<String, Integer> isotopic = new HashMap<>();
+        ArrayList<String> atoms = new ArrayList<>();
 
         for (AtomImpl atomImpl : atomChain.getAtomChain()) {
             String atom = atomImpl.getAtomSymbol();
@@ -466,16 +493,16 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Returns the atomic composition of a PTM in the Andromeda format.
      *
-     * @param ptm the PTM of interest
+     * @param modification the PTM of interest
      *
      * @return the atomic composition in the Andromeda format
      */
-    private static String getComposition(PTM ptm) {
-        AtomChain atomChainAdded = ptm.getAtomChainAdded(),
-                atomChainRemoved = ptm.getAtomChainRemoved();
-        HashMap<String, Integer> monoisotopic = new HashMap<String, Integer>();
-        HashMap<String, Integer> isotopic = new HashMap<String, Integer>();
-        ArrayList<String> atoms = new ArrayList<String>();
+    private static String getComposition(Modification modification) {
+        AtomChain atomChainAdded = modification.getAtomChainAdded(),
+                atomChainRemoved = modification.getAtomChainRemoved();
+        HashMap<String, Integer> monoisotopic = new HashMap<>();
+        HashMap<String, Integer> isotopic = new HashMap<>();
+        ArrayList<String> atoms = new ArrayList<>();
 
         if (atomChainAdded != null) {
             for (AtomImpl atomImpl : atomChainAdded.getAtomChain()) {
@@ -576,19 +603,19 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         try {
             boolean semiSpecific = false;
-            DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+            DigestionParameters digestionParameters = searchParameters.getDigestionParameters();
 
-            if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
-                Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+            if (digestionParameters.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+                Enzyme enzyme = digestionParameters.getEnzymes().get(0);
                 String enzymeName = enzyme.getName();
                 bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
                 bw.newLine();
-                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                if (digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
+                        || digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
+                        || digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                 }
-            } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+            } else if (digestionParameters.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
                 bw.write("enzyme mode=unspecific");
                 bw.newLine();
             } else {
@@ -602,7 +629,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.write("enzyme mode=specific");
             }
             bw.newLine();
-            PtmSettings modificationProfile = searchParameters.getPtmSettings();
+            ModificationParameters modificationProfile = searchParameters.getModificationParameters();
             StringBuilder list = new StringBuilder();
             for (String ptmName : modificationProfile.getVariableModifications()) {
                 if (list.length() > 0) {
@@ -670,10 +697,10 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("top peaks window=" + andromedaParameters.getTopPeaksWindow());
             bw.newLine();
 
-            if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+            if (digestionParameters.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
                 Integer missedCleavages = null;
-                for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-                    int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+                for (Enzyme enzyme : digestionParameters.getEnzymes()) {
+                    int enzymeMissedCleavages = digestionParameters.getnMissedCleavages(enzyme.getName());
                     if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
                         missedCleavages = enzymeMissedCleavages;
                     }

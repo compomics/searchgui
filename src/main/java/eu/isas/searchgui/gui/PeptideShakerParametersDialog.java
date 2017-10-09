@@ -4,7 +4,7 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.autoupdater.GUIFileDAO;
 import com.compomics.software.autoupdater.MavenJarFile;
 import com.compomics.software.autoupdater.WebDAO;
-import com.compomics.software.dialogs.JavaSettingsDialog;
+import com.compomics.software.dialogs.JavaParametersDialog;
 import com.compomics.software.dialogs.PeptideShakerSetupDialog;
 import com.compomics.util.Util;
 import com.compomics.util.gui.error_handlers.HelpDialog;
@@ -41,7 +41,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
     /**
      * The list of Mascot dat files.
      */
-    private ArrayList<File> mascotDatFiles = new ArrayList<File>();
+    private ArrayList<File> mascotDatFiles = new ArrayList<>();
     /**
      * Boolean indicating whether the user canceled the action.
      */
@@ -685,7 +685,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void clearMascotFilesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMascotFilesButtonActionPerformed
-        mascotDatFiles = new ArrayList<File>();
+        mascotDatFiles = new ArrayList<>();
         mascotFilesTextField.setText(null);
     }//GEN-LAST:event_clearMascotFilesButtonActionPerformed
 
@@ -750,7 +750,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void lowMemoryWarningLabelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lowMemoryWarningLabelMouseReleased
-        new JavaSettingsDialog(searchGUI, searchGUI, null, "SearchGUI", true);
+        new JavaParametersDialog(searchGUI, searchGUI, null, "SearchGUI", true);
     }//GEN-LAST:event_lowMemoryWarningLabelMouseReleased
 
     /**

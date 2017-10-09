@@ -2,7 +2,13 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.DirecTagParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.util.ArrayList;
@@ -12,6 +18,7 @@ import java.util.ArrayList;
  *
  * @author Thilo Muth
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -26,7 +33,7 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The post translational modifications factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
      * The DirecTag modification index.
      */
@@ -64,11 +71,11 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
 
         // add fixed mods
         String fixedModsAsString = "";
-        ArrayList<String> fixedPtms = searchParameters.getPtmSettings().getFixedModifications();
-        for (String ptmName : fixedPtms) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            if (ptm.getType() == PTM.MODAA) {
-                fixedModsAsString += getFixedPtmFormattedForDirecTag(ptmName);
+        ArrayList<String> fixedModifications = searchParameters.getModificationParameters().getFixedModifications();
+        for (String modName : fixedModifications) {
+            Modification modification = modificationFactory.getModification(modName);
+            if (modification.getModificationType() == ModificationType.modaa) {
+                fixedModsAsString += getFixedModificationFormattedForDirecTag(modName);
             }
         }
         fixedModsAsString = fixedModsAsString.trim();
@@ -78,20 +85,20 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // add variable mods
-        ArrayList<String> utilitiesPtms = new ArrayList<String>();
+        ArrayList<String> utilitiesModifications = new ArrayList<>();
         String variableModsAsString = "";
-        ArrayList<String> variablePtms = searchParameters.getPtmSettings().getVariableModifications();
-        for (String ptmName : variablePtms) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            if (ptm.getType() == PTM.MODAA) {
-                variableModsAsString += getVariablePtmFormattedForDirecTag(ptmName, utilitiesPtms);
+        ArrayList<String> variableModifications = searchParameters.getModificationParameters().getVariableModifications();
+        for (String modName : variableModifications) {
+            Modification modification = modificationFactory.getModification(modName);
+            if (modification.getModificationType() == ModificationType.modaa) {
+                variableModsAsString += getVariableModificationFormattedForDirecTag(modName, utilitiesModifications);
             }
         }
         variableModsAsString = variableModsAsString.trim();
         if (!variableModsAsString.isEmpty()) {
             process_name_array.add("-DynamicMods");
             process_name_array.add(CommandLineUtils.getQuoteType() + variableModsAsString + CommandLineUtils.getQuoteType());
-            direcTagParameters.setPtms(utilitiesPtms);
+            direcTagParameters.setModifications(utilitiesModifications);
         }
 
         // fragment tolerance
@@ -215,49 +222,49 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Get the given modification as a string in the DirecTag format.
      *
-     * @param ptmName the utilities name of the PTM
-     * @param utilitiesPtms the list of utilities PTMs, index is the index used
-     * in the DirecTag output (note that the same PTM may occur more than once
-     * in the list as multiple DirecTag PTM can map to the same utilities PTM)
+     * @param modificationName the utilities name of the modification
+     * @param utilitiesModifications the list of utilities modifications, index is the index used
+     * in the DirecTag output (note that the same modification may occur more than once
+     * in the list as multiple DirecTag modification can map to the same utilities modification)
      * @return the given modification as a string in the DirecTag format
      */
-    private String getVariablePtmFormattedForDirecTag(String ptmName, ArrayList<String> utilitiesPtms) {
+    private String getVariableModificationFormattedForDirecTag(String modificationName, ArrayList<String> utilitiesModifications) {
 
-        PTM tempPtm = ptmFactory.getPTM(ptmName);
-        String ptmAsString = "";
+        Modification tempModification = modificationFactory.getModification(modificationName);
+        String modificationAsString = "";
 
         // get the targeted amino acids
-        if (tempPtm.getPattern() != null && !tempPtm.getPattern().getAminoAcidsAtTarget().isEmpty()) {
-            for (Character aa : tempPtm.getPattern().getAminoAcidsAtTarget()) {
-                ptmAsString += " " + aa + " " + modIndex++ + " " + tempPtm.getRoundedMass();
-                utilitiesPtms.add(ptmName);
+        if (tempModification.getPattern() != null && !tempModification.getPattern().getAminoAcidsAtTarget().isEmpty()) {
+            for (Character aa : tempModification.getPattern().getAminoAcidsAtTarget()) {
+                modificationAsString += " " + aa + " " + modIndex++ + " " + tempModification.getRoundedMass();
+                utilitiesModifications.add(modificationName);
             }
         }
 
-        // return the ptm
-        return ptmAsString;
+        // return the modification
+        return modificationAsString;
     }
 
     /**
      * Get the given modification as a string in the DirecTag format.
      *
-     * @param ptmName the utilities name of the PTM
+     * @param modificationName the utilities name of the modification
      * @return the given modification as a string in the DirecTag format
      */
-    private String getFixedPtmFormattedForDirecTag(String ptmName) {
+    private String getFixedModificationFormattedForDirecTag(String modificationName) {
 
-        PTM tempPtm = ptmFactory.getPTM(ptmName);
-        String ptmAsString = "";
+        Modification tempModification = modificationFactory.getModification(modificationName);
+        String modificationAsString = "";
 
         // get the targeted amino acids
-        if (tempPtm.getPattern() != null && !tempPtm.getPattern().getAminoAcidsAtTarget().isEmpty()) {
-            for (Character aa : tempPtm.getPattern().getAminoAcidsAtTarget()) {
-                ptmAsString += " " + aa + " " + tempPtm.getRoundedMass();
+        if (tempModification.getPattern() != null && !tempModification.getPattern().getAminoAcidsAtTarget().isEmpty()) {
+            for (Character aa : tempModification.getPattern().getAminoAcidsAtTarget()) {
+                modificationAsString += " " + aa + " " + tempModification.getRoundedMass();
             }
         }
 
-        // return the ptm
-        return ptmAsString;
+        // return the modification
+        return modificationAsString;
     }
 
     /**

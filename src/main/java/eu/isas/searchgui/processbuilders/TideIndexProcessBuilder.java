@@ -1,8 +1,16 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.waiting.WaitingHandler;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.TideParameters;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +19,7 @@ import java.util.ArrayList;
  * ProcessBuilder for the Tide index generation.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -31,9 +40,9 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      */
     private TideParameters tideParameters;
     /**
-     * The compomics PTM factory.
+     * The compomics modification factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
 
     /**
      * Constructor.
@@ -90,9 +99,9 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // the max number of modifications per peptide
-        if (tideParameters.getMaxVariablePtmsPerPeptide() != null) {
+        if (tideParameters.getMaxVariableModificationsPerPeptide() != null) {
             process_name_array.add("--max-mods");
-            process_name_array.add(tideParameters.getMaxVariablePtmsPerPeptide().toString());
+            process_name_array.add(tideParameters.getMaxVariableModificationsPerPeptide().toString());
         }
 
         // the decoy format
@@ -153,15 +162,22 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("F");
         }
 
-        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+        DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
+
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
+
             process_name_array.add("--custom-enzyme");
             process_name_array.add("{X}|{X}");
-        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+
+        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
+
             process_name_array.add("--enzyme");
             process_name_array.add("no-enzyme");
-        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+
+        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+
             if (digestionPreferences.getEnzymes().size() == 1) {
+
                 Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
                 String enzymeName = enzyme.getName();
                 // enzyme
@@ -224,11 +240,11 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         // full or partial enzyme digestion
         boolean semiSpecific = false;
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                     break;
                 }
@@ -267,8 +283,8 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String getNonTerminalModifications() {
 
-        String tempFixedNonTerminalModifications = getNonTerminalModifications(searchParameters.getPtmSettings().getFixedModifications(), true);
-        String tempVariableNonTerminalModifications = getNonTerminalModifications(searchParameters.getPtmSettings().getVariableModifications(), false);
+        String tempFixedNonTerminalModifications = getNonTerminalModifications(searchParameters.getModificationParameters().getFixedModifications(), true);
+        String tempVariableNonTerminalModifications = getNonTerminalModifications(searchParameters.getModificationParameters().getVariableModifications(), false);
 
         if (!tempFixedNonTerminalModifications.isEmpty() && !tempVariableNonTerminalModifications.isEmpty()) {
             tempFixedNonTerminalModifications += "," + tempVariableNonTerminalModifications;
@@ -288,37 +304,50 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String getNonTerminalModifications(ArrayList<String> modifications, boolean fixed) {
 
-        // tide ptm pattern: [max_per_peptide]residues[+/-]mass_change
+        // tide modification pattern: [max_per_peptide]residues[+/-]mass_change
         String nonTerminalModifications = "";
 
-        for (String ptmName : modifications) {
+        for (String modName : modifications) {
 
-            PTM ptm = ptmFactory.getPTM(ptmName);
+            Modification modification = modificationFactory.getModification(modName);
+            ModificationType modificationType = modification.getModificationType();
 
-            if (!ptm.isNTerm() && !ptm.isCTerm()) {
+            if (modificationType == ModificationType.modaa) {
 
                 if (!nonTerminalModifications.isEmpty()) {
+
                     nonTerminalModifications += ",";
+
                 }
 
-                // add the number of allowed ptms per peptide
+                // add the number of allowed modifications per peptide
                 if (!fixed) {
-                    nonTerminalModifications += tideParameters.getMaxVariablePtmsPerTypePerPeptide(); // @TODO: make this modification specific?
+
+                    nonTerminalModifications += tideParameters.getMaxVariableModificationsPerTypePerPeptide(); // @TODO: make this modification specific?
+
                 }
 
                 // add the residues affected
-                AminoAcidPattern ptmPattern = ptm.getPattern();
-                if (ptmPattern != null && ptmPattern.length() > 0) {
-                    for (Character aminoAcid : ptmPattern.getAminoAcidsAtTarget()) {
+                AminoAcidPattern modificationPattern = modification.getPattern();
+
+                if (modificationPattern != null && modificationPattern.length() > 0) {
+
+                    for (Character aminoAcid : modificationPattern.getAminoAcidsAtTarget()) {
+
                         nonTerminalModifications += aminoAcid;
+
                     }
                 }
 
-                // add the ptm mass
-                if (ptm.getRoundedMass() > 0) {
+                // add the modification mass
+                if (modification.getMass() > 0) {
+
                     nonTerminalModifications += "+";
+
                 }
-                nonTerminalModifications += ptm.getRoundedMass();
+
+                nonTerminalModifications += modification.getMass();
+
             }
         }
 
@@ -335,8 +364,8 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String getTerminalModifications(boolean nTerm) {
 
-        String tempNTermModifications = getTerminalModifications(searchParameters.getPtmSettings().getFixedModifications(), true, nTerm);
-        String tempCTermModifications = getTerminalModifications(searchParameters.getPtmSettings().getVariableModifications(), false, nTerm);
+        String tempNTermModifications = getTerminalModifications(searchParameters.getModificationParameters().getFixedModifications(), true, nTerm);
+        String tempCTermModifications = getTerminalModifications(searchParameters.getModificationParameters().getVariableModifications(), false, nTerm);
 
         if (!tempNTermModifications.isEmpty() && !tempCTermModifications.isEmpty()) {
             tempNTermModifications += "," + tempCTermModifications;
@@ -360,41 +389,53 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         String terminalModifications = "";
 
-        for (String ptmName : modifications) {
+        for (String modName : modifications) {
 
-            PTM ptm = ptmFactory.getPTM(ptmName);
+            Modification modification = modificationFactory.getSingleAAModification(modName);
+            ModificationType modificationType = modification.getModificationType();
 
-            if ((ptm.isNTerm() && nTerm) || (ptm.isCTerm() && !nTerm)) {
+            if ((modificationType.isNTerm() && nTerm)
+                    || (modificationType.isCTerm() && !nTerm)) {
 
                 if (!terminalModifications.isEmpty()) {
                     terminalModifications += ",";
                 }
 
-                // add the number of allowed ptms per peptide
+                // add the number of allowed modifications per peptide
                 if (!fixed) {
                     terminalModifications += "1";
                 }
 
                 // add the residues affected 
-                AminoAcidPattern ptmPattern = ptm.getPattern();
-                String tempPtmPattern = "";
-                if (ptmPattern != null && ptmPattern.length() > 0) {
-                    for (Character aminoAcid : ptmPattern.getAminoAcidsAtTarget()) {
-                        tempPtmPattern += aminoAcid;
+                AminoAcidPattern modificationPattern = modification.getPattern();
+                String tempPattern = "";
+
+                if (modificationPattern != null && modificationPattern.length() > 0) {
+
+                    for (Character aminoAcid : modificationPattern.getAminoAcidsAtTarget()) {
+
+                        tempPattern += aminoAcid;
+
                     }
                 }
 
-                if (tempPtmPattern.length() == 0) {
-                    tempPtmPattern = "X";
+                if (tempPattern.length() == 0) {
+
+                    tempPattern = "X";
+
                 }
 
-                terminalModifications += tempPtmPattern;
+                terminalModifications += tempPattern;
 
-                // add the ptm mass
-                if (ptm.getRoundedMass() > 0) {
+                // add the modification mass
+                if (modification.getRoundedMass() > 0) {
+
                     terminalModifications += "+";
+
                 }
-                terminalModifications += ptm.getRoundedMass();
+
+                terminalModifications += modification.getRoundedMass();
+
             }
         }
 

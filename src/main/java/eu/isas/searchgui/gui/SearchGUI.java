@@ -16,7 +16,6 @@ import com.compomics.util.examples.BareBonesBrowserLaunch;
 import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.genes.GeneFactory;
-import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
@@ -120,11 +119,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * The mgf files.
      */
-    private ArrayList<File> mgfFiles = new ArrayList<File>();
+    private ArrayList<File> mgfFiles = new ArrayList<>();
     /**
      * The raw files.
      */
-    private ArrayList<File> rawFiles = new ArrayList<File>();
+    private ArrayList<File> rawFiles = new ArrayList<>();
     /**
      * The modifications factory.
      */
@@ -196,7 +195,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * The list of the default modifications.
      */
-    private HashSet<String> defaultModifications = new HashSet<String>();
+    private HashSet<String> defaultModifications = new HashSet<>();
     /**
      * If true, then one of the currently processed spectra has duplicate
      * titles.
@@ -2342,8 +2341,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 public void run() {
 
                     validSpectrumTitles = true;
-                    ArrayList<File> tempMgfFiles = new ArrayList<File>();
-                    ArrayList<File> tempRawFiles = new ArrayList<File>();
+                    ArrayList<File> tempMgfFiles = new ArrayList<>();
+                    ArrayList<File> tempRawFiles = new ArrayList<>();
 
                     // get the mgf files
                     for (File newFile : finalJFileChooser.getSelectedFiles()) {
@@ -2662,7 +2661,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // check if the output files already exist
             boolean fileFound = false;
 
-            ArrayList<File> spectrumFiles = new ArrayList<File>(mgfFiles);
+            ArrayList<File> spectrumFiles = new ArrayList<>(mgfFiles);
             spectrumFiles.addAll(rawFiles);
             for (File spectrumFile : spectrumFiles) {
 
@@ -3326,7 +3325,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void spectraFilesTxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_spectraFilesTxtMouseClicked
         if (!mgfFiles.isEmpty() || !rawFiles.isEmpty()) {
-            ArrayList<File> spectrumFiles = new ArrayList<File>(mgfFiles);
+            ArrayList<File> spectrumFiles = new ArrayList<>(mgfFiles);
             spectrumFiles.addAll(rawFiles);
             FileDisplayDialog fileDisplayDialog = new FileDisplayDialog(this, spectrumFiles, true);
             if (!fileDisplayDialog.canceled()) {
@@ -4963,7 +4962,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public void editPathParameters() {
         try {
-            HashMap<PathKey, String> pathParameters = new HashMap<PathKey, String>();
+            HashMap<PathKey, String> pathParameters = new HashMap<>();
             for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
                 pathParameters.put(searchGUIPathKey, SearchGUIPathParameters.getPathParameter(searchGUIPathKey, getJarFilePath()));
             }
@@ -5051,13 +5050,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (mgfFiles != null) {
             this.mgfFiles = mgfFiles;
         } else {
-            mgfFiles = new ArrayList<File>();
+            mgfFiles = new ArrayList<>();
         }
 
         if (rawFiles != null) {
             this.rawFiles = rawFiles;
         } else {
-            rawFiles = new ArrayList<File>();
+            rawFiles = new ArrayList<>();
         }
 
         // note: already done in the command line
@@ -5492,7 +5491,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * the large ones if needed.
      */
     private void verifyMgfFilesSize() {
-        ArrayList<File> fatFiles = new ArrayList<File>();
+        ArrayList<File> fatFiles = new ArrayList<>();
         for (File file : mgfFiles) {
             if (file.length() > (((long) utilitiesUserParameters.getMgfMaxSize()) * 1048576)) {
                 fatFiles.add(file);
@@ -5555,7 +5554,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         final SearchGUI finalRef = this;
 
-        final ArrayList<File> originalMgfFiles = new ArrayList<File>(files);
+        final ArrayList<File> originalMgfFiles = new ArrayList<>(files);
 
         new Thread(new Runnable() {
             public void run() {
@@ -5717,7 +5716,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         for (String arg : args) {
             if (spectrum) {
                 try {
-                    ArrayList<String> extensions = new ArrayList<String>();
+                    ArrayList<String> extensions = new ArrayList<>();
                     extensions.add(".mgf");
                     spectrumFiles = CommandLineUtils.getFiles(arg, extensions);
                 } catch (Exception e) {
@@ -5730,7 +5729,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
             if (raw) {
                 try {
-                    ArrayList<String> extensions = new ArrayList<String>();
+                    ArrayList<String> extensions = new ArrayList<>();
                     for (MsFormat format : MsFormat.values()) {
                         if (format != MsFormat.mgf) {
                             extensions.add(format.fileNameEnding);
@@ -6346,7 +6345,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             InputStream stream = getClass().getResource("/tips.txt").openStream();
             InputStreamReader streamReader = new InputStreamReader(stream);
             BufferedReader b = new BufferedReader(streamReader);
-            tips = new ArrayList<String>();
+            tips = new ArrayList<>();
             String line;
 
             while ((line = b.readLine()) != null) {
@@ -6357,7 +6356,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "An error occurred when reading the tip of the day.", "File Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
-            tips = new ArrayList<String>();
+            tips = new ArrayList<>();
         }
 
         return tips;
@@ -6496,7 +6495,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Enable/disable the msconvert options.
      */
     private void enableMsConvertPanel() {
-        msconvertParametersButton.setEnabled(!rawFiles.isEmpty());
+        msconvertSettingsButton.setEnabled(!rawFiles.isEmpty());
         msconvertCheckBox.setEnabled(!rawFiles.isEmpty());
         msconvertButton.setEnabled(!rawFiles.isEmpty());
         msconvertLabel.setEnabled(!rawFiles.isEmpty());
@@ -6511,11 +6510,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void enableSearchEngineAndDeNovoPanels(boolean enable) {
 
         // search engines
-        xtandemParametersButton.setEnabled(enable);
-        msAmandaParametersButton.setEnabled(enable);
-        msgfParametersButton.setEnabled(enable);
-        omssaParametersButton.setEnabled(enable);
-        tideParametersButton.setEnabled(enable);
+        xtandemSettingsButton.setEnabled(enable);
+        msAmandaSettingsButton.setEnabled(enable);
+        msgfSettingsButton.setEnabled(enable);
+        omssaSettingsButton.setEnabled(enable);
+        tideSettingsButton.setEnabled(enable);
 
         enableXTandemJCheckBox.setEnabled(enable);
         enableMsAmandaJCheckBox.setEnabled(enable);

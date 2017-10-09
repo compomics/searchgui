@@ -1,8 +1,18 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.ions.impl.PeptideFragmentIon;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
+import com.compomics.util.parameters.identification.search.ModificationParameters;
 import com.compomics.util.waiting.WaitingHandler;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.XtandemParameters;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 /**
  * This class will build files and start a process to perform an X!Tandem
@@ -145,9 +156,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      */
     private HashSet<Integer> selectedIons;
     /**
-     * The post translational modifications factory.
+     * The modification factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
      * The X!Tandem parameters.
      */
@@ -188,90 +199,145 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         } else if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
             fragmentUnit = "Daltons";
         }
-        maxCharge = searchParameters.getMaxChargeSearched().value;
-        fixedMod = new ArrayList<String>();
-        PtmSettings modificationProfile = searchParameters.getPtmSettings();
-        boolean sameFixed = modificationProfile.getFixedModifications().size() == modificationProfile.getRefinementFixedModifications().size();
-        for (String ptmName : modificationProfile.getFixedModifications()) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            if (ptm.getType() == PTM.MODN) {
-                fixedNtermProteinMod += ptm.getRoundedMass();
-            } else if (ptm.getType() == PTM.MODC) {
-                fixedCtermProteinMod += ptm.getRoundedMass();
+
+        maxCharge = searchParameters.getMaxChargeSearched();
+
+        ModificationParameters modificationParameters = searchParameters.getModificationParameters();
+
+        fixedMod = new ArrayList<>(modificationParameters.getFixedModifications().size());
+        boolean sameFixed = modificationParameters.getFixedModifications().size() == modificationParameters.getRefinementFixedModifications().size();
+
+        for (String modName : modificationParameters.getFixedModifications()) {
+
+            Modification modification = modificationFactory.getModification(modName);
+
+            if (modification.getModificationType() == ModificationType.modn_protein) {
+
+                fixedNtermProteinMod += modification.getMass();
+
+            } else if (modification.getModificationType() == ModificationType.modc_protein) {
+
+                fixedCtermProteinMod += modification.getMass();
+
             } else {
-                fixedMod.add(ptmName);
+
+                fixedMod.add(modName);
+
             }
-            if (sameFixed && !modificationProfile.getRefinementFixedModifications().contains(ptmName)) {
+
+            if (sameFixed && !modificationParameters.getRefinementFixedModifications().contains(modName)) {
+
                 sameFixed = false;
+
             }
         }
+
         if (!sameFixed) {
-            refinementFixedMod = modificationProfile.getRefinementFixedModifications();
+
+            refinementFixedMod = modificationParameters.getRefinementFixedModifications();
+
         }
-        variableMod = new ArrayList<String>();
-        variableModMotifs = new ArrayList<String>();
-        for (String ptmName : searchParameters.getPtmSettings().getVariableModifications()) {
-            // Exclude PTMs triggered by the quick options
+
+        variableMod = new ArrayList<>(modificationParameters.getVariableModifications().size());
+        variableModMotifs = new ArrayList<>(0);
+
+        for (String modName : modificationParameters.getVariableModifications()) {
+
+            // Exclude modifications triggered by the quick options
             boolean newModification = true;
-            if (xtandemParameters.isProteinQuickAcetyl() && ptmName.equals("Acetylation of protein N-term")) {
+
+            if (xtandemParameters.isProteinQuickAcetyl() && modName.equals("Acetylation of protein N-term")) {
+
                 newModification = false;
+
             }
+
             if (newModification && xtandemParameters.isQuickPyrolidone()
-                    && (ptmName.equals("Pyrolidone from E") || ptmName.equals("Pyrolidone from Q") || ptmName.equals("Pyrolidone from carbamidomethylated C"))) {
+                    && (modName.equals("Pyrolidone from E") || modName.equals("Pyrolidone from Q") || modName.equals("Pyrolidone from carbamidomethylated C"))) {
+
                 newModification = false;
+
             }
+
             if (newModification) {
-                PTM ptm = ptmFactory.getPTM(ptmName);
-                if (ptm.getPattern() == null || (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1)) {
-                    variableMod.add(ptmName);
+
+                Modification modification = modificationFactory.getModification(modName);
+                AminoAcidPattern modificationPattern = modification.getPattern();
+
+                if (modificationPattern == null || (modificationPattern.length() == 1 && modificationPattern.getAminoAcidsAtTarget().size() == 1)) {
+
+                    variableMod.add(modName);
+
                 } else {
-                    variableModMotifs.add(ptmName);
+
+                    variableModMotifs.add(modName);
+
                 }
             }
         }
-        refinementVariableMod = new ArrayList<String>();
-        refinementVariableModMotif = new ArrayList<String>();
-        refinementVariableCTermMod = new ArrayList<String>();
-        refinementVariableNTermMod = new ArrayList<String>();
-        for (String ptmName : modificationProfile.getRefinementVariableModifications()) {
-            // Exclude PTMs triggered by the quick options
+
+        refinementVariableMod = new ArrayList<>();
+        refinementVariableModMotif = new ArrayList<>();
+        refinementVariableCTermMod = new ArrayList<>();
+        refinementVariableNTermMod = new ArrayList<>();
+
+        for (String modName : modificationParameters.getRefinementVariableModifications()) {
+
+// Exclude modifications triggered by the quick options
             boolean newModification = true;
-            if (xtandemParameters.isProteinQuickAcetyl() && ptmName.equals("Acetylation of protein N-term")) {
+
+            if (xtandemParameters.isProteinQuickAcetyl() && modName.equals("Acetylation of protein N-term")) {
+
                 newModification = false;
+
             }
+
             if (newModification && xtandemParameters.isQuickPyrolidone()
-                    && (ptmName.equals("Pyrolidone from E") || ptmName.equals("Pyrolidone from Q") || ptmName.equals("Pyrolidone from carbamidomethylated C"))) {
+                    && (modName.equals("Pyrolidone from E") || modName.equals("Pyrolidone from Q") || modName.equals("Pyrolidone from carbamidomethylated C"))) {
+
                 newModification = false;
+
             }
+
             if (newModification) {
-                PTM ptm = ptmFactory.getPTM(ptmName);
-                if (ptm.getType() == PTM.MODC
-                        || ptm.getType() == PTM.MODCAA
-                        || ptm.getType() == PTM.MODCP
-                        || ptm.getType() == PTM.MODCPAA) {
-                    refinementVariableCTermMod.add(ptmName);
-                } else if (ptm.getType() == PTM.MODN
-                        || ptm.getType() == PTM.MODNAA
-                        || ptm.getType() == PTM.MODNP
-                        || ptm.getType() == PTM.MODNPAA) {
-                    refinementVariableNTermMod.add(ptmName);
-                } else if (ptm.getPattern().length() == 1 && ptm.getPattern().getAminoAcidsAtTarget().size() == 1) {
-                    refinementVariableMod.add(ptmName);
-                } else {
-                    refinementVariableModMotif.add(ptmName);
+
+                Modification modification = modificationFactory.getModification(modName);
+                ModificationType modificationType = modification.getModificationType();
+
+                switch (modificationType) {
+                    case modc_peptide:
+                    case modc_protein:
+                    case modcaa_peptide:
+                    case modcaa_protein:
+                        refinementVariableCTermMod.add(modName);
+                        break;
+                    case modn_peptide:
+                    case modn_protein:
+                    case modnaa_peptide:
+                    case modnaa_protein:
+                        refinementVariableNTermMod.add(modName);
+                        break;
+                    default:
+                        AminoAcidPattern modificationPattern = modification.getPattern();
+                        if (modificationPattern.length() == 1 && modificationPattern.getAminoAcidsAtTarget().size() == 1) {
+                            refinementVariableMod.add(modName);
+                        } else {
+                            refinementVariableModMotif.add(modName);
+                        }
                 }
             }
         }
-        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+
+        DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         enzymeCleaveSiteAsText = digestionPreferences.getXTandemFormat();
 
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
 
             boolean semiSpecific = false;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.semiSpecific
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificCTermOnly
-                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionPreferences.Specificity.specificNTermOnly) {
+                if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
+                        || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                     break;
                 }
@@ -289,7 +355,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                 }
             }
             this.missedCleavages = missedCleavages;
-        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
             enzymeIsSemiSpecific = "no";
             this.missedCleavages = 50;
         } else { // whole protien
@@ -297,7 +363,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             this.missedCleavages = 0;
         }
 
-        selectedIons = new HashSet<Integer>();
+        selectedIons = new HashSet<>();
         selectedIons.addAll(searchParameters.getForwardIons());
         selectedIons.addAll(searchParameters.getRewindIons());
 
@@ -380,7 +446,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Creates the parameters file.
      *
-     * @throws IllegalArgumentException thrown if more than one fixed PTM has
+     * @throws IllegalArgumentException thrown if more than one fixed Modification has
      * the same target
      */
     private void createParameterFile() throws IllegalArgumentException {
@@ -421,14 +487,18 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         String motifs = "";
-        for (String ptmName : variableModMotifs) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            motifs += ptm.getRoundedMass() + "@" + ptm.getPattern().getPrositeFormat(); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
+
+        for (String modName : variableModMotifs) {
+
+            Modification modification = modificationFactory.getModification(modName);
+            motifs += modification.getMass() + "@" + modification.getPattern().getPrositeFormat(); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
+
         }
 
         parameterFile = new File(xTandemFile, PARAMETER_FILE);
 
         try {
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
             bw.write(
                     "<?xml version=\"1.0\"?>" + System.getProperty("line.separator")
@@ -603,18 +673,25 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             parametersSection.append("\t<note type=\"input\" label=\"refine\">no</note>");
         }
         parametersSection.append(System.getProperty("line.separator"));
-        String fixedModsString = "";
+
+        String fixedModsString;
+
         if (refinementFixedMod != null) {
-            HashMap<Character, ArrayList<PTM>> sortedPtms = sortModifications(refinementFixedMod);
-            for (Character target : sortedPtms.keySet()) {
-                for (PTM ptm : sortedPtms.get(target)) {
-                    if (!fixedModsString.equals("")) {
-                        fixedModsString += ",";
-                    }
-                    fixedModsString += ptm.getRoundedMass() + "@" + ptm.getRoundedMass();
-                }
-            }
+
+            HashMap<Character, ArrayList<Modification>> sortedModifications = sortModifications(refinementFixedMod);
+
+            fixedModsString = sortedModifications.keySet().stream()
+                    .sorted()
+                    .flatMap(target -> sortedModifications.get(target).stream())
+                    .map(modification -> modification.getMass() + "@" + modification.getPattern().getPrositeFormat())
+                    .collect(Collectors.joining(","));
+
+        } else {
+
+            fixedModsString = "";
+
         }
+
         parametersSection.append("\t<note type=\"input\" label=\"refine, modification mass\">").append(fixedModsString).append("</note>").append(System.getProperty("line.separator")); // @TODO: add refinement modifications!
         parametersSection.append("\t<note type=\"input\" label=\"refine, sequence path\"></note>").append(System.getProperty("line.separator"));
         parametersSection.append("\t<note type=\"input\" label=\"refine, tic percent\">20</note>").append(System.getProperty("line.separator"));
@@ -650,38 +727,63 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             parametersSection.append("\t<note type=\"input\" label=\"refine, use potential modifications for full refinement\">no</note>").append(System.getProperty("line.separator"));
         }
+
         String nTerm = "";
-        for (String ptmName : refinementVariableNTermMod) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
+
+        for (String modName : refinementVariableNTermMod) {
+
+            Modification modification = modificationFactory.getModification(modName);
+
             if (!nTerm.equals("")) {
+
                 nTerm += ",";
+
             }
-            nTerm += ptm.getRoundedMass() + "@[";
+
+            nTerm += modification.getMass() + "@[";
+
         }
+
         parametersSection.append("\t<note type=\"input\" label=\"refine, potential N-terminus modifications\">").append(nTerm).append("</note>").append(System.getProperty("line.separator"));
 
         String cTerm = "";
-        for (String ptmName : refinementVariableCTermMod) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
+
+        for (String modName : refinementVariableCTermMod) {
+
+            Modification modification = modificationFactory.getModification(modName);
+
             if (!cTerm.equals("")) {
+
                 cTerm += ",";
+
             }
-            cTerm += ptm.getRoundedMass() + "@]";
+
+            cTerm += modification.getMass() + "@]";
+
         }
+
         parametersSection.append("\t<note type=\"input\" label=\"refine, potential C-terminus modifications\">").append(cTerm).append("</note>").append(System.getProperty("line.separator"));
 
         String modString = "";
-        for (String ptmName : refinementVariableMod) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            modString += ptm.getRoundedMass() + "@" + ptm.getPattern().getAminoAcidsAtTarget().get(0); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
+
+        for (String modName : refinementVariableMod) {
+
+            Modification modification = modificationFactory.getModification(modName);
+            modString += modification.getMass() + "@" + modification.getPattern().getAminoAcidsAtTarget().get(0); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
+
         }
+
         parametersSection.append("\t<note type=\"input\" label=\"refine, potential modification mass\">").append(modString).append("</note>").append(System.getProperty("line.separator"));
 
         String motifs = "";
-        for (String ptmName : refinementVariableModMotif) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            motifs += ptm.getRoundedMass() + "@" + ptm.getPattern().getPrositeFormat(); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
+
+        for (String modName : refinementVariableModMotif) {
+
+            Modification modification = modificationFactory.getModification(modName);
+            motifs += modification.getMass() + "@" + modification.getPattern().getPrositeFormat(); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
+
         }
+
         parametersSection.append("\t<note type=\"input\" label=\"refine, potential modification motif\">").append(motifs).append("</note>").append(System.getProperty("line.separator"));
         parametersSection.append("\t<note>The format of this parameter is similar to residue, modification mass,").append(System.getProperty("line.separator"));
         parametersSection.append("\t\twith the addition of a modified PROSITE notation sequence motif specification.").append(System.getProperty("line.separator"));
@@ -699,7 +801,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param variableModifications the map of modifications to parse
      * @return the list of modifications as a String
-     * @throws IllegalArgumentException thrown if more than one fixed PTM has
+     * @throws IllegalArgumentException thrown if more than one fixed Modification has
      * the same target
      */
     private String getSearchedModList(ArrayList<String> variableModifications, ArrayList<String> fixedModifications) throws IllegalArgumentException {
@@ -720,22 +822,22 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         String variableModsString = "\t<note type=\"input\" label=\"residue, potential modification mass\">";
         String variableModsDescriptionString = "\t\t<note>";
 
-        // get the sorted list of ptms, the keys in the maps are the target, and the values the ptms with that target
-        HashMap<Character, ArrayList<PTM>> allVariableMods = sortModifications(variableModifications);
-        HashMap<Character, ArrayList<PTM>> allFixedMods = sortModifications(fixedModifications);
+        // get the sorted list of modifications, the keys in the maps are the target, and the values the modifications with that target
+        HashMap<Character, ArrayList<Modification>> allVariableMods = sortModifications(variableModifications);
+        HashMap<Character, ArrayList<Modification>> allFixedMods = sortModifications(fixedModifications);
 
-        // list of ptms that were set as variable, but have to be set as "variable fixed"
-        HashMap<Character, ArrayList<PTM>> variableFixedPtms = new HashMap<Character, ArrayList<PTM>>();
+        // list of modifications that were set as variable, but have to be set as "variable fixed"
+        HashMap<Character, ArrayList<Modification>> variableFixedModifications = new HashMap<>();
 
         for (Character target : allVariableMods.keySet()) {
 
             if (allVariableMods.get(target).size() == 1) {
-                // unique target across all the variable ptms
-                variableModsString += allVariableMods.get(target).get(0).getRoundedMass() + "@" + target + ",";
+                // unique target across all the variable modifications
+                variableModsString += allVariableMods.get(target).get(0).getMass() + "@" + target + ",";
                 variableModsDescriptionString += allVariableMods.get(target).get(0).getName() + ",";
             } else {
-                // none-unique target, add to "variable fixed" ptms
-                variableFixedPtms.put(target, allVariableMods.get(target));
+                // none-unique target, add to "variable fixed" modifications
+                variableFixedModifications.put(target, allVariableMods.get(target));
             }
         }
 
@@ -745,7 +847,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             variableModsDescriptionString = variableModsDescriptionString.substring(0, variableModsDescriptionString.length() - 1);
         }
 
-        // set the variable ptms
+        // set the variable modifications
         variableModsString += "</note>" + System.getProperty("line.separator");
         variableModsDescriptionString += "</note>" + System.getProperty("line.separator");
 
@@ -761,14 +863,14 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         for (Character target : allFixedMods.keySet()) {
 
             if (allFixedMods.get(target).size() == 1) {
-                // unique target across all the fixed ptms
-                fixedModsString += allFixedMods.get(target).get(0).getRoundedMass() + "@" + target + ",";
+                // unique target across all the fixed modifications
+                fixedModsString += allFixedMods.get(target).get(0).getMass() + "@" + target + ",";
                 fixedModsDescriptionString += allFixedMods.get(target).get(0).getName() + ",";
 
-                defaultFixedModsString += allFixedMods.get(target).get(0).getRoundedMass() + "@" + target + ",";
+                defaultFixedModsString += allFixedMods.get(target).get(0).getMass() + "@" + target + ",";
                 defaultFixedModsDescription += allFixedMods.get(target).get(0).getName() + ",";
             } else {
-                // non-unique targets for fixed ptms detected, this is not supported!!
+                // non-unique targets for fixed modifications detected, this is not supported!!
                 throw new IllegalArgumentException("More than one fixed modification with the same target was detected! Target: " + target + ". "
                         + "X!Tandem does not support this. Please replace by a single modification and try again.");
             }
@@ -787,29 +889,33 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         // add the default fixed mods
         completeModificationString += fixedModsString + fixedModsDescriptionString;
 
-        ArrayList<String> fixedSecondaryLines = new ArrayList<String>();
-        ArrayList<String> fixedSecondaryLinesDescription = new ArrayList<String>();
+        ArrayList<String> fixedSecondaryLines = new ArrayList<>();
+        ArrayList<String> fixedSecondaryLinesDescription = new ArrayList<>();
 
-        for (Character target : variableFixedPtms.keySet()) {
+        for (Character target : variableFixedModifications.keySet()) {
 
-            ArrayList<String> newLines = new ArrayList<String>();
-            ArrayList<String> newDescriptions = new ArrayList<String>();
+            ArrayList<String> newLines = new ArrayList<>();
+            ArrayList<String> newDescriptions = new ArrayList<>();
 
-            for (PTM tempPtm : variableFixedPtms.get(target)) {
+            for (Modification modification : variableFixedModifications.get(target)) {
 
-                PTM currentPtm = tempPtm;
-                String tempModsString = currentPtm.getRoundedMass() + "@" + target;
-                String tempModsStringModsDescriptionString = currentPtm.getName();
+                Modification currentModification = modification;
+                String tempModsString = currentModification.getMass() + "@" + target;
+                String tempModsStringModsDescriptionString = currentModification.getName();
 
                 newLines.add(defaultFixedModsString + tempModsString);
                 newDescriptions.add(defaultFixedModsDescription + tempModsStringModsDescriptionString);
 
                 for (String previousLines : fixedSecondaryLines) {
+                    
                     newLines.add(previousLines + "," + tempModsString);
+                    
                 }
 
                 for (String previousLines : fixedSecondaryLinesDescription) {
+                    
                     newDescriptions.add(previousLines + "," + tempModsStringModsDescriptionString);
+                    
                 }
             }
 
@@ -844,62 +950,71 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @param modifications the modifications to sort
      * @return the modifications sorted according to their target
      */
-    private HashMap<Character, ArrayList<PTM>> sortModifications(ArrayList<String> modifications) {
+    private HashMap<Character, ArrayList<Modification>> sortModifications(ArrayList<String> modifications) {
 
-        HashMap<Character, ArrayList<PTM>> sortedMods = new HashMap<Character, ArrayList<PTM>>();
+        HashMap<Character, ArrayList<Modification>> sortedMods = new HashMap<>();
 
         for (String name : modifications) {
 
-            PTM ptm = ptmFactory.getSingleAAPTM(name);
+            Modification modification = modificationFactory.getSingleAAModification(name);
+ModificationType modificationType = modification.getModificationType();
+            
+            if (modificationType == ModificationType.modn_peptide
+                    || modificationType == ModificationType.modnaa_peptide
+                    || modificationType == ModificationType.modn_protein
+                    || modificationType == ModificationType.modnaa_protein) {
 
-            if (ptm.getType() == PTM.MODN
-                    || ptm.getType() == PTM.MODNAA
-                    || ptm.getType() == PTM.MODNP
-                    || ptm.getType() == PTM.MODNPAA) {
-
-                ArrayList<PTM> ptms;
+                ArrayList<Modification> modificationList;
 
                 if (sortedMods.containsKey('[')) {
-                    ptms = sortedMods.get('[');
+                    modificationList = sortedMods.get('[');
                 } else {
-                    ptms = new ArrayList<PTM>();
+                    modificationList = new ArrayList<>();
                 }
 
-                ptms.add(ptm);
-                sortedMods.put('[', ptms);
+                modificationList.add(modification);
+                sortedMods.put('[', modificationList);
+                
             }
 
-            if (ptm.getPattern() != null) {
-                for (Character aa : ptm.getPattern().getAminoAcidsAtTarget()) {
+            AminoAcidPattern aminoAcidPattern = modification.getPattern();
+            
+            if (aminoAcidPattern != null) {
+                
+                for (Character aa : aminoAcidPattern.getAminoAcidsAtTarget()) {
 
-                    ArrayList<PTM> ptms;
+                    ArrayList<Modification> modificationList;
 
                     if (sortedMods.containsKey(aa)) {
-                        ptms = sortedMods.get(aa);
+                        
+                        modificationList = sortedMods.get(aa);
+                        
                     } else {
-                        ptms = new ArrayList<PTM>();
+                        
+                        modificationList = new ArrayList<>();
+                        
                     }
 
-                    ptms.add(ptm);
-                    sortedMods.put(aa, ptms);
+                    modificationList.add(modification);
+                    sortedMods.put(aa, modificationList);
                 }
             }
 
-            if (ptm.getType() == PTM.MODC
-                    || ptm.getType() == PTM.MODCAA
-                    || ptm.getType() == PTM.MODCP
-                    || ptm.getType() == PTM.MODCPAA) {
+            if (modificationType == ModificationType.modc_peptide
+                    || modificationType == ModificationType.modcaa_peptide
+                    || modificationType == ModificationType.modc_protein
+                    || modificationType == ModificationType.modcaa_protein) {
 
-                ArrayList<PTM> ptms;
+                ArrayList<Modification> modificationList;
 
                 if (sortedMods.containsKey(']')) {
-                    ptms = sortedMods.get(']');
+                    modificationList = sortedMods.get(']');
                 } else {
-                    ptms = new ArrayList<PTM>();
+                    modificationList = new ArrayList<>();
                 }
 
-                ptms.add(ptm);
-                sortedMods.put(']', ptms);
+                modificationList.add(modification);
+                sortedMods.put(']', modificationList);
             }
         }
 
@@ -912,7 +1027,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return the type of the process
      */
     public String getType() {
+        
         return "X!Tandem";
+        
     }
 
     /**
@@ -921,7 +1038,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return the file name of the currently processed file
      */
     public String getCurrentlyProcessedFileName() {
+        
         return spectrumFile;
+        
     }
 
     /**
@@ -930,10 +1049,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the x ions are to be searched for.
      */
     public String getXSelected() {
+        
         if (selectedIons.contains(PeptideFragmentIon.X_ION)) {
+            
             return "yes";
+            
         } else {
+            
             return "no";
+            
         }
     }
 
@@ -943,10 +1067,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the y ions are to be searched for.
      */
     public String getYSelected() {
+        
         if (selectedIons.contains(PeptideFragmentIon.Y_ION)) {
+            
             return "yes";
+            
         } else {
+            
             return "no";
+            
         }
     }
 
@@ -956,10 +1085,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the z ions are to be searched for.
      */
     public String getZSelected() {
+        
         if (selectedIons.contains(PeptideFragmentIon.Z_ION)) {
+            
             return "yes";
+            
         } else {
+            
             return "no";
+            
         }
     }
 
@@ -969,10 +1103,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the a ions are to be searched for.
      */
     public String getASelected() {
+        
         if (selectedIons.contains(PeptideFragmentIon.A_ION)) {
+            
             return "yes";
+            
         } else {
+            
             return "no";
+            
         }
     }
 
@@ -982,10 +1121,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the b ions are to be searched for.
      */
     public String getBSelected() {
+        
         if (selectedIons.contains(PeptideFragmentIon.B_ION)) {
+            
             return "yes";
+            
         } else {
+            
             return "no";
+            
         }
     }
 
@@ -995,10 +1139,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the c ions are to be searched for.
      */
     public String getCSelected() {
+        
         if (selectedIons.contains(PeptideFragmentIon.C_ION)) {
+            
             return "yes";
+            
         } else {
+            
             return "no";
+            
         }
     }
 }

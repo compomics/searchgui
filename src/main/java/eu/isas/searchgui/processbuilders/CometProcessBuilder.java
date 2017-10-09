@@ -2,8 +2,19 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
+import com.compomics.util.experiment.biology.ions.impl.PeptideFragmentIon;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.waiting.WaitingHandler;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.CometParameters;
+import com.compomics.util.parameters.identification.tool_specific.CometParameters.CometOutputFormat;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -57,9 +68,9 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      */
     private int nThreads; // note that Comet 2016.01 and newer supports negative values: "will subtract that many threads from #CPU cores"
     /**
-     * The compomics PTM factory.
+     * The compomics modification factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
      * A reference mass to convert fragment ion tolerance from ppm to Dalton.
      */
@@ -172,11 +183,11 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
         int enzymeId = -1;
         Integer nMissedCleavages = 2;
-        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+        DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         Integer enzymeType = cometParameters.getEnzymeType();
         ArrayList<Enzyme> enzymes = EnzymeFactory.getInstance().getEnzymes();
 
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
 
             Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
             String enzymeName = enzyme.getName();
@@ -185,7 +196,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 nMissedCleavages = 5;
             }
 
-            DigestionPreferences.Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
+            DigestionParameters.Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
             if (null != specificity) {
                 switch (specificity) {
                     case semiSpecific:
@@ -216,7 +227,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             if (!found) {
                 throw new IllegalArgumentException("No index found for enzyme " + enzymeName + ".");
             }
-        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
             enzymeType = 2;
             enzymeId = enzymes.size() + 1;
         } else {
@@ -430,10 +441,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
         int cpt = 0;
 
-        for (String ptmName : searchParameters.getPtmSettings().getVariableModifications()) {
+        for (String modName : searchParameters.getModificationParameters().getVariableModifications()) {
 
-            // get the ptm
-            PTM ptm = ptmFactory.getPTM(ptmName);
+            // get the modification
+            Modification modification = modificationFactory.getModification(modName);
             result.append("variable_mod");
             if (++cpt < 10) {
                 result.append("0");
@@ -441,39 +452,45 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             result.append(cpt);
             result.append(" = ");
 
-            // add ptm mass
-            result.append(ptm.getRoundedMass());
+            // add modification mass
+            result.append(modification.getRoundedMass());
             result.append(" ");
 
             // find targeted residues
-            StringBuilder ptmCometPattern = new StringBuilder();
-            AminoAcidPattern ptmPattern = ptm.getPattern();
-            if (ptmPattern != null && ptmPattern.length() > 0) {
-                for (Character aminoAcid : ptmPattern.getAminoAcidsAtTarget()) {
-                    ptmCometPattern.append(aminoAcid);
+            StringBuilder modificationCometPattern = new StringBuilder();
+            AminoAcidPattern modificationPattern = modification.getPattern();
+            if (modificationPattern != null && modificationPattern.length() > 0) {
+                for (Character aminoAcid : modificationPattern.getAminoAcidsAtTarget()) {
+                    modificationCometPattern.append(aminoAcid);
                 }
             }
 
             // add targeted residues
-            if (ptmCometPattern.length() == 0) {
-                if (ptm.isCTerm()) {
+            if (modificationCometPattern.length() == 0) {
+                if (modification.getModificationType() == ModificationType.modc_peptide
+                        || modification.getModificationType() == ModificationType.modc_protein
+                        || modification.getModificationType() == ModificationType.modcaa_peptide
+                        || modification.getModificationType() == ModificationType.modcaa_protein) {
                     result.append("c");
-                } else if (ptm.isNTerm()) {
+                } else if (modification.getModificationType() == ModificationType.modn_peptide
+                        || modification.getModificationType() == ModificationType.modn_protein
+                        || modification.getModificationType() == ModificationType.modnaa_peptide
+                        || modification.getModificationType() == ModificationType.modnaa_protein) {
                     result.append("n");
                 } else {
                     result.append("X");
                 }
             } else {
-                result.append(ptmCometPattern);
+                result.append(modificationCometPattern);
             }
 
-            // add variable ptm tag:
+            // add variable modification tag:
             //      0 = variable modification analyzes all permutations of modified and unmodified residues
             //      non-zero value = a binary modification analyzes peptides where all residues are either modified or all residues are not modified
             result.append(" 0 "); // @TODO: add support for binary modification sets?
 
-            // add max copies of this ptm per peptide
-            if (ptm.isNTerm() || ptm.isCTerm()) {
+            // add max copies of this modification per peptide
+            if (modification.getModificationType() != ModificationType.modaa) {
                 result.append("1 ");
             } else {
                 result.append("3 "); // @TODO: make this a user parameter?
@@ -485,27 +502,32 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             //      1 = only applies to terminal residue and next residue, 
             //      2 = only applies to terminal residue through next 2 residues, 
             //      N = only applies to terminal residue through next N residues where N is a positive integer)
-            if (ptm.isNTerm() || ptm.isCTerm()) {
+            if (modification.getModificationType() != ModificationType.modaa) {
                 result.append("0 ");
             } else {
                 result.append("-1 ");
             }
 
             // add which terminus the terminus constraint applies to (protein or peptide, c or n term)
-            if (ptm.isNTerm()) {
-                if (ptm.getType() == PTM.MODN || ptm.getType() == PTM.MODNAA) {
+            switch (modification.getModificationType()) {
+                case modn_protein:
+                case modnaa_protein:
                     result.append("0 ");
-                } else if (ptm.getType() == PTM.MODNP || ptm.getType() == PTM.MODNPAA) {
+                    break;
+                case modn_peptide:
+                case modnaa_peptide:
                     result.append("2 ");
-                }
-            } else if (ptm.isCTerm()) {
-                if (ptm.getType() == PTM.MODC || ptm.getType() == PTM.MODCAA) {
+                    break;
+                case modc_protein:
+                case modcaa_protein:
                     result.append("1 ");
-                } else if (ptm.getType() == PTM.MODCP || ptm.getType() == PTM.MODCPAA) {
+                    break;
+                case modc_peptide:
+                case modcaa_peptide:
                     result.append("3 ");
-                }
-            } else {
-                result.append("0 "); // cause we have to add something...
+                    break;
+                default:
+                    result.append("0 ");
             }
 
             // add whether peptides must contain this modification
@@ -516,7 +538,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             result.append(System.getProperty("line.separator"));
         }
 
-        // add empty lines for the remaining ptm parameter lines
+        // add empty lines for the remaining modification parameter lines
         while (++cpt < 10) {
             result.append("variable_mod");
             if (cpt < 10) {
@@ -527,10 +549,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             result.append(System.getProperty("line.separator"));
         }
 
-        // set the max variable ptms per peptide
+        // set the max variable modifications per peptide
         result.append("max_variable_mods_in_peptide = ").append(cometParameters.getMaxVariableMods()).append(System.getProperty("line.separator"));
 
-        // require at least one variable ptm per peptide
+        // require at least one variable modification per peptide
         if (cometParameters.getRequireVariableMods()) {
             result.append("require_variable_mod = 1").append(System.getProperty("line.separator"));
         } else {
@@ -547,36 +569,36 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String getFixedModifications() {
 
-        HashMap<Character, Double> residueToModificationMap = new HashMap<Character, Double>();
+        HashMap<Character, Double> residueToModificationMap = new HashMap<>();
         double proteinCtermModification = 0,
                 proteinNtermModification = 0,
                 peptideCtermModification = 0,
                 peptideNTermModification = 0;
 
-        for (String ptmName : searchParameters.getPtmSettings().getFixedModifications()) {
-            PTM ptm = ptmFactory.getPTM(ptmName);
-            switch (ptm.getType()) {
-                case PTM.MODAA:
-                    for (Character aminoAcid : ptm.getPattern().getAminoAcidsAtTarget()) {
-                        Double modification = residueToModificationMap.get(aminoAcid);
-                        if (modification == null) {
-                            residueToModificationMap.put(aminoAcid, ptm.getRoundedMass());
+        for (String modName : searchParameters.getModificationParameters().getFixedModifications()) {
+            Modification modification = modificationFactory.getModification(modName);
+            switch (modification.getModificationType()) {
+                case modaa:
+                    for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
+                        Double modificationMass = residueToModificationMap.get(aminoAcid);
+                        if (modificationMass == null) {
+                            residueToModificationMap.put(aminoAcid, modification.getRoundedMass());
                         } else {
-                            residueToModificationMap.put(aminoAcid, modification + ptm.getRoundedMass());
+                            residueToModificationMap.put(aminoAcid, modificationMass + modification.getRoundedMass());
                         }
                     }
                     break;
-                case PTM.MODC:
-                    proteinCtermModification += ptm.getRoundedMass();
+                case modc_protein:
+                    proteinCtermModification += modification.getRoundedMass();
                     break;
-                case PTM.MODN:
-                    proteinNtermModification += ptm.getRoundedMass();
+                case modn_protein:
+                    proteinNtermModification += modification.getRoundedMass();
                     break;
-                case PTM.MODCP:
-                    peptideCtermModification += ptm.getRoundedMass();
+                case modc_peptide:
+                    peptideCtermModification += modification.getRoundedMass();
                     break;
-                case PTM.MODNP:
-                    peptideNTermModification += ptm.getRoundedMass();
+                case modn_peptide:
+                    peptideNTermModification += modification.getRoundedMass();
                     break;
                 default:
                     break;
@@ -766,7 +788,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 + "[COMET_ENZYME_INFO]" + System.getProperty("line.separator");
 
         EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
-        HashMap<Integer, String> enzymeMap = new HashMap<Integer, String>(enzymeFactory.getEnzymes().size() + 2);
+        HashMap<Integer, String> enzymeMap = new HashMap<>(enzymeFactory.getEnzymes().size() + 2);
         ArrayList<Enzyme> enzymes = enzymeFactory.getEnzymes();
 
         for (int i = 1; i <= enzymes.size(); i++) {

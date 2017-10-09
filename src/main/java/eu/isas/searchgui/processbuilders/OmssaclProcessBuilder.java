@@ -2,9 +2,21 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.ions.NeutralLoss;
+import com.compomics.util.experiment.biology.ions.impl.PeptideFragmentIon;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
+import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
+import com.compomics.util.parameters.identification.search.DigestionParameters.Specificity;
+import com.compomics.util.parameters.identification.search.ModificationParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.OmssaParameters;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -27,9 +39,9 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String spectraFile;
     /**
-     * The modification profile of this search.
+     * The modification parameters of this search.
      */
-    private PtmSettings modificationProfile;
+    private ModificationParameters modificationParameters;
     /**
      * The name of the OMSSA executable.
      */
@@ -59,7 +71,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
         this.spectraFile = spectraFile;
         this.waitingHandler = waitingHandler;
-        this.modificationProfile = searchParameters.getPtmSettings();
+        this.modificationParameters = searchParameters.getModificationParameters();
 
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
 
@@ -79,18 +91,18 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
         // check if set by user (that is, if not defaults) and then add to array
         process_name_array.add("-to");
-        process_name_array.add(searchParameters.getFragmentIonAccuracyInDaltons(refMass).toString());
+        process_name_array.add(Double.toString(searchParameters.getFragmentIonAccuracyInDaltons(refMass)));
         process_name_array.add("-te");
-        process_name_array.add(searchParameters.getPrecursorAccuracy().toString());
+        process_name_array.add(Double.toString(searchParameters.getPrecursorAccuracy()));
         if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
             process_name_array.add("-teppm");
         }
-        DigestionPreferences digestionPreferences = searchParameters.getDigestionPreferences();
+        DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         int enzymeIndex = getEnzymeIndex(digestionPreferences);
         process_name_array.add("-e");
         process_name_array.add(Integer.toString(enzymeIndex));
         Integer missedCleavages = null;
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
                 int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
                 if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
@@ -102,136 +114,86 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-v");
             process_name_array.add(Integer.toString(missedCleavages));
         }
-        if (searchParameters.getMinChargeSearched() != null) {
-            process_name_array.add("-zl");
-            process_name_array.add(Integer.toString(searchParameters.getMinChargeSearched().value));
-        }
-        if (searchParameters.getMaxChargeSearched() != null) {
-            process_name_array.add("-zh");
-            process_name_array.add(Integer.toString(searchParameters.getMaxChargeSearched().value));
-        }
-        if (omssaParameters.getMinimalChargeForMultipleChargedFragments() != null) {
-            process_name_array.add("-zt");
-            process_name_array.add(Integer.toString(omssaParameters.getMinimalChargeForMultipleChargedFragments().value));
-        }
-        if (omssaParameters.isMemoryMappedSequenceLibraries() != null && omssaParameters.isMemoryMappedSequenceLibraries()) {
+        process_name_array.add("-zl");
+        process_name_array.add(Integer.toString(searchParameters.getMinChargeSearched()));
+        process_name_array.add("-zh");
+        process_name_array.add(Integer.toString(searchParameters.getMaxChargeSearched()));
+        process_name_array.add("-zt");
+        process_name_array.add(Integer.toString(omssaParameters.getMinimalChargeForMultipleChargedFragments()));
+        if (omssaParameters.isMemoryMappedSequenceLibraries()) {
             process_name_array.add("-umm");
         }
         if (searchParameters.getMaxIsotopicCorrection() > 0) {
             process_name_array.add("-ti");
             process_name_array.add(Integer.toString(searchParameters.getMaxIsotopicCorrection()));
         }
-        if (omssaParameters.getNeutronThreshold() != null) {
-            process_name_array.add("-tex");
-            process_name_array.add(Double.toString(omssaParameters.getNeutronThreshold()));
-        }
-        if (omssaParameters.getLowIntensityCutOff() != null) {
-            process_name_array.add("-cl");
-            process_name_array.add(Double.toString(omssaParameters.getLowIntensityCutOff()));
-        }
-        if (omssaParameters.getHighIntensityCutOff() != null) {
-            process_name_array.add("-ch");
-            process_name_array.add(Double.toString(omssaParameters.getHighIntensityCutOff()));
-        }
-        if (omssaParameters.getIntensityCutOffIncrement() != null) {
-            process_name_array.add("-ci");
-            process_name_array.add(Double.toString(omssaParameters.getIntensityCutOffIncrement()));
-        }
-        if (omssaParameters.getSingleChargeWindow() != null) {
-            process_name_array.add("-w1");
-            process_name_array.add(Integer.toString(omssaParameters.getSingleChargeWindow()));
-        }
-        if (omssaParameters.getDoubleChargeWindow() != null) {
-            process_name_array.add("-w2");
-            process_name_array.add(Integer.toString(omssaParameters.getDoubleChargeWindow()));
-        }
-        if (omssaParameters.getnPeaksInSingleChargeWindow() != null) {
-            process_name_array.add("-h1");
-            process_name_array.add(Integer.toString(omssaParameters.getnPeaksInSingleChargeWindow()));
-        }
-        if (omssaParameters.getnPeaksInDoubleChargeWindow() != null) {
-            process_name_array.add("-h2");
-            process_name_array.add(Integer.toString(omssaParameters.getnPeaksInDoubleChargeWindow()));
-        }
-        if (omssaParameters.getMaxHitsPerSpectrumPerCharge() != null) {
-            process_name_array.add("-hl");
-            process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
-        }
-        if (omssaParameters.getHitListLength() != null && omssaParameters.getHitListLength() > 0) {
-            process_name_array.add("-hc");
-            process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
-        }
-        if (omssaParameters.getMinAnnotatedPeaks() != null) {
-            process_name_array.add("-hm");
-            process_name_array.add(Integer.toString(omssaParameters.getMinAnnotatedPeaks()));
-        }
-        if (omssaParameters.getMinPeaks() != null) {
-            process_name_array.add("-hs");
-            process_name_array.add(Integer.toString(omssaParameters.getMinPeaks()));
-        }
-        if (omssaParameters.getnAnnotatedMostIntensePeaks() != null) {
-            process_name_array.add("-ht");
-            process_name_array.add(Integer.toString(omssaParameters.getnAnnotatedMostIntensePeaks()));
-        }
-        if (omssaParameters.isCleaveNterMethionine() != null && !omssaParameters.isCleaveNterMethionine()) {
+        process_name_array.add("-tex");
+        process_name_array.add(Double.toString(omssaParameters.getNeutronThreshold()));
+        process_name_array.add("-cl");
+        process_name_array.add(Double.toString(omssaParameters.getLowIntensityCutOff()));
+        process_name_array.add("-ch");
+        process_name_array.add(Double.toString(omssaParameters.getHighIntensityCutOff()));
+        process_name_array.add("-ci");
+        process_name_array.add(Double.toString(omssaParameters.getIntensityCutOffIncrement()));
+        process_name_array.add("-w1");
+        process_name_array.add(Integer.toString(omssaParameters.getSingleChargeWindow()));
+        process_name_array.add("-w2");
+        process_name_array.add(Integer.toString(omssaParameters.getDoubleChargeWindow()));
+        process_name_array.add("-h1");
+        process_name_array.add(Integer.toString(omssaParameters.getnPeaksInSingleChargeWindow()));
+        process_name_array.add("-h2");
+        process_name_array.add(Integer.toString(omssaParameters.getnPeaksInDoubleChargeWindow()));
+        process_name_array.add("-hl");
+        process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
+        process_name_array.add("-hc");
+        process_name_array.add(Integer.toString(omssaParameters.getMaxHitsPerSpectrumPerCharge()));
+        process_name_array.add("-hm");
+        process_name_array.add(Integer.toString(omssaParameters.getMinAnnotatedPeaks()));
+        process_name_array.add("-hs");
+        process_name_array.add(Integer.toString(omssaParameters.getMinPeaks()));
+        process_name_array.add("-ht");
+        process_name_array.add(Integer.toString(omssaParameters.getnAnnotatedMostIntensePeaks()));
+        if (!omssaParameters.isCleaveNterMethionine()) {
             process_name_array.add("-mnm");
         }
-        if (omssaParameters.getMaxMzLadders() != null) {
-            process_name_array.add("-mm");
-            process_name_array.add(Integer.toString(omssaParameters.getMaxMzLadders()));
-        }
-        if (omssaParameters.getMaxFragmentCharge() != null) {
-            process_name_array.add("-zoh");
-            process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentCharge()));
-        }
-        if (omssaParameters.getFractionOfPeaksForChargeEstimation() != null) {
-            process_name_array.add("-z1");
-            process_name_array.add(Double.toString(omssaParameters.getFractionOfPeaksForChargeEstimation()));
-        }
-        if (omssaParameters.isDetermineChargePlusOneAlgorithmically() != null && !omssaParameters.isDetermineChargePlusOneAlgorithmically()) {
-            process_name_array.add("-zc");
-            process_name_array.add(Integer.toString(0));
-        }
-        if (omssaParameters.isSearchPositiveIons() != null && !omssaParameters.isSearchPositiveIons()) {
+        process_name_array.add("-mm");
+        process_name_array.add(Integer.toString(omssaParameters.getMaxMzLadders()));
+        process_name_array.add("-zoh");
+        process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentCharge()));
+        process_name_array.add("-z1");
+        process_name_array.add(Double.toString(omssaParameters.getFractionOfPeaksForChargeEstimation()));
+        process_name_array.add("-zc");
+        process_name_array.add(Integer.toString(0));
+        process_name_array.add("-zn");
+        process_name_array.add(Integer.toString(-1));
+        if (!omssaParameters.isSearchPositiveIons()) {
             process_name_array.add("-zn");
             process_name_array.add(Integer.toString(-1));
         }
-        if (omssaParameters.getMinPrecPerSpectrum() != null) {
-            process_name_array.add("-pc");
-            process_name_array.add(Integer.toString(omssaParameters.getMinPrecPerSpectrum()));
-        }
-        if (omssaParameters.isSearchForwardFragmentFirst() != null && !omssaParameters.isSearchForwardFragmentFirst()) {
+        process_name_array.add("-pc");
+        process_name_array.add(Integer.toString(omssaParameters.getMinPrecPerSpectrum()));
+        if (!omssaParameters.isSearchForwardFragmentFirst()) {
             process_name_array.add("-sb1");
             process_name_array.add(Integer.toString(0));
         }
-        if (omssaParameters.isSearchRewindFragments() != null && !omssaParameters.isSearchRewindFragments()) {
+        if (!omssaParameters.isSearchRewindFragments()) {
             process_name_array.add("-sct");
             process_name_array.add(Integer.toString(1));
         }
-        if (omssaParameters.getMaxFragmentPerSeries() != null) {
-            process_name_array.add("-sp");
-            process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentPerSeries()));
-        }
-        if (omssaParameters.isUseCorrelationCorrectionScore() != null && !omssaParameters.isUseCorrelationCorrectionScore()) {
+        process_name_array.add("-sp");
+        process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentPerSeries()));
+        if (!omssaParameters.isUseCorrelationCorrectionScore()) {
             process_name_array.add("-scorr");
             process_name_array.add(Integer.toString(1));
         }
-        if (omssaParameters.getConsecutiveIonProbability() != null) {
-            process_name_array.add("-scorp");
-            process_name_array.add(Double.toString(omssaParameters.getConsecutiveIonProbability()));
-        }
-        if (omssaParameters.getIterativeSequenceEvalue() != null) {
-            process_name_array.add("-is");
-            process_name_array.add(Double.toString(omssaParameters.getIterativeSequenceEvalue()));
-        }
-        if (omssaParameters.getIterativeReplaceEvalue() != null) {
-            process_name_array.add("-ir");
-            process_name_array.add(Double.toString(omssaParameters.getIterativeReplaceEvalue()));
-        }
-        if (omssaParameters.getIterativeSpectrumEvalue() != null) {
-            process_name_array.add("-ii");
-            process_name_array.add(Double.toString(omssaParameters.getIterativeSpectrumEvalue()));
-        }
+        process_name_array.add("-scorp");
+        process_name_array.add(Double.toString(omssaParameters.getConsecutiveIonProbability()));
+        process_name_array.add("-is");
+        process_name_array.add(Double.toString(omssaParameters.getIterativeSequenceEvalue()));
+        process_name_array.add("-ir");
+        process_name_array.add(Double.toString(omssaParameters.getIterativeReplaceEvalue()));
+        process_name_array.add("-ii");
+        process_name_array.add(Double.toString(omssaParameters.getIterativeSpectrumEvalue()));
         process_name_array.add("-he");
         process_name_array.add(Double.toString(omssaParameters.getMaxEValue()));
         process_name_array.add("-tez");
@@ -252,14 +214,10 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             process_name_array.add("0");
         }
-        if (omssaParameters.getMinPeptideLength() != null) { // @TODO: these have to to be set if using no-enzyme or semi-enyzyme searches!!
-            process_name_array.add("-no");
-            process_name_array.add(omssaParameters.getMinPeptideLength().toString());
-        }
-        if (omssaParameters.getMaxPeptideLength() != null) {
-            process_name_array.add("-nox");
-            process_name_array.add(omssaParameters.getMaxPeptideLength().toString());
-        }
+        process_name_array.add("-no");
+        process_name_array.add(Double.toString(omssaParameters.getMinPeptideLength()));
+        process_name_array.add("-nox");
+        process_name_array.add(Double.toString(omssaParameters.getMaxPeptideLength()));
 
         // look for monoisotopic peaks
         process_name_array.add("-tom");
@@ -284,7 +242,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(ions.toString());
 
         String modificationIndexes = "";
-        for (Integer index : getSearchedModificationsIds(modificationProfile.getFixedModifications(), omssaParameters)) {
+        for (Integer index : getSearchedModificationsIds(modificationParameters.getFixedModifications(), omssaParameters)) {
             if (!modificationIndexes.equals("")) {
                 modificationIndexes += ",";
             }
@@ -295,7 +253,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add(modificationIndexes);
         }
         modificationIndexes = "";
-        for (Integer index : getSearchedModificationsIds(modificationProfile.getVariableModifications(), omssaParameters)) {
+        for (Integer index : getSearchedModificationsIds(modificationParameters.getVariableModifications(), omssaParameters)) {
             if (!modificationIndexes.equals("")) {
                 modificationIndexes += ",";
             }
@@ -394,7 +352,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @return the corresponding list of OMSSA modification indexes
      */
     public ArrayList<Integer> getSearchedModificationsIds(ArrayList<String> modificationsNames, OmssaParameters omssaParameters) {
-        ArrayList<Integer> result = new ArrayList<Integer>();
+        ArrayList<Integer> result = new ArrayList<>();
         for (String modName : modificationsNames) {
             Integer index = omssaParameters.getPtmIndex(modName);
             if (index == null) {
@@ -425,16 +383,16 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      */
     public static void writeOmssaUserModificationsFile(File omssaFile, IdentificationParameters identificationParameters, File identificationParametersFile) throws IOException, ClassNotFoundException {
 
-        PTMFactory ptmFactory = PTMFactory.getInstance();
+        ModificationFactory modificationFactory = ModificationFactory.getInstance();
 
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
-        PtmSettings modificationProfile = searchParameters.getPtmSettings();
+        ModificationParameters modificationParameters = searchParameters.getModificationParameters();
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
-        omssaParameters.setPtmIndexes(modificationProfile);
+        omssaParameters.setPtmIndexes(modificationParameters);
         IdentificationParameters.saveIdentificationParameters(identificationParameters, identificationParametersFile);
 
         HashMap<Integer, String> ptmIndexes = omssaParameters.getPtmIndexes();
-        ArrayList<Integer> indexes = new ArrayList<Integer>(ptmIndexes.keySet());
+        ArrayList<Integer> indexes = new ArrayList<>(ptmIndexes.keySet());
         Collections.sort(indexes);
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(omssaFile));
@@ -448,8 +406,8 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             int cpt = 1;
             for (Integer index : indexes) {
                 String ptmName = ptmIndexes.get(index);
-                PTM ptm = ptmFactory.getPTM(ptmName);
-                toWrite = getOmssaUserModBloc(ptm, cpt, index);
+                Modification modification = modificationFactory.getModification(ptmName);
+                toWrite = getOmssaUserModBloc(modification, cpt, index);
                 bw.write(toWrite);
                 cpt++;
             }
@@ -462,16 +420,16 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Returns an MSModSpec bloc as present in the OMSSA user modification files
-     * for a given PTM. Only the amino acids targeted by the pattern of the PTM
+     * for a given PTM. Only the amino acids targeted by the pattern of the modification
      * will be considered.
      *
-     * @param ptm the PTM
-     * @param cpt the index of this ptm in the list
-     * @param omssaIndex the OMSSA index of this PTM
+     * @param modification the modification
+     * @param cpt the index of this modification in the list
+     * @param omssaIndex the OMSSA index of this modification
      *
      * @return a string containing the XML bloc
      */
-    public static String getOmssaUserModBloc(PTM ptm, int cpt, int omssaIndex) {
+    public static String getOmssaUserModBloc(Modification modification, int cpt, int omssaIndex) {
 
         String result = "\t<MSModSpec>\n";
         result += "\t\t<MSModSpec_mod>\n";
@@ -479,56 +437,58 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         result += "\t\t</MSModSpec_mod>\n"
                 + "\t\t<MSModSpec_type>\n";
 
-        switch (ptm.getType()) {
-            case PTM.MODAA:
-                result += "\t\t\t<MSModType value=\"modaa\">" + PTM.MODAA + "</MSModType>\n";
+        ModificationType modificationType = modification.getModificationType();
+        
+        switch (modificationType) {
+            case modaa:
+                result += "\t\t\t<MSModType value=\"modaa\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODN:
-                result += "\t\t\t<MSModType value=\"modn\">" + PTM.MODN + "</MSModType>\n";
+            case modn_peptide:
+                result += "\t\t\t<MSModType value=\"modn\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODNAA:
-                result += "\t\t\t<MSModType value=\"modnaa\">" + PTM.MODNAA + "</MSModType>\n";
+            case modnaa_peptide:
+                result += "\t\t\t<MSModType value=\"modnaa\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODNP:
-                result += "\t\t\t<MSModType value=\"modnp\">" + PTM.MODNP + "</MSModType>\n";
+            case modn_protein:
+                result += "\t\t\t<MSModType value=\"modnp\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODNPAA:
-                result += "\t\t\t<MSModType value=\"modnpaa\">" + PTM.MODNPAA + "</MSModType>\n";
+            case modnaa_protein:
+                result += "\t\t\t<MSModType value=\"modnpaa\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODC:
-                result += "\t\t\t<MSModType value=\"modc\">" + PTM.MODC + "</MSModType>\n";
+            case modc_peptide:
+                result += "\t\t\t<MSModType value=\"modc\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODCAA:
-                result += "\t\t\t<MSModType value=\"modcaa\">" + PTM.MODCAA + "</MSModType>\n";
+            case modcaa_peptide:
+                result += "\t\t\t<MSModType value=\"modcaa\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODCP:
-                result += "\t\t\t<MSModType value=\"modcp\">" + PTM.MODCP + "</MSModType>\n";
+            case modc_protein:
+                result += "\t\t\t<MSModType value=\"modcp\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case PTM.MODCPAA:
-                result += "\t\t\t<MSModType value=\"modcpaa\">" + PTM.MODCPAA + "</MSModType>\n";
+            case modcaa_protein:
+                result += "\t\t\t<MSModType value=\"modcpaa\">" + modificationType.index + "</MSModType>\n";
                 break;
             default:
-                throw new IllegalArgumentException("Export not implemented for PTM of type " + ptm.getType() + ".");
+                throw new UnsupportedOperationException("Export not implemented for modification of type " + modificationType + ".");
         }
 
         result += "\t\t</MSModSpec_type>\n";
-        result += "\t\t<MSModSpec_name>" + ptm.getName() + "</MSModSpec_name>\n";
-        result += "\t\t<MSModSpec_monomass>" + ptm.getRoundedMass() + "</MSModSpec_monomass>\n"
+        result += "\t\t<MSModSpec_name>" + modification.getName() + "</MSModSpec_name>\n";
+        result += "\t\t<MSModSpec_monomass>" + modification.getRoundedMass() + "</MSModSpec_monomass>\n"
                 + "\t\t<MSModSpec_averagemass>0</MSModSpec_averagemass>\n"
                 + "\t\t<MSModSpec_n15mass>0</MSModSpec_n15mass>\n";
-        if (ptm.getType() == PTM.MODAA
-                || ptm.getType() == PTM.MODNAA
-                || ptm.getType() == PTM.MODNPAA
-                || ptm.getType() == PTM.MODCAA
-                || ptm.getType() == PTM.MODCPAA) {
+        if (modificationType == ModificationType.modaa
+                || modificationType == ModificationType.modcaa_peptide
+                || modificationType == ModificationType.modcaa_protein
+                || modificationType == ModificationType.modnaa_peptide
+                || modificationType == ModificationType.modnaa_protein) {
             result += "\t\t<MSModSpec_residues>\n";
-            for (Character aa : ptm.getPattern().getAminoAcidsAtTarget()) {
+            for (Character aa : modification.getPattern().getAminoAcidsAtTarget()) {
                 result += "\t\t\t<MSModSpec_residues_E>" + aa + "</MSModSpec_residues_E>\n";
             }
             result += "\t\t</MSModSpec_residues>\n";
         }
         boolean first = true;
-        for (NeutralLoss neutralLoss : ptm.getNeutralLosses()) {
+        for (NeutralLoss neutralLoss : modification.getNeutralLosses()) {
             if (neutralLoss.isFixed()) {
                 if (first) {
                     result += "\t\t<MSModSpec_neutralloss>\n";
@@ -556,11 +516,11 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @return the OMSSA enzyme index corresponding to the digestion preferences
      */
-    private int getEnzymeIndex(DigestionPreferences digestionPreferences) {
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+    private int getEnzymeIndex(DigestionParameters digestionPreferences) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
             return 11;
         }
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
             return 17;
         }
         if (digestionPreferences.getEnzymes().size() > 1) {
@@ -580,7 +540,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             return 10;
         }
         if (enzymeName.equals("Arg-C") || enzymeName.equals("Arg-C (no P rule)")) {
-                return 1;
+            return 1;
         }
         if (enzymeName.equals("Glu-C")) {
             if (specificity == Specificity.specific) {

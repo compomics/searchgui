@@ -203,10 +203,10 @@ public class SearchCLI implements Callable {
             }
 
             // get the spectrum files
-            ArrayList<File> spectrumFiles = new ArrayList<File>();
+            ArrayList<File> spectrumFiles = new ArrayList<>();
 
             // see if we need to split any of the mgf files
-            ArrayList<File> fatMgfFiles = new ArrayList<File>();
+            ArrayList<File> fatMgfFiles = new ArrayList<>();
             for (File tempMgfFile : searchCLIInputBean.getSpectrumFiles()) {
                 if (searchCLIInputBean.checkMgfSize() && tempMgfFile.length() > (((long) searchCLIInputBean.getMgfMaxSize()) * 1048576)) {
                     fatMgfFiles.add(tempMgfFile);
@@ -271,7 +271,7 @@ public class SearchCLI implements Callable {
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
                     searchCLIInputBean.getOutputFile(), spectrumFiles,
-                    new ArrayList<File>(), parametersFile,
+                    new ArrayList<>(), parametersFile,
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),
@@ -318,7 +318,7 @@ public class SearchCLI implements Callable {
      */
     private ArrayList<File> splitFiles(ArrayList<File> mgfFiles, WaitingHandler waitingHandler) {
 
-        ArrayList<File> splitMgfFiles = new ArrayList<File>();
+        ArrayList<File> splitMgfFiles = new ArrayList<>();
         MgfReader mgfReader = new MgfReader();
 
         for (File originalFile : mgfFiles) {

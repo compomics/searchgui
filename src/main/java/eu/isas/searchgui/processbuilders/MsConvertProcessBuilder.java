@@ -2,9 +2,12 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsFormat;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardFilter;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -41,12 +44,11 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
      * @param msConvertParameters the msconvert parameters
      * @param exceptionHandler the handler of exceptions
      *
-     * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public MsConvertProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, File rawFile, File destinationFolder, MsConvertParameters msConvertParameters)
-            throws FileNotFoundException, IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -60,14 +62,13 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * This method sets the process builder in the parent class.
      *
-     * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    private void setUpProcessBuilder() throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void setUpProcessBuilder() throws IOException, ClassNotFoundException {
 
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
-        String proteoWizardPath = utilitiesUserPreferences.getProteoWizardPath();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+        String proteoWizardPath = utilitiesUserParameters.getProteoWizardPath();
 
         if (proteoWizardPath == null) {
             throw new IllegalArgumentException("ProteoWizard path not set.");

@@ -321,7 +321,7 @@ public class SearchGUIPathParameters {
      * loading the path configuration
      */
     public static ArrayList<PathKey> getErrorKeys(String jarFilePath) throws IOException {
-        ArrayList<PathKey> result = new ArrayList<PathKey>();
+        ArrayList<PathKey> result = new ArrayList<>();
         for (SearchGUIPathKey pathKey : SearchGUIPathKey.values()) {
             String folder = SearchGUIPathParameters.getPathParameter(pathKey, jarFilePath);
             if (folder != null && !UtilitiesPathParameters.testPath(folder)) {

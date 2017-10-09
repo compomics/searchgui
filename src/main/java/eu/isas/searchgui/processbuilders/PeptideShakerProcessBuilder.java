@@ -4,9 +4,11 @@ import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.parameters.tools.ProcessingParameters;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -74,21 +76,20 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param identificationFiles the search engines result files
      * @param showGuiProgress a boolean indicating whether the progress shall be
      * displayed in a GUI
-     * @param processingPreferences the processing preferences
+     * @param processingParameters the processing parameters
      * @param includeData Indicates whether the mgf and FASTA file should be
      * included in the output
      * @param exceptionHandler the handler of exceptions
      * @param identificationParametersFile the file where to save the search parameters
      *
-     * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String experiment, String sample, Integer replicate,
             ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, IdentificationParameters identificationParameters, File identificationParametersFile, 
             File cpsFile, boolean showGuiProgress,
-            ProcessingPreferences processingPreferences, boolean includeData)
-            throws FileNotFoundException, IOException, ClassNotFoundException {
+            ProcessingParameters processingParameters, boolean includeData)
+            throws IOException, ClassNotFoundException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -109,17 +110,17 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * This method sets the process builder in the parent class.
      *
-     * @throws FileNotFoundException thrown if files cannot be found
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    private void setUpProcessBuilder() throws FileNotFoundException, IOException, ClassNotFoundException {
+    private void setUpProcessBuilder() throws IOException, ClassNotFoundException {
 
         try {
-            UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+            
+            UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
             CompomicsWrapper wrapper = new CompomicsWrapper();
 
-            ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserPreferences.getPeptideShakerPath());
+            ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getPeptideShakerPath());
 
             // set java home
             process_name_array.add(javaHomeAndOptions.get(0));
@@ -130,7 +131,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             process_name_array.add("-cp");
-            process_name_array.add(new File(utilitiesUserPreferences.getPeptideShakerPath()).getName());
+            process_name_array.add(new File(utilitiesUserParameters.getPeptideShakerPath()).getName());
             process_name_array.add("eu.isas.peptideshaker.cmd.PeptideShakerCLI");
             process_name_array.add("-experiment");
             process_name_array.add(experiment);
@@ -171,7 +172,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
 
             pb = new ProcessBuilder(process_name_array);
 
-            File psFolder = new File(utilitiesUserPreferences.getPeptideShakerPath()).getParentFile();
+            File psFolder = new File(utilitiesUserParameters.getPeptideShakerPath()).getParentFile();
             pb.directory(psFolder);
 
             // set error out and std out to same stream

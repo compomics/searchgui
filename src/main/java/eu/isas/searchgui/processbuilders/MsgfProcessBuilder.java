@@ -3,13 +3,21 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
+import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
+import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.tool_specific.MsgfParameters;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -22,6 +30,7 @@ import java.util.List;
  * This class will set up and start a process to perform an MS-GF+ search.
  *
  * @author Harald Barsnes
+ * @author Marc Vaudel
  */
 public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -36,11 +45,11 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The MS-GF+ enzyme map. Key: utilities enzyme name, element: ms-gf+ index.
      */
-    private HashMap<String, Integer> enzymeMap = new HashMap<String, Integer>();
+    private HashMap<String, Integer> enzymeMap = new HashMap<>();
     /**
      * The post translational modifications factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
      * The modification file for MS-GF+.
      */
@@ -85,14 +94,12 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @throws java.io.IOException exception thrown whenever an error occurred
      * while getting the Java home
-     * @throws java.io.FileNotFoundException exception thrown whenever an error
-     * occurred while getting the java home
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
     public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile, SearchParameters searchParameters,
             WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine)
-            throws IOException, FileNotFoundException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
 
         this.searchParameters = searchParameters;
         msgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
@@ -120,9 +127,9 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         createEnzymesFile();
 
         // set java home
-        UtilitiesUserPreferences utilitiesUserPreferences = UtilitiesUserPreferences.loadUserPreferences();
+        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
         CompomicsWrapper wrapper = new CompomicsWrapper();
-        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserPreferences.getSearchGuiPath());
+        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getSearchGuiPath());
         process_name_array.add(javaHomeAndOptions.get(0)); // set java home
 
         // set java options
@@ -178,9 +185,9 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
 
         // add min/max precursor charge
         process_name_array.add("-minCharge");
-        process_name_array.add("" + searchParameters.getMinChargeSearched().value);
+        process_name_array.add("" + searchParameters.getMinChargeSearched());
         process_name_array.add("-maxCharge");
-        process_name_array.add("" + searchParameters.getMaxChargeSearched().value);
+        process_name_array.add("" + searchParameters.getMaxChargeSearched());
 
         // set the instrument type
         process_name_array.add("-inst");
@@ -195,7 +202,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("" + msgfParameters.getFragmentationType());
 
         // set the enzyme
-        Integer msgfEnzyme = getEnzymeMapping(searchParameters.getDigestionPreferences());
+        Integer msgfEnzyme = getEnzymeMapping(searchParameters.getDigestionParameters());
         if (msgfEnzyme != null) {
             process_name_array.add("-e");
             process_name_array.add(msgfEnzyme.toString());
@@ -264,29 +271,36 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
             try {
                 // add the number of modifications per peptide
                 bw.write("#max number of modifications per peptide\n");
-                bw.write("NumMods=" + msgfParameters.getNumberOfPtmsPerPeptide() + "\n\n");
+                bw.write("NumMods=" + msgfParameters.getNumberOfModificationsPerPeptide() + "\n\n");
 
                 // add the fixed modifications
                 bw.write("#fixed modifications\n");
-                ArrayList<String> fixedPtms = searchParameters.getPtmSettings().getFixedModifications();
-                for (String ptmName : fixedPtms) {
-                    bw.write(getPtmFormattedForMsgf(ptmName, true) + "\n");
+                ArrayList<String> fixedModifications = searchParameters.getModificationParameters().getFixedModifications();
+                
+                for (String modName : fixedModifications) {
+                    
+                    bw.write(getModificationFormattedForMsgf(modName, true) + "\n");
+                    
                 }
                 bw.write("\n");
 
                 // add the variable modifications
                 bw.write("#variable modifications\n");
-                ArrayList<String> variablePtms = searchParameters.getPtmSettings().getVariableModifications();
-                for (String ptmName : variablePtms) {
-                    bw.write(getPtmFormattedForMsgf(ptmName, false) + "\n");
+                ArrayList<String> variableModifications = searchParameters.getModificationParameters().getVariableModifications();
+                
+                for (String modName : variableModifications) {
+                    
+                    bw.write(getModificationFormattedForMsgf(modName, false) + "\n");
+                    
                 }
-
-                bw.flush();
+                
             } finally {
                 bw.close();
             }
         } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not create MS-GF+ modifications file. Unable to write file: '" + ioe.getMessage() + "'!");
+            
+            throw new IllegalArgumentException("Could not create MS-GF+ modifications file. Unable to write file: '" + ioe.getMessage() + "'.");
+            
         }
     }
 
@@ -303,7 +317,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // - Terminus: Whether the enzyme cleaves C-term (C) or N-term (N)
         // - Description: description of the enzyme
         // Example: Tryp,KR,C,Trypsin
-        enzymeMap = new HashMap<String, Integer>();
+        enzymeMap = new HashMap<>();
 
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(msgfEnzymesFile));
@@ -358,64 +372,74 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Get the given modification as a string in the MS-GF+ format.
      *
-     * @param ptmName the utilities name of the PTM
-     * @param fixed if the PTM is fixed or not
+     * @param modName the utilities name of the modification
+     * @param fixed if the modification is fixed or not
      * @return the given modification as a string in the MS-GF+ format
      */
-    private String getPtmFormattedForMsgf(String ptmName, boolean fixed) {
+    private String getModificationFormattedForMsgf(String modName, boolean fixed) {
 
-        PTM tempPtm = ptmFactory.getPTM(ptmName);
+        Modification modification = modificationFactory.getModification(modName);
 
         // get the targeted amino acids
         String aminoAcidsAtTarget = "";
-        if (tempPtm.getPattern() != null) {
-            for (Character aa : tempPtm.getPattern().getAminoAcidsAtTarget()) {
+        AminoAcidPattern aminoAcidPattern = modification.getPattern();
+        
+        if (aminoAcidPattern != null) {
+            
+            for (Character aa : modification.getPattern().getAminoAcidsAtTarget()) {
+                
                 aminoAcidsAtTarget += aa;
+                
             }
         }
+        
         if (aminoAcidsAtTarget.length() == 0) {
+            
             aminoAcidsAtTarget = "*";
+            
         }
 
         // get the type of the modification
         String position = "";
-        switch (tempPtm.getType()) {
-            case PTM.MODAA:
+        switch (modification.getModificationType()) {
+            case modaa:
                 position = "any";
                 break;
-            case PTM.MODC:
-            case PTM.MODCAA:
+            case modc_protein:
+            case modcaa_protein:
                 position = "Prot-C-term";
                 break;
-            case PTM.MODCP:
-            case PTM.MODCPAA:
+            case modc_peptide:
+            case modcaa_peptide:
                 position = "C-term";
                 break;
-            case PTM.MODN:
-            case PTM.MODNAA:
+            case modn_protein:
+            case modnaa_protein:
                 position = "Prot-N-term";
                 break;
-            case PTM.MODNP:
-            case PTM.MODNPAA:
+            case modn_peptide:
+            case modnaa_peptide:
                 position = "N-term";
                 break;
+            default:
+                throw new UnsupportedOperationException("Modification type " + modification.getModificationType() + " not supported.");
         }
 
         // use unimod name if possible
-        String ptmCvTermName = ptmName;
-        CvTerm cvTerm = tempPtm.getCvTerm();
+        String cvTermName = modName;
+        CvTerm cvTerm = modification.getCvTerm();
         if (cvTerm != null) {
-            ptmCvTermName = cvTerm.getName();
+            cvTermName = cvTerm.getName();
         }
 
-        // set the ptm type as fixed or variable
-        String ptmType = "fix";
+        // set the modification type as fixed or variable
+        String modType = "fix";
         if (!fixed) {
-            ptmType = "opt";
+            modType = "opt";
         }
 
-        // return the ptm
-        return tempPtm.getRoundedMass() + "," + aminoAcidsAtTarget + "," + ptmType + "," + position + "," + ptmCvTermName;
+        // return the modification as string
+        return modification.getRoundedMass() + "," + aminoAcidsAtTarget + "," + modType + "," + position + "," + cvTermName;
     }
 
     /**
@@ -444,12 +468,12 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @return the index of the MS-GF+ enzyme
      */
-    private Integer getEnzymeMapping(DigestionPreferences digestionPreferences) {
+    private Integer getEnzymeMapping(DigestionParameters digestionPreferences) {
 
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
             return 9;
         }
-        if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
+        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
             return 0;
         }
         if (digestionPreferences.getEnzymes().size() > 1) {
