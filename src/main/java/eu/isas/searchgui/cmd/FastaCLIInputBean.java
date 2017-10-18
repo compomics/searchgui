@@ -34,15 +34,24 @@ public class FastaCLIInputBean {
      * @param aLine the command line given to the tool
      */
     public FastaCLIInputBean(CommandLine aLine) {
+        
         if (aLine.hasOption(FastaCLIParams.in.id)) {
+        
             String arg = aLine.getOptionValue(FastaCLIParams.in.id);
             inputFile = new File(arg);
+        
         }
+        
         if (aLine.hasOption(FastaCLIParams.decoy.id)) {
+        
             decoy = true;
+        
         }
+        
         if (aLine.hasOption(FastaCLIParams.decoy_suffix.id)) {
+        
             decoySuffix = aLine.getOptionValue(FastaCLIParams.decoy_suffix.id);
+        
         }
         
         // path settings

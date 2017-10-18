@@ -1,12 +1,20 @@
 package eu.isas.searchgui.cmd;
 
+import com.compomics.cli.fasta.FastaParametersCLIParams;
+import com.compomics.cli.fasta.FastaParametersInputBean;
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
 import com.compomics.software.settings.UtilitiesPathParameters;
+import com.compomics.util.Util;
+import com.compomics.util.experiment.io.biology.protein.FastaParameters;
+import com.compomics.util.experiment.io.biology.protein.FastaSummary;
+import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverter;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.parameters.tools.UtilitiesUserParameters;
 import static eu.isas.searchgui.cmd.SearchCLI.redirectErrorStream;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +34,10 @@ public class FastaCLI {
      * The input from the command line.
      */
     private FastaCLIInputBean fastaCLIInputBean;
+    /**
+     * The fasta parameters input bean.
+     */
+    private FastaParametersInputBean fastaParametersInputBean;
 
     /**
      * Construct a new FastaCLI runnable from a list of arguments.
@@ -35,12 +47,14 @@ public class FastaCLI {
     public FastaCLI(String[] args) {
 
         try {
+
             Options lOptions = new Options();
             FastaCLIParams.createOptionsCLI(lOptions);
             BasicParser parser = new BasicParser();
             CommandLine line = parser.parse(lOptions, args);
 
             if (!FastaCLIInputBean.isValidStartup(line)) {
+
                 PrintWriter lPrintWriter = new PrintWriter(System.out);
                 lPrintWriter.print(System.getProperty("line.separator") + "======================" + System.getProperty("line.separator"));
                 lPrintWriter.print("FastaCLI" + System.getProperty("line.separator"));
@@ -51,9 +65,28 @@ public class FastaCLI {
                 lPrintWriter.close();
 
                 System.exit(0);
+
+            } else if (!FastaParametersInputBean.isValidStartup(line)) {
+
+                PrintWriter lPrintWriter = new PrintWriter(System.out);
+                lPrintWriter.print(System.getProperty("line.separator") + "======================" + System.getProperty("line.separator"));
+                lPrintWriter.print("FastaCLI" + System.getProperty("line.separator"));
+                lPrintWriter.print("======================" + System.getProperty("line.separator"));
+                lPrintWriter.print(getHeader());
+                lPrintWriter.print(FastaParametersCLIParams.getOptionsAsString());
+                lPrintWriter.flush();
+                lPrintWriter.close();
+
+                System.exit(0);
+
             } else {
+
                 fastaCLIInputBean = new FastaCLIInputBean(line);
+
+                fastaParametersInputBean = new FastaParametersInputBean(line, fastaCLIInputBean.getInputFile());
+
                 call();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,59 +99,90 @@ public class FastaCLI {
     public void call() {
 
         PathSettingsCLIInputBean pathSettingsCLIInputBean = fastaCLIInputBean.getPathSettingsCLIInputBean();
+        FastaParameters fastaParameters = fastaParametersInputBean.getFastaParameters();
 
         if (pathSettingsCLIInputBean.getLogFolder() != null) {
+
             redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
+
         }
 
         if (pathSettingsCLIInputBean.hasInput()) {
+
             PathSettingsCLI pathSettingsCLI = new PathSettingsCLI(pathSettingsCLIInputBean);
             pathSettingsCLI.setPathSettings();
+
         } else {
+
             try {
+
                 File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+
                 if (pathConfigurationFile.exists()) {
+
                     SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
+
                 }
+
             } catch (Exception e) {
+
                 System.out.println("An error occurred when setting path configuration. Default paths will be used.");
                 e.printStackTrace();
+
             }
+
             try {
+
                 ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
+
                 if (!errorKeys.isEmpty()) {
+
                     System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
                             + "the path configuration command line, or edit the configuration paths from the graphical interface.");
+
                     for (PathKey pathKey : errorKeys) {
+
                         System.out.println(pathKey.getId() + ": " + pathKey.getDescription());
+
                     }
                 }
+
             } catch (Exception e) {
+
                 System.out.println("Unable to load the path configurations. Default pathswill be used.");
+
             }
         }
 
         try {
+
             WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
-            SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+
             File fastaFile = fastaCLIInputBean.getInputFile();
-            sequenceFactory.loadFastaFile(fastaFile, waitingHandlerCLIImpl);
             System.out.println("Input: " + fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
-            writeDbProperties();
+
+            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFile, fastaParameters, waitingHandlerCLIImpl);
+            writeDbProperties(fastaSummary, fastaParameters);
 
             if (fastaCLIInputBean.isDecoy()) {
 
                 String decoySuffix = fastaCLIInputBean.getDecoySuffix();
+
                 if (decoySuffix != null) {
-                    UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
+
+                    UtilitiesUserParameters userPreferences = UtilitiesUserParameters.loadUserParameters();
                     userPreferences.setTargetDecoyFileNameSuffix(decoySuffix + ".fasta");
+
                 }
-                boolean success = generateTargetDecoyDatabase(waitingHandlerCLIImpl);
-                if (success) {
-                    System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
-                    System.out.println("Output: " + sequenceFactory.getCurrentFastaFile().getAbsolutePath() + System.getProperty("line.separator"));
-                    writeDbProperties();
-                }
+
+                File newFile = generateTargetDecoyDatabase(waitingHandlerCLIImpl);
+
+                System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
+                System.out.println("Output: " + newFile.getAbsolutePath() + System.getProperty("line.separator"));
+
+                FastaSummary decoySummary = DecoyConverter.getDecoySummary(newFile, fastaSummary);
+                writeDbProperties(decoySummary, fastaParameters);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,63 +190,71 @@ public class FastaCLI {
     }
 
     /**
-     * Outputs the properties of the file currently loaded in the sequence
-     * factory.
+     * Writes the database properties to System.out.
+     *
+     * @param fastaSummary the summary information on the fasta file
+     * @param fastaParameters the fasta parsing parameters
      */
-    public void writeDbProperties() {
-        SequenceFactory sequenceFactory = SequenceFactory.getInstance();
-        FastaIndex fastaIndex = sequenceFactory.getCurrentFastaIndex();
-        System.out.println("Name: " + fastaIndex.getName());
-        System.out.println("Version: " + fastaIndex.getVersion());
-        System.out.println("Decoy Tag: " + fastaIndex.getDecoyTag());
-        System.out.println("Type: " + fastaIndex.getMainDatabaseType().toString());
-        System.out.println("Last modified: " + new Date(fastaIndex.getLastModified()).toString());
-        String nSequences = fastaIndex.getNSequences() + " sequences";
-        if (fastaIndex.isConcatenatedTargetDecoy()) {
-            nSequences += " (" + fastaIndex.getNTarget() + " target)";
+    public void writeDbProperties(FastaSummary fastaSummary, FastaParameters fastaParameters) {
+
+        System.out.println("Name: " + fastaParameters.getName());
+        System.out.println("Description: " + fastaParameters.getDescription());
+        System.out.println("Version: " + fastaParameters.getVersion());
+
+        if (fastaParameters.isTargetDecoy()) {
+
+            if (fastaParameters.isDecoySuffix()) {
+
+                System.out.println("Decoy Flag: " + fastaParameters.getDecoyFlag() + " (Suffix)");
+
+            } else {
+
+                System.out.println("Decoy Flag: " + fastaParameters.getDecoyFlag() + " (Prefix)");
+
+            }
+
+        } else {
+
+            System.out.println("No decoy");
+
         }
+
+        System.out.println("Type: " + fastaSummary.getTypeAsString());
+        System.out.println("Last modified: " + new Date(fastaSummary.lastModified).toString());
+
+        String nSequences = fastaSummary.nSequences + " sequences";
+
+        if (fastaParameters.isTargetDecoy()) {
+
+            nSequences += " (" + fastaSummary.nTarget + " target)";
+
+        }
+
         System.out.println("Size: " + nSequences + System.getProperty("line.separator"));
+
     }
 
     /**
      * Appends decoy sequences to the given target database file.
      *
      * @param waitingHandlerCLIImpl the waiting handler
-     * @return true if the process was successfully completed
+     *
+     * @return the file created
      */
-    public boolean generateTargetDecoyDatabase(WaitingHandlerCLIImpl waitingHandlerCLIImpl) {
+    public File generateTargetDecoyDatabase(WaitingHandlerCLIImpl waitingHandlerCLIImpl) throws IOException {
 
-        SequenceFactory sequenceFactory = SequenceFactory.getInstance();
+        // Get file in
+        File fileIn = fastaCLIInputBean.getInputFile();
 
-        // set up the new fasta file name
-        String newFasta = fastaCLIInputBean.getInputFile().getAbsolutePath();
+        // Get file out
+        UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
+        File fileOut = new File(fileIn.getParent(), Util.removeExtension(fileIn.getName()) + userParameters.getTargetDecoyFileNameSuffix() + ".fasta");
 
-        // remove the ending .fasta (if there)
-        if (newFasta.lastIndexOf(".") != -1) {
-            newFasta = newFasta.substring(0, newFasta.lastIndexOf("."));
-        }
+        // Write file
+        waitingHandlerCLIImpl.setWaitingText("Appending Decoy Sequences. Please Wait...");
+        DecoyConverter.appendDecoySequences(fileIn, fileOut, waitingHandlerCLIImpl);
 
-        // add the target decoy tag
-        UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
-        newFasta += userPreferences.getTargetDecoyFileNameSuffix() + ".fasta";
-        File newFile = new File(newFasta);
-
-        try {
-            waitingHandlerCLIImpl.setWaitingText("Appending Decoy Sequences. Please Wait...");
-            sequenceFactory.appendDecoySequences(newFile, waitingHandlerCLIImpl);
-            sequenceFactory.clearFactory();
-            sequenceFactory.loadFastaFile(newFile, waitingHandlerCLIImpl);
-        } catch (OutOfMemoryError error) {
-            System.out.println("Ran out of memory!");
-            error.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            System.out.println("An error occurred while appending decoy sequences");
-            e.printStackTrace();
-            return false;
-        }
-
-        return true;
+        return fileOut;
     }
 
     /**
