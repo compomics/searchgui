@@ -1773,11 +1773,17 @@ public class SearchHandler {
                 }
 
                 if (enableAndromeda) {
+                    
                     if (!useCommandLine) {
+                        
                         waitingHandler.setWaitingText("Andromeda configuration.");
+                        
                     }
+                    
                     waitingHandler.appendReport("Andromeda configuration.", true, true);
                     waitingHandler.appendReportEndLine();
+                    // Create generic database
+                    AndromedaProcessBuilder.createGenericFastaFile(outputTempFolder, fastaFile, waitingHandler);
                     // write Andromeda database configuration file
                     AndromedaProcessBuilder.createDatabaseFile(andromedaLocation, searchParameters);
                     // write Andromeda enzyme configuration file

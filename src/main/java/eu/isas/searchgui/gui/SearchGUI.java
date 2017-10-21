@@ -2589,18 +2589,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             return;
         }
 
-        // check if the database can be parsed by Andromdeda
-        if (enableAndromedaJCheckBox.isSelected()) {
-            try {
-                FastaIndex fastaIndex = SequenceFactory.getFastaIndex(searchParameters.getFastaFile(), false, null);
-                AndromedaProcessBuilder.getDatabaseTypeAndromedaAccessionParsingRule(fastaIndex.getMainDatabaseType());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this,
-                        "Database format not supported by Andromeda.", "Unsupported Fasta", JOptionPane.WARNING_MESSAGE); //@TODO: link to the help page? Make a more generic check for home made databases?
-                return;
-            }
-        }
-
         // check if there are less than 10 ptms (variable and fixed) for novor
         if (enableNovorJCheckBox.isSelected()) {
             if ((searchParameters.getModificationParameters().getFixedModifications().size() + searchParameters.getModificationParameters().getVariableModifications().size()) > 10) {
@@ -2787,11 +2775,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             if (fileFound) {
+                
                 int outcome = JOptionPane.showConfirmDialog(this,
                         "Existing output files found.\nOverwrite?", "Overwrite Files?",
                         JOptionPane.YES_NO_OPTION);
+                
                 if (outcome != JOptionPane.YES_OPTION) {
+                    
                     return;
+                
                 }
             }
 

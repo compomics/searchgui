@@ -11,8 +11,10 @@ import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.ions.NeutralLoss;
 import com.compomics.util.experiment.biology.ions.impl.ReporterIon;
 import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.experiment.io.biology.protein.converters.GenericFastaConverter;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.search.ModificationParameters;
@@ -92,11 +94,17 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         this.spectrumFile = spectrumFile;
 
         if (andromedaTempFolderPath == null) {
-            andromedaTempFolderPath = andromedaFolder.getAbsolutePath() + File.separator + andromedaTempSubFolderName;
+
+            andromedaTempFolderPath = getTempFolderPath(andromedaFolder);
+
         }
+
         File andromedaTempFolder = new File(andromedaTempFolderPath);
+
         if (!andromedaTempFolder.exists()) {
+
             andromedaTempFolder.mkdirs();
+
         }
 
         // make sure that the andromeda file is executable
@@ -148,6 +156,66 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
+     * Returns the temp folder path. Instantiates if null.
+     *
+     * @param andromedaFolder the Andromeda folder
+     *
+     * @return the temp folder path
+     */
+    public static String getTempFolderPath(File andromedaFolder) {
+
+        if (andromedaTempFolderPath == null) {
+
+            andromedaTempFolderPath = andromedaFolder.getAbsolutePath() + File.separator + andromedaTempSubFolderName;
+
+        }
+
+        return andromedaTempFolderPath;
+
+    }
+
+    /**
+     * Returns the generic fasta file corresponding to the given fasta file.
+     *
+     * @param andromedaFolder the andromeda folder
+     * @param fastaFileName the fasta file name
+     *
+     * @return the generic fasta file corresponding to the given fasta file
+     */
+    public static File getGenericFastaFile(File andromedaFolder, String fastaFileName) {
+
+        return new File(getTempFolderPath(andromedaFolder), fastaFileName);
+
+    }
+
+    /**
+     * Create the fasta file.
+     *
+     * @param andromedaFolder the Andromeda folder
+     * @param fastaFile the original fasta file
+     * @param waitingHandler the waiting handler
+     *
+     * @return the parameters file
+     *
+     * @throws IOException exception thrown whenever an error occurred while
+     * reading or writing a file
+     */
+    public static File createGenericFastaFile(File andromedaFolder, File fastaFile, WaitingHandler waitingHandler) throws IOException {
+
+        String andromedaTempFolder = getTempFolderPath(andromedaFolder);
+        File andromedaFile = new File(andromedaTempFolder, fastaFile.getName());
+
+        if (!andromedaFile.exists()) {
+
+            GenericFastaConverter.convertFile(fastaFile, andromedaFile, waitingHandler);
+
+        }
+
+        return andromedaFile;
+
+    }
+
+    /**
      * Creates the database configuration file.
      *
      * @param andromedaFolder the Andromeda installation folder
@@ -160,10 +228,9 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         File databaseFolder = new File(andromedaFolder, "conf");
         File databaseFile = new File(databaseFolder, "databases.xml");
+        File genericFastaFile = getGenericFastaFile(andromedaFolder, searchParameters.getFastaFile().getName());
         BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFile));
-        String dbName = searchParameters.getFastaFile().getName();
-        FastaIndex fastaIndex = SequenceFactory.getFastaIndex(searchParameters.getFastaFile(), false, null);
-        String parsingRule = getDatabaseTypeAndromedaAccessionParsingRule(fastaIndex.getMainDatabaseType());
+        String dbName = genericFastaFile.getName();
         String date = "0001-01-01T00:00:00";
 
         try {
@@ -175,7 +242,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\" last_modified_date=\""
                     + date + "\" user=\"SearchGUI\" filename=\""
                     + dbName + "\" search_expression=\""
-                    + parsingRule + "\" mutation_parse_rule=\"\" "
+                    + ">generic|\\([^|]*\\)|(.*)\" mutation_parse_rule=\"\" "
                     + "species=\"Homo sapiens (Human)\" taxid=\"9606\" "
                     + "source=\"UniprotKB\" />"); //@TODO: add species and source
             bw.newLine();
@@ -309,7 +376,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Writes the XML bloc corresponding to the modification via the given writer.
+     * Writes the XML bloc corresponding to the modification via the given
+     * writer.
      *
      * @param bw a buffered writer
      * @param date the date to use as creation
@@ -332,36 +400,38 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         bw.newLine();
         if (null == modification.getModificationType()) {
             throw new IllegalArgumentException("Export not implemented for PTM of type " + modification.getModificationType() + ".");
-        } else switch (modification.getModificationType()) {
-            case modaa:
-                bw.write("      <position>anywhere</position>");
-                break;
-            case modn_protein:
-                bw.write("      <position>proteinNterm</position>");
-                break;
-            case modnaa_protein:
-                bw.write("      <position>proteinNterm</position>");
-                break;
-            case modn_peptide:
-                bw.write("      <position>anyNterm</position>");
-                break;
-            case modnaa_peptide:
-                bw.write("      <position>anyNterm</position>");
-                break;
-            case modc_protein:
-                bw.write("      <position>proteinCterm</position>");
-                break;
-            case modcaa_protein:
-                bw.write("      <position>proteinCterm</position>");
-                break;
-            case modc_peptide:
-                bw.write("      <position>anyCterm</position>");
-                break;
-            case modcaa_peptide:
-                bw.write("      <position>anyCterm</position>");
-                break;
-            default:
-                throw new IllegalArgumentException("Export not implemented for PTM of type " + modification.getModificationType() + ".");
+        } else {
+            switch (modification.getModificationType()) {
+                case modaa:
+                    bw.write("      <position>anywhere</position>");
+                    break;
+                case modn_protein:
+                    bw.write("      <position>proteinNterm</position>");
+                    break;
+                case modnaa_protein:
+                    bw.write("      <position>proteinNterm</position>");
+                    break;
+                case modn_peptide:
+                    bw.write("      <position>anyNterm</position>");
+                    break;
+                case modnaa_peptide:
+                    bw.write("      <position>anyNterm</position>");
+                    break;
+                case modc_protein:
+                    bw.write("      <position>proteinCterm</position>");
+                    break;
+                case modcaa_protein:
+                    bw.write("      <position>proteinCterm</position>");
+                    break;
+                case modc_peptide:
+                    bw.write("      <position>anyCterm</position>");
+                    break;
+                case modcaa_peptide:
+                    bw.write("      <position>anyCterm</position>");
+                    break;
+                default:
+                    throw new IllegalArgumentException("Export not implemented for PTM of type " + modification.getModificationType() + ".");
+            }
         }
         bw.newLine();
         int siteIndex = 0;
@@ -709,7 +779,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.newLine();
             }
 
-            bw.write("fasta file=\"" + searchParameters.getFastaFile().getAbsolutePath() + "\"");
+            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, searchParameters.getFastaFile().getName()).getAbsolutePath() + "\"");
             bw.newLine();
             bw.write("decoy mode=" + andromedaParameters.getDecoyMode());
             bw.newLine();
@@ -804,63 +874,5 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      */
     public static void setTempFolderPath(String andromedaTempFolderPath) {
         AndromedaProcessBuilder.andromedaTempFolderPath = andromedaTempFolderPath;
-    }
-
-    /**
-     * Returns the regular expression for the parsing of the accession in a
-     * FASTA header.
-     *
-     * @param databaseType the database type
-     *
-     * @return the name
-     */
-    public static String getDatabaseTypeAndromedaAccessionParsingRule(Header.DatabaseType databaseType) {
-
-        switch (databaseType) {
-            case UniProt:
-                return "&gt;.*\\|(.*)\\|";
-            case NCBI:
-                return "&gt;..\\|(.*)\\|";
-            case IPI:
-                return "&gt;IPI:([^\\| .]*)";
-            case H_Invitation:
-                return "&gt;([^\\|]*)";
-            case Halobacterium:
-                return "&gt;([^ ]*)";
-            case H_Influenza:
-                return "&gt;([^ ]*)";
-            case C_Trachomatis:
-                return "&gt;([^ ]*)";
-            case M_Tuberculosis:
-                return "&gt;([^\\|]*)";
-            case Drosophile:
-                return "&gt;(^ pep:*)"; //@TODO: not sure about this one
-            case SGD:
-                return "&gt;([^ ]*)";
-            case Flybase:
-                return "&gt;(.*)"; //@TODO: be more specific
-            case GenomeTranslation:
-                return "&gt;(.*)"; //@TODO: be more specific
-            case Arabidopsis_thaliana_TAIR:
-                return "&gt;([^\\|]*)";
-            case PSB_Arabidopsis_thaliana:
-                return "&gt;(.*)"; //@TODO: be more specific
-            case Listeria:
-                return "&gt;.*\\|(.*)\\|";
-            case Generic_Header:
-                return "&gt;([^ ]*)";
-            case Generic_Split_Header:
-                return "&gt;.*\\|(.*)\\|";
-            case GAFFA:
-                return "&gt;.*\\|(.*)\\|";
-            case UPS:
-                return "&gt;([^ ]*)";
-            case NextProt:
-                return "&gt;.*\\|(.*)\\|";
-            case UniRef:
-                return "&gt;([^ ]*)";
-            default:
-                throw new UnsupportedOperationException("Database type not implemented: " + databaseType + ".");
-        }
     }
 }
