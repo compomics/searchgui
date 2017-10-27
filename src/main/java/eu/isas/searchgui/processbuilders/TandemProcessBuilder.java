@@ -145,6 +145,12 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String enzymeIsSemiSpecific;
     /**
+     * Sets whether the parent ion mass tolerance is expanded by opening up
+     * multiple tolerance windows centered on the first and second 13C isotope
+     * peaks for a peptide.
+     */
+    private String parentMonoisotopicMassIsotopeError;
+    /**
      * The missed cleavages allowed.
      */
     private int missedCleavages;
@@ -304,6 +310,13 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             enzymeIsSemiSpecific = "no";
             this.missedCleavages = 0;
         }
+        
+        // @TODO: should be "yes" if the search parameters higher isotope tolerance is >0. no otherwise
+//        if (xtandemParameters.getParentMonoisotopicMassIsotopeError()) { // @TODO: re-add when updating to the new backend!
+//            parentMonoisotopicMassIsotopeError = "yes";
+//        } else {
+//            parentMonoisotopicMassIsotopeError = "no";
+//        }
 
         selectedIons = new HashSet<Integer>();
         selectedIons.addAll(searchParameters.getForwardIons());
@@ -452,7 +465,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"spectrum, fragment monoisotopic mass error\">" + fragmentMassError + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error plus\">" + precursorMassError + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error minus\">" + precursorMassError + "</note>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass isotope error\">yes</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass isotope error\">" + parentMonoisotopicMassIsotopeError +"</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, fragment monoisotopic mass error units\">" + fragmentUnit + "</note>" + System.getProperty("line.separator")
                     + "\t<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error units\">" + precursorUnit + "</note>" + System.getProperty("line.separator")
