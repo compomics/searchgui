@@ -15,7 +15,7 @@ import com.compomics.util.Util;
 import com.compomics.util.examples.BareBonesBrowserLaunch;
 import com.compomics.util.exceptions.exception_handlers.FrameExceptionHandler;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
-import com.compomics.util.experiment.biology.genes.GeneFactory;
+import com.compomics.util.experiment.biology.genes.ProteinGeneDetailsProvider;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
@@ -288,7 +288,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             enzymeFactory = EnzymeFactory.getInstance();
 
             // load gene mappings
-            GeneFactory geneFactory = new GeneFactory();
+            ProteinGeneDetailsProvider geneFactory = new ProteinGeneDetailsProvider();
             try {
                 geneFactory.initialize(getJarFilePath());
             } catch (Exception e) {
