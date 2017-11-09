@@ -1,21 +1,19 @@
-2017/10/17
+2017/11/08
 
-Comet version "2017.01 rev. 1".
+Comet version "2017.01 rev. 2".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
-release 2017.01 rev. 1 (2017.01.1), release date 2017/10/17
-- Report all duplicate proteins as a comma separated list under the "proteinId1" column in
-  Percolator output (output_percolatorfile); rev. 0 release reported just a single protein
-  identifier.
-- Bug fix: a decoy peptide that appears multiple times within a decoy protein would
-  previously cause that decoy protein to be reported multiple times.
-- Bug fix: add a missing comma separating protein list in text output (output_txtfile) when
-  performing a combined target-decoy search ("decoy_search = 2"). The missing comma was
-  between the target protein list and the decoy protein list.
-- Bug fix: the modification mass reported in the "mass" attribute of the "mod_aminoacid_mass"
-  element in pep.xml output could be wrong due to an error in mixing static and variable
-  modifications inappropriately.  This has been fixed.  Bug reported by D. Shteynberg.
+release 2017.01 rev. 2 (2017.01.2), release date 2017/11/08
+- In SQT, text and Percolator outputs, static n-term and c-term modifications
+  were being reported in the peptide string.  These are no longer being
+  reported and the peptide string now correctly only includes variable
+  modification mass differences if present.
+- In the SQT output, a third entry in the L protein lines is an integer
+  position of the start position of the peptide in the protein sequence.  The
+  first L entry reported the correct start position but the position was off by
+  one in subsequent duplicate proteins.  This is corrected.  I want to thank
+  P. Wilmarth for reporting these issues.
 
 Comet is an open source MS/MS database search engine released under the
 Apache 2.0 license.
