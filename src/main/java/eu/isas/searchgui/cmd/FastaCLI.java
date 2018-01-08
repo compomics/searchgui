@@ -35,7 +35,7 @@ public class FastaCLI {
      */
     private FastaCLIInputBean fastaCLIInputBean;
     /**
-     * The fasta parameters input bean.
+     * The FASTA parameters input bean.
      */
     private FastaParametersInputBean fastaParametersInputBean;
 
@@ -192,8 +192,8 @@ public class FastaCLI {
     /**
      * Writes the database properties to System.out.
      *
-     * @param fastaSummary the summary information on the fasta file
-     * @param fastaParameters the fasta parsing parameters
+     * @param fastaSummary the summary information on the FASTA file
+     * @param fastaParameters the FASTA parsing parameters
      */
     public void writeDbProperties(FastaSummary fastaSummary, FastaParameters fastaParameters) {
 
@@ -238,8 +238,10 @@ public class FastaCLI {
      * Appends decoy sequences to the given target database file.
      *
      * @param waitingHandlerCLIImpl the waiting handler
-     *
+     * 
      * @return the file created
+     * @throws IOException exception thrown whenever an error happened while 
+     * reading or writing a FASTA file
      */
     public File generateTargetDecoyDatabase(WaitingHandlerCLIImpl waitingHandlerCLIImpl) throws IOException {
 
