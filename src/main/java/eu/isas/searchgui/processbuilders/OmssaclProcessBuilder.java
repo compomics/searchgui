@@ -215,9 +215,9 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("0");
         }
         process_name_array.add("-no");
-        process_name_array.add(Double.toString(omssaParameters.getMinPeptideLength()));
+        process_name_array.add(Integer.toString(omssaParameters.getMinPeptideLength()));
         process_name_array.add("-nox");
-        process_name_array.add(Double.toString(omssaParameters.getMaxPeptideLength()));
+        process_name_array.add(Integer.toString(omssaParameters.getMaxPeptideLength()));
 
         // look for monoisotopic peaks
         process_name_array.add("-tom");
