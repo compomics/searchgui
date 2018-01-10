@@ -47,6 +47,14 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private final String UNIMOD_FILE = "unimod.xml";
     /**
+     * The Unimod OBO file.
+     */
+    private final String UNIMOD_OBO_FILE = "unimod.obo";
+    /**
+     * The PSI-MS OBO file.
+     */
+    private final String PSI_MS_OBO_FILE = "psi-ms.obo";
+    /**
      * The MS Amanda folder.
      */
     private File msAmandaFolder;
@@ -416,6 +424,8 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<instruments_file>" + new File(msAmandaFolder, INSTRUMENTS_FILE).getAbsolutePath() + "</instruments_file> " + System.getProperty("line.separator")
                     + "\t\t<unimod_file>" + new File(msAmandaFolder, UNIMOD_FILE).getAbsolutePath() + "</unimod_file> " + System.getProperty("line.separator")
                     + "\t\t<enzyme_file>" + new File(msAmandaFolder, ENZYMES_FILE).getAbsolutePath() + "</enzyme_file> " + System.getProperty("line.separator")
+                    + "\t\t<unimod_obo_file>" + new File(msAmandaFolder, UNIMOD_OBO_FILE).getAbsolutePath() + "</unimod_obo_file> " + System.getProperty("line.separator")        
+                    + "\t\t<psims_obo_file>" + new File(msAmandaFolder, PSI_MS_OBO_FILE).getAbsolutePath() + "</psims_obo_file> " + System.getProperty("line.separator")
                     + "\t\t<monoisotopic>" + monoisotopic + "</monoisotopic> " + System.getProperty("line.separator")
                     + "\t\t<considered_charges>" + getChargeRangeAsString() + "</considered_charges> " + System.getProperty("line.separator")
                     + "\t\t<LoadedProteinsAtOnce>" + maxLoadedProteins + "</LoadedProteinsAtOnce> " + System.getProperty("line.separator")

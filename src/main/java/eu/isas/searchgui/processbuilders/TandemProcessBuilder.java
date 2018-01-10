@@ -485,6 +485,10 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         if (xtandemParameters.isOutputHistograms()) {
             outputHistograms = "yes";
         }
+        String parentMonoisotopicMassIsotopeError = "no";
+        if (xtandemParameters.getParentMonoisotopicMassIsotopeError()) {
+            parentMonoisotopicMassIsotopeError = "yes";
+        }
 
         String motifs = "";
 
@@ -514,7 +518,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"spectrum, fragment monoisotopic mass error\">" + fragmentMassError + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error plus\">" + precursorMassError + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error minus\">" + precursorMassError + "</note>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass isotope error\">yes</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass isotope error\">" + parentMonoisotopicMassIsotopeError + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, fragment monoisotopic mass error units\">" + fragmentUnit + "</note>" + System.getProperty("line.separator")
                     + "\t<note>The value for this parameter may be 'Daltons' or 'ppm': all other values are ignored</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, parent monoisotopic mass error units\">" + precursorUnit + "</note>" + System.getProperty("line.separator")
