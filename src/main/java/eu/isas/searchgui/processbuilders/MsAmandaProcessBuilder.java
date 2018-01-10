@@ -204,17 +204,15 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         maxRank = msAmandaParameters.getMaxRank();
         generateDecoys = msAmandaParameters.generateDecoy();
         monoisotopic = msAmandaParameters.isMonoIsotopic();
-        
-        // @TODO: re-add when updating to the new backend
-//        performDeisotoping = msAmandaParameters.isPerformDeisotoping();
-//        maxModifications = msAmandaParameters.getMaxModifications();
-//        maxVariableModifications = msAmandaParameters.getMaxVariableModifications();
-//        maxModificationSites = msAmandaParameters.getMaxModificationSites();
-//        maxNeutralLosses = msAmandaParameters.getMaxNeutralLosses();
-//        maxNeutralLossesPerModification = msAmandaParameters.getMaxNeutralLossesPerModification();
-//        minPeptideLength = msAmandaParameters.getMinPeptideLength();
-//        maxLoadedProteins = msAmandaParameters.getMaxLoadedProteins();
-//        maxLoadedSpectra = msAmandaParameters.getMaxLoadedSpectra();
+        performDeisotoping = msAmandaParameters.isPerformDeisotoping();
+        maxModifications = msAmandaParameters.getMaxModifications();
+        maxVariableModifications = msAmandaParameters.getMaxVariableModifications();
+        maxModificationSites = msAmandaParameters.getMaxModificationSites();
+        maxNeutralLosses = msAmandaParameters.getMaxNeutralLosses();
+        maxNeutralLossesPerModification = msAmandaParameters.getMaxNeutralLossesPerModification();
+        minPeptideLength = msAmandaParameters.getMinPeptideLength();
+        maxLoadedProteins = msAmandaParameters.getMaxLoadedProteins();
+        maxLoadedSpectra = msAmandaParameters.getMaxLoadedSpectra();
 
         // set the mass accuracies
         fragmentMassError = searchParameters.getFragmentIonAccuracy();
@@ -404,17 +402,14 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<ms1_tol unit=\"" + precursorUnit + "\">" + precursorMassError + "</ms1_tol> " + System.getProperty("line.separator")
                     + "\t\t<ms2_tol unit=\"" + fragmentUnit + "\">" + fragmentMassError + "</ms2_tol> " + System.getProperty("line.separator")
                     + "\t\t<max_rank>" + maxRank + "</max_rank> " + System.getProperty("line.separator")
-                    + "\t\t<generate_decoy>" + generateDecoys + "</generate_decoy> " + System.getProperty("line.separator")
-                        
-                    // @TODO: re-add when updating to the new backend        
-//                    + "\t\t<PerformDeisotoping>" + performDeisotoping + "</PerformDeisotoping> " + System.getProperty("line.separator")
-//                    + "\t\t<MaxNoModifs>" + maxModifications + "</MaxNoModifs> " + System.getProperty("line.separator")
-//                    + "\t\t<MaxNoDynModifs>" + maxVariableModifications + "</MaxNoDynModifs> " + System.getProperty("line.separator")        
-//                    + "\t\t<MaxNumberModSites>" + maxModificationSites + "</MaxNumberModSites> " + System.getProperty("line.separator") 
-//                    + "\t\t<MaxNumberNeutralLoss>" + maxNeutralLosses + "</MaxNumberNeutralLoss> " + System.getProperty("line.separator") 
-//                    + "\t\t<MaxNumberNeutralLossModifications>" + maxNeutralLosses + "</MaxNumberNeutralLossModifications> " + System.getProperty("line.separator")
-//                    + "\t\t<MinimumPepLength>" + minPeptideLength + "</MinimumPepLength> " + System.getProperty("line.separator")
-                       
+                    + "\t\t<generate_decoy>" + generateDecoys + "</generate_decoy> " + System.getProperty("line.separator")     
+                    + "\t\t<PerformDeisotoping>" + performDeisotoping + "</PerformDeisotoping> " + System.getProperty("line.separator")
+                    + "\t\t<MaxNoModifs>" + maxModifications + "</MaxNoModifs> " + System.getProperty("line.separator")
+                    + "\t\t<MaxNoDynModifs>" + maxVariableModifications + "</MaxNoDynModifs> " + System.getProperty("line.separator")        
+                    + "\t\t<MaxNumberModSites>" + maxModificationSites + "</MaxNumberModSites> " + System.getProperty("line.separator") 
+                    + "\t\t<MaxNumberNeutralLoss>" + maxNeutralLosses + "</MaxNumberNeutralLoss> " + System.getProperty("line.separator") 
+                    + "\t\t<MaxNumberNeutralLossModifications>" + maxNeutralLosses + "</MaxNumberNeutralLossModifications> " + System.getProperty("line.separator")
+                    + "\t\t<MinimumPepLength>" + minPeptideLength + "</MinimumPepLength> " + System.getProperty("line.separator")
                     + "\t</search_settings> " + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     + "\t<basic_settings> " + System.getProperty("line.separator")
@@ -423,11 +418,8 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<enzyme_file>" + new File(msAmandaFolder, ENZYMES_FILE).getAbsolutePath() + "</enzyme_file> " + System.getProperty("line.separator")
                     + "\t\t<monoisotopic>" + monoisotopic + "</monoisotopic> " + System.getProperty("line.separator")
                     + "\t\t<considered_charges>" + getChargeRangeAsString() + "</considered_charges> " + System.getProperty("line.separator")
-                    
-                    // @TODO: re-add when updating to the new backend
-//                    + "\t\t<LoadedProteinsAtOnce>" + maxLoadedProteins + "</LoadedProteinsAtOnce> " + System.getProperty("line.separator")
-//                    + "\t\t<LoadedSpectraAtOnce>" + maxLoadedSpectra + "</LoadedSpectraAtOnce> " + System.getProperty("line.separator")
-                            
+                    + "\t\t<LoadedProteinsAtOnce>" + maxLoadedProteins + "</LoadedProteinsAtOnce> " + System.getProperty("line.separator")
+                    + "\t\t<LoadedSpectraAtOnce>" + maxLoadedSpectra + "</LoadedSpectraAtOnce> " + System.getProperty("line.separator")      
                     + "\t\t<data_folder>" + msAmandaTempFolder + "</data_folder> " + System.getProperty("line.separator")
                     + "\t</basic_settings> " + System.getProperty("line.separator")
                     + "</settings>"
