@@ -1783,7 +1783,7 @@ public class SearchHandler {
                     waitingHandler.appendReport("Andromeda configuration.", true, true);
                     waitingHandler.appendReportEndLine();
                     // Create generic database
-                    AndromedaProcessBuilder.createGenericFastaFile(outputTempFolder, fastaFile, waitingHandler);
+                    AndromedaProcessBuilder.createGenericFastaFile(andromedaLocation, fastaFile, waitingHandler);
                     // write Andromeda database configuration file
                     AndromedaProcessBuilder.createDatabaseFile(andromedaLocation, searchParameters);
                     // write Andromeda enzyme configuration file

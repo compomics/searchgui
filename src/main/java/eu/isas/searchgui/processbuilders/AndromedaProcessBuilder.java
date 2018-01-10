@@ -12,7 +12,6 @@ import com.compomics.util.experiment.biology.ions.NeutralLoss;
 import com.compomics.util.experiment.biology.ions.impl.ReporterIon;
 import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
-import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.io.biology.protein.converters.GenericFastaConverter;
 import com.compomics.util.parameters.identification.IdentificationParameters;
@@ -175,12 +174,12 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Returns the generic fasta file corresponding to the given fasta file.
+     * Returns the generic FASTA file corresponding to the given FASTA file.
      *
-     * @param andromedaFolder the andromeda folder
-     * @param fastaFileName the fasta file name
+     * @param andromedaFolder the Andromeda folder
+     * @param fastaFileName the FASTA file name
      *
-     * @return the generic fasta file corresponding to the given fasta file
+     * @return the generic FASTA file corresponding to the given FASTA file
      */
     public static File getGenericFastaFile(File andromedaFolder, String fastaFileName) {
 
@@ -189,10 +188,10 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Create the fasta file.
+     * Create the FASTA file.
      *
      * @param andromedaFolder the Andromeda folder
-     * @param fastaFile the original fasta file
+     * @param fastaFile the original FASTA file
      * @param waitingHandler the waiting handler
      *
      * @return the parameters file
