@@ -46,7 +46,8 @@ For developer access to the search results we recommend the use of [compomics-ut
 ## Read Me
  
  * [From the Command Line](#from-the-command-line)
- * [Miniconda and Docker](#miniconda-and-docker)
+ * [Miniconda](#miniconda)
+ * [Docker](#docker)
  * [Database Help](https://github.com/compomics/searchgui/wiki/DatabaseHelp)
  * [User Defined Modifications](#user-defined-modifications)
  * [Converting Spectrum Data](#converting-spectrum-data)
