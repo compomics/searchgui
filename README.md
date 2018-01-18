@@ -64,21 +64,40 @@ For details about the command line see: [SearchCLI](https://github.com/compomics
 
 ----
 
-### Miniconda and Docker
+### Miniconda
 
 SearchGUI is available as [Miniconda package](http://conda.pydata.org/miniconda.html) in the [bioconda](https://bioconda.github.io) channel. You can install SearchGUI with:
 
 ```bash
 conda install searchgui -c bioconda
 ```
+[Go to top of page](#searchgui)
 
-A [Docker](https://www.docker.com/) container is available via the [mulled](https://mulled.github.io/mulled/) project. You can make use of the container via:
+----
+
+### Docker
+
+A [Docker](https://www.docker.com/) container is available via the [Biocontainers](https://quay.io/repository/biocontainers/) repository. You can make use of the container via:
 
 ```bash
-docker run quay.io/mulled/searchgui:X.Y.Z--1 searchgui eu.isas.searchgui.cmd.FastaCLI
+docker run quay.io/biocontainers/searchgui:X.Y.Z--1  
+searchgui eu.isas.searchgui.cmd.IdentificationParametersCLI
 ```
 
 Replace X.Y.Z with the wanted SearchGUI version number.
+
+You need to have in mind that Docker images don't contain your data into them. If you want to use any data file into a dockerised tool, you will need to map (using `-v` Docker parameter) your local folder containing it into the Docker internal file system, like
+
+
+```bash
+docker run -v /home/my_user/resources:/myresources 
+quay.io/biocontainers/searchgui:X.Y.Z--1 
+searchgui eu.isas.searchgui.cmd.IdentificationParametersCLI 
+-out myresources/parameters_output 
+-db /myresources/uniprot-human-reviewed.fasta
+```
+
+In this example we are also writing the ouput of the command (`-out` parameter) into the mapped folder in order to write it into our own file system (instead on Docker's container one) and have access to it from our computer after the execution.
 
 [Go to top of page](#searchgui)
 
