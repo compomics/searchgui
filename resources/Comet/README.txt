@@ -1,13 +1,14 @@
-2016/04/06
+2018/02/20
 
-Comet version "2016.01 rev. 2".
+Comet version "2017.01 rev. 4".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
-- Reverts the modification encoding in the "output_txtfile" output back
-  to reporting variable modification mass difference (e.g. DLSTM[16.0]HK)
-  instead of the actual modified residue mass values (e.g. DLSTM[147]HK).
-
+release 2017.01 rev. 4 (2017.01.4), release date 2018/02/20
+- Bug fix: In the Percolator .pin output format, the deltCn value for the top
+  hit is repeated for all lower hits; this is now fixed. Thanks to F. Long for
+  reporting the bug.
+- Extend the maximum possible number of spawned threads to 128.
 
 Comet is an open source MS/MS database search engine released under the
 Apache 2.0 license.
