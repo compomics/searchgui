@@ -5,9 +5,13 @@ This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
 release 2017.01 rev. 4 (2017.01.4), release date 2018/02/20
-- Bug fix: In the Percolator .pin output format, the deltCn value for the top
-  hit is repeated for all lower hits; this is now fixed. Thanks to F. Long for
+- Bug fix: In the Percolator pin output format, the deltCn and deltLCn values for
+  the top hit is repeated for all lower hits; this is now fixed. Thanks to F. Long for
   reporting the bug.
+- Modified deltaCn calculation for lower hits for pin, pep.xml, and txt outputs. Instead
+  of reporting the deltaCn values as they would have been historically shown in the sqt/out
+  formats, the deltaCn for lower hits is calculated as the normalized xcorr difference
+  for that hit and the next hit.
 - Extend the maximum possible number of spawned threads to 128.
 
 Comet is an open source MS/MS database search engine released under the
