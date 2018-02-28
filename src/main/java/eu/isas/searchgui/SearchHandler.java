@@ -20,6 +20,7 @@ import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.compomics.util.parameters.identification.tool_specific.AndromedaParameters;
 import com.compomics.util.parameters.identification.tool_specific.CometParameters;
+import com.compomics.util.parameters.identification.tool_specific.MsAmandaParameters;
 import com.compomics.util.parameters.identification.tool_specific.MyriMatchParameters;
 import com.compomics.util.parameters.identification.tool_specific.OmssaParameters;
 import com.compomics.util.parameters.identification.tool_specific.TideParameters;
@@ -348,7 +349,7 @@ public class SearchHandler {
         enableOmssa = loadSearchEngineLocation(Advocate.omssa, false, true, true, true, false, false, false);
         enableXtandem = loadSearchEngineLocation(Advocate.xtandem, false, true, true, true, true, false, true);
         enableMsgf = loadSearchEngineLocation(Advocate.msgf, true, true, true, true, false, false, false);
-        enableMsAmanda = loadSearchEngineLocation(Advocate.msAmanda, false, true, true, true, false, false, false);
+        enableMsAmanda = loadSearchEngineLocation(Advocate.msAmanda, true, true, true, true, false, false, false);
         enableMyriMatch = loadSearchEngineLocation(Advocate.myriMatch, false, true, false, true, true, false, true);
         enableComet = loadSearchEngineLocation(Advocate.comet, false, true, false, true, true, false, false);
         enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, true, false, true);
@@ -452,7 +453,7 @@ public class SearchHandler {
         if (msAmandaFolder != null) {
             this.msAmandaLocation = msAmandaFolder;
         } else {
-            loadSearchEngineLocation(Advocate.msAmanda, false, true, true, true, false, false, false); // try to use the default
+            loadSearchEngineLocation(Advocate.msAmanda, true, true, true, true, false, false, false); // try to use the default
         }
 
         if (myriMatchFolder != null) {
@@ -1034,8 +1035,25 @@ public class SearchHandler {
      *
      * @return the name of the MS Amanda result file
      */
-    public static String getMsAmandaFileName(String spectrumFileName) {
-        return Util.removeExtension(spectrumFileName) + ".ms-amanda.csv";
+    public String getMsAmandaFileName(String spectrumFileName) {
+        MsAmandaParameters msAmandaParameters = (MsAmandaParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
+        return getMsAmandaFileName(spectrumFileName, msAmandaParameters);
+    }
+    
+    /**
+     * Returns the name of the MS Amanda result file.
+     *
+     * @param spectrumFileName the mgf file name
+     * @param msAmandaParameters the MS Amanda parameters
+     *
+     * @return the name of the MS Amanda result file
+     */
+    public static String getMsAmandaFileName(String spectrumFileName, MsAmandaParameters msAmandaParameters) {
+        if (msAmandaParameters.getOutputFormat().equalsIgnoreCase("mzIdentML")) {
+            return Util.removeExtension(spectrumFileName) + ".ms-amanda.mzid";
+        } else {
+            return Util.removeExtension(spectrumFileName) + ".ms-amanda.csv";
+        }
     }
 
     /**
@@ -1936,7 +1954,7 @@ public class SearchHandler {
                     }
 
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
-                        File xTandemOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".t.xml");
+                        File xTandemOutputFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
                         xTandemProcessBuilder = new TandemProcessBuilder(xtandemLocation,
                                 spectrumFile.getAbsolutePath(), xTandemOutputFile.getAbsolutePath(),
                                 searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
@@ -2001,7 +2019,7 @@ public class SearchHandler {
                     }
 
                     if (enableMsAmanda && !waitingHandler.isRunCanceled()) {
-                        File msAmandaOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".ms-amanda.csv");
+                        File msAmandaOutputFile = new File(outputTempFolder, getMsAmandaFileName(spectrumFileName));
                         String filePath = msAmandaOutputFile.getAbsolutePath();
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(msAmandaLocation,
                                 spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
@@ -2026,7 +2044,7 @@ public class SearchHandler {
                     }
 
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
-                        File msgfOutputFile = new File(outputTempFolder, Util.removeExtension(spectrumFileName) + ".msgf.mzid");
+                        File msgfOutputFile = new File(outputTempFolder, getMsgfFileName(spectrumFileName));
                         msgfProcessBuilder = new MsgfProcessBuilder(msgfLocation,
                                 spectrumFile.getAbsolutePath(), msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads(), useCommandLine);
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".", true, true);
