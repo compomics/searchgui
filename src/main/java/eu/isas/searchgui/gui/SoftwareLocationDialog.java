@@ -224,7 +224,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
 
         String operatingSystem = System.getProperty("os.name").toLowerCase();
 
-        // disable myrimatch, comet, ms amanda and directag for mac
+        // disable myrimatch, comet and directag for mac
         if (operatingSystem.contains("mac os")) {
             myriMatchLocationTxt.setText("");
             myriMatchBrowse.setEnabled(false);
@@ -233,10 +233,6 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             cometLocationTxt.setText("");
             cometBrowse.setEnabled(false);
             enableCometCombo.setEnabled(false);
-
-            msAmandaLocationTxt.setText("");
-            msAmandaBrowse.setEnabled(false);
-            enableMsAmandaCombo.setEnabled(false);
 
             direcTagLocationTxt.setText("");
             direcTagBrowse.setEnabled(false);

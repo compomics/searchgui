@@ -283,7 +283,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
 
         for (String modName : modificationParameters.getRefinementVariableModifications()) {
 
-// Exclude modifications triggered by the quick options
+            // Exclude modifications triggered by the quick options
             boolean newModification = true;
 
             if (xtandemParameters.isProteinQuickAcetyl() && modName.equals("Acetylation of protein N-term")) {
@@ -961,7 +961,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         for (String name : modifications) {
 
             Modification modification = modificationFactory.getSingleAAModification(name);
-ModificationType modificationType = modification.getModificationType();
+            ModificationType modificationType = modification.getModificationType();
             
             if (modificationType == ModificationType.modn_peptide
                     || modificationType == ModificationType.modnaa_peptide
