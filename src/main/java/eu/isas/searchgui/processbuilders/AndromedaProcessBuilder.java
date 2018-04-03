@@ -674,7 +674,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             boolean semiSpecific = false;
             DigestionParameters digestionParameters = searchParameters.getDigestionParameters();
 
-            if (digestionParameters.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+            if (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
                 Enzyme enzyme = digestionParameters.getEnzymes().get(0);
                 String enzymeName = enzyme.getName();
                 bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
@@ -684,7 +684,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                         || digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                 }
-            } else if (digestionParameters.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
+            } else if (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
                 bw.write("enzyme mode=unspecific");
                 bw.newLine();
             } else {
@@ -766,7 +766,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("top peaks window=" + andromedaParameters.getTopPeaksWindow());
             bw.newLine();
 
-            if (digestionParameters.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+            if (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
                 Integer missedCleavages = null;
                 for (Enzyme enzyme : digestionParameters.getEnzymes()) {
                     int enzymeMissedCleavages = digestionParameters.getnMissedCleavages(enzyme.getName());

@@ -470,10 +470,10 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      */
     private Integer getEnzymeMapping(DigestionParameters digestionPreferences) {
 
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
             return 9;
         }
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             return 0;
         }
         if (digestionPreferences.getEnzymes().size() > 1) {

@@ -238,7 +238,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         // set the enzyme
         process_name_array.add("-CleavageRules");
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             process_name_array.add("\"" + "Trypsin" + "\""); // trick to support unspecific cleavage, MinTerminiCleavages is set to 0 below instead
         } else {
             String myriMatchEnzyme = MyriMatchParameters.enzymeMapping(digestionPreferences);
@@ -247,9 +247,9 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the minimum termini cleavages
         process_name_array.add("-MinTerminiCleavages");
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             process_name_array.add("0");
-        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
               process_name_array.add("0");
         } else {
             boolean semiSpecific = false;
@@ -269,7 +269,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // set the maximum missed cleavages
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
             process_name_array.add("-MaxMissedCleavages");
             Integer missedCleavages = null;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {

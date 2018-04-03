@@ -242,7 +242,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the digestion preferences
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
             Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
             enzymeName = enzyme.getName();
             Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
@@ -256,12 +256,12 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                 enzymeSpecificity = "SEMI(N)";
             }
             missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
-        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
-            enzymeName = digestionPreferences.getCleavagePreference().toString();
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
+            enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
             missedCleavages = 50; // @TODO: is this correct?
         } else { // whole protein
-            enzymeName = digestionPreferences.getCleavagePreference().toString();
+            enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
             missedCleavages = 0; 
         }
@@ -372,12 +372,12 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             bw.write("  <enzyme>" + System.getProperty("line.separator"));
-            bw.write("    <name>" + DigestionParameters.CleavagePreference.wholeProtein + "</name>" + System.getProperty("line.separator"));
+            bw.write("    <name>" + DigestionParameters.CleavageParameter.wholeProtein + "</name>" + System.getProperty("line.separator"));
             bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
             bw.write("  </enzyme>" + System.getProperty("line.separator"));
 
             bw.write("  <enzyme>" + System.getProperty("line.separator"));
-            bw.write("    <name>" + DigestionParameters.CleavagePreference.unSpecific + "</name>" + System.getProperty("line.separator"));
+            bw.write("    <name>" + DigestionParameters.CleavageParameter.unSpecific + "</name>" + System.getProperty("line.separator"));
             bw.write("    <cleavage_sites>X</cleavage_sites>" + System.getProperty("line.separator"));
             bw.write("  </enzyme>" + System.getProperty("line.separator"));
 

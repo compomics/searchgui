@@ -187,7 +187,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         Integer enzymeType = cometParameters.getEnzymeType();
         ArrayList<Enzyme> enzymes = EnzymeFactory.getInstance().getEnzymes();
 
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
 
             Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
             String enzymeName = enzyme.getName();
@@ -227,7 +227,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             if (!found) {
                 throw new IllegalArgumentException("No index found for enzyme " + enzymeName + ".");
             }
-        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
             enzymeType = 2;
             enzymeId = enzymes.size() + 1;
         } else {

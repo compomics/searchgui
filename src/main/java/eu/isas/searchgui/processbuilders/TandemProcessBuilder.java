@@ -331,7 +331,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         enzymeCleaveSiteAsText = digestionPreferences.getXTandemFormat();
 
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
 
             boolean semiSpecific = false;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
@@ -355,7 +355,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                 }
             }
             this.missedCleavages = missedCleavages;
-        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
             enzymeIsSemiSpecific = "no";
             this.missedCleavages = 50;
         } else { // whole protien

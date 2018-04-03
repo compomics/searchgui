@@ -102,7 +102,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("-e");
         process_name_array.add(Integer.toString(enzymeIndex));
         Integer missedCleavages = null;
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
                 int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
                 if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
@@ -517,10 +517,10 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @return the OMSSA enzyme index corresponding to the digestion preferences
      */
     private int getEnzymeIndex(DigestionParameters digestionPreferences) {
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
             return 11;
         }
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             return 17;
         }
         if (digestionPreferences.getEnzymes().size() > 1) {

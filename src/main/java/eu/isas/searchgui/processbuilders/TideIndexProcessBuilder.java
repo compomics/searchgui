@@ -164,17 +164,17 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
 
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.wholeProtein) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
 
             process_name_array.add("--custom-enzyme");
             process_name_array.add("{X}|{X}");
 
-        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.unSpecific) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
 
             process_name_array.add("--enzyme");
             process_name_array.add("no-enzyme");
 
-        } else if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
 
             if (digestionPreferences.getEnzymes().size() == 1) {
 
@@ -240,7 +240,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         // full or partial enzyme digestion
         boolean semiSpecific = false;
-        if (digestionPreferences.getCleavagePreference() == DigestionParameters.CleavagePreference.enzyme) {
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
                 if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
                         || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
