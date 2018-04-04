@@ -996,13 +996,13 @@ public class SearchHandler {
         if (tideParameters.getTextOutput()) {
             return Util.removeExtension(spectrumFileName) + ".tide-search.target.txt";
         } else if (tideParameters.getMzidOutput()) {
-            return Util.removeExtension(spectrumFileName) + ".tide-search.mzid";
+            return Util.removeExtension(spectrumFileName) + ".tide-search.target.mzid";
         } else if (tideParameters.getPepXmlOutput()) {
             return Util.removeExtension(spectrumFileName) + ".tide-search.target.pep.xml";
         } else if (tideParameters.getSqtOutput()) {
             return Util.removeExtension(spectrumFileName) + ".tide-search.target.sqt";
         } else {
-            return Util.removeExtension(spectrumFileName) + ".tide-search.pin";
+            return Util.removeExtension(spectrumFileName) + ".tide-search.target.pin";
         }
     }
 
