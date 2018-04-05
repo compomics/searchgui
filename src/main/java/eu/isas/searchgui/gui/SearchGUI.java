@@ -2620,6 +2620,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         MyriMatchParameters myriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
         TideParameters tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         CometParameters cometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
+        MsAmandaParameters msAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
 
         if (peptideShakerCheckBox.isSelected() && enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
@@ -2678,7 +2679,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
                 if (searchHandler.isMsAmandaEnabled()) {
-                    File msAmandaOutputFile = new File(outputFolder, SearchHandler.getMsAmandaFileName(spectrumFileName));
+                    File msAmandaOutputFile = new File(outputFolder, SearchHandler.getMsAmandaFileName(spectrumFileName, msAmandaParameters));
                     if (msAmandaOutputFile.exists()) {
                         fileFound = true;
                         break;

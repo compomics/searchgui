@@ -288,15 +288,27 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(msAmanda.getAbsolutePath());
 
         // add the spectrum file
+        process_name_array.add("-s");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(spectrumFilePath)));
 
         // add database file
+        process_name_array.add("-d");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(database));
 
         // add the settings file
+        process_name_array.add("-e");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(msAmandaFolder, SETTINGS_FILE)));
 
+        // add the file format
+        process_name_array.add("-f");
+        if (msAmandaParameters.getOutputFormat().equalsIgnoreCase("csv")) {
+            process_name_array.add("1"); // csv
+        } else {
+            process_name_array.add("2"); // mzid
+        }
+
         // add the output file
+        process_name_array.add("-o");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(outputPath)));
 
         process_name_array.trimToSize();
