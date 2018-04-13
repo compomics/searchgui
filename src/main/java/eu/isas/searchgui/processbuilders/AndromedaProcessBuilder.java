@@ -238,10 +238,9 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("<databases xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
             bw.newLine();
             bw.write("   <database create_date=\"" + date
-                    + "\" last_modified_date=\""
-                    + date + "\" user=\"SearchGUI\" filename=\""
-                    + dbName + "\" search_expression=\""
-                    + ">generic|\\([^|]*\\)|(.*)\" mutation_parse_rule=\"\" "
+                    + "\" last_modified_date=\"" + date 
+                    + "\" user=\"SearchGUI\" filename=\"" + dbName 
+                    + "\" search_expression=\"" + "&gt;generic\\|([^|]*)\\|(.*)\" mutation_parse_rule=\"\" "
                     + "species=\"Homo sapiens (Human)\" taxid=\"9606\" "
                     + "source=\"UniprotKB\" />"); //@TODO: add species and source
             bw.newLine();
