@@ -5,7 +5,7 @@
     <groupId>eu.isas.searchgui</groupId>
     <artifactId>SearchGUI</artifactId>
     <packaging>jar</packaging>
-    <version>3.2.23</version>
+    <version>3.2.24</version>
     <name>SearchGUI</name>
     <url>https://github.com/compomics/searchgui</url>
     <description>Graphical user interface for proteomics identification search engines</description>
@@ -38,6 +38,15 @@
             <name>Harald Barsnes</name>
             <id>harald</id>
             <email>harald.barsnes AT uib.no</email>
+            <organization>University of Bergen, Norway</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Carlos Horro</name>
+            <id>carlos</id>
+            <email>carlos.horro AT uib.no</email>
             <organization>University of Bergen, Norway</organization>
             <roles>
                 <role>Java Developer</role>
@@ -313,7 +322,7 @@
         <dependency>
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
-            <version>4.12.2</version>
+            <version>4.12.3</version>
             <exclusions>
                 <exclusion>
                     <artifactId>commons-math</artifactId>
