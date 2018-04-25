@@ -360,7 +360,7 @@ public class SearchHandler {
         enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, true, false, true);
         enableAndromeda = loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false);
         enableNovor = loadSearchEngineLocation(Advocate.novor, true, true, true, true, false, false, false);
-        enableDirecTag = loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, false);
+        enableDirecTag = loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, true);
         this.identificationParametersFile = identificationParametersFile;
         this.processingPreferences = processingPreferences;
 
