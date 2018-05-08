@@ -197,6 +197,12 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // set the number of threads to use
         process_name_array.add("-thread");
         process_name_array.add("" + nThreads);
+        
+        // set the number of tasks
+        if (msgfParameters.getNumberOfTasks() != null) {
+            process_name_array.add("-tasks");
+            process_name_array.add("" + msgfParameters.getNumberOfTasks());
+        }
 
         // set the fragmentation method
         process_name_array.add("-m");
@@ -234,6 +240,10 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             process_name_array.add("0");
         }
+        
+        // set mass of charge carrier, default: mass of proton (1.00727649)
+        //process_name_array.add("-ccm");
+        //process_name_array.add("1.00727649"); // @TODO: implement?
 
         // set the range of allowed isotope peak errors
         process_name_array.add("-ti");
@@ -241,6 +251,10 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
                 + searchParameters.getMinIsotopicCorrection()
                 + "," + searchParameters.getMaxIsotopicCorrection()
                 + CommandLineUtils.getQuoteType());
+        
+        // set the report level
+        //process_name_array.add("-verbose");
+        //process_name_array.add("1"); // @TODO: implement per-thread progress? i.e. set to 0
 
         process_name_array.trimToSize();
 
@@ -305,7 +319,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      */
     private void createEnzymesFile() throws IOException {
 
-        // Format: ShortName,CleaveAt,Terminus (https://bix-lab.ucsd.edu/display/CCMStools/enzymes.txt)
+        // Format: ShortName,CleaveAt,Terminus
         // - ShortName: an unique short name of the enzyme (e.g. Tryp). No space is allowed.
         // - CleaveAt: the residues cleaved by the enzyme (e.g. KR). Put "null" in case of no specificy.
         // - Terminus: Whether the enzyme cleaves C-term (C) or N-term (N)

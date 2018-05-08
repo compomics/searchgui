@@ -3460,7 +3460,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void msgfLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msgfLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("https://bix-lab.ucsd.edu/pages/viewpage.action?pageId=13533355");
+        BareBonesBrowserLaunch.openURL("https://github.com/MSGFPlus/msgfplus");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_msgfLinkLabelMouseClicked
 
