@@ -248,7 +248,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
             process_name_array.add("0");
         } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.wholeProtein) {
-              process_name_array.add("0");
+            process_name_array.add("0");
         } else {
             boolean semiSpecific = false;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
@@ -314,8 +314,8 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         String fixedModifications = "";
 
-        // @TODO: is the code generic enough?
         for (String ptmName : fixedPtms) {
+
             PTM tempPtm = ptmFactory.getPTM(ptmName);
 
             if (tempPtm.getType() == PTM.MODAA) {
@@ -365,23 +365,31 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         char[] symbols = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '^', '@', '|', '§', '+', '-', '&', '%', '='}; // @TODO: add more symbols?
         int symbolsCounter = 0;
 
-        // @TODO: is the code generic enough?
         for (String ptmName : variablePtms) {
+            
             PTM tempPtm = ptmFactory.getPTM(ptmName);
 
             String nTerm = "";
             String cTerm = "";
 
-            if (tempPtm.getType() == PTM.MODNAA
-                    || tempPtm.getType() == PTM.MODNPAA
-                    || tempPtm.getType() == PTM.MODN
-                    || tempPtm.getType() == PTM.MODNP) { // note: does not separate peptide and protein n term
-                nTerm = "(";
-            } else if (tempPtm.getType() == PTM.MODCPAA
-                    || tempPtm.getType() == PTM.MODCAA
-                    || tempPtm.getType() == PTM.MODC
-                    || tempPtm.getType() == PTM.MODCP) { // note: does not separate peptide and protein c term
-                cTerm = ")";
+            // note: protein terminal ptms are handled as peptide terminal ptms and have to be removed in the post-processing
+            switch (tempPtm.getType()) {
+                case PTM.MODN:
+                case PTM.MODNP:
+                    nTerm = "(";
+                    break;
+                case PTM.MODNAA:
+                case PTM.MODNPAA:
+                    nTerm = "(!";
+                    break;
+                case PTM.MODC:
+                case PTM.MODCP:
+                case PTM.MODCPAA:
+                case PTM.MODCAA:
+                    cTerm = ")";
+                    break;
+                default:
+                    break;
             }
 
             // get the targeted amino acids
@@ -424,8 +432,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Filters the fixed modifications to convert unsupported modification types
-     * (fixed protein terminal and fixed terminal at specific amino acids) into
-     * variable modifications.
+     * (i.e. fixed protein terminal modifications) into variable modifications.
      *
      * @return a map of the filtered modifications, keys: "Fixed" and "Variable"
      */
@@ -440,24 +447,22 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
             PTM tempPtm = ptmFactory.getPTM(ptmName);
 
-            if (tempPtm.getType() == PTM.MODAA) { // particular amino acid
-                filteredFixedPtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODN) { // protein n term
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODNAA) { // protein n term specific amino acid
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODNP) { // peptide n term
-                filteredFixedPtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODNPAA) { // peptide n term specifc amino acid
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODC) { // protein c term
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODCAA) { // protein c term specific amino acid
-                variablePtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODCP) { // peptide c term 
-                filteredFixedPtms.add(ptmName);
-            } else if (tempPtm.getType() == PTM.MODCPAA) { // peptide c term specific amino acid
-                variablePtms.add(ptmName);
+            switch (tempPtm.getType()) {
+                case PTM.MODAA: // particular amino acid
+                case PTM.MODNP: // peptide n term
+                case PTM.MODCP: // peptide c term
+                    filteredFixedPtms.add(ptmName);
+                    break;
+                case PTM.MODN: // protein n term
+                case PTM.MODC: // protein c term
+                case PTM.MODNPAA: // peptide n term specifc amino acid
+                case PTM.MODCPAA: // peptide c term specific amino acid
+                case PTM.MODNAA: // protein n term specific amino acid
+                case PTM.MODCAA: // protein c term specific amino acid
+                    variablePtms.add(ptmName);
+                    break;
+                default:
+                    break;
             }
         }
 

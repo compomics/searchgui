@@ -619,7 +619,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="myriMatchLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a href=&quot;http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&amp;doc=27121&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a href=&quot;http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MyriMatch web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
