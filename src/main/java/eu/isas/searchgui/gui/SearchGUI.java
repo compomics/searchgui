@@ -450,7 +450,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
                 searchHandler.setExperimentLabel(experimentLabel);
-                searchHandler.setSampleLabel(experimentLabel);
                 searchHandler.setPeptideShakerFile(new File(tempFiles.get(0).getParentFile(), experimentLabel + ".cpsx"));
                 peptideShakerCheckBox.setSelected(true);
             }
@@ -4996,14 +4995,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void editPeptideShakerParameters() {
 
         PeptideShakerParametersDialog psParametersDialog = new PeptideShakerParametersDialog(this, true, searchHandler.getMascotFiles());
+        
         if (!psParametersDialog.isCanceled()) {
+
             searchHandler.setExperimentLabel(psParametersDialog.getProjectName());
-            searchHandler.setSampleLabel(psParametersDialog.getSampleName());
-            searchHandler.setReplicateNumber(psParametersDialog.getReplicateNumber());
             searchHandler.setPeptideShakerFile(psParametersDialog.getPeptideShakerOutputFile());
             searchHandler.setMascotFiles(psParametersDialog.getMascotFiles());
+
         } else {
+
             peptideShakerCheckBox.setSelected(false);
+
         }
     }
 

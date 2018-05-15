@@ -109,20 +109,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="projectReferenceLabel" alignment="1" min="-2" pref="100" max="-2" attributes="0"/>
-                          <Component id="sampleNameLabel" alignment="1" min="-2" pref="100" max="-2" attributes="1"/>
-                      </Group>
+                      <Component id="projectReferenceLabel" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="projectNameIdTxt" max="32767" attributes="2"/>
-                          <Component id="sampleNameIdtxt" max="32767" attributes="2"/>
-                      </Group>
-                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="replicateLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                      <Component id="replicateNumberIdtxt" min="-2" pref="70" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="projectNameIdTxt" pref="628" max="32767" attributes="2"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -134,28 +124,12 @@
                           <Component id="projectNameIdTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="projectReferenceLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="sampleNameIdtxt" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="replicateNumberIdtxt" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="replicateLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="sampleNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JTextField" name="replicateNumberIdtxt">
-              <Properties>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="0"/>
-              </Properties>
-              <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="replicateNumberIdtxtKeyReleased"/>
-              </Events>
-            </Component>
             <Component class="javax.swing.JTextField" name="projectNameIdTxt">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="0"/>
@@ -164,28 +138,10 @@
                 <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="projectNameIdTxtKeyReleased"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="replicateLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Replicate"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="sampleNameLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Sample Name"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JLabel" name="projectReferenceLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Project Name"/>
+                <Property name="text" type="java.lang.String" value="Project Reference"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="sampleNameIdtxt">
-              <Properties>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-              </Properties>
-              <Events>
-                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="sampleNameIdtxtKeyReleased"/>
-              </Events>
             </Component>
           </SubComponents>
         </Container>

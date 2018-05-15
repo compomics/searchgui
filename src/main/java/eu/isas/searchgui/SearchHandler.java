@@ -204,14 +204,6 @@ public class SearchHandler {
      */
     private String experimentLabel;
     /**
-     * The PeptideShaker sample label.
-     */
-    private String sampleLabel;
-    /**
-     * The PeptideShaker replicate number.
-     */
-    private Integer replicateNumber = 0;
-    /**
      * The PeptideShaker CPS file.
      */
     private File peptideShakerFile = null;
@@ -1583,42 +1575,6 @@ public class SearchHandler {
     }
 
     /**
-     * Returns the sample label.
-     *
-     * @return the sample label
-     */
-    public String getSampleLabel() {
-        return sampleLabel;
-    }
-
-    /**
-     * Sets the sample label.
-     *
-     * @param sampleLabel the sampleLabel to set
-     */
-    public void setSampleLabel(String sampleLabel) {
-        this.sampleLabel = sampleLabel;
-    }
-
-    /**
-     * Returns the replicate number.
-     *
-     * @return the replicate number
-     */
-    public Integer getReplicateNumber() {
-        return replicateNumber;
-    }
-
-    /**
-     * Sets the replicate number.
-     *
-     * @param replicateNumber the replicateNumber to set
-     */
-    public void setReplicateNumber(Integer replicateNumber) {
-        this.replicateNumber = replicateNumber;
-    }
-
-    /**
      * Returns the PeptideShaker file.
      *
      * @return the PeptideShaker file
@@ -2422,7 +2378,7 @@ public class SearchHandler {
                         waitingHandler.setRunCanceled();
                     } else if (!identificationFiles.isEmpty()) {
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
-                                waitingHandler, exceptionHandler, experimentLabel, sampleLabel, replicateNumber, mgfFiles, identificationFilesList,
+                                waitingHandler, exceptionHandler, experimentLabel, mgfFiles, identificationFilesList,
                                 identificationParameters, identificationParametersFile, peptideShakerFile, true, processingParameters, utilitiesUserParameters.outputData());
                         waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 

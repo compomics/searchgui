@@ -21,53 +21,45 @@ import java.util.ArrayList;
 public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
-     * The name of the experiment.
+     * The reference of the project.
      */
-    private String experiment;
-    /**
-     * The name of the sample.
-     */
-    private String sample;
-    /**
-     * The number of the replicate.
-     */
-    private Integer replicate;
+    private final String reference;
     /**
      * The spectrum files.
      */
-    private ArrayList<File> spectrumFiles;
+    private final ArrayList<File> spectrumFiles;
     /**
      * The identification files.
      */
-    private ArrayList<File> identificationFiles;
+    private final ArrayList<File> identificationFiles;
     /**
      * The identification parameters.
      */
-    private IdentificationParameters identificationParameters;
+    private final IdentificationParameters identificationParameters;
     /**
      * The file where to store the search parameters.
      */
-    private File identificationParametersFile;
+    private final File identificationParametersFile;
     /**
      * The cpsx file.
      */
-    private File cpsFile;
+    private final File cpsFile;
     /**
      * Boolean indicating whether the results shall be displayed in
      * PeptideShaker.
      */
-    private boolean showGuiProgress;
+    private final boolean showGuiProgress;
     /**
      * Indicates whether the mgf and FASTA file should be included in the
      * output.
      */
-    private boolean includeData;
+    private final boolean includeData;
 
     /**
      * Constructor for the process builder.
      *
      * @param waitingHandler the waiting handler
-     * @param experiment the name of the experiment
+     * @param reference the name of the experiment
      * @param sample the name of the sample
      * @param replicate the replicate number
      * @param spectrumFiles the spectrum files
@@ -85,7 +77,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String experiment, String sample, Integer replicate,
+    public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String reference,
             ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, IdentificationParameters identificationParameters, File identificationParametersFile, 
             File cpsFile, boolean showGuiProgress,
             ProcessingParameters processingParameters, boolean includeData)
@@ -93,9 +85,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
-        this.experiment = experiment;
-        this.sample = sample;
-        this.replicate = replicate;
+        this.reference = reference;
         this.spectrumFiles = spectrumFiles;
         this.identificationParameters = identificationParameters;
         this.identificationParametersFile = identificationParametersFile;
@@ -133,12 +123,8 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-cp");
             process_name_array.add(new File(utilitiesUserParameters.getPeptideShakerPath()).getName());
             process_name_array.add("eu.isas.peptideshaker.cmd.PeptideShakerCLI");
-            process_name_array.add("-experiment");
-            process_name_array.add(experiment);
-            process_name_array.add("-sample");
-            process_name_array.add(sample);
-            process_name_array.add("-replicate");
-            process_name_array.add(replicate + "");
+            process_name_array.add("-reference");
+            process_name_array.add(reference);
             process_name_array.add("-identification_files");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationFiles));
             process_name_array.add("-spectrum_files");
@@ -189,6 +175,6 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getCurrentlyProcessedFileName() {
-        return experiment + " (sample: " + sample + ", replicate: " + replicate + ")";
+        return reference;
     }
 }

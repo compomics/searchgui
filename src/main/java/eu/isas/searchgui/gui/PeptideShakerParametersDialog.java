@@ -79,14 +79,11 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         }
 
         projectNameIdTxt.setText(searchGUI.getSearchHandler().getExperimentLabel());
-        sampleNameIdtxt.setText(searchGUI.getSearchHandler().getSampleLabel());
-        replicateNumberIdtxt.setText(searchGUI.getSearchHandler().getReplicateNumber().toString());
 
         // make sure that long strings are handled correctly
         peptideShakerInstallationJTextField.setColumns(1);
         outputFileTextField.setColumns(1);
         projectNameIdTxt.setColumns(1);
-        sampleNameIdtxt.setColumns(1);
 
         mascotDatFiles.addAll(mascotFiles);
 
@@ -148,12 +145,8 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
 
         backgroundPanel = new javax.swing.JPanel();
         projectDetailsPanel = new javax.swing.JPanel();
-        replicateNumberIdtxt = new javax.swing.JTextField();
         projectNameIdTxt = new javax.swing.JTextField();
-        replicateLabel = new javax.swing.JLabel();
-        sampleNameLabel = new javax.swing.JLabel();
         projectReferenceLabel = new javax.swing.JLabel();
-        sampleNameIdtxt = new javax.swing.JTextField();
         okButton = new javax.swing.JButton();
         fileNamePanel = new javax.swing.JPanel();
         outputFileLabel = new javax.swing.JLabel();
@@ -189,14 +182,6 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         projectDetailsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Project Details"));
         projectDetailsPanel.setOpaque(false);
 
-        replicateNumberIdtxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        replicateNumberIdtxt.setText("0");
-        replicateNumberIdtxt.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                replicateNumberIdtxtKeyReleased(evt);
-            }
-        });
-
         projectNameIdTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         projectNameIdTxt.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -204,18 +189,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
             }
         });
 
-        replicateLabel.setText("Replicate");
-
-        sampleNameLabel.setText("Sample Name");
-
-        projectReferenceLabel.setText("Project Name");
-
-        sampleNameIdtxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        sampleNameIdtxt.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                sampleNameIdtxtKeyReleased(evt);
-            }
-        });
+        projectReferenceLabel.setText("Project Reference");
 
         javax.swing.GroupLayout projectDetailsPanelLayout = new javax.swing.GroupLayout(projectDetailsPanel);
         projectDetailsPanel.setLayout(projectDetailsPanelLayout);
@@ -223,17 +197,9 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
             projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(projectDetailsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(projectReferenceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sampleNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(projectReferenceLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(projectNameIdTxt)
-                    .addComponent(sampleNameIdtxt))
-                .addGap(18, 18, 18)
-                .addComponent(replicateLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(replicateNumberIdtxt, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(projectNameIdTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
                 .addContainerGap())
         );
         projectDetailsPanelLayout.setVerticalGroup(
@@ -243,12 +209,6 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
                 .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(projectNameIdTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(projectReferenceLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(projectDetailsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(sampleNameIdtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(replicateNumberIdtxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(replicateLabel)
-                    .addComponent(sampleNameLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -704,27 +664,9 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
      *
      * @param evt
      */
-    private void sampleNameIdtxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sampleNameIdtxtKeyReleased
-        validateInput();
-    }//GEN-LAST:event_sampleNameIdtxtKeyReleased
-
-    /**
-     * Validate if the user input.
-     *
-     * @param evt
-     */
     private void projectNameIdTxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_projectNameIdTxtKeyReleased
         validateInput();
     }//GEN-LAST:event_projectNameIdTxtKeyReleased
-
-    /**
-     * Validate if the user input.
-     *
-     * @param evt
-     */
-    private void replicateNumberIdtxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_replicateNumberIdtxtKeyReleased
-        validateInput();
-    }//GEN-LAST:event_replicateNumberIdtxtKeyReleased
 
     /**
      * Change the cursor to a hand cursor.
@@ -787,10 +729,6 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
     private javax.swing.JLabel projectReferenceLabel;
     private javax.swing.JLabel projectSettingsLbl;
     private javax.swing.JTextField projectSettingsTxt;
-    private javax.swing.JLabel replicateLabel;
-    private javax.swing.JTextField replicateNumberIdtxt;
-    private javax.swing.JTextField sampleNameIdtxt;
-    private javax.swing.JLabel sampleNameLabel;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -802,14 +740,10 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
 
         peptideShakerLocationLabel.setForeground(Color.black);
         projectReferenceLabel.setForeground(Color.black);
-        sampleNameLabel.setForeground(Color.black);
-        replicateLabel.setForeground(Color.black);
         outputFileLabel.setForeground(Color.black);
 
         peptideShakerLocationLabel.setToolTipText(null);
         projectReferenceLabel.setToolTipText(null);
-        sampleNameLabel.setToolTipText(null);
-        replicateLabel.setToolTipText(null);
         outputFileLabel.setToolTipText(null);
 
         boolean valid = true;
@@ -830,23 +764,6 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
             projectReferenceLabel.setForeground(Color.red);
             projectReferenceLabel.setToolTipText("Please provide a project name.");
             projectNameIdTxt.requestFocus();
-        }
-        if (sampleNameIdtxt.getText().trim().length() == 0) {
-            valid = false;
-            sampleNameLabel.setForeground(Color.red);
-            sampleNameLabel.setToolTipText("Please provide a sample name.");
-        }
-        if (replicateNumberIdtxt.getText().trim().length() == 0) {
-            valid = false;
-            sampleNameLabel.setForeground(Color.red);
-            sampleNameLabel.setToolTipText("Please provide a replicate number.");
-        }
-        try {
-            new Integer(replicateNumberIdtxt.getText());
-        } catch (NumberFormatException e) {
-            valid = false;
-            replicateLabel.setForeground(Color.red);
-            replicateLabel.setToolTipText("Replicate has to be a number!");
         }
         if (outputFileTextField.getText().trim().length() == 0) {
             valid = false;
@@ -884,24 +801,6 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
      */
     public String getProjectName() {
         return projectNameIdTxt.getText();
-    }
-
-    /**
-     * Returns the sample name as set by the user.
-     *
-     * @return the sample name as set by the user
-     */
-    public String getSampleName() {
-        return sampleNameIdtxt.getText();
-    }
-
-    /**
-     * Returns the replicate number as set by the user.
-     *
-     * @return the replicate number as set by the user
-     */
-    public Integer getReplicateNumber() {
-        return new Integer(replicateNumberIdtxt.getText());
     }
 
     /**
