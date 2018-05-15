@@ -12,7 +12,7 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.compomics.util.parameters.identification.tool_specific.MsgfParameters;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
 

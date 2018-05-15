@@ -2,8 +2,8 @@ package eu.isas.searchgui.gui;
 
 import com.compomics.util.gui.GuiUtilities;
 import com.compomics.util.gui.error_handlers.HelpDialog;
-import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.searchgui.OutputParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import java.awt.Color;
 import java.awt.Toolkit;
 import javax.swing.DefaultComboBoxModel;
@@ -342,7 +342,7 @@ public class AdvancedParametersDialog extends javax.swing.JDialog {
 
         groupResultFilesTxt.setText("Group Identification Files");
 
-        groupResultFilesCmb.setModel(new DefaultComboBoxModel(SearchGuiOutputParameters.getOutputParametersNames()));
+        groupResultFilesCmb.setModel(new DefaultComboBoxModel(OutputParameters.getOutputParametersNames()));
         groupResultFilesCmb.setToolTipText("Output files grouping options");
         groupResultFilesCmb.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -536,7 +536,7 @@ public class AdvancedParametersDialog extends javax.swing.JDialog {
             userParameters.setCheckMgfSize(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
             userParameters.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
             userParameters.setMgfNSpectra(new Integer(mgfReducedSizeTxt.getText().trim()));
-            SearchGuiOutputParameters outputParameters = SearchGuiOutputParameters.getOutputParameters(groupResultFilesCmb.getSelectedIndex());
+            OutputParameters outputParameters = OutputParameters.getOutputParameters(groupResultFilesCmb.getSelectedIndex());
             userParameters.setSearchGuiOutputParameters(outputParameters);
             userParameters.setOutputData(includeDataCmb.getSelectedIndex() == 0);
             userParameters.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
@@ -724,7 +724,7 @@ public class AdvancedParametersDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void groupResultFilesCmbActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_groupResultFilesCmbActionPerformed
-        boolean enabled = !((String) groupResultFilesCmb.getSelectedItem()).equalsIgnoreCase(SearchGuiOutputParameters.no_zip.name);
+        boolean enabled = !((String) groupResultFilesCmb.getSelectedItem()).equalsIgnoreCase(OutputParameters.no_zip.name);
         includeDataTxt.setEnabled(enabled);
         includeDataCmb.setEnabled(enabled);
     }//GEN-LAST:event_groupResultFilesCmbActionPerformed

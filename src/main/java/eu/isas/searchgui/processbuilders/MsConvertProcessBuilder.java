@@ -5,7 +5,7 @@ import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsFormat;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardFilter;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;

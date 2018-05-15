@@ -11,7 +11,7 @@ import com.compomics.util.experiment.io.mass_spectrometry.export.AplExporter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
-import com.compomics.util.gui.filehandling.TempFilesManager;
+import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
@@ -25,8 +25,8 @@ import com.compomics.util.parameters.identification.tool_specific.MyriMatchParam
 import com.compomics.util.parameters.identification.tool_specific.OmssaParameters;
 import com.compomics.util.parameters.identification.tool_specific.TideParameters;
 import com.compomics.util.parameters.tools.ProcessingParameters;
-import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.searchgui.OutputParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.Duration;
 import eu.isas.searchgui.processbuilders.*;
 import javax.swing.*;
@@ -1689,7 +1689,7 @@ public class SearchHandler {
                 File outputFolder = getResultsFolder();
                 File outputTempFolder;
 
-                if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.no_zip) {
+                if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.no_zip) {
                     outputTempFolder = outputFolder;
                 } else {
                     try {
@@ -2251,7 +2251,7 @@ public class SearchHandler {
 
                 if (!waitingHandler.isRunCanceled()) {
                     // organize the output files
-                    if (utilitiesUserParameters.getSearchGuiOutputParameters() != SearchGuiOutputParameters.no_zip) {
+                    if (utilitiesUserParameters.getSearchGuiOutputParameters() != OutputParameters.no_zip) {
                         waitingHandler.appendReport("Zipping output files.", true, true);
                     } else {
                         waitingHandler.appendReport("Preparing output files.", true, true);
@@ -2266,14 +2266,14 @@ public class SearchHandler {
                     ArrayList<File> identificationFilesList = new ArrayList<>();
                     identificationFilesList.addAll(mascotFiles);
 
-                    if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.grouped) {
+                    if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.grouped) {
                         File outputFile = getDefaultOutputFile(outputFolder, utilitiesUserParameters.isIncludeDateInOutputName());
                         if (outputFile.exists()) {
                             identificationFilesList.add(outputFile);
                         } else {
                             waitingHandler.appendReport("Could not find SearchGUI results.", true, true);
                         }
-                    } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.algorithm) {
+                    } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.algorithm) {
                         if (enableMsAmanda) {
                             File outputFile = getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
                             if (outputFile.exists()) {
@@ -2354,7 +2354,7 @@ public class SearchHandler {
                                 waitingHandler.appendReport("Could not find " + Advocate.direcTag.getName() + " results.", true, true);
                             }
                         }
-                    } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == SearchGuiOutputParameters.run) {
+                    } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.run) {
                         for (String run : identificationFiles.keySet()) {
                             String runName = Util.removeExtension(run);
                             File outputFile = getDefaultOutputFile(outputFolder, runName, utilitiesUserParameters.isIncludeDateInOutputName());
@@ -2379,7 +2379,7 @@ public class SearchHandler {
                     } else if (!identificationFiles.isEmpty()) {
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                 waitingHandler, exceptionHandler, experimentLabel, mgfFiles, identificationFilesList,
-                                identificationParameters, identificationParametersFile, peptideShakerFile, true, processingParameters, utilitiesUserParameters.outputData());
+                                identificationParametersFile, peptideShakerFile, true, processingParameters, utilitiesUserParameters.outputData());
                         waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
                         peptideShakerProcessBuilder.startProcess();

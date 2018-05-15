@@ -10,7 +10,7 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.compomics.util.parameters.identification.tool_specific.NovorParameters;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.BufferedWriter;
 import java.io.File;

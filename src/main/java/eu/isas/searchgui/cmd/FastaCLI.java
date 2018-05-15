@@ -10,7 +10,7 @@ import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.experiment.io.biology.protein.FastaSummary;
 import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverter;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import static eu.isas.searchgui.cmd.SearchCLI.redirectErrorStream;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;

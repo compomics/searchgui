@@ -6,7 +6,7 @@ import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.tools.ProcessingParameters;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +33,6 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      */
     private final ArrayList<File> identificationFiles;
     /**
-     * The identification parameters.
-     */
-    private final IdentificationParameters identificationParameters;
-    /**
      * The file where to store the search parameters.
      */
     private final File identificationParametersFile;
@@ -60,10 +56,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param waitingHandler the waiting handler
      * @param reference the name of the experiment
-     * @param sample the name of the sample
-     * @param replicate the replicate number
      * @param spectrumFiles the spectrum files
-     * @param identificationParameters the identification parameters
      * @param cpsFile the cpsx file
      * @param identificationFiles the search engines result files
      * @param showGuiProgress a boolean indicating whether the progress shall be
@@ -78,7 +71,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String reference,
-            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, IdentificationParameters identificationParameters, File identificationParametersFile, 
+            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, File identificationParametersFile, 
             File cpsFile, boolean showGuiProgress,
             ProcessingParameters processingParameters, boolean includeData)
             throws IOException, ClassNotFoundException {
@@ -87,7 +80,6 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
         this.exceptionHandler = exceptionHandler;
         this.reference = reference;
         this.spectrumFiles = spectrumFiles;
-        this.identificationParameters = identificationParameters;
         this.identificationParametersFile = identificationParametersFile;
         this.identificationFiles = identificationFiles;
         this.cpsFile = cpsFile;

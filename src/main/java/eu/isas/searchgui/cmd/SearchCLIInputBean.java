@@ -4,7 +4,7 @@ import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.cli.CommandParameter;
 import com.compomics.cli.identification_parameters.IdentificationParametersInputBean;
 import com.compomics.util.parameters.identification.IdentificationParameters;
-import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
+import com.compomics.util.parameters.searchgui.OutputParameters;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -155,7 +155,7 @@ public class SearchCLIInputBean {
     /**
      * The way the output should be organized.
      */
-    private SearchGuiOutputParameters outputParameters = SearchGuiOutputParameters.grouped;
+    private OutputParameters outputParameters = OutputParameters.grouped;
     /**
      * Indicates whether the mgf and FASTA files should be included in the
      * output.
@@ -346,7 +346,7 @@ public class SearchCLIInputBean {
         // load the output preference
         if (aLine.hasOption(SearchCLIParams.OUTPUT_OPTION.id)) {
             int option = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id));
-            outputParameters = SearchGuiOutputParameters.getOutputParameters(option);
+            outputParameters = OutputParameters.getOutputParameters(option);
         }
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATA.id)) {
             int input = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATA.id));
@@ -729,7 +729,7 @@ public class SearchCLIInputBean {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id);
             try {
                 int option = new Integer(input);
-                if (SearchGuiOutputParameters.getOutputParameters(option) == null) {
+                if (OutputParameters.getOutputParameters(option) == null) {
                     System.out.println(System.getProperty("line.separator") + "Output option \'" + option + "\' not recognized." + System.getProperty("line.separator"));
                     return false;
                 }
@@ -996,7 +996,7 @@ public class SearchCLIInputBean {
      *
      * @return the output option chosen by the user
      */
-    public SearchGuiOutputParameters getOutputOption() {
+    public OutputParameters getOutputOption() {
         return outputParameters;
     }
 

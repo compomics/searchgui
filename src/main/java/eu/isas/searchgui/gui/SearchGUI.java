@@ -42,8 +42,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import com.compomics.util.gui.error_handlers.HelpDialog;
-import com.compomics.util.gui.filehandling.FileDisplayDialog;
-import com.compomics.util.gui.filehandling.TempFilesManager;
+import com.compomics.util.gui.file_handling.FileDisplayDialog;
+import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.gui.modification.ModificationsDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersEditionDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersOverviewDialog;
@@ -76,8 +76,8 @@ import com.compomics.util.parameters.identification.tool_specific.OmssaParameter
 import com.compomics.util.parameters.identification.tool_specific.TideParameters;
 import com.compomics.util.parameters.identification.tool_specific.XtandemParameters;
 import com.compomics.util.parameters.tools.ProcessingParameters;
-import com.compomics.util.parameters.tools.SearchGuiOutputParameters;
-import com.compomics.util.parameters.tools.UtilitiesUserParameters;
+import com.compomics.util.parameters.searchgui.OutputParameters;
+import com.compomics.util.parameters.UtilitiesUserParameters;
 import eu.isas.searchgui.SearchGUIWrapper;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
@@ -2720,14 +2720,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             searchHandler.setOutputTimeStamp(SearchHandler.getOutputDate());
 
-            SearchGuiOutputParameters outputOption = utilitiesUserParameters.getSearchGuiOutputParameters();
+            OutputParameters outputOption = utilitiesUserParameters.getSearchGuiOutputParameters();
 
-            if (outputOption == SearchGuiOutputParameters.grouped) {
+            if (outputOption == OutputParameters.grouped) {
                 File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, utilitiesUserParameters.isIncludeDateInOutputName());
                 if (outputFile.exists()) {
                     fileFound = true;
                 }
-            } else if (outputOption == SearchGuiOutputParameters.algorithm) {
+            } else if (outputOption == OutputParameters.algorithm) {
 
                 if (searchHandler.isOmssaEnabled()) {
                     File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
@@ -2763,7 +2763,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         fileFound = true;
                     }
                 }
-            } else if (outputOption == SearchGuiOutputParameters.run) {
+            } else if (outputOption == OutputParameters.run) {
                 for (File spectrumFile : spectrumFiles) {
                     String runName = Util.removeExtension(spectrumFile.getName());
                     File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, runName, utilitiesUserParameters.isIncludeDateInOutputName());
@@ -2871,7 +2871,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
                 this, null, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, true);
 
         if (!identificationParametersEditionDialog.isCanceled()) {
             IdentificationParameters tempIdentificationParameters = identificationParametersEditionDialog.getIdentificationParameters();
@@ -4940,7 +4940,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
                 this, identificationParameters, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, null, true);
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, true);
 
         if (!identificationParametersEditionDialog.isCanceled()) {
             IdentificationParameters tempIdentificationParameters = identificationParametersEditionDialog.getIdentificationParameters();
