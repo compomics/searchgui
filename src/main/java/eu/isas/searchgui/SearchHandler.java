@@ -3094,24 +3094,6 @@ public class SearchHandler {
      * @param run the mgf file of interest
      * @param parametersFile the parameters file
      * @param identificationFiles the identification files
-     *
-     * @return the total uncompressed size of the files for the given run
-     */
-    private long getTotalUncompressedSizeRun(File inputFile, File outputFolder, String runName, String run,
-            File parametersFile, HashMap<String, HashMap<Integer, File>> identificationFiles) {
-        return getTotalUncompressedSizeRun(inputFile, outputFolder, runName, run, parametersFile, identificationFiles, null);
-    }
-
-    /**
-     * Get the total uncompressed size of the files to compress for the given
-     * run.
-     *
-     * @param inputFile the input file
-     * @param outputFolder the output folder
-     * @param runName the name of the run of interest
-     * @param run the mgf file of interest
-     * @param parametersFile the parameters file
-     * @param identificationFiles the identification files
      * @param mgfFile only add given mgfFile, null means add all
      *
      * @return the total uncompressed size of the files for the given run
