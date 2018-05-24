@@ -332,14 +332,14 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="inputFilesPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="preProcessingPanel" min="-2" max="-2" attributes="0"/>
+                  <Component id="preProcessingPanel" linkSize="10" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="searchEnginesLocationPanel" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="deNovoPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="postProcessingPanel" pref="54" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="postProcessingPanel" linkSize="10" min="-2" pref="73" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="aboutButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="searchGUIPublicationLabel" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -375,7 +375,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="searchEnginesScrollPane" max="32767" attributes="0"/>
+                      <Component id="searchEnginesScrollPane" pref="218" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -445,7 +445,7 @@
                                   <Component id="tideLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="andromedaLinkLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="115" max="32767" attributes="0"/>
+                              <EmptySpace pref="144" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="msAmandaSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
                                   <Component id="myriMatchSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
@@ -1403,7 +1403,6 @@
                           <Component id="peptideShakerSettingsButton" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="peptideShakerSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
