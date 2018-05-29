@@ -9,8 +9,8 @@
 ----
 
 ## SearchGUI Publications:
- * [Barsnes H and Vaudel M: SearchGUI: a highly adaptable common interface for proteomics search and de novo engines. J Proteome Res. 2018 _(in press)_](https://www.ncbi.nlm.nih.gov/pubmed/29774740)
- * [Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches. Proteomics 2011;11(5):996-9](http://www.ncbi.nlm.nih.gov/pubmed/21337703). 
+ * Barsnes H and Vaudel M: SearchGUI: a highly adaptable common interface for proteomics search and de novo engines. [J Proteome Res. 2018 _(in press)_](https://www.ncbi.nlm.nih.gov/pubmed/29774740)
+ * Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches. [Proteomics 2011;11(5):996-9](http://www.ncbi.nlm.nih.gov/pubmed/21337703). 
  * If you use SearchGUI as part of a publication, please refer to the most recent publication.
 
 ----
