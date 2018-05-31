@@ -375,7 +375,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="searchEnginesScrollPane" pref="218" max="32767" attributes="0"/>
+                      <Component id="searchEnginesScrollPane" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -445,7 +445,7 @@
                                   <Component id="tideLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="andromedaLinkLabel" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="144" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="msAmandaSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
                                   <Component id="myriMatchSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
