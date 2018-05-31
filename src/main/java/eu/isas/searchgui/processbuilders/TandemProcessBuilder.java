@@ -446,8 +446,8 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Creates the parameters file.
      *
-     * @throws IllegalArgumentException thrown if more than one fixed Modification has
-     * the same target
+     * @throws IllegalArgumentException thrown if more than one fixed
+     * Modification has the same target
      */
     private void createParameterFile() throws IllegalArgumentException {
 
@@ -490,20 +490,18 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             parentMonoisotopicMassIsotopeError = "yes";
         }
 
-        String motifs = "";
+        StringBuilder motifs = new StringBuilder();
 
         for (String modName : variableModMotifs) {
 
             Modification modification = modificationFactory.getModification(modName);
-            motifs += modification.getMass() + "@" + modification.getPattern().getPrositeFormat(); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
+            motifs.append(modification.getMass()).append('@').append(modification.getPattern().getPrositeFormat()); //@TODO: check how multiple modifications at the same amino acid are supported in the refinement search
 
         }
 
         parameterFile = new File(xTandemFile, PARAMETER_FILE);
 
-        try {
-
-            BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile))) {
             bw.write(
                     "<?xml version=\"1.0\"?>" + System.getProperty("line.separator")
                     + "<?xml-stylesheet type=\"text/xsl\" href=\"tandem-input-style.xsl\"?>" + System.getProperty("line.separator")
@@ -657,7 +655,6 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + System.getProperty("line.separator")
                     + "</bioml>" + System.getProperty("line.separator"));
             bw.flush();
-            bw.close();
         } catch (IOException ioe) {
             throw new IllegalArgumentException("Could not create X!Tandem parameter file. Unable to write file: '" + ioe.getMessage() + "'!");
         }
@@ -805,8 +802,8 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param variableModifications the map of modifications to parse
      * @return the list of modifications as a String
-     * @throws IllegalArgumentException thrown if more than one fixed Modification has
-     * the same target
+     * @throws IllegalArgumentException thrown if more than one fixed
+     * Modification has the same target
      */
     private String getSearchedModList(ArrayList<String> variableModifications, ArrayList<String> fixedModifications) throws IllegalArgumentException {
 
@@ -911,15 +908,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                 newDescriptions.add(defaultFixedModsDescription + tempModsStringModsDescriptionString);
 
                 for (String previousLines : fixedSecondaryLines) {
-                    
+
                     newLines.add(previousLines + "," + tempModsString);
-                    
+
                 }
 
                 for (String previousLines : fixedSecondaryLinesDescription) {
-                    
+
                     newDescriptions.add(previousLines + "," + tempModsStringModsDescriptionString);
-                    
+
                 }
             }
 
@@ -952,6 +949,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * Sort the modifications according to their target.
      *
      * @param modifications the modifications to sort
+     *
      * @return the modifications sorted according to their target
      */
     private HashMap<Character, ArrayList<Modification>> sortModifications(ArrayList<String> modifications) {
@@ -962,7 +960,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
 
             Modification modification = modificationFactory.getSingleAAModification(name);
             ModificationType modificationType = modification.getModificationType();
-            
+
             if (modificationType == ModificationType.modn_peptide
                     || modificationType == ModificationType.modnaa_peptide
                     || modificationType == ModificationType.modn_protein
@@ -978,25 +976,25 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
 
                 modificationList.add(modification);
                 sortedMods.put('[', modificationList);
-                
+
             }
 
             AminoAcidPattern aminoAcidPattern = modification.getPattern();
-            
+
             if (aminoAcidPattern != null) {
-                
+
                 for (Character aa : aminoAcidPattern.getAminoAcidsAtTarget()) {
 
                     ArrayList<Modification> modificationList;
 
                     if (sortedMods.containsKey(aa)) {
-                        
+
                         modificationList = sortedMods.get(aa);
-                        
+
                     } else {
-                        
+
                         modificationList = new ArrayList<>();
-                        
+
                     }
 
                     modificationList.add(modification);
@@ -1031,9 +1029,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return the type of the process
      */
     public String getType() {
-        
+
         return "X!Tandem";
-        
+
     }
 
     /**
@@ -1042,9 +1040,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return the file name of the currently processed file
      */
     public String getCurrentlyProcessedFileName() {
-        
+
         return spectrumFile;
-        
+
     }
 
     /**
@@ -1053,16 +1051,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the x ions are to be searched for.
      */
     public String getXSelected() {
-        
-        if (selectedIons.contains(PeptideFragmentIon.X_ION)) {
-            
-            return "yes";
-            
-        } else {
-            
-            return "no";
-            
-        }
+
+        return selectedIons.contains(PeptideFragmentIon.X_ION) ? "yes" : "no";
+
     }
 
     /**
@@ -1071,16 +1062,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the y ions are to be searched for.
      */
     public String getYSelected() {
-        
-        if (selectedIons.contains(PeptideFragmentIon.Y_ION)) {
-            
-            return "yes";
-            
-        } else {
-            
-            return "no";
-            
-        }
+
+        return selectedIons.contains(PeptideFragmentIon.Y_ION) ? "yes" : "no";
+
     }
 
     /**
@@ -1089,16 +1073,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the z ions are to be searched for.
      */
     public String getZSelected() {
-        
-        if (selectedIons.contains(PeptideFragmentIon.Z_ION)) {
-            
-            return "yes";
-            
-        } else {
-            
-            return "no";
-            
-        }
+
+        return selectedIons.contains(PeptideFragmentIon.Z_ION) ? "yes" : "no";
+
     }
 
     /**
@@ -1107,16 +1084,8 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the a ions are to be searched for.
      */
     public String getASelected() {
-        
-        if (selectedIons.contains(PeptideFragmentIon.A_ION)) {
-            
-            return "yes";
-            
-        } else {
-            
-            return "no";
-            
-        }
+
+        return selectedIons.contains(PeptideFragmentIon.A_ION) ? "yes" : "no";
     }
 
     /**
@@ -1125,16 +1094,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the b ions are to be searched for.
      */
     public String getBSelected() {
-        
-        if (selectedIons.contains(PeptideFragmentIon.B_ION)) {
-            
-            return "yes";
-            
-        } else {
-            
-            return "no";
-            
-        }
+
+        return selectedIons.contains(PeptideFragmentIon.B_ION) ? "yes" : "no";
+
     }
 
     /**
@@ -1143,15 +1105,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @return whether the c ions are to be searched for.
      */
     public String getCSelected() {
-        
-        if (selectedIons.contains(PeptideFragmentIon.C_ION)) {
-            
-            return "yes";
-            
-        } else {
-            
-            return "no";
-            
-        }
+
+        return selectedIons.contains(PeptideFragmentIon.C_ION) ? "yes" : "no";
     }
 }
