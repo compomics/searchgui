@@ -619,7 +619,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="myriMatchLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a href=&quot;http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&amp;doc=27121&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a href=&quot;http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MyriMatch web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -664,7 +664,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="tideLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Tide Search Algorithm - &lt;a href=http://cruxtoolkit.sourceforge.net&quot;&gt;Tide web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Tide Search Algorithm - &lt;a href=https://cruxtoolkit.sourceforge.net&quot;&gt;Tide web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Tide web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -778,8 +778,8 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="xtandemLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;X!Tandem Search Algorithm - &lt;a href=&quot;http://www.thegpm.org/tandem&quot;&gt;X!Tandem web page&lt;/a&gt;&lt;/html&gt;&#xa;"/>
-                        <Property name="toolTipText" type="java.lang.String" value="Open the X!Tandem web page"/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;X! Tandem Search Algorithm - &lt;a href=&quot;https://www.thegpm.org/tandem&quot;&gt;X! Tandem web page&lt;/a&gt;&lt;/html&gt;&#xa;"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Open the X! Tandem web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                       <Events>
@@ -862,7 +862,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="omssaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;OMSSA Search Algorithm - &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/15473683&quot;&gt;OMSSA web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;OMSSA Search Algorithm - &lt;a href=&quot;https://www.ncbi.nlm.nih.gov/pubmed/15473683&quot;&gt;OMSSA web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the OMSSA web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -905,7 +905,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="msAmandaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS Amanda Search Algorithm - &lt;a href=&quot;http://ms.imp.ac.at/?goto=msamanda&quot;&gt;MS Amanda web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS Amanda Search Algorithm - &lt;a href=&quot;https://ms.imp.ac.at/?goto=msamanda&quot;&gt;MS Amanda web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS Amanda web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -1044,7 +1044,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="msgfLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS-GF+ Search Algorithm - &lt;a href=&quot;http://proteomics.ucsd.edu/Software/MSGFPlus&quot;&gt;MS-GF+ web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS-GF+ Search Algorithm - &lt;a href=&quot;https://github.com/MSGFPlus/msgfplus&quot;&gt;MS-GF+ web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS-GF+ web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -1352,7 +1352,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="searchGUIPublicationLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/21337703&quot;&gt;Vaudel &lt;i&gt;et al.&lt;/i&gt;: Proteomics 2011;11(5):996-9&lt;/a&gt;.&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740&quot;&gt;Barsnes &lt;i&gt;et al.&lt;/i&gt;: J Proteome Res 2018 &lt;i&gt;(in press)&lt;/i&gt;&lt;/a&gt;.&lt;/html&gt;"/>
             <Property name="toolTipText" type="java.lang.String" value="Open the SearchGUI publication"/>
           </Properties>
           <Events>
@@ -1420,7 +1420,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="peptideShakerLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a href=&quot;http://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a href=&quot;https://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the PeptideShaker web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1711,7 +1711,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="novorLinkLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Novor De Novo Peptide Sequencing - &lt;a href=&quot;http://rapidnovor.com&quot;&gt;Novor web page&lt;/a&gt;&lt;/html&gt; "/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;Novor De Novo Peptide Sequencing - &lt;a href=&quot;https://rapidnovor.com&quot;&gt;Novor web page&lt;/a&gt;&lt;/html&gt; "/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the Novor web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>

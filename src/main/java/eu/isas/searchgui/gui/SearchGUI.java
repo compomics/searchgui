@@ -211,8 +211,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public static String msAmandaErrorMessage = "Make sure that MS Amanda is installed correctly and that you have selected<br>"
             + "the correct version of MS Amanda for your system. Note that for Mac and Linux<br>"
-            + "<a href=\"http://www.mono-project.com/download/\">Mono</a> has to be installed. "
-            + "See the <a href=\"http://compomics.github.io/projects/searchgui.html#troubleshooting\">TroubleShooting</a> section at the SearchGUI<br>"
+            + "<a href=\"https://www.mono-project.com/download/\">Mono</a> has to be installed. "
+            + "See the <a href=\"https://compomics.github.io/projects/searchgui.html#troubleshooting\">TroubleShooting</a> section at the SearchGUI<br>"
             + "web page for help, and the SearchGUI log for details about the error.";
     /**
      * The identification parameters factory.
@@ -848,7 +848,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         myrimatchSupportButton.setBorderPainted(false);
         myrimatchSupportButton.setContentAreaFilled(false);
 
-        myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a href=\"http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121\">MyriMatch web page</a></html> ");
+        myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a href=\"http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html\">MyriMatch web page</a></html> ");
         myriMatchLinkLabel.setToolTipText("Open the MyriMatch web page");
         myriMatchLinkLabel.setEnabled(false);
         myriMatchLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -900,7 +900,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        tideLinkLabel.setText("<html>Tide Search Algorithm - <a href=http://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
+        tideLinkLabel.setText("<html>Tide Search Algorithm - <a href=https://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
         tideLinkLabel.setToolTipText("Open the Tide web page");
         tideLinkLabel.setEnabled(false);
         tideLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1007,8 +1007,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        xtandemLinkLabel.setText("<html>X!Tandem Search Algorithm - <a href=\"http://www.thegpm.org/tandem\">X!Tandem web page</a></html>\n");
-        xtandemLinkLabel.setToolTipText("Open the X!Tandem web page");
+        xtandemLinkLabel.setText("<html>X! Tandem Search Algorithm - <a href=\"https://www.thegpm.org/tandem\">X! Tandem web page</a></html>\n");
+        xtandemLinkLabel.setToolTipText("Open the X! Tandem web page");
         xtandemLinkLabel.setEnabled(false);
         xtandemLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1083,7 +1083,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msAmandaSupportButton.setBorderPainted(false);
         msAmandaSupportButton.setContentAreaFilled(false);
 
-        omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
+        omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
         omssaLinkLabel.setToolTipText("Open the OMSSA web page");
         omssaLinkLabel.setEnabled(false);
         omssaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1125,7 +1125,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         andromedaSupportButton.setBorderPainted(false);
         andromedaSupportButton.setContentAreaFilled(false);
 
-        msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a href=\"http://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
+        msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a href=\"https://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
         msAmandaLinkLabel.setToolTipText("Open the MS Amanda web page");
         msAmandaLinkLabel.setEnabled(false);
         msAmandaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1262,7 +1262,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a href=\"http://proteomics.ucsd.edu/Software/MSGFPlus\">MS-GF+ web page</a></html> ");
+        msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a href=\"https://github.com/MSGFPlus/msgfplus\">MS-GF+ web page</a></html> ");
         msgfLinkLabel.setToolTipText("Open the MS-GF+ web page");
         msgfLinkLabel.setEnabled(false);
         msgfLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1646,7 +1646,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/21337703\">Vaudel <i>et al.</i>: Proteomics 2011;11(5):996-9</a>.</html>");
+        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\">Barsnes <i>et al.</i>: J Proteome Res 2018 <i>(in press)</i></a>.</html>");
         searchGUIPublicationLabel.setToolTipText("Open the SearchGUI publication");
         searchGUIPublicationLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1673,7 +1673,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        peptideShakerLabel.setText("<html>PeptideShaker - <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">Visualize the results in PeptideShaker</a></html>");
+        peptideShakerLabel.setText("<html>PeptideShaker - <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">Visualize the results in PeptideShaker</a></html>");
         peptideShakerLabel.setToolTipText("Open the PeptideShaker web page");
         peptideShakerLabel.setEnabled(false);
         peptideShakerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1894,7 +1894,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         novorSupportButton.setBorderPainted(false);
         novorSupportButton.setContentAreaFilled(false);
 
-        novorLinkLabel.setText("<html>Novor De Novo Peptide Sequencing - <a href=\"http://rapidnovor.com\">Novor web page</a></html> ");
+        novorLinkLabel.setText("<html>Novor De Novo Peptide Sequencing - <a href=\"https://rapidnovor.com\">Novor web page</a></html> ");
         novorLinkLabel.setToolTipText("Open the Novor web page");
         novorLinkLabel.setEnabled(false);
         novorLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2605,26 +2605,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         if (peptideShakerCheckBox.isSelected() && enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected OMSSA output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
-                    + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    "The selected OMSSA output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
+                    + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else if (peptideShakerCheckBox.isSelected() && enableMyriMatchJCheckBox.isSelected() && myriMatchParameters.getOutputFormat().equals("pepXML")) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected MyriMatch output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "mzIdentML in the Advanced Parameters, or disable MyriMatch or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    "The selected MyriMatch output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
+                    + "mzIdentML in the Advanced Parameters, or disable MyriMatch or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else if (peptideShakerCheckBox.isSelected() && enableTideJCheckBox.isSelected() && !tideParameters.getTextOutput()) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected Tide output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "Tide text output in the Advanced Parameters, or disable Tide or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    "The selected Tide output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
+                    + "Tide text output in the Advanced Parameters, or disable Tide or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else if (peptideShakerCheckBox.isSelected() && enableCometJCheckBox.isSelected() && cometParameters.getSelectedOutputFormat() != CometParameters.CometOutputFormat.PepXML) {
             JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected Comet output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "Comet PepXML output in the Advanced Parameters, or disable Comet or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                    "The selected Comet output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
+                    + "Comet PepXML output in the Advanced Parameters, or disable Comet or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                     "Format Warning", JOptionPane.WARNING_MESSAGE);
             return;
         } else {
@@ -2831,7 +2831,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void aboutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutButtonActionPerformed
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://compomics.github.io/projects/searchgui.html");
+        BareBonesBrowserLaunch.openURL("https://compomics.github.io/projects/searchgui.html");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_aboutButtonActionPerformed
 
@@ -3028,7 +3028,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void xtandemLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_xtandemLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://www.thegpm.org/tandem/");
+        BareBonesBrowserLaunch.openURL("https://www.thegpm.org/tandem/");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_xtandemLinkLabelMouseClicked
 
@@ -3057,7 +3057,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void omssaLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_omssaLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://www.ncbi.nlm.nih.gov/pubmed/15473683");
+        BareBonesBrowserLaunch.openURL("https://www.ncbi.nlm.nih.gov/pubmed/15473683");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_omssaLinkLabelMouseClicked
 
@@ -3128,7 +3128,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void peptideShakerLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_peptideShakerLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://compomics.github.io/projects/peptide-shaker.html");
+        BareBonesBrowserLaunch.openURL("https://compomics.github.io/projects/peptide-shaker.html");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_peptideShakerLabelMouseClicked
 
@@ -3175,7 +3175,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void searchGUIPublicationLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchGUIPublicationLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://www.ncbi.nlm.nih.gov/pubmed/21337703");
+        BareBonesBrowserLaunch.openURL("https://www.ncbi.nlm.nih.gov/pubmed/29774740");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_searchGUIPublicationLabelMouseClicked
 
@@ -3204,7 +3204,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void reporterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reporterButtonActionPerformed
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://compomics.github.io/projects/reporter.html");
+        BareBonesBrowserLaunch.openURL("https://compomics.github.io/projects/reporter.html");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_reporterButtonActionPerformed
 
@@ -3215,7 +3215,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void reporterLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_reporterLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://compomics.github.io/projects/reporter.html");
+        BareBonesBrowserLaunch.openURL("https://compomics.github.io/projects/reporter.html");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_reporterLabelMouseClicked
 
@@ -3425,7 +3425,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void msgfLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msgfLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("https://bix-lab.ucsd.edu/pages/viewpage.action?pageId=13533355");
+        BareBonesBrowserLaunch.openURL("https://github.com/MSGFPlus/msgfplus");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_msgfLinkLabelMouseClicked
 
@@ -3516,7 +3516,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void msAmandaLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_msAmandaLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://ms.imp.ac.at/?goto=msamanda");
+        BareBonesBrowserLaunch.openURL("https://ms.imp.ac.at/?goto=msamanda");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_msAmandaLinkLabelMouseClicked
 
@@ -3796,7 +3796,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void tideLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tideLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://cruxtoolkit.sourceforge.net/");
+        BareBonesBrowserLaunch.openURL("https://cruxtoolkit.sourceforge.net/");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_tideLinkLabelMouseClicked
 
@@ -4500,7 +4500,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void myriMatchLinkLabelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_myriMatchLinkLabelMouseReleased
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121");
+        BareBonesBrowserLaunch.openURL("http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_myriMatchLinkLabelMouseReleased
 
@@ -4754,7 +4754,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void novorLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://rapidnovor.com");
+        BareBonesBrowserLaunch.openURL("https://rapidnovor.com");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_novorLinkLabelMouseClicked
 
@@ -5335,7 +5335,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         JOptionEditorPane.getJOptionEditorPane(
                                 "The file \'" + currentSpectrumFile.getName() + "\' contains zero intensity peaks.<br><br>"
                                 + "Please make sure that the file is peak picked.<br>"
-                                + "See <a href=\"http://compomics.com/bioinformatics-for-proteomics\">Bioinformatics for Proteomics - Chapter 1.2</a> for more help.<br><br>"
+                                + "See <a href=\"https://compomics.com/bioinformatics-for-proteomics\">Bioinformatics for Proteomics - Chapter 1.2</a> for more help.<br><br>"
                                 + "Do you want to continue with this mgf file anyway?"),
                         "Remove zero intensities?", JOptionPane.YES_NO_CANCEL_OPTION);
 
@@ -6304,7 +6304,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private static String getDefaultSearchEngineStartupErrorMessage(String searchEngineName) {
         return "Make sure that " + searchEngineName + " is installed correctly and that you have selected<br>"
-                + "the correct version of " + searchEngineName + " for your system. See the <a href=\"http://compomics.github.io/projects/searchgui.html#troubleshooting\">TroubleShooting</a><br>"
+                + "the correct version of " + searchEngineName + " for your system. See the <a href=\"https://compomics.github.io/projects/searchgui.html#troubleshooting\">TroubleShooting</a><br>"
                 + "section at the SearchGUI web page for help, and the SearchGUI<br>"
                 + "log for details about the error.";
     }
@@ -6379,8 +6379,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             OmssaParameters omssaParameters = (OmssaParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
             if (enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
                 JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                        "The selected OMSSA output format is not compatible with <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
-                        + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"http://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
+                        "The selected OMSSA output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
+                        + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
                         "Format Warning", JOptionPane.ERROR_MESSAGE);
                 peptideShakerCheckBox.setSelected(false);
                 checkPeptideShaker = false;

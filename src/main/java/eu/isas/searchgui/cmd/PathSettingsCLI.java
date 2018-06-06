@@ -109,7 +109,7 @@ public class PathSettingsCLI {
         return System.getProperty("line.separator")
                 + "The SearchGUI path settings command line allows setting the path of every configuration file created by SearchGUI or set a temporary folder where all files will be stored." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
-                + "For further help see http://compomics.github.io/projects/searchgui.html and http://compomics.github.io/projects/searchgui/wiki/searchcli.html." + System.getProperty("line.separator")
+                + "For further help see https://compomics.github.io/projects/searchgui.html and https://compomics.github.io/projects/searchgui/wiki/searchcli.html." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
                 + "Or contact the developers at https://groups.google.com/group/peptide-shaker." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
