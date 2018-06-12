@@ -162,10 +162,10 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(Integer.toString(omssaParameters.getMaxFragmentCharge()));
         process_name_array.add("-z1");
         process_name_array.add(Double.toString(omssaParameters.getFractionOfPeaksForChargeEstimation()));
-        process_name_array.add("-zc");
-        process_name_array.add(Integer.toString(0));
-        process_name_array.add("-zn");
-        process_name_array.add(Integer.toString(-1));
+        if (!omssaParameters.isDetermineChargePlusOneAlgorithmically()) {
+            process_name_array.add("-zc");
+            process_name_array.add(Integer.toString(0));
+        }
         if (!omssaParameters.isSearchPositiveIons()) {
             process_name_array.add("-zn");
             process_name_array.add(Integer.toString(-1));
