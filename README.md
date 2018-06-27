@@ -47,7 +47,7 @@ For developer access to the search results we recommend the use of [compomics-ut
 ## Read Me
  
  * [From the Command Line](#from-the-command-line)
- * [Miniconda](#miniconda)
+ * [Bioiconda](#bioconda)
  * [Docker](#docker)
  * [Database Help](https://github.com/compomics/searchgui/wiki/DatabaseHelp)
  * [User Defined Modifications](#user-defined-modifications)
@@ -58,7 +58,7 @@ To start identifying peptides and proteins using SearchGUI, download the latest 
 
 ### From the Command Line
 
-The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. We believe that a graphical user interface would be the best choice for most users, and therefore made SearchGUI with a graphical user interface. However, it can sometimes be easier to perform a search from the command line. For example when incorporating the search into some sort of pipeline. With this in mind we have therefore included the option of using SearchGUI as a command line tool.
+The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. A graphical user interface is the best choice for smaller projects. PeptideShaker can also be used _via_ the command line, and be incorporated in different analysis pipelines.
 
 For details about the command line see: [SearchCLI](https://github.com/compomics/searchgui/wiki/SearchCLI).
 
@@ -66,12 +66,17 @@ For details about the command line see: [SearchCLI](https://github.com/compomics
 
 ----
 
-### Miniconda
+### Bioconda
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/searchgui/README.html)
+[![install with bioconda](https://anaconda.org/bioconda/searchgui/badges/latest_release_relative_date.svg)](http://bioconda.github.io/recipes/searchgui/README.html)
+[![install with bioconda](https://anaconda.org/bioconda/searchgui/badges/downloads.svg)](http://bioconda.github.io/recipes/searchgui/README.html)
 
-SearchGUI is available as [Miniconda package](http://conda.pydata.org/miniconda.html) in the [bioconda](https://bioconda.github.io) channel. You can install SearchGUI with:
+SearchGUI is available as a [Miniconda package](http://conda.pydata.org/miniconda.html) in the [bioconda](https://bioconda.github.io) channel [here](https://anaconda.org/bioconda/searchgui). 
+
+You can install SearchGUI with:
 
 ```bash
-conda install searchgui -c bioconda
+conda install -c bioconda searchgui 
 ```
 [Go to top of page](#searchgui)
 
