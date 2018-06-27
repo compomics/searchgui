@@ -58,7 +58,7 @@ To start identifying peptides and proteins using SearchGUI, download the latest 
 
 ### From the Command Line
 
-The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. A graphical user interface is the best choice for smaller projects. PeptideShaker can also be used _via_ the command line, and be incorporated in different analysis pipelines.
+The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. A graphical user interface is the best choice for smaller projects. SearchGUI can also be used _via_ the command line, and be incorporated in different analysis pipelines.
 
 For details about the command line see: [SearchCLI](https://github.com/compomics/searchgui/wiki/SearchCLI).
 
