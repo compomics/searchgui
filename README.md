@@ -49,6 +49,7 @@ For developer access to the search results we recommend the use of [compomics-ut
  * [From the Command Line](#from-the-command-line)
  * [Bioiconda](#bioconda)
  * [Docker](#docker)
+ * [Easybuild](#easybuild)
  * [Database Help](https://github.com/compomics/searchgui/wiki/DatabaseHelp)
  * [User Defined Modifications](#user-defined-modifications)
  * [Converting Spectrum Data](#converting-spectrum-data)
@@ -105,6 +106,31 @@ searchgui eu.isas.searchgui.cmd.IdentificationParametersCLI
 ```
 
 In this example we are also writing the ouput of the command (`-out` parameter) into the mapped folder in order to write it into our own file system (instead on Docker's container one) and have access to it from our computer after the execution.
+
+[Go to top of page](#searchgui)
+
+----
+
+### Easybuild
+
+A [Easybuild](https://easybuilders.github.io/) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
+
+
+```bash
+eb -S SearchGUI-X.Y.Z-Java-1.8.0_152.eb
+module load SearchGUI/X.Y.Z-Java-1.8.0_152
+```
+
+Replace X.Y.Z with the wanted SearchGUI version number.
+
+The easyconfig provides aliases for the common CLI commands:
+
+```bash
+SearchCLI
+PathSettingsCLI
+FastaCLI
+IdentificationParametersCLI
+```
 
 [Go to top of page](#searchgui)
 
