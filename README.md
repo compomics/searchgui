@@ -113,7 +113,7 @@ In this example we are also writing the ouput of the command (`-out` parameter) 
 
 ### Easybuild
 
-A [Easybuild](https://easybuilders.github.io/) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
+A [Easybuild](http://easybuilders.github.io/easybuild) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
 
 
 ```bash
