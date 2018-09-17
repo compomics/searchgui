@@ -58,12 +58,15 @@ public enum FastaCLIParams {
         String output = "";
         String formatter = "%-25s";
 
-        output += "Mandatory parameters:\n\n";
+        output += "Mandatory Parameters:\n\n";
         output += "-" + String.format(formatter, in.id) + " " + in.description + "\n";
 
-        output += "\n\nOptional parameters:\n\n";
+        output += "\n\nOptional Parameters:\n\n";
         output += "-" + String.format(formatter, decoy.id) + " " + decoy.description + "\n";
         output += "-" + String.format(formatter, decoy_suffix.id) + " " + decoy_suffix.description + "\n";
+        
+        output += "\n\nOptional Temporary Folder:\n\n";
+        output += "-" + String.format(formatter, PathSettingsCLIParams.ALL.id) + " " + PathSettingsCLIParams.ALL.description + "\n";
 
         return output;
     }
