@@ -8,16 +8,17 @@
 
 ----
 
-## SearchGUI Publication:
- * [Vaudel et al. Proteomics 2011;11(5):996-9](http://www.ncbi.nlm.nih.gov/pubmed/21337703). 
- * If you use SearchGUI as part of a publication, please include this reference.
+## SearchGUI Publications:
+ * Barsnes H and Vaudel M: SearchGUI: a highly adaptable common interface for proteomics search and de novo engines. [J Proteome Res. 2018;17(7):2552-2555](https://www.ncbi.nlm.nih.gov/pubmed/29774740).
+ * Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches. [Proteomics 2011;11(5):996-9](http://www.ncbi.nlm.nih.gov/pubmed/21337703). 
+ * If you use SearchGUI as part of a publication, please refer to the most recent publication.
 
 ----
 
 |   |   |   |
 | :------------------------- | :--------------- | :--: |
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.2/SearchGUI-3.3.2-windows.zip) | *v3.3.2 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.2/SearchGUI-3.3.2-mac_and_linux.tar.gz) | *v3.3.2 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.3/SearchGUI-3.3.3-windows.zip) | *v3.3.3 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.3/SearchGUI-3.3.3-mac_and_linux.tar.gz) | *v3.3.3 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
 
 ----
 
@@ -46,8 +47,9 @@ For developer access to the search results we recommend the use of [compomics-ut
 ## Read Me
  
  * [From the Command Line](#from-the-command-line)
- * [Miniconda](#miniconda)
+ * [Bioiconda](#bioconda)
  * [Docker](#docker)
+ * [Easybuild](#easybuild)
  * [Database Help](https://github.com/compomics/searchgui/wiki/DatabaseHelp)
  * [User Defined Modifications](#user-defined-modifications)
  * [Converting Spectrum Data](#converting-spectrum-data)
@@ -57,7 +59,7 @@ To start identifying peptides and proteins using SearchGUI, download the latest 
 
 ### From the Command Line
 
-The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. We believe that a graphical user interface would be the best choice for most users, and therefore made SearchGUI with a graphical user interface. However, it can sometimes be easier to perform a search from the command line. For example when incorporating the search into some sort of pipeline. With this in mind we have therefore included the option of using SearchGUI as a command line tool.
+The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. A graphical user interface is the best choice for smaller projects. SearchGUI can also be used _via_ the command line, and be incorporated in different analysis pipelines.
 
 For details about the command line see: [SearchCLI](https://github.com/compomics/searchgui/wiki/SearchCLI).
 
@@ -65,12 +67,17 @@ For details about the command line see: [SearchCLI](https://github.com/compomics
 
 ----
 
-### Miniconda
+### Bioconda
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/searchgui/README.html)
+[![install with bioconda](https://anaconda.org/bioconda/searchgui/badges/latest_release_relative_date.svg)](http://bioconda.github.io/recipes/searchgui/README.html)
+[![install with bioconda](https://anaconda.org/bioconda/searchgui/badges/downloads.svg)](http://bioconda.github.io/recipes/searchgui/README.html)
 
-SearchGUI is available as [Miniconda package](http://conda.pydata.org/miniconda.html) in the [bioconda](https://bioconda.github.io) channel. You can install SearchGUI with:
+SearchGUI is available as a [Miniconda package](http://conda.pydata.org/miniconda.html) in the [bioconda](https://bioconda.github.io) channel [here](https://anaconda.org/bioconda/searchgui). 
+
+You can install SearchGUI with:
 
 ```bash
-conda install searchgui -c bioconda
+conda install -c bioconda searchgui 
 ```
 [Go to top of page](#searchgui)
 
@@ -99,6 +106,31 @@ searchgui eu.isas.searchgui.cmd.IdentificationParametersCLI
 ```
 
 In this example we are also writing the ouput of the command (`-out` parameter) into the mapped folder in order to write it into our own file system (instead on Docker's container one) and have access to it from our computer after the execution.
+
+[Go to top of page](#searchgui)
+
+----
+
+### Easybuild
+
+A [Easybuild](http://easybuilders.github.io/easybuild) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
+
+
+```bash
+eb -S SearchGUI-X.Y.Z-Java-1.8.0_152.eb
+module load SearchGUI/X.Y.Z-Java-1.8.0_152
+```
+
+Replace X.Y.Z with the wanted SearchGUI version number.
+
+The easyconfig provides aliases for the common CLI commands:
+
+```bash
+SearchCLI
+PathSettingsCLI
+FastaCLI
+IdentificationParametersCLI
+```
 
 [Go to top of page](#searchgui)
 
