@@ -49,7 +49,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2018.01"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2018.01 rev. 2"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -344,7 +344,6 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "decoy_prefix = DECOY_                  # decoy entries are denoted by this string which is pre-pended to each protein accession" + System.getProperty("line.separator")
                     + "output_suffix = .comet                 # add a suffix to output base names i.e. suffix \"-C\" generates base-C.pep.xml from base.mzXML input" + System.getProperty("line.separator")
                     + "mass_offsets =                         # one or more mass offsets to search (values substracted from deconvoluted precursor mass)" + System.getProperty("line.separator") // @TODO: implement?
-                    + "skip_updatecheck = 1" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // spectral processing
