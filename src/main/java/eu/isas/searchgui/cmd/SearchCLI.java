@@ -1,8 +1,6 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
-import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathPreferences;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.*;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
@@ -18,7 +16,6 @@ import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.preferences.ProcessingPreferences;
 import eu.isas.searchgui.SearchHandler;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
-import eu.isas.searchgui.preferences.SearchGUIPathPreferences;
 import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -51,6 +48,10 @@ public class SearchCLI implements Callable {
      * The spectrum factory.
      */
     private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    /**
+     * The log folder given on the command line. Null if not set.
+     */
+    private static File logFolder = null;
 
     /**
      * Construct a new SearchCLI runnable from a list of arguments. When
@@ -62,6 +63,8 @@ public class SearchCLI implements Callable {
     public SearchCLI(String[] args) {
 
         try {
+            // check if there are updates to the paths
+            String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
 
             try {
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
@@ -70,11 +73,12 @@ public class SearchCLI implements Callable {
                 System.out.println("An error occurred while loading the species.");
                 e.printStackTrace();
             }
-
-            Options lOptions = new Options();
-            SearchCLIParams.createOptionsCLI(lOptions);
+            
+            // parse the rest of the options   
+            Options nonPathOptions = new Options();
+            SearchCLIParams.createOptionsCLI(nonPathOptions);
             BasicParser parser = new BasicParser();
-            CommandLine line = parser.parse(lOptions, args);
+            CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
             if (!SearchCLIInputBean.isValidStartup(line)) {
                 PrintWriter lPrintWriter = new PrintWriter(System.out);
@@ -100,39 +104,6 @@ public class SearchCLI implements Callable {
      * Calling this method will run the configured SearchCLI process.
      */
     public Object call() {
-
-        PathSettingsCLIInputBean pathSettingsCLIInputBean = searchCLIInputBean.getPathSettingsCLIInputBean();
-
-        if (pathSettingsCLIInputBean.getLogFolder() != null) {
-            redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
-        }
-
-        if (pathSettingsCLIInputBean.hasInput()) {
-            PathSettingsCLI pathSettingsCLI = new PathSettingsCLI(pathSettingsCLIInputBean);
-            pathSettingsCLI.setPathSettings();
-        } else {
-            try {
-                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathPreferences.configurationFileName);
-                if (pathConfigurationFile.exists()) {
-                    SearchGUIPathPreferences.loadPathPreferencesFromFile(pathConfigurationFile);
-                }
-            } catch (Exception e) {
-                System.out.println("An error occurred when setting path configuration. Default paths will be used.");
-                e.printStackTrace();
-            }
-            try {
-                ArrayList<PathKey> errorKeys = SearchGUIPathPreferences.getErrorKeys(getJarFilePath());
-                if (!errorKeys.isEmpty()) {
-                    System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
-                            + "the path configuration command line, or edit the configuration paths from the graphical interface.");
-                    for (PathKey pathKey : errorKeys) {
-                        System.out.println(pathKey.getId() + ": " + pathKey.getDescription());
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Unable to load the path configurations. Default pathswill be used.");
-            }
-        }
 
         // load enzymes
         enzymeFactory = EnzymeFactory.getInstance();
@@ -287,10 +258,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getMakeblastdbLocation(),
                     processingPreferences);
 
-            File logFolder = pathSettingsCLIInputBean.getLogFolder();
-            if (logFolder != null) {
-                searchHandler.setLogFolder(logFolder);
-            }
+            searchHandler.setLogFolder(logFolder);
 
             // incrementing the counter for a new SearchGUI start
             if (userPreferences.isAutoUpdate()) {
@@ -409,13 +377,15 @@ public class SearchCLI implements Callable {
     /**
      * redirects the error stream to the PeptideShaker.log of a given folder.
      *
-     * @param logFolder the folder where to save the log
+     * @param aLogFolder the folder where to save the log
      */
-    public static void redirectErrorStream(File logFolder) {
+    public static void redirectErrorStream(File aLogFolder) {
 
+        logFolder = aLogFolder;
+        
         try {
-            logFolder.mkdirs();
-            File file = new File(logFolder, "SearchGUI.log");
+            aLogFolder.mkdirs();
+            File file = new File(aLogFolder, "SearchGUI.log");
             System.setErr(new java.io.PrintStream(new FileOutputStream(file, true)));
 
             System.err.println(System.getProperty("line.separator") + System.getProperty("line.separator") + new Date()
