@@ -266,8 +266,6 @@ public class SearchCLI implements Callable {
             userParameters.setIncludeDateInOutputName(searchCLIInputBean.isOutputDate());
             UtilitiesUserParameters.saveUserParameters(userParameters);
 
-            File fastaFile = searchParameters.getFastaFile();
-
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
                     searchCLIInputBean.getOutputFile(), spectrumFiles,

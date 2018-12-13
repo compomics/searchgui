@@ -227,7 +227,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         File databaseFolder = new File(andromedaFolder, "conf");
         File databaseFile = new File(databaseFolder, "databases.xml");
-        File genericFastaFile = getGenericFastaFile(andromedaFolder, searchParameters.getFastaFile().getName());
+        File genericFastaFile = getGenericFastaFile(andromedaFolder, Util.getFileName(searchParameters.getFastaFile()));
         BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFile));
         String dbName = genericFastaFile.getName();
         String date = "0001-01-01T00:00:00";
@@ -777,7 +777,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.newLine();
             }
 
-            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, searchParameters.getFastaFile().getName()).getAbsolutePath() + "\"");
+            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, Util.getFileName(searchParameters.getFastaFile())).getAbsolutePath() + "\"");
             bw.newLine();
             bw.write("decoy mode=" + andromedaParameters.getDecoyMode());
             bw.newLine();

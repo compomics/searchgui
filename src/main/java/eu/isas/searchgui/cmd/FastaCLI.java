@@ -158,10 +158,10 @@ public class FastaCLI {
 
             WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
 
-            File fastaFile = fastaCLIInputBean.getInputFile();
-            System.out.println("Input: " + fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
+            String fastaFilePath = fastaCLIInputBean.getInputFile().getAbsolutePath();
+            System.out.println("Input: " + fastaFilePath + System.getProperty("line.separator"));
 
-            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFile, fastaParameters, waitingHandlerCLIImpl);
+            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFilePath, fastaParameters, waitingHandlerCLIImpl);
             writeDbProperties(fastaSummary, fastaParameters);
 
             if (fastaCLIInputBean.isDecoy()) {

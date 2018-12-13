@@ -76,7 +76,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
 
         // The database file path and name.
-        File seqDBFile = searchParameters.getFastaFile();
+        File seqDBFile = new File(searchParameters.getFastaFile());
         File dbFilePath = seqDBFile.getParentFile();
 
         // make sure that the omssacl file is executable

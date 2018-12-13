@@ -185,7 +185,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         xTandemFile = xTandem_directory;
         nProcessors = nThreads;
         spectrumFile = mgfFile;
-        dataBase = searchParameters.getFastaFile().getAbsoluteFile();
+        dataBase = (new File(searchParameters.getFastaFile())).getAbsoluteFile();
         this.outputPath = outputPath;
         fragmentMassError = searchParameters.getFragmentIonAccuracy();
         precursorMassError = searchParameters.getPrecursorAccuracy();

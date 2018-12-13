@@ -156,7 +156,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the database
         process_name_array.add("-d");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParameters.getFastaFile()));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(searchParameters.getFastaFile())));
 
         // set the output file
         process_name_array.add("-o");

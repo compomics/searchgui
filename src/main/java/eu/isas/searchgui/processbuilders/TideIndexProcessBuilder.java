@@ -1,5 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
@@ -30,7 +31,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The FASTA file.
      */
-    private File fastaFile;
+    private String fastaFile;
     /**
      * The search parameters.
      */
@@ -72,7 +73,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("tide-index");
 
         // add the fasta file
-        process_name_array.add(searchParameters.getFastaFile().getAbsolutePath());
+        process_name_array.add(searchParameters.getFastaFile());
 
         // the name of the index file
         process_name_array.add(tideParameters.getFastIndexFolderName()); // @TODO: put in the user temp folder instead?
@@ -449,6 +450,6 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getCurrentlyProcessedFileName() {
-        return fastaFile.getName();
+        return Util.getFileName(fastaFile);
     }
 }

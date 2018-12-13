@@ -206,7 +206,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         // set the paths
         msAmandaFolder = msAmandaDirectory;
         spectrumFilePath = mgfPath;
-        database = searchParameters.getFastaFile().getAbsoluteFile();
+        database = (new File(searchParameters.getFastaFile())).getAbsoluteFile();
         //msAmandTempFolder = ""; @TODO: allow the user to set the temp folder
 
         maxRank = msAmandaParameters.getMaxRank();

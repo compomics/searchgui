@@ -1707,7 +1707,7 @@ public class SearchHandler {
 
                 SearchParameters searchParameters = identificationParameters.getSearchParameters();
 
-                File fastaFile = searchParameters.getFastaFile();
+                File fastaFile = new File(searchParameters.getFastaFile());
 
                 if (enableOmssa) {
                     // call Makeblastdb class, check if run before and then start process
@@ -2926,8 +2926,8 @@ public class SearchHandler {
                     File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
 
-                    File dbFile = identificationParameters.getSearchParameters().getFastaFile();
-                    Util.copyFile(dbFile, new File(dataFolder, dbFile.getName()));
+                    File fastaFile = new File(identificationParameters.getSearchParameters().getFastaFile());
+                    Util.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
 
                     for (File spectrumFile : getMgfFiles()) {
                         Util.copyFile(spectrumFile, new File(dataFolder, spectrumFile.getName()));
@@ -2964,8 +2964,8 @@ public class SearchHandler {
         // create the data folder in the zip file
         ZipUtils.addFolderToZip(DEFAULT_DATA_FOLDER, out);
 
-        File dbFile = identificationParameters.getSearchParameters().getFastaFile();
-        ZipUtils.addFileToZip(DEFAULT_DATA_FOLDER, dbFile, out, waitingHandler, totalUncompressedSize);
+        File fastaFile = new File(identificationParameters.getSearchParameters().getFastaFile());
+        ZipUtils.addFileToZip(DEFAULT_DATA_FOLDER, fastaFile, out, waitingHandler, totalUncompressedSize);
 
         for (File spectrumFile : getMgfFiles()) {
 

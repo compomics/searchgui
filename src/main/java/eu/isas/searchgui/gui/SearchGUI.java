@@ -436,7 +436,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 setSpectrumFiles(spectrumFiles, rawFiles);
 
                 String experimentLabel = "PeptideShakerProject";
-                
+
                 // set default peptideshaker experiment details
                 if (projectName != null) {
                     experimentLabel = projectName;
@@ -468,7 +468,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             setLocationRelativeTo(null);
             setVisible(true);
-            
+
             // incrementing the counter for a new SearchGUI start
             if (utilitiesUserParameters.isAutoUpdate()) {
                 Util.sendGAUpdate("UA-36198780-2", "toolstart", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
@@ -2545,9 +2545,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 return;
             }
 
-            if (searchParameters.getFastaFile().getAbsolutePath().contains("&")) {
+            if (searchParameters.getFastaFile().contains("&")) {
                 JOptionPane.showMessageDialog(this,
-                        "Database files with \'&\' in the file path (" + searchParameters.getFastaFile().getAbsolutePath() + ")\n"
+                        "Database files with \'&\' in the file path (" + searchParameters.getFastaFile() + ")\n"
                         + "are not allowed in X!Tandem. Please rename of replace the database.", "Database File Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -2555,7 +2555,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if the fasta file name is not too long for ms amanda
         if (enableMsAmandaJCheckBox.isSelected()) {
-            if (Util.removeExtension(searchParameters.getFastaFile().getName()).length() > MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH) {
+            if (Util.removeExtension(Util.getFileName(searchParameters.getFastaFile())).length() > MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH) {
                 JOptionPane.showMessageDialog(this,
                         "Database files names longer than " + MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH + " characters are not allowed in MS Amanda.\n"
                         + "Please rename of replace the database.", "Database File Error", JOptionPane.WARNING_MESSAGE);
@@ -2581,7 +2581,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if all ptms are valid for DirecTag
         if (enableDirecTagJCheckBox.isSelected()) {
-            
+
             boolean terminalModificationsSelected = searchParameters.getModificationParameters().getAllModifications().stream()
                     .map(modName -> modificationFactory.getModification(modName))
                     .anyMatch(modification -> modification.getModificationType() != ModificationType.modaa);
@@ -2757,15 +2757,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             if (fileFound) {
-                
+
                 int outcome = JOptionPane.showConfirmDialog(this,
                         "Existing output files found.\nOverwrite?", "Overwrite Files?",
                         JOptionPane.YES_NO_OPTION);
-                
+
                 if (outcome != JOptionPane.YES_OPTION) {
-                    
+
                     return;
-                
+
                 }
             }
 
@@ -3996,7 +3996,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void settingsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsComboBoxActionPerformed
-        
+
         editSettingsButton.setEnabled(settingsComboBox.getSelectedIndex() != 0);
 
         if (settingsComboBox.getSelectedIndex() != 0) {
@@ -4977,7 +4977,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void editPeptideShakerParameters() {
 
         PeptideShakerParametersDialog psParametersDialog = new PeptideShakerParametersDialog(this, true, searchHandler.getMascotFiles());
-        
+
         if (!psParametersDialog.isCanceled()) {
 
             searchHandler.setExperimentLabel(psParametersDialog.getProjectName());

@@ -247,7 +247,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     /////////////////////////
                     // database details
                     /////////////////////////
-                    + "database_name = " + searchParameters.getFastaFile().getAbsolutePath() + System.getProperty("line.separator")
+                    + "database_name = " + searchParameters.getFastaFile() + System.getProperty("line.separator")
                     + "decoy_search = 0 # 0=no (default), 1=concatenated search, 2=separate search" + System.getProperty("line.separator")
                     /////////////////////////
                     // number of threads

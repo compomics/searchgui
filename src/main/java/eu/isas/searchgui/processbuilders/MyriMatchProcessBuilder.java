@@ -83,7 +83,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the database
         process_name_array.add("-ProteinDatabase");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(searchParameters.getFastaFile()));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(searchParameters.getFastaFile())));
 
         // add the spectrum file
         process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));
