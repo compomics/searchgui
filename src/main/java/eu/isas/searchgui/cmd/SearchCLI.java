@@ -52,6 +52,10 @@ public class SearchCLI implements Callable {
      * The log folder given on the command line. Null if not set.
      */
     private static File logFolder = null;
+    /**
+     * The waiting handler.
+     */
+    private WaitingHandler waitingHandler;
 
     /**
      * Construct a new SearchCLI runnable from a list of arguments. When
@@ -66,11 +70,13 @@ public class SearchCLI implements Callable {
             // check if there are updates to the paths
             String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
 
+            waitingHandler = new WaitingHandlerCLIImpl();
+            
             try {
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
                 speciesFactory.initiate(getJarFilePath());
             } catch (Exception e) {
-                System.out.println("An error occurred while loading the species.");
+                waitingHandler.appendReport("An error occurred while loading the species.", true, true);
                 e.printStackTrace();
             }
             
@@ -96,6 +102,7 @@ public class SearchCLI implements Callable {
                 call();
             }
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
     }
@@ -131,7 +138,6 @@ public class SearchCLI implements Callable {
                             waitingHandlerCLIImpl.appendReport("Warning: Spectrum titles missing in file: " + tempMgfFile.getAbsolutePath() + "! "
                                     + "Titles are mandatory. See the missing_titles option. File will be ignored.", true, true);
                         }
-                        return false;
                     } else {
                         // add missing spectrum titles
                         waitingHandlerCLIImpl.appendReport("Adding missing spectrum titles in file: " + tempMgfFile.getAbsolutePath(), true, true);
@@ -150,7 +156,6 @@ public class SearchCLI implements Callable {
                 // check for ms2 spectra
                 if (spectrumFactory.getIndex(indexFile).getMaxPeakCount() == 0) {
                     waitingHandlerCLIImpl.appendReport("Warning: No MS2 spectra found in file: " + tempMgfFile.getName() + "! File will be ignored.", true, true);
-                    return false;
                 }
 
                 // check for duplicate headers
@@ -267,12 +272,14 @@ public class SearchCLI implements Callable {
 
             searchHandler.startSearch(waitingHandlerCLIImpl);
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
 
         try {
             TempFilesManager.deleteTempFolders();
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while deleting the temp folder. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
 
@@ -375,7 +382,7 @@ public class SearchCLI implements Callable {
     }
 
     /**
-     * redirects the error stream to the PeptideShaker.log of a given folder.
+     * Redirects the error stream to the PeptideShaker.log of a given folder.
      *
      * @param aLogFolder the folder where to save the log
      */
@@ -396,6 +403,19 @@ public class SearchCLI implements Callable {
             System.err.println("Java version: " + System.getProperty("java.version") + ".");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Returns the "see the log file" message. With the path if available. 
+     * 
+     * @return the "see the log file" message
+     */
+    public static String getLogFileMessage() {
+        if (logFolder == null) {
+            return "Please see the SearchGUI log file.";
+        } else {
+            return "Please see the SearchGUI log file: " + logFolder.getAbsolutePath() + File.separator + "SearchGUI.log";
         }
     }
 

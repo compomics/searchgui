@@ -1,9 +1,18 @@
-2018/06/13
+2018/12/05
 
-Comet version "2018.01 rev. 2".
+Comet version "2018.01 rev. 3".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
+
+release 2018.01 rev. 3 (2018.01.3), release date 2018/12/05
+- Bug fix: the "clip_nterm_methionine" parameter has been broken since the
+  2017.01.0 release; it works again.  Thanks to A.T.Guler for reporting the
+  bug.
+- Bug fix: add a missing tab in Crux-compiled text output
+- Bug fix: complex searches with many variable modifications could cause an
+  integer counter value to become too large (negative or undefined) resulting
+  in an error in post-processing.  Thanks to N. Dong for reporting this bug.
 
 release 2018.01 rev. 2 (2018.01.2), release date 2018/06/13
 - Buf fix: remove version update check.  In some instances, timeout and host
