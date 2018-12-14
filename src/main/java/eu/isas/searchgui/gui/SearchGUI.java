@@ -1653,7 +1653,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/21337703\">Vaudel <i>et al.</i>: Proteomics 2011;11(5):996-9</a>.</html>");
+        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\">Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 </a>.</html>");
         searchGUIPublicationLabel.setToolTipText("Open the SearchGUI publication");
         searchGUIPublicationLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -3193,7 +3193,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void searchGUIPublicationLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchGUIPublicationLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://www.ncbi.nlm.nih.gov/pubmed/21337703");
+        BareBonesBrowserLaunch.openURL("http://www.ncbi.nlm.nih.gov/pubmed/29774740");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_searchGUIPublicationLabelMouseClicked
 
