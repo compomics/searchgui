@@ -329,13 +329,13 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="inputFilesPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="preProcessingPanel" linkSize="10" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="searchEnginesLocationPanel" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="deNovoPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="postProcessingPanel" linkSize="10" min="-2" pref="73" max="-2" attributes="0"/>
@@ -375,7 +375,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="searchEnginesScrollPane" max="32767" attributes="0"/>
+                      <Component id="searchEnginesScrollPane" pref="259" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1147,38 +1147,37 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="spectraFilesLabel" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Component id="spectraFilesTxt" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                          </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="searchSettingsLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
                                   <Component id="resultFolderLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="databaseSettingsLbl" min="-2" pref="100" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="settingsComboBox" max="32767" attributes="0"/>
-                                  <Component id="outputFolderTxt" max="32767" attributes="0"/>
+                                  <Component id="outputFolderTxt" pref="651" max="32767" attributes="0"/>
+                                  <Component id="databaseFileTxt" alignment="1" max="32767" attributes="0"/>
                               </Group>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="spectraFilesLabel" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="spectraFilesTxt" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="addSettingsButton" linkSize="2" max="32767" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="editSettingsButton" linkSize="2" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="addSpectraButton" linkSize="2" min="-2" pref="51" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="clearSpectraButton" linkSize="2" pref="67" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Component id="resultFolderBrowseButton" linkSize="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="editResultFolderButton" linkSize="2" alignment="0" pref="56" max="32767" attributes="0"/>
+                          <Component id="addSettingsButton" linkSize="2" alignment="0" max="32767" attributes="0"/>
+                          <Component id="editDatabaseDetailsButton" linkSize="2" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="addSpectraButton" linkSize="2" alignment="0" min="-2" pref="51" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="clearSpectraButton" linkSize="2" alignment="1" pref="68" max="32767" attributes="0"/>
+                          <Component id="editSettingsButton" linkSize="2" alignment="1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -1194,7 +1193,13 @@
                           <Component id="clearSpectraButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="addSpectraButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="databaseSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="databaseFileTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="editDatabaseDetailsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="searchSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="addSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1204,10 +1209,10 @@
                       <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="resultFolderLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="resultFolderBrowseButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="editResultFolderButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="outputFolderTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1285,12 +1290,12 @@
                 <Property name="horizontalAlignment" type="int" value="0"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="resultFolderBrowseButton">
+            <Component class="javax.swing.JButton" name="editResultFolderButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Browse"/>
+                <Property name="text" type="java.lang.String" value="Edit"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resultFolderBrowseButtonActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editResultFolderButtonActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JComboBox" name="settingsComboBox">
@@ -1308,6 +1313,29 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JLabel" name="databaseSettingsLbl">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Database File"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="databaseFileTxt">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+                <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="text" type="java.lang.String" value="Not yet implemented..."/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="editDatabaseDetailsButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Edit"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editDatabaseDetailsButtonActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -1352,7 +1380,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="searchGUIPublicationLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740&quot;&gt;Barsnes &lt;i&gt;et al.&lt;/i&gt;: J Proteome Res 2018 &lt;i&gt;(in press)&lt;/i&gt;&lt;/a&gt;.&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740&quot;&gt;Barsnes &lt;i&gt;et al.&lt;/i&gt;: J Proteome Res. 2018 Jul 6;17(7):2552-5 &lt;/a&gt;.&lt;/html&gt;"/>
             <Property name="toolTipText" type="java.lang.String" value="Open the SearchGUI publication"/>
           </Properties>
           <Events>

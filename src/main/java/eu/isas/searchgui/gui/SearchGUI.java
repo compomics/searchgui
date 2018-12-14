@@ -617,8 +617,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         addSettingsButton = new javax.swing.JButton();
         resultFolderLbl = new javax.swing.JLabel();
         outputFolderTxt = new javax.swing.JTextField();
-        resultFolderBrowseButton = new javax.swing.JButton();
+        editResultFolderButton = new javax.swing.JButton();
         settingsComboBox = new javax.swing.JComboBox();
+        databaseSettingsLbl = new javax.swing.JLabel();
+        databaseFileTxt = new javax.swing.JTextField();
+        editDatabaseDetailsButton = new javax.swing.JButton();
         searchButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
         searchGUIPublicationLabel = new javax.swing.JLabel();
@@ -1482,7 +1485,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(searchEnginesScrollPane))
+                .addComponent(searchEnginesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
         );
 
         inputFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input & Output"));
@@ -1537,10 +1540,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         outputFolderTxt.setEditable(false);
         outputFolderTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        resultFolderBrowseButton.setText("Browse");
-        resultFolderBrowseButton.addActionListener(new java.awt.event.ActionListener() {
+        editResultFolderButton.setText("Edit");
+        editResultFolderButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resultFolderBrowseButtonActionPerformed(evt);
+                editResultFolderButtonActionPerformed(evt);
             }
         });
 
@@ -1552,6 +1555,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
+        databaseSettingsLbl.setForeground(new java.awt.Color(255, 0, 0));
+        databaseSettingsLbl.setText("Database File");
+
+        databaseFileTxt.setEditable(false);
+        databaseFileTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        databaseFileTxt.setText("Not yet implemented...");
+
+        editDatabaseDetailsButton.setText("Edit");
+        editDatabaseDetailsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editDatabaseDetailsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout inputFilesPanelLayout = new javax.swing.GroupLayout(inputFilesPanel);
         inputFilesPanel.setLayout(inputFilesPanelLayout);
         inputFilesPanelLayout.setHorizontalGroup(
@@ -1559,34 +1576,35 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             .addGroup(inputFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputFilesPanelLayout.createSequentialGroup()
+                        .addComponent(spectraFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spectraFilesTxt)
+                        .addGap(8, 8, 8))
                     .addGroup(inputFilesPanelLayout.createSequentialGroup()
                         .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(searchSettingsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(resultFolderLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(resultFolderLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(databaseSettingsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(outputFolderTxt)))
-                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
-                        .addComponent(spectraFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spectraFilesTxt)))
-                .addGap(10, 10, 10)
+                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
+                            .addComponent(databaseFileTxt, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(10, 10, 10)))
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(inputFilesPanelLayout.createSequentialGroup()
-                            .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(editSettingsButton))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputFilesPanelLayout.createSequentialGroup()
-                            .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(clearSpectraButton, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)))
-                    .addComponent(resultFolderBrowseButton))
+                    .addComponent(editResultFolderButton, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                    .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(editDatabaseDetailsButton)
+                    .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(clearSpectraButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                    .addComponent(editSettingsButton, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editSettingsButton, resultFolderBrowseButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editDatabaseDetailsButton, editResultFolderButton, editSettingsButton});
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {resultFolderLbl, searchSettingsLbl, spectraFilesLabel});
 
@@ -1599,7 +1617,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(spectraFilesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(clearSpectraButton)
                     .addComponent(addSpectraButton))
-                .addGap(2, 2, 2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(databaseSettingsLbl)
+                    .addComponent(databaseFileTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editDatabaseDetailsButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchSettingsLbl)
                     .addComponent(addSettingsButton)
@@ -1608,12 +1631,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(2, 2, 2)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resultFolderLbl)
-                    .addComponent(resultFolderBrowseButton)
+                    .addComponent(editResultFolderButton)
                     .addComponent(outputFolderTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(2, 2, 2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editSettingsButton, resultFolderBrowseButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editResultFolderButton, editSettingsButton});
 
         searchButton.setBackground(new java.awt.Color(0, 153, 0));
         searchButton.setFont(searchButton.getFont().deriveFont(searchButton.getFont().getStyle() | java.awt.Font.BOLD));
@@ -1646,7 +1669,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\">Barsnes <i>et al.</i>: J Proteome Res 2018 <i>(in press)</i></a>.</html>");
+        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\">Barsnes <i>et al.</i>: J Proteome Res. 2018 Jul 6;17(7):2552-5 </a>.</html>");
         searchGUIPublicationLabel.setToolTipText("Open the SearchGUI publication");
         searchGUIPublicationLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -2441,7 +2464,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the action event
      */
-    private void resultFolderBrowseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resultFolderBrowseButtonActionPerformed
+    private void editResultFolderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editResultFolderButtonActionPerformed
 
         // First check whether a file has already been selected.
         // If so, start from that file's parent.
@@ -2495,7 +2518,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             lastSelectedFolder.setLastSelectedFolder(outputFolder.getAbsolutePath());
             validateInput(false);
         }
-    }//GEN-LAST:event_resultFolderBrowseButtonActionPerformed
+    }//GEN-LAST:event_editResultFolderButtonActionPerformed
 
     /**
      * Start the search.
@@ -4802,6 +4825,60 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         validateInput(false);
     }//GEN-LAST:event_enableNovorJCheckBoxActionPerformed
 
+    /**
+     * Opens a file chooser where the user can select the database FASTA file to
+     * use.
+     *
+     * @param evt
+     */
+    private void editDatabaseDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editDatabaseDetailsButtonActionPerformed
+
+        // @TODO: implement me!
+        JOptionPane.showMessageDialog(this, "Not yet implemented!", "Not Implemented!", JOptionPane.WARNING_MESSAGE);
+        
+//        String selectedFastaFile = null;
+//        
+//        if (!databaseFileTxt.getText().isEmpty()) {
+//            selectedFastaFile = databaseFileTxt.getText();
+//        }
+//        
+//        FastaParameters fastaParameters = null;
+//        
+//        if (identificationParameters != null) {
+//            fastaParameters = identificationParameters.getSearchParameters().getFastaParameters();
+//        }
+//        
+//        
+//        SequenceDbDetailsDialog sequenceDbDetailsDialog = new SequenceDbDetailsDialog(this, selectedFastaFile, fastaParameters, lastSelectedFolder, 
+//                true, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+//                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+//
+//        //loadUserPreferences(); // @TODO: is this needed?
+//
+//        boolean success = sequenceDbDetailsDialog.selectDB(true);
+//
+//        if (success) {
+//
+//            sequenceDbDetailsDialog.setVisible(true);
+//
+//            if (!sequenceDbDetailsDialog.isCanceled()) {
+//
+//                selectedFastaFile = sequenceDbDetailsDialog.getSelectedFastaFile();
+//                fastaParameters = sequenceDbDetailsDialog.getFastaParameters();
+//                
+//                if (identificationParameters != null) {
+//                    identificationParameters.getSearchParameters().setFastaParameters(fastaParameters); // @TODO: what to do if the identificationParameters is null..?
+//                }
+//
+//                databaseFileTxt.setText(selectedFastaFile);
+//
+//            }
+//
+//        }
+//
+//        validateInput(false);
+    }//GEN-LAST:event_editDatabaseDetailsButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
     private javax.swing.JMenuItem aboutMenuItem;
@@ -4817,16 +4894,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JLabel cometLinkLabel;
     private javax.swing.JButton cometSettingsButton;
     private javax.swing.JButton cometSupportButton;
+    private javax.swing.JTextField databaseFileTxt;
+    private javax.swing.JLabel databaseSettingsLbl;
     private javax.swing.JPanel deNovoPanel;
     private javax.swing.JButton direcTagButton;
     private javax.swing.JLabel direcTagLinkLabel;
     private javax.swing.JButton direcTagSettingsButton;
     private javax.swing.JButton direcTagSupportButton;
+    private javax.swing.JButton editDatabaseDetailsButton;
     private javax.swing.JMenuItem editIdSettingsFilesMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem editModificationsEditMenuItem;
     private javax.swing.JMenuItem editModificationsMenuItem;
     private javax.swing.JLabel editReporterSettingsLabel;
+    private javax.swing.JButton editResultFolderButton;
     private javax.swing.JMenuItem editSearchEngineLocationsMenuItem;
     private javax.swing.JButton editSettingsButton;
     private javax.swing.JCheckBox enableAndromedaJCheckBox;
@@ -4893,7 +4974,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JLabel reporterLabel;
     private javax.swing.JPanel reporterPostProcessPanel;
     private javax.swing.JMenuItem resourceSettingsMenuItem;
-    private javax.swing.JButton resultFolderBrowseButton;
     private javax.swing.JLabel resultFolderLbl;
     private javax.swing.JButton searchButton;
     private javax.swing.JPanel searchEnginesLocationPanel;
@@ -5124,6 +5204,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private boolean validateInput(boolean showMessage) {
 
         boolean valid = true;
+        databaseSettingsLbl.setForeground(Color.BLACK);
 
         if (!enableOmssaJCheckBox.isSelected() && !enableXTandemJCheckBox.isSelected()
                 && !enableMsgfJCheckBox.isSelected() && !enableMsAmandaJCheckBox.isSelected()
@@ -5153,6 +5234,37 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             spectraFilesTxt.setToolTipText("Click to see the selected files");
             spectraFilesTxt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             spectraFilesLabel.setForeground(Color.BLACK);
+        }
+        
+        
+        
+        if (databaseFileTxt.getText() == null || databaseFileTxt.getText().trim().equals("")) {
+            if (showMessage && valid) {
+                JOptionPane.showMessageDialog(this, "You need to specify a search database.", "Search Database Not Found", JOptionPane.WARNING_MESSAGE);
+            }
+            databaseSettingsLbl.setForeground(Color.RED);
+            databaseSettingsLbl.setToolTipText("Please select a valid '.fasta' or '.fas' database file");
+            databaseFileTxt.setToolTipText(null);
+            valid = false;
+        } else {
+
+            // @TODO: re-add when the database can be selected
+            
+//            File test = new File(databaseFileTxt.getText().trim());
+//
+//            if (!test.exists()) {
+//
+//                if (showMessage && valid) {
+//
+//                    JOptionPane.showMessageDialog(this, "The database file could not be found.", "Search Database Not Found", JOptionPane.WARNING_MESSAGE);
+//
+//                }
+//
+//                databaseSettingsLbl.setForeground(Color.RED);
+//                databaseSettingsLbl.setToolTipText("Database file could not be found!");
+//                valid = false;
+//
+//            }
         }
 
         // validate the search parameters
