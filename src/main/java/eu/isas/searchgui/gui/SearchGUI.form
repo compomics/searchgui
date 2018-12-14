@@ -1380,7 +1380,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="searchGUIPublicationLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740&quot;&gt;Barsnes &lt;i&gt;et al.&lt;/i&gt;: J Proteome Res. 2018 Jul 6;17(7):2552-5 &lt;/a&gt;.&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740&quot;&gt;Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 &lt;/a&gt;.&lt;/html&gt;"/>
             <Property name="toolTipText" type="java.lang.String" value="Open the SearchGUI publication"/>
           </Properties>
           <Events>
