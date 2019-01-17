@@ -5,6 +5,7 @@ import com.compomics.util.experiment.identification.protein_sequences.FastaIndex
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
+import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Date;
@@ -24,6 +25,10 @@ public class FastaCLI {
      * The input from the command line.
      */
     private FastaCLIInputBean fastaCLIInputBean;
+    /**
+     * The waiting handler.
+     */
+    private WaitingHandler waitingHandler;
 
     /**
      * Construct a new FastaCLI runnable from a list of arguments.
@@ -33,6 +38,8 @@ public class FastaCLI {
     public FastaCLI(String[] args) {
 
         try {
+            waitingHandler = new WaitingHandlerCLIImpl();
+            
             // check if there are updates to the paths
             String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
             
@@ -58,6 +65,7 @@ public class FastaCLI {
                 call();
             }
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
     }
@@ -68,10 +76,9 @@ public class FastaCLI {
     public void call() {
 
         try {
-            WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
             SequenceFactory sequenceFactory = SequenceFactory.getInstance();
             File fastaFile = fastaCLIInputBean.getInputFile();
-            sequenceFactory.loadFastaFile(fastaFile, waitingHandlerCLIImpl);
+            sequenceFactory.loadFastaFile(fastaFile, waitingHandler);
             System.out.println("Input: " + fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
             writeDbProperties();
 
@@ -82,7 +89,7 @@ public class FastaCLI {
                     UtilitiesUserPreferences userPreferences = UtilitiesUserPreferences.loadUserPreferences();
                     userPreferences.setTargetDecoyFileNameSuffix(decoySuffix + ".fasta");
                 }
-                boolean success = generateTargetDecoyDatabase(waitingHandlerCLIImpl);
+                boolean success = generateTargetDecoyDatabase(waitingHandler);
                 if (success) {
                     System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
                     System.out.println("Output: " + sequenceFactory.getCurrentFastaFile().getAbsolutePath() + System.getProperty("line.separator"));
@@ -90,6 +97,7 @@ public class FastaCLI {
                 }
             }
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
     }
@@ -116,10 +124,10 @@ public class FastaCLI {
     /**
      * Appends decoy sequences to the given target database file.
      *
-     * @param waitingHandlerCLIImpl the waiting handler
+     * @param waitingHandler the waiting handler
      * @return true if the process was successfully completed
      */
-    public boolean generateTargetDecoyDatabase(WaitingHandlerCLIImpl waitingHandlerCLIImpl) {
+    public boolean generateTargetDecoyDatabase(WaitingHandler waitingHandler) {
 
         SequenceFactory sequenceFactory = SequenceFactory.getInstance();
 
@@ -137,10 +145,10 @@ public class FastaCLI {
         File newFile = new File(newFasta);
 
         try {
-            waitingHandlerCLIImpl.setWaitingText("Appending Decoy Sequences. Please Wait...");
-            sequenceFactory.appendDecoySequences(newFile, waitingHandlerCLIImpl);
+            waitingHandler.setWaitingText("Appending Decoy Sequences. Please Wait...");
+            sequenceFactory.appendDecoySequences(newFile, waitingHandler);
             sequenceFactory.clearFactory();
-            sequenceFactory.loadFastaFile(newFile, waitingHandlerCLIImpl);
+            sequenceFactory.loadFastaFile(newFile, waitingHandler);
         } catch (OutOfMemoryError error) {
             System.out.println("Ran out of memory!");
             error.printStackTrace();
@@ -187,6 +195,19 @@ public class FastaCLI {
         }
     }
 
+    /**
+     * Returns the "see the log file" message. With the path if available. 
+     * 
+     * @return the "see the log file" message
+     */
+    public static String getLogFileMessage() {
+//        if (logFolder == null) {
+            return "Please see the SearchGUI log file.";
+//        } else {
+//            return "Please see the SearchGUI log file: " + logFolder.getAbsolutePath() + File.separator + "SearchGUI.log";  // @TODO: figure out how to get the location of the log file
+//        }
+    }
+    
     /**
      * Returns the path to the jar file.
      *
