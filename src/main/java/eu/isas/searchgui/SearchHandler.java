@@ -285,9 +285,9 @@ public class SearchHandler {
      */
     private MsConvertParameters msConvertParameters;
     /**
-     * Default name for a SearchGUI output.
+     * The name for the SearchGUI output file.
      */
-    public final static String DEFAULT_OUTPUT = "searchgui_out";
+    private static String defaultOutputFileName = "searchgui_out";
     /**
      * Default file name ending for a SearchGUI output.
      */
@@ -348,6 +348,7 @@ public class SearchHandler {
             ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
+        //this.defaultOutputFileName = defaultOutputFileName; // @TODO: implement? 
         this.mgfFiles = mgfFiles;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
@@ -375,6 +376,7 @@ public class SearchHandler {
      *
      * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
+     * @param defaultOutputFileName the default output file name
      * @param mgfFiles list of peak list files in the mgf format
      * @param rawFiles list of raw files
      * @param identificationParametersFile the search parameters file
@@ -412,7 +414,7 @@ public class SearchHandler {
      * null the default location is used
      * @param processingPreferences the processing preferences
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, String defaultOutputFileName, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             boolean runNovor, boolean runDirecTag,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder,
@@ -420,6 +422,9 @@ public class SearchHandler {
             ProcessingPreferences processingPreferences) {
 
         this.resultsFolder = resultsFolder;
+        if (defaultOutputFileName != null) {
+            this.defaultOutputFileName = defaultOutputFileName;
+        }
         this.mgfFiles = mgfFiles;
         this.rawFiles = rawFiles;
         this.enableOmssa = searchOmssa;
@@ -2723,7 +2728,7 @@ public class SearchHandler {
      */
     public static File getDefaultOutputFile(File outputFolder, boolean includeDate) {
         String fileName = "";
-        fileName += DEFAULT_OUTPUT;
+        fileName += defaultOutputFileName;
         if (includeDate) {
             fileName += "_" + outputTimeStamp;
         }
@@ -2744,7 +2749,7 @@ public class SearchHandler {
      */
     public static File getDefaultOutputFile(File outputFolder, String classifier, boolean includeDate) {
         String fileName = classifier;
-        fileName += "_" + DEFAULT_OUTPUT;
+        fileName += "_" + defaultOutputFileName;
         if (includeDate) {
             fileName += "_" + outputTimeStamp;
         }
@@ -3407,5 +3412,23 @@ public class SearchHandler {
             error += ".\nPlease verify the definition of the PTM(s) in the modifications editor.";
         }
         return error;
+    }
+
+    /**
+     * Returns the default output file name.
+     * 
+     * @return the defaultOutputFileName
+     */
+    public static String getDefaultOutputFileName() {
+        return defaultOutputFileName;
+    }
+
+    /**
+     * Sets the default output file name.
+     * 
+     * @param aDefaultOutputFileName the defaultOutputFileName to set
+     */
+    public static void setDefaultOutputFileName(String aDefaultOutputFileName) {
+        defaultOutputFileName = aDefaultOutputFileName;
     }
 }

@@ -18,7 +18,7 @@ public enum SearchCLIParams {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     SPECTRUM_FILES("spectrum_files", "Spectrum files (mgf format), comma separated list or an entire folder.", true),
     OUTPUT_FOLDER("output_folder", "The output folder.", true),
-    
+
     THREADS("threads", "Number of threads to use for the processing, default: the number of cores.", false),
     
     OMSSA("omssa", "Turn the OMSSA search on or off (0: off, 1: on,  default is '0').", false),
@@ -52,6 +52,7 @@ public enum SearchCLIParams {
     
     REFERENCE_MASS("ref_mass", "Reference mass for the conversion of the fragment ion tolerance from ppm to Dalton. Default is '2000'.", false),
     
+    OUTPUT_DEFAULT_NAME("output_default_name", "Optional output default name, default is 'searchgui_out'.", false),
     OUTPUT_OPTION("output_option", "Optional result file compression (" + SearchGuiOutputOption.getCommandLineOptions() + "), default is '0'.", false),
     OUTPUT_DATA("output_data", "Include mgf and FASTA file in zipped output (0: no, 1: yes, default is '0').", false),
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
@@ -154,6 +155,7 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, MISSING_TITLE_HANDLING.id) + " " + MISSING_TITLE_HANDLING.description + "\n";
         
         output += "\n\nOutput Files Handling:\n\n";
+        output += "-" + String.format(formatter, OUTPUT_DEFAULT_NAME.id) + " " + OUTPUT_DEFAULT_NAME.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_OPTION.id) + " " + OUTPUT_OPTION.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATA.id) + " " + OUTPUT_DATA.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATE.id) + " " + OUTPUT_DATE.description + "\n";

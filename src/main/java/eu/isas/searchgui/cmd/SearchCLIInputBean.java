@@ -173,12 +173,16 @@ public class SearchCLIInputBean {
      * The tag added after adding decoy sequences to a FASTA file.
      */
     private String targetDecoyFileNameTag = "_concatenated_target_decoy";
+    /**
+     * The name for the SearchGUI output file.
+     */
+    private String defaultOutputFileName = "searchgui_out";
 
     /**
      * Parses the arguments of a command line.
      *
      * @param aLine the command line
-     * 
+     *
      * @throws IOException thrown if an error occurred while reading the FASTA
      * file
      * @throws ClassNotFoundException thrown if the search parameters cannot be
@@ -344,6 +348,10 @@ public class SearchCLIInputBean {
         }
 
         // load the output preference
+        if (aLine.hasOption(SearchCLIParams.OUTPUT_DEFAULT_NAME.id)) {
+            arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_DEFAULT_NAME.id);
+            defaultOutputFileName = arg;
+        }
         if (aLine.hasOption(SearchCLIParams.OUTPUT_OPTION.id)) {
             int option = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id));
             outputOption = SearchGuiOutputOption.getOutputOption(option);
@@ -382,7 +390,7 @@ public class SearchCLIInputBean {
      *
      * @return the output folder
      */
-    public File getOutputFile() {
+    public File getOutputFolder() {
         return outputFolder;
     }
 
@@ -494,7 +502,7 @@ public class SearchCLIInputBean {
     public boolean isAndromedaEnabled() {
         return andromedaEnabled;
     }
-    
+
     /**
      * Returns true if Novor is to be used.
      *
@@ -503,7 +511,7 @@ public class SearchCLIInputBean {
     public boolean isNovorEnabled() {
         return novorEnabled;
     }
-    
+
     /**
      * Returns true if DirecTag is to be used.
      *
@@ -584,7 +592,7 @@ public class SearchCLIInputBean {
     public File getAndromedaLocation() {
         return andromedaLocation;
     }
-    
+
     /**
      * Returns the Novor location.
      *
@@ -593,7 +601,7 @@ public class SearchCLIInputBean {
     public File getNovorLocation() {
         return novorLocation;
     }
-    
+
     /**
      * Returns the DirecTag location.
      *
@@ -724,6 +732,12 @@ public class SearchCLIInputBean {
             }
         }
 
+        // check the default output name option
+        if (aLine.hasOption(SearchCLIParams.OUTPUT_DEFAULT_NAME.id) && ((String) aLine.getOptionValue(SearchCLIParams.OUTPUT_DEFAULT_NAME.id)).equals("")) {
+            System.out.println("\nDefault output name cannot be empty.\n");
+            return false;
+        }
+
         // check the output option
         if (aLine.hasOption(SearchCLIParams.OUTPUT_OPTION.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id);
@@ -754,7 +768,7 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
-        
+
         // check the rename xtandem output option
         if (aLine.hasOption(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id);
@@ -762,7 +776,7 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
-        
+
         // check the target-decoy tag option
         if (aLine.hasOption(SearchCLIParams.TARGET_DECOY_TAG.id)) {
             String arg = aLine.getOptionValue(SearchCLIParams.TARGET_DECOY_TAG.id);
@@ -931,7 +945,7 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
-        
+
         // check the mgf size filters
         if (aLine.hasOption(SearchCLIParams.MGF_CHECK_SIZE.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.MGF_CHECK_SIZE.id);
@@ -951,7 +965,7 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
-        
+
         // check the spectrum title options
         if (aLine.hasOption(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id);
@@ -965,7 +979,7 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
-        
+
         // check the reference mass
         if (aLine.hasOption(SearchCLIParams.REFERENCE_MASS.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.REFERENCE_MASS.id);
@@ -989,6 +1003,24 @@ public class SearchCLIInputBean {
      */
     public PathSettingsCLIInputBean getPathSettingsCLIInputBean() {
         return pathSettingsCLIInputBean;
+    }
+
+    /**
+     * Returns the default output name.
+     *
+     * @return the defaultOutputFileName
+     */
+    public String getDefaultOutputFileName() {
+        return defaultOutputFileName;
+    }
+
+    /**
+     * Sets the default output name.
+     *
+     * @param defaultOutputFileName the defaultOutputFileName to set
+     */
+    public void setDefaultOutputFileName(String defaultOutputFileName) {
+        this.defaultOutputFileName = defaultOutputFileName;
     }
 
     /**

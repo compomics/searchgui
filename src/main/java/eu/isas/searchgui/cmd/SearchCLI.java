@@ -223,7 +223,7 @@ public class SearchCLI implements Callable {
                 } else {
                     name += ".par";
                 }
-                parametersFile = new File(searchCLIInputBean.getOutputFile(), name);
+                parametersFile = new File(searchCLIInputBean.getOutputFolder(), name);
                 IdentificationParameters.saveIdentificationParameters(identificationParameters, parametersFile);
             }
 
@@ -248,8 +248,8 @@ public class SearchCLI implements Callable {
 
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
-                    searchCLIInputBean.getOutputFile(), spectrumFiles,
-                    new ArrayList<File>(), parametersFile,
+                    searchCLIInputBean.getOutputFolder(), searchCLIInputBean.getDefaultOutputFileName(),
+                    spectrumFiles, new ArrayList<File>(), parametersFile,
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),
