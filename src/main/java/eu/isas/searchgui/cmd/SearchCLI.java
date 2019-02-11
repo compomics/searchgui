@@ -1,8 +1,6 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
-import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathParameters;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
@@ -17,7 +15,6 @@ import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.compomics.util.parameters.tools.ProcessingParameters;
 import com.compomics.util.parameters.UtilitiesUserParameters;
 import eu.isas.searchgui.SearchHandler;
-import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,6 +47,14 @@ public class SearchCLI implements Callable {
      * The spectrum factory.
      */
     private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    /**
+     * The log folder given on the command line. Null if not set.
+     */
+    private static File logFolder = null;
+    /**
+     * The waiting handler.
+     */
+    private WaitingHandler waitingHandler;
 
     /**
      * Construct a new SearchCLI runnable from a list of arguments. When
@@ -61,19 +66,24 @@ public class SearchCLI implements Callable {
     public SearchCLI(String[] args) {
 
         try {
+            // check if there are updates to the paths
+            String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
+
+            waitingHandler = new WaitingHandlerCLIImpl();
 
             try {
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
                 speciesFactory.initiate(getJarFilePath());
             } catch (Exception e) {
-                System.out.println("An error occurred while loading the species.");
+                waitingHandler.appendReport("An error occurred while loading the species.", true, true);
                 e.printStackTrace();
             }
 
-            Options lOptions = new Options();
-            SearchCLIParams.createOptionsCLI(lOptions);
+            // parse the rest of the options   
+            Options nonPathOptions = new Options();
+            SearchCLIParams.createOptionsCLI(nonPathOptions);
             BasicParser parser = new BasicParser();
-            CommandLine line = parser.parse(lOptions, args);
+            CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
             if (!SearchCLIInputBean.isValidStartup(line)) {
                 PrintWriter lPrintWriter = new PrintWriter(System.out);
@@ -91,6 +101,7 @@ public class SearchCLI implements Callable {
                 call();
             }
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
     }
@@ -99,39 +110,6 @@ public class SearchCLI implements Callable {
      * Calling this method will run the configured SearchCLI process.
      */
     public Object call() {
-
-        PathSettingsCLIInputBean pathSettingsCLIInputBean = searchCLIInputBean.getPathSettingsCLIInputBean();
-
-        if (pathSettingsCLIInputBean.getLogFolder() != null) {
-            redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
-        }
-
-        if (pathSettingsCLIInputBean.hasInput()) {
-            PathSettingsCLI pathSettingsCLI = new PathSettingsCLI(pathSettingsCLIInputBean);
-            pathSettingsCLI.setPathSettings();
-        } else {
-            try {
-                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
-                if (pathConfigurationFile.exists()) {
-                    SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
-                }
-            } catch (Exception e) {
-                System.out.println("An error occurred when setting path configuration. Default paths will be used.");
-                e.printStackTrace();
-            }
-            try {
-                ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
-                if (!errorKeys.isEmpty()) {
-                    System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
-                            + "the path configuration command line, or edit the configuration paths from the graphical interface.");
-                    for (PathKey pathKey : errorKeys) {
-                        System.out.println(pathKey.getId() + ": " + pathKey.getDescription());
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("Unable to load the path configurations. Default pathswill be used.");
-            }
-        }
 
         // load enzymes
         enzymeFactory = EnzymeFactory.getInstance();
@@ -159,7 +137,6 @@ public class SearchCLI implements Callable {
                             waitingHandlerCLIImpl.appendReport("Warning: Spectrum titles missing in file: " + tempMgfFile.getAbsolutePath() + "! "
                                     + "Titles are mandatory. See the missing_titles option. File will be ignored.", true, true);
                         }
-                        return false;
                     } else {
                         // add missing spectrum titles
                         waitingHandlerCLIImpl.appendReport("Adding missing spectrum titles in file: " + tempMgfFile.getAbsolutePath(), true, true);
@@ -178,7 +155,6 @@ public class SearchCLI implements Callable {
                 // check for ms2 spectra
                 if (spectrumFactory.getIndex(indexFile).getMaxPeakCount() == 0) {
                     waitingHandlerCLIImpl.appendReport("Warning: No MS2 spectra found in file: " + tempMgfFile.getName() + "! File will be ignored.", true, true);
-                    return false;
                 }
 
                 // check for duplicate headers
@@ -246,7 +222,7 @@ public class SearchCLI implements Callable {
                 } else {
                     name += ".par";
                 }
-                parametersFile = new File(searchCLIInputBean.getOutputFile(), name);
+                parametersFile = new File(searchCLIInputBean.getOutputFolder(), name);
                 IdentificationParameters.saveIdentificationParameters(identificationParameters, parametersFile);
             }
 
@@ -268,8 +244,8 @@ public class SearchCLI implements Callable {
 
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
-                    searchCLIInputBean.getOutputFile(), spectrumFiles,
-                    new ArrayList<>(), parametersFile,
+                    searchCLIInputBean.getOutputFolder(), searchCLIInputBean.getDefaultOutputFileName(),
+                    spectrumFiles, new ArrayList<File>(), parametersFile,
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),
@@ -283,10 +259,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getMakeblastdbLocation(),
                     processingParameters);
 
-            File logFolder = pathSettingsCLIInputBean.getLogFolder();
-            if (logFolder != null) {
-                searchHandler.setLogFolder(logFolder);
-            }
+            searchHandler.setLogFolder(logFolder);
 
             // incrementing the counter for a new SearchGUI start
             if (userParameters.isAutoUpdate()) {
@@ -295,12 +268,14 @@ public class SearchCLI implements Callable {
 
             searchHandler.startSearch(waitingHandlerCLIImpl);
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
 
         try {
             TempFilesManager.deleteTempFolders();
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while deleting the temp folder. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
 
@@ -403,15 +378,17 @@ public class SearchCLI implements Callable {
     }
 
     /**
-     * redirects the error stream to the PeptideShaker.log of a given folder.
+     * Redirects the error stream to the SearchGUI.log of a given folder.
      *
-     * @param logFolder the folder where to save the log
+     * @param aLogFolder the folder where to save the log
      */
-    public static void redirectErrorStream(File logFolder) {
+    public static void redirectErrorStream(File aLogFolder) {
+
+        logFolder = aLogFolder;
 
         try {
-            logFolder.mkdirs();
-            File file = new File(logFolder, "SearchGUI.log");
+            aLogFolder.mkdirs();
+            File file = new File(aLogFolder, "SearchGUI.log");
             System.setErr(new java.io.PrintStream(new FileOutputStream(file, true)));
 
             System.err.println(System.getProperty("line.separator") + System.getProperty("line.separator") + new Date()
@@ -422,6 +399,19 @@ public class SearchCLI implements Callable {
             System.err.println("Java version: " + System.getProperty("java.version") + ".");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Returns the "see the log file" message. With the path if available.
+     *
+     * @return the "see the log file" message
+     */
+    public static String getLogFileMessage() {
+        if (logFolder == null) {
+            return "Please see the SearchGUI log file.";
+        } else {
+            return "Please see the SearchGUI log file: " + logFolder.getAbsolutePath() + File.separator + "SearchGUI.log";
         }
     }
 

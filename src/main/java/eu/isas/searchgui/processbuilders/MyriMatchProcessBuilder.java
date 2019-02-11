@@ -384,17 +384,24 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
             String nTerm = "";
             String cTerm = "";
 
-            ModificationType modificationType = modification.getModificationType();
-            if (modificationType == ModificationType.modn_peptide
-                    || modificationType == ModificationType.modn_protein
-                    || modificationType == ModificationType.modnaa_peptide
-                    || modificationType == ModificationType.modnaa_protein) { // note: does not separate peptide and protein n term
-                nTerm = "(";
-            } else if (modificationType == ModificationType.modc_peptide
-                    || modificationType == ModificationType.modc_protein
-                    || modificationType == ModificationType.modcaa_peptide
-                    || modificationType == ModificationType.modcaa_protein) { // note: does not separate peptide and protein c term
-                cTerm = ")";
+            // note: protein terminal ptms are handled as peptide terminal ptms and have to be removed in the post-processing
+            switch (modification.getModificationType()) {
+                case modn_peptide:
+                case modn_protein:
+                    nTerm = "(";
+                    break;
+                case modnaa_peptide:
+                case modnaa_protein:
+                    nTerm = "(!";
+                    break;
+                case modc_peptide:
+                case modc_protein:
+                case modcaa_peptide:
+                case modcaa_protein:
+                    cTerm = ")";
+                    break;
+                default:
+                    break;
             }
 
             // get the targeted amino acids
@@ -437,8 +444,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Filters the fixed modifications to convert unsupported modification types
-     * (fixed protein terminal and fixed terminal at specific amino acids) into
-     * variable modifications.
+     * (i.e. fixed protein terminal modifications) into variable modifications.
      *
      * @return a map of the filtered modifications, keys: "Fixed" and "Variable"
      */
@@ -455,42 +461,22 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
             ModificationType modificationType = modification.getModificationType();
 
-            if (modificationType == ModificationType.modaa) {
-                
-                filteredFixedModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modn_protein) {
-                
-                variableModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modnaa_protein) {
-                
-                variableModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modn_peptide) {
-                
-                filteredFixedModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modnaa_peptide) {
-                
-                variableModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modc_protein) {
-                
-                variableModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modcaa_protein) {
-                
-                variableModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modc_peptide) {
-                
-                filteredFixedModifications.add(modName);
-                
-            } else if (modificationType == ModificationType.modcaa_peptide) {
-                
-                variableModifications.add(modName);
-                
+            if (null != modificationType) switch (modificationType) {
+                case modaa: // particular amino acid
+                case modn_peptide: // peptide n term
+                case modc_peptide: // peptide c term
+                    filteredFixedModifications.add(modName);
+                    break;
+                case modn_protein: // protein n term
+                case modc_protein: // protein c term
+                case modnaa_peptide: // peptide n term specifc amino acid
+                case modcaa_peptide: // peptide c term specific amino acid
+                case modnaa_protein: // protein n term specific amino acid
+                case modcaa_protein: // protein c term specific amino acid
+                    variableModifications.add(modName);
+                    break;
+                default:
+                    break;
             }
         }
 

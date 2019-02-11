@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
     <Container class="javax.swing.JPopupMenu" name="modificationOptionsPopupMenu">
 
@@ -1379,7 +1379,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="searchGUIPublicationLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740&quot;&gt;Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 &lt;/a&gt;.&lt;/html&gt;"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=\u005c&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740\u005c&quot;&gt;Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 &lt;/a&gt;.&lt;/html&gt;" containsInvalidXMLChars="true"/>
             <Property name="toolTipText" type="java.lang.String" value="Open the SearchGUI publication"/>
           </Properties>
           <Events>

@@ -1,14 +1,19 @@
 package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
+import com.compomics.software.settings.PathKey;
 import com.compomics.software.settings.UtilitiesPathParameters;
+import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.waiting.WaitingHandler;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  * Allows the user to set the path settings in command line.
@@ -21,6 +26,10 @@ public class PathSettingsCLI {
      * The input bean containing the user parameters.
      */
     private PathSettingsCLIInputBean pathSettingsCLIInputBean;
+    /**
+     * Waiting handler used to keep track of the progress.
+     */
+    private WaitingHandler waitingHandler;
 
     /**
      * Constructor.
@@ -34,12 +43,19 @@ public class PathSettingsCLI {
 
     /**
      * Sets the path settings and returns null.
-     * 
+     *
      * @return null
      */
     public Object call() {
+        waitingHandler = new WaitingHandlerCLIImpl();
         setPathSettings();
-        return null;
+        if (!waitingHandler.isRunCanceled()) {
+            System.exit(0);
+            return 0;
+        } else {
+            System.exit(1);
+            return 1;
+        }
     }
 
     /**
@@ -47,50 +63,89 @@ public class PathSettingsCLI {
      */
     public void setPathSettings() {
 
+        if (waitingHandler == null) {
+            waitingHandler = new WaitingHandlerCLIImpl();
+        }
+
         if (pathSettingsCLIInputBean.getLogFolder() != null) {
             SearchCLI.redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
+        } else {
+            SearchCLI.redirectErrorStream(new File(getJarFilePath() + File.separator + "resources"));
         }
 
-        String path = pathSettingsCLIInputBean.getTempFolder();
-        if (!path.equals("")) {
-            try {
-                SearchGUIPathParameters.setAllPathsIn(path);
-            } catch (Exception e) {
-                System.out.println("An error occurred when setting the temporary folder path.");
-                e.printStackTrace();
+        if (pathSettingsCLIInputBean.hasInput()) {
+
+            String path = pathSettingsCLIInputBean.getTempFolder();
+            if (!path.equals("")) {
+                try {
+                    SearchGUIPathParameters.setAllPathsIn(path);
+                } catch (Exception e) {
+                    System.out.println("An error occurred when setting the temporary folder path.");
+                    e.printStackTrace();
+                    waitingHandler.setRunCanceled();
+                }
             }
-        }
 
-        HashMap<String, String> pathInput = pathSettingsCLIInputBean.getPaths();
-        for (String id : pathInput.keySet()) {
-            try {
-                SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey = SearchGUIPathParameters.SearchGUIPathKey.getKeyFromId(id);
-                if (searchGUIPathKey == null) {
-                    UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey = UtilitiesPathParameters.UtilitiesPathKey.getKeyFromId(id);
-                    if (utilitiesPathKey == null) {
-                        System.out.println("Path id " + id + " not recognized.");
+            HashMap<String, String> pathInput = pathSettingsCLIInputBean.getPaths();
+            for (String id : pathInput.keySet()) {
+                try {
+                    SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey = SearchGUIPathParameters.SearchGUIPathKey.getKeyFromId(id);
+                    if (searchGUIPathKey == null) {
+                        UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey = UtilitiesPathParameters.UtilitiesPathKey.getKeyFromId(id);
+                        if (utilitiesPathKey == null) {
+                            System.out.println("Path id " + id + " not recognized.");
+                        } else {
+                            UtilitiesPathParameters.setPathParameter(utilitiesPathKey, pathInput.get(id));
+                        }
                     } else {
-                        UtilitiesPathParameters.setPathParameter(utilitiesPathKey, pathInput.get(id));
+                        SearchGUIPathParameters.setPathParameter(searchGUIPathKey, pathInput.get(id));
                     }
-                } else {
-                    SearchGUIPathParameters.setPathParameter(searchGUIPathKey, pathInput.get(id));
+                } catch (Exception e) {
+                    System.out.println("An error occurred when setting the path " + id + ".");
+                    e.printStackTrace();
+                    waitingHandler.setRunCanceled();
+                }
+            }
+
+            // write path file preference
+            File destinationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+            try {
+                SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getJarFilePath());
+            } catch (Exception e) {
+                System.out.println("An error occurred when saving the path preference to " + destinationFile.getAbsolutePath() + ".");
+                e.printStackTrace();
+                waitingHandler.setRunCanceled();
+            }
+
+            if (!waitingHandler.isRunCanceled()) {
+                System.out.println("Path configuration completed.");
+            }
+
+        } else {
+            try {
+                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+                if (pathConfigurationFile.exists()) {
+                    SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
                 }
             } catch (Exception e) {
-                System.out.println("An error occurred when setting the path " + id + ".");
+                System.out.println("An error occurred when setting path configuration. Default paths will be used.");
                 e.printStackTrace();
             }
         }
 
-        // write path file preference
-        File destinationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+        // test the temp paths
         try {
-            SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getJarFilePath());
+            ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
+            if (!errorKeys.isEmpty()) {
+                System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
+                        + "the path configuration command line, or edit the configuration paths from the graphical interface.");
+                for (PathKey pathKey : errorKeys) {
+                    System.out.println(pathKey.getId() + ": " + pathKey.getDescription());
+                }
+            }
         } catch (Exception e) {
-            System.out.println("An error occurred when saving the path preference to " + destinationFile.getAbsolutePath() + ".");
-            e.printStackTrace();
+            System.out.println("Unable to load the path configurations. Default paths will be used.");
         }
-
-        System.out.println("Path configuration completed.");
     }
 
     /**
@@ -169,5 +224,61 @@ public class PathSettingsCLI {
         return "PathSettingsCLI{"
                 + ", cliInputBean=" + pathSettingsCLIInputBean
                 + '}';
+    }
+    
+    /**
+     * If the arguments contains changes to the paths these arguments will be
+     * extracted and the paths updated, before the remaining non-path options
+     * are returned for further processing.
+     *
+     * @param args the command line arguments
+     * @return a list of all non-path related arguments
+     * @throws ParseException if a ParseException occurs
+     */
+    public static String[] extractAndUpdatePathOptions(String[] args) throws ParseException {
+
+        ArrayList<String> allPathOptions = PathSettingsCLIParams.getOptionIDs();
+
+        ArrayList<String> pathSettingArgs = new ArrayList<String>();
+        ArrayList<String> nonPathSettingArgs = new ArrayList<String>();
+
+        for (int i = 0; i < args.length; i++) {
+
+            String currentArg = args[i];
+
+            boolean pathOption = allPathOptions.contains(currentArg);
+
+            if (pathOption) {
+                pathSettingArgs.add(currentArg);
+            } else {
+                nonPathSettingArgs.add(currentArg);
+            }
+
+            // check if the argument has a parameter
+            if (i + 1 < args.length) {
+                String nextArg = args[i + 1];
+                if (!nextArg.startsWith("-")) {
+                    if (pathOption) {
+                        pathSettingArgs.add(args[++i]);
+                    } else {
+                        nonPathSettingArgs.add(args[++i]);
+                    }
+                }
+            }
+        }
+
+        String[] pathSettingArgsAsList = pathSettingArgs.toArray(new String[pathSettingArgs.size()]);
+        String[] nonPathSettingArgsAsList = nonPathSettingArgs.toArray(new String[nonPathSettingArgs.size()]);
+
+        // update the paths if needed
+        Options pathOptions = new Options();
+        PathSettingsCLIParams.createOptionsCLI(pathOptions);
+        BasicParser parser = new BasicParser();
+        CommandLine line = parser.parse(pathOptions, pathSettingArgsAsList);
+        PathSettingsCLIInputBean pathSettingsCLIInputBean = new PathSettingsCLIInputBean(line);
+        PathSettingsCLI pathSettingsCLI = new PathSettingsCLI(pathSettingsCLIInputBean);
+        pathSettingsCLI.setPathSettings();
+
+        return nonPathSettingArgsAsList;
     }
 }

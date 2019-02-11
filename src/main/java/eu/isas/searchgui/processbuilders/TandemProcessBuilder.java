@@ -148,6 +148,12 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String enzymeIsSemiSpecific;
     /**
+     * Sets whether the parent ion mass tolerance is expanded by opening up
+     * multiple tolerance windows centered on the first and second 13C isotope
+     * peaks for a peptide.
+     */
+    private String parentMonoisotopicMassIsotopeError;
+    /**
      * The missed cleavages allowed.
      */
     private int missedCleavages;
@@ -362,6 +368,13 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             enzymeIsSemiSpecific = "no";
             this.missedCleavages = 0;
         }
+        
+        // @TODO: should be "yes" if the search parameters higher isotope tolerance is >0. no otherwise
+        if (xtandemParameters.getParentMonoisotopicMassIsotopeError()) {
+            parentMonoisotopicMassIsotopeError = "yes";
+        } else {
+            parentMonoisotopicMassIsotopeError = "no";
+        }
 
         selectedIons = new HashSet<>();
         selectedIons.addAll(searchParameters.getForwardIons());
@@ -484,10 +497,6 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         String outputHistograms = "no";
         if (xtandemParameters.isOutputHistograms()) {
             outputHistograms = "yes";
-        }
-        String parentMonoisotopicMassIsotopeError = "no";
-        if (xtandemParameters.getParentMonoisotopicMassIsotopeError()) {
-            parentMonoisotopicMassIsotopeError = "yes";
         }
 
         StringBuilder motifs = new StringBuilder();

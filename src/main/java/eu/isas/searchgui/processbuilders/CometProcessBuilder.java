@@ -50,7 +50,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2018.01 rev. 1"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2018.01 rev. 3"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -252,7 +252,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     /////////////////////////
                     // number of threads
                     /////////////////////////
-                    + "num_threads = " + nThreads + " # 0=poll CPU to set num threads; else specify num threads directly (max 64)" + System.getProperty("line.separator")
+                    + "num_threads = " + nThreads + " # 0=poll CPU to set num threads; else specify num threads directly (max 128   )" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // precursor details

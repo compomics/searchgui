@@ -2,6 +2,7 @@ package eu.isas.searchgui.cmd;
 
 import com.compomics.software.settings.UtilitiesPathParameters;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
+import java.util.ArrayList;
 import org.apache.commons.cli.Options;
 
 /**
@@ -49,6 +50,28 @@ public enum PathSettingsCLIParams {
         for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
             aOptions.addOption(utilitiesPathKey.getId(), true, utilitiesPathKey.getDescription());
         }
+    }
+    
+    /**
+     * Returns the list of supported command line options.
+     * 
+     * @return the list of supported command line options
+     */
+    public static ArrayList<String> getOptionIDs() {
+        
+        ArrayList<String> options = new ArrayList<String>();
+        
+        for (PathSettingsCLIParams pathSettingsCLIParam : values()) {
+            options.add("-" + pathSettingsCLIParam.id);
+        }
+        for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
+            options.add("-" + searchGUIPathKey.getId());
+        }
+        for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
+            options.add("-" + utilitiesPathKey.getId());
+        }
+        
+        return options;
     }
 
     /**

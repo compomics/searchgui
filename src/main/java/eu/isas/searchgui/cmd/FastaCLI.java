@@ -11,6 +11,7 @@ import com.compomics.util.experiment.io.biology.protein.FastaSummary;
 import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverter;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.parameters.UtilitiesUserParameters;
+import com.compomics.util.waiting.WaitingHandler;
 import static eu.isas.searchgui.cmd.SearchCLI.redirectErrorStream;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
@@ -38,6 +39,10 @@ public class FastaCLI {
      * The FASTA parameters input bean.
      */
     private FastaParametersInputBean fastaParametersInputBean;
+    /**
+     * The waiting handler.
+     */
+    private WaitingHandler waitingHandler;
 
     /**
      * Construct a new FastaCLI runnable from a list of arguments.
@@ -47,11 +52,16 @@ public class FastaCLI {
     public FastaCLI(String[] args) {
 
         try {
+            waitingHandler = new WaitingHandlerCLIImpl();
 
-            Options lOptions = new Options();
-            FastaCLIParams.createOptionsCLI(lOptions);
+             // check if there are updates to the paths
+            String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
+
+            // parse the rest of the cptions   
+            Options nonPathOptions = new Options();
+            FastaCLIParams.createOptionsCLI(nonPathOptions);
             BasicParser parser = new BasicParser();
-            CommandLine line = parser.parse(lOptions, args);
+            CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
             if (!FastaCLIInputBean.isValidStartup(line)) {
 
@@ -89,6 +99,7 @@ public class FastaCLI {
 
             }
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
     }
@@ -98,70 +109,13 @@ public class FastaCLI {
      */
     public void call() {
 
-        PathSettingsCLIInputBean pathSettingsCLIInputBean = fastaCLIInputBean.getPathSettingsCLIInputBean();
-        FastaParameters fastaParameters = fastaParametersInputBean.getFastaParameters();
-
-        if (pathSettingsCLIInputBean.getLogFolder() != null) {
-
-            redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
-
-        }
-
-        if (pathSettingsCLIInputBean.hasInput()) {
-
-            PathSettingsCLI pathSettingsCLI = new PathSettingsCLI(pathSettingsCLIInputBean);
-            pathSettingsCLI.setPathSettings();
-
-        } else {
-
-            try {
-
-                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
-
-                if (pathConfigurationFile.exists()) {
-
-                    SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
-
-                }
-
-            } catch (Exception e) {
-
-                System.out.println("An error occurred when setting path configuration. Default paths will be used.");
-                e.printStackTrace();
-
-            }
-
-            try {
-
-                ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
-
-                if (!errorKeys.isEmpty()) {
-
-                    System.out.println("Unable to write in the following configuration folders. Please use a temporary folder, "
-                            + "the path configuration command line, or edit the configuration paths from the graphical interface.");
-
-                    for (PathKey pathKey : errorKeys) {
-
-                        System.out.println(pathKey.getId() + ": " + pathKey.getDescription());
-
-                    }
-                }
-
-            } catch (Exception e) {
-
-                System.out.println("Unable to load the path configurations. Default pathswill be used.");
-
-            }
-        }
-
         try {
 
-            WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
-
+            FastaParameters fastaParameters = fastaParametersInputBean.getFastaParameters();
             String fastaFilePath = fastaCLIInputBean.getInputFile().getAbsolutePath();
             System.out.println("Input: " + fastaFilePath + System.getProperty("line.separator"));
 
-            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFilePath, fastaParameters, waitingHandlerCLIImpl);
+            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFilePath, fastaParameters, waitingHandler);
             writeDbProperties(fastaSummary, fastaParameters);
 
             if (fastaCLIInputBean.isDecoy()) {
@@ -175,7 +129,7 @@ public class FastaCLI {
 
                 }
 
-                File newFile = generateTargetDecoyDatabase(waitingHandlerCLIImpl);
+                File newFile = generateTargetDecoyDatabase(waitingHandler);
 
                 System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
                 System.out.println("Output: " + newFile.getAbsolutePath() + System.getProperty("line.separator"));
@@ -185,6 +139,7 @@ public class FastaCLI {
 
             }
         } catch (Exception e) {
+            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
             e.printStackTrace();
         }
     }
@@ -237,13 +192,13 @@ public class FastaCLI {
     /**
      * Appends decoy sequences to the given target database file.
      *
-     * @param waitingHandlerCLIImpl the waiting handler
+     * @param waitingHandler the waiting handler
      * 
      * @return the file created
      * @throws IOException exception thrown whenever an error happened while 
      * reading or writing a FASTA file
      */
-    public File generateTargetDecoyDatabase(WaitingHandlerCLIImpl waitingHandlerCLIImpl) throws IOException {
+    public File generateTargetDecoyDatabase(WaitingHandler waitingHandler) throws IOException {
 
         // Get file in
         File fileIn = fastaCLIInputBean.getInputFile();
@@ -253,8 +208,8 @@ public class FastaCLI {
         File fileOut = new File(fileIn.getParent(), Util.removeExtension(fileIn.getName()) + userParameters.getTargetDecoyFileNameSuffix() + ".fasta");
 
         // Write file
-        waitingHandlerCLIImpl.setWaitingText("Appending Decoy Sequences. Please Wait...");
-        DecoyConverter.appendDecoySequences(fileIn, fileOut, waitingHandlerCLIImpl);
+        waitingHandler.setWaitingText("Appending Decoy Sequences. Please Wait...");
+        DecoyConverter.appendDecoySequences(fileIn, fileOut, waitingHandler);
 
         return fileOut;
     }
@@ -290,6 +245,19 @@ public class FastaCLI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Returns the "see the log file" message. With the path if available. 
+     * 
+     * @return the "see the log file" message
+     */
+    public static String getLogFileMessage() {
+//        if (logFolder == null) {
+            return "Please see the SearchGUI log file.";
+//        } else {
+//            return "Please see the SearchGUI log file: " + logFolder.getAbsolutePath() + File.separator + "SearchGUI.log";  // @TODO: figure out how to get the location of the log file
+//        }
     }
 
     /**

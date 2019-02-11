@@ -1668,7 +1668,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\">Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 </a>.</html>");
+        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\\\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\\\">Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 </a>.</html>");
         searchGUIPublicationLabel.setToolTipText("Open the SearchGUI publication");
         searchGUIPublicationLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
