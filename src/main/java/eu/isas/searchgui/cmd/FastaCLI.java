@@ -3,8 +3,6 @@ package eu.isas.searchgui.cmd;
 import com.compomics.cli.fasta.FastaParametersCLIParams;
 import com.compomics.cli.fasta.FastaParametersInputBean;
 import com.compomics.software.CompomicsWrapper;
-import com.compomics.software.settings.PathKey;
-import com.compomics.software.settings.UtilitiesPathParameters;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.experiment.io.biology.protein.FastaSummary;
@@ -12,12 +10,9 @@ import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverte
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
-import static eu.isas.searchgui.cmd.SearchCLI.redirectErrorStream;
-import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Date;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -60,6 +55,7 @@ public class FastaCLI {
             // parse the rest of the cptions   
             Options nonPathOptions = new Options();
             FastaCLIParams.createOptionsCLI(nonPathOptions);
+            FastaParametersCLIParams.createOptionsCLI(nonPathOptions);
             BasicParser parser = new BasicParser();
             CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
@@ -71,6 +67,7 @@ public class FastaCLI {
                 lPrintWriter.print("======================" + System.getProperty("line.separator"));
                 lPrintWriter.print(getHeader());
                 lPrintWriter.print(FastaCLIParams.getOptionsAsString());
+                lPrintWriter.print(FastaParametersCLIParams.getOptionsAsString());
                 lPrintWriter.flush();
                 lPrintWriter.close();
 
@@ -83,6 +80,7 @@ public class FastaCLI {
                 lPrintWriter.print("FastaCLI" + System.getProperty("line.separator"));
                 lPrintWriter.print("======================" + System.getProperty("line.separator"));
                 lPrintWriter.print(getHeader());
+                lPrintWriter.print(FastaCLIParams.getOptionsAsString());
                 lPrintWriter.print(FastaParametersCLIParams.getOptionsAsString());
                 lPrintWriter.flush();
                 lPrintWriter.close();
@@ -134,8 +132,9 @@ public class FastaCLI {
                 System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
                 System.out.println("Output: " + newFile.getAbsolutePath() + System.getProperty("line.separator"));
 
+                FastaParameters decoyParameters = DecoyConverter.getDecoyParameters(fastaParameters);
                 FastaSummary decoySummary = DecoyConverter.getDecoySummary(newFile, fastaSummary);
-                writeDbProperties(decoySummary, fastaParameters);
+                writeDbProperties(decoySummary, decoyParameters);
 
             }
         } catch (Exception e) {
@@ -219,11 +218,9 @@ public class FastaCLI {
      */
     private static String getHeader() {
         return System.getProperty("line.separator")
-                + "FastaCLI takes a fasta file as input, generates general information about the database and allows operations on the fasta file." + System.getProperty("line.separator")
+                + "FastaCLI takes a FASTA file as input, generates general information about the database and allows operations on the FASTA file." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
                 + "For further help see https://compomics.github.io/projects/searchgui.html and https://compomics.github.io/projects/searchgui/wiki/searchcli.html." + System.getProperty("line.separator")
-                + System.getProperty("line.separator")
-                + "Or contact the developers at https://groups.google.com/group/peptide-shaker." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
                 + "----------------------"
                 + System.getProperty("line.separator")
