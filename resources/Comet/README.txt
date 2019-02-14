@@ -1,9 +1,26 @@
-2018/12/05
+2019/02/13
 
-Comet version "2018.01 rev. 3".
+Comet version "2018.01 rev. 4".
 This is a maintenance release of Comet.
 http://comet-ms.sourceforge.net
 
+release 2018.01 rev. 4 (2018.01.4), release date 2019/02/13
+- Bug fix: the flanking/next amino acid is not reported correctly as a dash "-"
+  character when the last residue in the peptide is the last residue in the
+  protein. This appears to occur in short sequence entries where the identified
+  peptide is the full length sequence entry with a clipped/skipped N-term
+  methionine residue ("clip_nterm_methionine"). Thanks to F. Yu for reporting this.
+- Performance fix: in release 2018.01.3, a protein string length function call
+  was added to a termini check that gets called many times. This had a significant
+  impact on performance and has been addressed. For example, a search taking
+  7m:42s on version 2018.01.3 search was reduced back to 2m:33s with version
+  2018.01.4.
+- Performance fix: if the "scan_range" parameter is specified, Comet would
+  sequentially read each scan header starting from scan 1 in order to reach the
+  first scan in the "scan_range" parameter. Comet will now jump to that first scan
+  directly, saving on unnecessary file parsing.
+- The Windows version of this release is now compiled with Microsoft Visual
+  Studio 2017. Previous Windows releases were compiled with VS 2010.
 
 release 2018.01 rev. 3 (2018.01.3), release date 2018/12/05
 - Bug fix: the "clip_nterm_methionine" parameter has been broken since the
