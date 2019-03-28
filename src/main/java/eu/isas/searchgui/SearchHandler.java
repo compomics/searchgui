@@ -7,6 +7,8 @@ import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
+import com.compomics.util.experiment.io.biology.protein.FastaSummary;
+import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.AplExporter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
@@ -140,6 +142,11 @@ public class SearchHandler {
      */
     private boolean enableReporter = false;
     /**
+     * If true, decoys will be added to the provided FASTA file before starting
+     * the search.
+     */
+    private boolean addDecoys = false;
+    /**
      * The identification parameters.
      */
     private IdentificationParameters identificationParameters;
@@ -155,6 +162,10 @@ public class SearchHandler {
      * The mgf files.
      */
     private ArrayList<File> mgfFiles;
+    /**
+     * The FASTA file.
+     */
+    private File fastaFile;
     /**
      * The OMSSA location.
      */
@@ -325,18 +336,24 @@ public class SearchHandler {
      * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
+     * @param fastaFile the FASTA file
+     * @param addDecoys if true, decoys will be added to the FASTA file before
+     * starting the search
      * @param rawFiles list of raw files
      * @param identificationParametersFile the identification parameters file
      * @param processingParameters the processing parameters
      * @param exceptionHandler a handler for exceptions
      */
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles,
+            File fastaFile, boolean addDecoys,
             ArrayList<File> rawFiles, File identificationParametersFile, ProcessingParameters processingParameters,
             ExceptionHandler exceptionHandler) {
 
         this.resultsFolder = resultsFolder;
         //this.defaultOutputFileName = defaultOutputFileName; // @TODO: implement? 
         this.mgfFiles = mgfFiles;
+        this.fastaFile = fastaFile;
+        this.addDecoys = addDecoys;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
         enableOmssa = loadSearchEngineLocation(Advocate.omssa, false, true, true, true, false, false, false);
@@ -365,6 +382,9 @@ public class SearchHandler {
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param defaultOutputFileName the default output file name
+     * @param fastaFile the FASTA file
+     * @param addDecoys if true, decoys will be added to the FASTA file before
+     * starting the search
      * @param rawFiles list of raw files
      * @param identificationParametersFile the search parameters file
      * @param searchOmssa if true the OMSSA search is enabled
@@ -401,7 +421,7 @@ public class SearchHandler {
      * null the default location is used
      * @param processingParameters the processing preferences
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, String defaultOutputFileName, ArrayList<File> mgfFiles, ArrayList<File> rawFiles, File identificationParametersFile,
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, String defaultOutputFileName, ArrayList<File> mgfFiles, File fastaFile, boolean addDecoys, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             boolean runNovor, boolean runDirecTag,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder,
@@ -413,6 +433,8 @@ public class SearchHandler {
             this.defaultOutputFileName = defaultOutputFileName;
         }
         this.mgfFiles = mgfFiles;
+        this.fastaFile = fastaFile;
+        this.addDecoys = addDecoys;
         this.rawFiles = rawFiles;
         this.enableOmssa = searchOmssa;
         this.enableXtandem = searchXTandem;
@@ -1036,7 +1058,7 @@ public class SearchHandler {
         MsAmandaParameters msAmandaParameters = (MsAmandaParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
         return getMsAmandaFileName(spectrumFileName, msAmandaParameters);
     }
-    
+
     /**
      * Returns the name of the MS Amanda result file.
      *
@@ -1544,6 +1566,46 @@ public class SearchHandler {
     }
 
     /**
+     * Returns the FASTA file.
+     * 
+     * @return the FASTA file
+     */
+    public File getFastaFile() {
+        return fastaFile;
+    }
+
+    /**
+     * Set the FASTA file.
+     *
+     * @param fastaFile the FASTA file
+     */
+    public void setFastaFile(File fastaFile) {
+        this.fastaFile = fastaFile;
+    }
+
+    /**
+     * Returns true if decoys are to be added to the FASTA file before starting
+     * the search.
+     *
+     * @return true if decoys are to be added to the FASTA file before starting
+     * the search
+     */
+    public boolean addDecoys() {
+        return addDecoys;
+    }
+
+    /**
+     * Set if decoys are to be added to the FASTA file before starting the
+     * search.
+     *
+     * @param addDecoys if decoys are to be added to the FASTA file before
+     * starting the search
+     */
+    public void setAddDecoys(boolean addDecoys) {
+        this.addDecoys = addDecoys;
+    }
+
+    /**
      * Returns the list of raw files.
      *
      * @return the raw files
@@ -1710,9 +1772,12 @@ public class SearchHandler {
                     }
                 }
 
-                SearchParameters searchParameters = identificationParameters.getSearchParameters();
+                // add decoys
+                if (addDecoys) {
+                    generateTargetDecoyDatabase(waitingHandler);
+                }
 
-                File fastaFile = new File(searchParameters.getFastaFile());
+                SearchParameters searchParameters = identificationParameters.getSearchParameters();
 
                 if (enableOmssa) {
                     // call Makeblastdb class, check if run before and then start process
@@ -1752,19 +1817,19 @@ public class SearchHandler {
                 }
 
                 if (enableAndromeda) {
-                    
+
                     if (!useCommandLine) {
-                        
+
                         waitingHandler.setWaitingText("Andromeda configuration.");
-                        
+
                     }
-                    
+
                     waitingHandler.appendReport("Andromeda configuration.", true, true);
                     waitingHandler.appendReportEndLine();
                     // Create generic database
                     AndromedaProcessBuilder.createGenericFastaFile(andromedaLocation, fastaFile, waitingHandler);
                     // write Andromeda database configuration file
-                    AndromedaProcessBuilder.createDatabaseFile(andromedaLocation, searchParameters);
+                    AndromedaProcessBuilder.createDatabaseFile(andromedaLocation, fastaFile);
                     // write Andromeda enzyme configuration file
                     AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
@@ -1817,7 +1882,7 @@ public class SearchHandler {
 
                 if (enableTide && !waitingHandler.isRunCanceled()) {
                     // create the tide index
-                    tideIndexProcessBuilder = new TideIndexProcessBuilder(tideLocation, searchParameters, waitingHandler, exceptionHandler);
+                    tideIndexProcessBuilder = new TideIndexProcessBuilder(tideLocation, fastaFile, searchParameters, waitingHandler, exceptionHandler);
                     waitingHandler.appendReport("Indexing " + fastaFile.getName() + " for Tide.", true, true);
                     waitingHandler.appendReportEndLine();
                     tideIndexProcessBuilder.startProcess();
@@ -1917,7 +1982,7 @@ public class SearchHandler {
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
                         File xTandemOutputFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
                         xTandemProcessBuilder = new TandemProcessBuilder(xtandemLocation,
-                                spectrumFile.getAbsolutePath(), xTandemOutputFile.getAbsolutePath(),
+                                spectrumFile.getAbsolutePath(), fastaFile, xTandemOutputFile.getAbsolutePath(),
                                 searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
 
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.xtandem.getName() + ".", true, true);
@@ -1958,7 +2023,7 @@ public class SearchHandler {
                     if (enableMyriMatch && !waitingHandler.isRunCanceled()) {
                         File myriMatchOutputFile = new File(outputTempFolder, getMyriMatchFileName(spectrumFileName));
                         myriMatchProcessBuilder = new MyriMatchProcessBuilder(myriMatchLocation,
-                                spectrumFile.getAbsolutePath(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
+                                spectrumFile.getAbsolutePath(), fastaFile, outputTempFolder, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.myriMatch.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         myriMatchProcessBuilder.startProcess();
@@ -1983,7 +2048,7 @@ public class SearchHandler {
                         File msAmandaOutputFile = new File(outputTempFolder, getMsAmandaFileName(spectrumFileName));
                         String filePath = msAmandaOutputFile.getAbsolutePath();
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(msAmandaLocation,
-                                spectrumFile.getAbsolutePath(), filePath, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
+                                spectrumFile.getAbsolutePath(), fastaFile, filePath, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msAmanda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msAmandaProcessBuilder.startProcess();
@@ -2007,7 +2072,7 @@ public class SearchHandler {
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
                         File msgfOutputFile = new File(outputTempFolder, getMsgfFileName(spectrumFileName));
                         msgfProcessBuilder = new MsgfProcessBuilder(msgfLocation,
-                                spectrumFile.getAbsolutePath(), msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads(), useCommandLine);
+                                spectrumFile.getAbsolutePath(), fastaFile, msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads(), useCommandLine);
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         msgfProcessBuilder.startProcess();
@@ -2031,7 +2096,7 @@ public class SearchHandler {
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
                         omssaProcessBuilder = new OmssaclProcessBuilder(omssaLocation,
-                                spectrumFile.getAbsolutePath(), omssaOutputFile, searchParameters, waitingHandler, exceptionHandler,
+                                spectrumFile.getAbsolutePath(), fastaFile, omssaOutputFile, searchParameters, waitingHandler, exceptionHandler,
                                 utilitiesUserParameters.getRefMass(), processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
@@ -2060,7 +2125,7 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
-                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, spectrumFile, waitingHandler, exceptionHandler,
+                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, spectrumFile, fastaFile, waitingHandler, exceptionHandler,
                                 processingParameters.getnThreads(), utilitiesUserParameters.getRefMass());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
@@ -2099,7 +2164,7 @@ public class SearchHandler {
 
                         // perform the tide search
                         if (!waitingHandler.isRunCanceled()) {
-                            tideSearchProcessBuilder = new TideSearchProcessBuilder(tideLocation, searchParameters, 
+                            tideSearchProcessBuilder = new TideSearchProcessBuilder(tideLocation, searchParameters,
                                     ms2File, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                             waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.tide.getName() + ".", true, true);
                             waitingHandler.appendReportEndLine();
@@ -2140,7 +2205,7 @@ public class SearchHandler {
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, identificationParametersFile, aplFile, waitingHandler, exceptionHandler, processingParameters.getnThreads());
+                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, identificationParametersFile, aplFile, fastaFile, waitingHandler, exceptionHandler, processingParameters.getnThreads());
                         waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".", true, true);
                         waitingHandler.appendReportEndLine();
                         andromedaProcessBuilder.startProcess();
@@ -2248,7 +2313,7 @@ public class SearchHandler {
                         }
                     }
                 }
-                
+
                 // save the ptm mappings for novor and directag
                 identificationParametersFactory.addIdentificationParameters(identificationParameters);
 
@@ -2383,7 +2448,7 @@ public class SearchHandler {
                         waitingHandler.setRunCanceled();
                     } else if (!identificationFiles.isEmpty()) {
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
-                                waitingHandler, exceptionHandler, experimentLabel, mgfFiles, identificationFilesList,
+                                waitingHandler, exceptionHandler, experimentLabel, mgfFiles, fastaFile, identificationFilesList,
                                 identificationParametersFile, peptideShakerFile, true, processingParameters, utilitiesUserParameters.outputData());
                         waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
 
@@ -2931,7 +2996,6 @@ public class SearchHandler {
                     File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
 
-                    File fastaFile = new File(identificationParameters.getSearchParameters().getFastaFile());
                     Util.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
 
                     for (File spectrumFile : getMgfFiles()) {
@@ -2969,7 +3033,6 @@ public class SearchHandler {
         // create the data folder in the zip file
         ZipUtils.addFolderToZip(DEFAULT_DATA_FOLDER, out);
 
-        File fastaFile = new File(identificationParameters.getSearchParameters().getFastaFile());
         ZipUtils.addFileToZip(DEFAULT_DATA_FOLDER, fastaFile, out, waitingHandler, totalUncompressedSize);
 
         for (File spectrumFile : getMgfFiles()) {
@@ -3158,7 +3221,7 @@ public class SearchHandler {
      */
     private long getTotalUncompressedSizeOfData(File mgfFile) {
 
-        long totalUncompressedSize = identificationParameters.getSearchParameters().getFastaFile().length();
+        long totalUncompressedSize = fastaFile.length();
 
         if (mgfFile != null) {
             totalUncompressedSize += mgfFile.length();
@@ -3261,10 +3324,10 @@ public class SearchHandler {
         }
         return error;
     }
-    
+
     /**
      * Returns the default output file name.
-     * 
+     *
      * @return the defaultOutputFileName
      */
     public static String getDefaultOutputFileName() {
@@ -3273,10 +3336,66 @@ public class SearchHandler {
 
     /**
      * Sets the default output file name.
-     * 
+     *
      * @param aDefaultOutputFileName the defaultOutputFileName to set
      */
     public static void setDefaultOutputFileName(String aDefaultOutputFileName) {
         defaultOutputFileName = aDefaultOutputFileName;
+    }
+
+    /**
+     * Appends decoy sequences to the given target database file.
+     *
+     * @param targetFile the target database file
+     * @param progressDialog the progress dialog
+     */
+    private void generateTargetDecoyDatabase(WaitingHandler waitingHandler) {
+
+        try {
+            // set up the new fasta file name
+            String newFasta = fastaFile.getAbsolutePath();
+            File originalFastaFile = fastaFile;
+
+            // remove the ending .fasta (if there)
+            if (fastaFile.getAbsolutePath().lastIndexOf(".") != -1) {
+                newFasta = fastaFile.getAbsolutePath().substring(0, fastaFile.getAbsolutePath().lastIndexOf("."));
+            }
+
+            // get the fasta summary
+            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFile.getAbsolutePath(), identificationParameters.getFastaParameters(), waitingHandler);
+
+            // add the target decoy tag
+            newFasta += identificationParameters.getFastaParameters().getTargetDecoyFileNameSuffix() + ".fasta";
+
+            File newFile = new File(newFasta);
+
+            waitingHandler.appendReport("Appending Decoy Sequences. Please Wait...", true, true);
+
+            waitingHandler.setPrimaryProgressCounterIndeterminate(false);
+            waitingHandler.setPrimaryProgressCounter(0);
+            waitingHandler.setMaxPrimaryProgressCounter(fastaSummary.nSequences);
+
+            DecoyConverter.appendDecoySequences(originalFastaFile, newFile, identificationParameters.getFastaParameters(), waitingHandler);
+
+            waitingHandler.setPrimaryProgressCounterIndeterminate(true);
+
+            fastaFile = newFile;
+            DecoyConverter.getDecoySummary(originalFastaFile, fastaSummary);
+
+        } catch (FileNotFoundException e) {
+
+            JOptionPane.showMessageDialog(null,
+                    new String[]{"FASTA Import Error.", "File " + fastaFile.getAbsolutePath() + " not found."},
+                    "FASTA Import Error", JOptionPane.WARNING_MESSAGE);
+            e.printStackTrace();
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null,
+                    new String[]{"FASTA Import Error.", "File " + fastaFile.getAbsolutePath() + " could not be imported."},
+                    "FASTA Import Error", JOptionPane.WARNING_MESSAGE);
+            e.printStackTrace();
+
+        }
     }
 }

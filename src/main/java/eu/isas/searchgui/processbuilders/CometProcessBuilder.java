@@ -56,6 +56,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File spectrumFile;
     /**
+     * The FASTA file.
+     */
+    private File fastaFile;
+    /**
      * The search parameters.
      */
     private SearchParameters searchParameters;
@@ -82,6 +86,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @param cometFolder the Comet folder
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
+     * @param fastaFile the FASTA file
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads
@@ -91,7 +96,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown if there are problems creating the Comet
      * parameter file
      */
-    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile,
+    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, File fastaFile, 
             WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, Double refMass) throws IOException {
 
         this.waitingHandler = waitingHandler;
@@ -100,6 +105,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         this.searchParameters = searchParameters;
         cometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
         this.spectrumFile = spectrumFile;
+        this.fastaFile = fastaFile;
         this.nThreads = nThreads;
         this.refMass = refMass;
 
@@ -247,7 +253,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     /////////////////////////
                     // database details
                     /////////////////////////
-                    + "database_name = " + searchParameters.getFastaFile() + System.getProperty("line.separator")
+                    + "database_name = " + fastaFile + System.getProperty("line.separator")
                     + "decoy_search = 0 # 0=no (default), 1=concatenated search, 2=separate search" + System.getProperty("line.separator")
                     /////////////////////////
                     // number of threads

@@ -28,7 +28,7 @@ public enum FastaCLIParams {
      */
     public boolean mandatory;
     /**
-     * Boolean indicating whether the command option has argument
+     * Boolean indicating whether the command option has argument.
      */
     public boolean hasArgument;
 

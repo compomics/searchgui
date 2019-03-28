@@ -175,13 +175,14 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param xTandem_directory directory location of tandem.exe
      * @param mgfFile name of the file containing the spectra
+     * @param fastaFile the FASTA file
      * @param outputPath path where to output the results
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
      */
-    public TandemProcessBuilder(File xTandem_directory, String mgfFile, String outputPath,
+    public TandemProcessBuilder(File xTandem_directory, String mgfFile, File fastaFile, String outputPath,
             SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         xtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
@@ -191,7 +192,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         xTandemFile = xTandem_directory;
         nProcessors = nThreads;
         spectrumFile = mgfFile;
-        dataBase = (new File(searchParameters.getFastaFile())).getAbsoluteFile();
+        dataBase = fastaFile.getAbsoluteFile();
         this.outputPath = outputPath;
         fragmentMassError = searchParameters.getFragmentIonAccuracy();
         precursorMassError = searchParameters.getPrecursorAccuracy();

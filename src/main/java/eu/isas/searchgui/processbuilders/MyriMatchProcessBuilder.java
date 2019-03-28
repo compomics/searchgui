@@ -54,13 +54,14 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param myriMatchDirectory directory location of MyriMatch executable
      * @param mgfFile name of the file containing the spectra
+     * @param fastaFile the FASTA file
      * @param outputFolder folder where to output the results
      * @param searchParameters the search parameters
      * @param exceptionHandler the handler of exceptions
      * @param waitingHandler the waiting handler
      * @param nThreads the number of threads to use
      */
-    public MyriMatchProcessBuilder(File myriMatchDirectory, String mgfFile, File outputFolder,
+    public MyriMatchProcessBuilder(File myriMatchDirectory, String mgfFile, File fastaFile, File outputFolder,
             SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         this.searchParameters = searchParameters;
@@ -83,7 +84,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the database
         process_name_array.add("-ProteinDatabase");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(searchParameters.getFastaFile())));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(fastaFile));
 
         // add the spectrum file
         process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));

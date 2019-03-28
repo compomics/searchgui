@@ -57,6 +57,10 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File spectrumFile;
     /**
+     * The FASTA file.
+     */
+    private File fastaFile;
+    /**
      * The name of the Andromeda executable.
      */
     public static final String EXECUTABLE_FILE_NAME = "AndromedaCmd.exe";
@@ -76,6 +80,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param searchParametersFile the file where to save the search parameters
      * @param spectrumFile the spectrum file
+     * @param fastaFile the FASTA file
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads
@@ -83,7 +88,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown whenever an error occurred while reading or
      * writing a file.
      */
-    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File searchParametersFile, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
+    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File searchParametersFile, File spectrumFile, File fastaFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -91,6 +96,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         this.searchParameters = searchParameters;
         andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
         this.spectrumFile = spectrumFile;
+        this.fastaFile = fastaFile;
 
         if (andromedaTempFolderPath == null) {
 
@@ -218,16 +224,16 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * Creates the database configuration file.
      *
      * @param andromedaFolder the Andromeda installation folder
-     * @param searchParameters the search parameters
+     * @param fastaFile the FASTA file
      *
      * @throws IOException exception thrown whenever an error occurred while
      * writing the database configuration file.
      */
-    public static void createDatabaseFile(File andromedaFolder, SearchParameters searchParameters) throws IOException {
+    public static void createDatabaseFile(File andromedaFolder, File fastaFile) throws IOException {
 
         File databaseFolder = new File(andromedaFolder, "conf");
         File databaseFile = new File(databaseFolder, "databases.xml");
-        File genericFastaFile = getGenericFastaFile(andromedaFolder, Util.getFileName(searchParameters.getFastaFile()));
+        File genericFastaFile = getGenericFastaFile(andromedaFolder, Util.getFileName(fastaFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFile));
         String dbName = genericFastaFile.getName();
         String date = "0001-01-01T00:00:00";
@@ -777,7 +783,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.newLine();
             }
 
-            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, Util.getFileName(searchParameters.getFastaFile())).getAbsolutePath() + "\"");
+            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, Util.getFileName(fastaFile)).getAbsolutePath() + "\"");
             bw.newLine();
             bw.write("decoy mode=" + andromedaParameters.getDecoyMode());
             bw.newLine();

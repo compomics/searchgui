@@ -58,6 +58,7 @@ import com.compomics.util.gui.parameters.identification.algorithm.OmssaParameter
 import com.compomics.util.gui.parameters.identification.algorithm.TideParametersDialog;
 import com.compomics.util.gui.parameters.identification.algorithm.XTandemParametersDialog;
 import com.compomics.util.gui.parameters.identification.search.SearchParametersDialog;
+import static com.compomics.util.gui.parameters.identification.search.SequenceDbDetailsDialog.lastFolderKey;
 import com.compomics.util.gui.parameters.tools.ProcessingParametersDialog;
 import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
@@ -120,6 +121,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The mgf files.
      */
     private ArrayList<File> mgfFiles = new ArrayList<>();
+    /**
+     * The FASTA file.
+     */
+    private File fastaFile;
     /**
      * The raw files.
      */
@@ -230,6 +235,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Creates a SearchGUI dialog.
      *
      * @param spectrumFiles the spectrum files (can be null)
+     * @param fastaFile the FASTA file
      * @param rawFiles the raw files (can be null)
      * @param aIdentificationParametersFile the identification settings file
      * (can be null)
@@ -238,7 +244,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param speciesType the species type (can be null)
      * @param projectName the PeptideShaker project name
      */
-    public SearchGUI(ArrayList<File> spectrumFiles, ArrayList<File> rawFiles, File aIdentificationParametersFile, File outputFolder, String species, String speciesType, String projectName) {
+    public SearchGUI(ArrayList<File> spectrumFiles, File fastaFile, ArrayList<File> rawFiles, File aIdentificationParametersFile, File outputFolder, String species, String speciesType, String projectName) {
 
         this.identificationParametersFile = aIdentificationParametersFile;
 
@@ -319,7 +325,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // set the search parameters
             updateIdentificationParametersDropDownMenu(true);
 
-            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, rawFiles, identificationParametersFile, processingParameters, exceptionHandler);
+            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, fastaFile, false, rawFiles, identificationParametersFile, processingParameters, exceptionHandler);
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
             enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());
@@ -622,6 +628,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         databaseSettingsLbl = new javax.swing.JLabel();
         databaseFileTxt = new javax.swing.JTextField();
         editDatabaseDetailsButton = new javax.swing.JButton();
+        addDecoysCheckBox = new javax.swing.JCheckBox();
         searchButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
         searchGUIPublicationLabel = new javax.swing.JLabel();
@@ -1485,7 +1492,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(searchEnginesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
+                .addComponent(searchEnginesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
         );
 
         inputFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input & Output"));
@@ -1560,7 +1567,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         databaseFileTxt.setEditable(false);
         databaseFileTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        databaseFileTxt.setText("Not yet implemented...");
 
         editDatabaseDetailsButton.setText("Edit");
         editDatabaseDetailsButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1568,6 +1574,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 editDatabaseDetailsButtonActionPerformed(evt);
             }
         });
+
+        addDecoysCheckBox.setText("Add Decoys");
 
         javax.swing.GroupLayout inputFilesPanelLayout = new javax.swing.GroupLayout(inputFilesPanel);
         inputFilesPanel.setLayout(inputFilesPanelLayout);
@@ -1588,22 +1596,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
-                            .addComponent(databaseFileTxt, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+                            .addComponent(databaseFileTxt))))
                 .addGap(10, 10, 10)
-                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(editResultFolderButton, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
-                    .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(editDatabaseDetailsButton)
-                    .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(clearSpectraButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                    .addComponent(editSettingsButton, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
+                        .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(editResultFolderButton, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
+                            .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(clearSpectraButton, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                            .addComponent(editSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
+                        .addComponent(editDatabaseDetailsButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(addDecoysCheckBox)))
                 .addContainerGap())
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editDatabaseDetailsButton, editResultFolderButton, editSettingsButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addDecoysCheckBox, addSettingsButton, addSpectraButton, clearSpectraButton, editDatabaseDetailsButton, editResultFolderButton, editSettingsButton});
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {resultFolderLbl, searchSettingsLbl, spectraFilesLabel});
 
@@ -1620,14 +1633,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(databaseSettingsLbl)
                     .addComponent(databaseFileTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editDatabaseDetailsButton))
+                    .addComponent(editDatabaseDetailsButton)
+                    .addComponent(addDecoysCheckBox))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchSettingsLbl)
                     .addComponent(addSettingsButton)
                     .addComponent(settingsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(editSettingsButton))
-                .addGap(2, 2, 2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resultFolderLbl)
                     .addComponent(editResultFolderButton)
@@ -2084,8 +2098,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         .addComponent(aboutButton)
                         .addGap(46, 46, 46)
                         .addComponent(searchGUIPublicationLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12))
                     .addComponent(preProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(deNovoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -2567,9 +2581,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 return;
             }
 
-            if (searchParameters.getFastaFile().contains("&")) {
+            if (fastaFile != null && fastaFile.getAbsolutePath().contains("&")) {
                 JOptionPane.showMessageDialog(this,
-                        "Database files with \'&\' in the file path (" + searchParameters.getFastaFile() + ")\n"
+                        "Database files with \'&\' in the file path (" + fastaFile + ")\n"
                         + "are not allowed in X!Tandem. Please rename of replace the database.", "Database File Error", JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -2577,7 +2591,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if the fasta file name is not too long for ms amanda
         if (enableMsAmandaJCheckBox.isSelected()) {
-            if (Util.removeExtension(Util.getFileName(searchParameters.getFastaFile())).length() > MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH) {
+            if (fastaFile != null && Util.removeExtension(Util.getFileName(fastaFile)).length() > MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH) {
                 JOptionPane.showMessageDialog(this,
                         "Database files names longer than " + MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH + " characters are not allowed in MS Amanda.\n"
                         + "Please rename of replace the database.", "Database File Error", JOptionPane.WARNING_MESSAGE);
@@ -2815,6 +2829,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setIdentificationParametersFile(identificationParametersFile);
         searchHandler.setProcessingParameters(processingParameters);
         searchHandler.setMgfFiles(mgfFiles);
+        searchHandler.setFastaFile(fastaFile);
+        searchHandler.setAddDecoys(addDecoysCheckBox.isSelected());
         searchHandler.setRawFiles(rawFiles);
         searchHandler.setResultsFolder(outputFolder);
         searchHandler.setPeptideShakerEnabled(peptideShakerCheckBox.isSelected());
@@ -4832,55 +4848,65 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void editDatabaseDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editDatabaseDetailsButtonActionPerformed
 
-        // @TODO: implement me!
-        JOptionPane.showMessageDialog(this, "Not yet implemented!", "Not Implemented!", JOptionPane.WARNING_MESSAGE);
-        
-//        String selectedFastaFile = null;
-//        
-//        if (!databaseFileTxt.getText().isEmpty()) {
-//            selectedFastaFile = databaseFileTxt.getText();
-//        }
-//        
-//        FastaParameters fastaParameters = null;
-//        
-//        if (identificationParameters != null) {
-//            fastaParameters = identificationParameters.getSearchParameters().getFastaParameters();
-//        }
-//        
-//        
-//        SequenceDbDetailsDialog sequenceDbDetailsDialog = new SequenceDbDetailsDialog(this, selectedFastaFile, fastaParameters, lastSelectedFolder, 
-//                true, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-//                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-//
-//        //loadUserPreferences(); // @TODO: is this needed?
-//
-//        boolean success = sequenceDbDetailsDialog.selectDB(true);
-//
-//        if (success) {
-//
-//            sequenceDbDetailsDialog.setVisible(true);
-//
-//            if (!sequenceDbDetailsDialog.isCanceled()) {
-//
-//                selectedFastaFile = sequenceDbDetailsDialog.getSelectedFastaFile();
-//                fastaParameters = sequenceDbDetailsDialog.getFastaParameters();
-//                
-//                if (identificationParameters != null) {
-//                    identificationParameters.getSearchParameters().setFastaParameters(fastaParameters); // @TODO: what to do if the identificationParameters is null..?
-//                }
-//
-//                databaseFileTxt.setText(selectedFastaFile);
-//
-//            }
-//
-//        }
-//
-//        validateInput(false);
+        File startLocation = null;
+
+        if (utilitiesUserParameters.getDbFolder() != null && utilitiesUserParameters.getDbFolder().exists()) {
+
+            startLocation = utilitiesUserParameters.getDbFolder();
+
+        }
+
+        if (startLocation == null) {
+
+            startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
+
+        }
+
+        JFileChooser fc = new JFileChooser(startLocation);
+
+        FileFilter filter = new FileFilter() {
+
+            @Override
+            public boolean accept(File myFile) {
+
+                return myFile.getName().toLowerCase().endsWith("fasta")
+                        || myFile.isDirectory();
+            }
+
+            @Override
+            public String getDescription() {
+                return "FASTA (.fasta)";
+            }
+
+        };
+
+        fc.setFileFilter(filter);
+        int result = fc.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+
+            fastaFile = fc.getSelectedFile();
+            File folder = fastaFile.getParentFile();
+            utilitiesUserParameters.setDbFolder(folder);
+            lastSelectedFolder.setLastSelectedFolder(lastFolderKey, folder.getAbsolutePath());
+            
+            databaseFileTxt.setText(fastaFile.getAbsolutePath());
+
+            if (fastaFile.getName().contains(" ")) {
+
+                JOptionPane.showMessageDialog(this, "Your FASTA file name contains white space and ougth to be renamed.", "File Name Warning", JOptionPane.WARNING_MESSAGE);
+            }
+
+        }
+
+        validateInput(false);
+
     }//GEN-LAST:event_editDatabaseDetailsButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JCheckBox addDecoysCheckBox;
     private javax.swing.JButton addSettingsButton;
     private javax.swing.JButton addSpectraButton;
     private javax.swing.JMenuItem advancedSettingsMenuItem;
@@ -5234,9 +5260,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             spectraFilesTxt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
             spectraFilesLabel.setForeground(Color.BLACK);
         }
-        
-        
-        
+
         if (databaseFileTxt.getText() == null || databaseFileTxt.getText().trim().equals("")) {
             if (showMessage && valid) {
                 JOptionPane.showMessageDialog(this, "You need to specify a search database.", "Search Database Not Found", JOptionPane.WARNING_MESSAGE);
@@ -5246,24 +5270,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             databaseFileTxt.setToolTipText(null);
             valid = false;
         } else {
+            File test = new File(databaseFileTxt.getText().trim());
 
-            // @TODO: re-add when the database can be selected
-            
-//            File test = new File(databaseFileTxt.getText().trim());
-//
-//            if (!test.exists()) {
-//
-//                if (showMessage && valid) {
-//
-//                    JOptionPane.showMessageDialog(this, "The database file could not be found.", "Search Database Not Found", JOptionPane.WARNING_MESSAGE);
-//
-//                }
-//
-//                databaseSettingsLbl.setForeground(Color.RED);
-//                databaseSettingsLbl.setToolTipText("Database file could not be found!");
-//                valid = false;
-//
-//            }
+            if (!test.exists()) {
+
+                if (showMessage && valid) {
+
+                    JOptionPane.showMessageDialog(this, "The database file could not be found.", "Search Database Not Found", JOptionPane.WARNING_MESSAGE);
+
+                }
+
+                databaseSettingsLbl.setForeground(Color.RED);
+                databaseSettingsLbl.setToolTipText("Database file could not be found!");
+                valid = false;
+
+            }
         }
 
         // validate the search parameters
@@ -5795,11 +5816,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         ArrayList<File> spectrumFiles = null;
+        File fastaFile = null;
         ArrayList<File> rawFiles = null;
         File searchParametersFile = null;
         File outputFolder = null;
         String currentSpecies = null, currentSpeciesType = null, currentProjectName = null;
-        boolean spectrum = false, raw = false, parameters = false, output = false, species = false, speciesType = false, projectName = false;
+        boolean spectrum = false, fasta = false, raw = false, parameters = false, output = false, species = false, speciesType = false, projectName = false;
 
         for (String arg : args) {
             if (spectrum) {
@@ -5814,6 +5836,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     e.printStackTrace();
                 }
                 spectrum = false;
+            }
+            if (fasta) {
+                fastaFile = new File(arg);
+                fasta = false;
             }
             if (raw) {
                 try {
@@ -5883,7 +5909,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         }
 
-        new SearchGUI(spectrumFiles, rawFiles, searchParametersFile, outputFolder, currentSpecies, currentSpeciesType, currentProjectName);
+        new SearchGUI(spectrumFiles, fastaFile, rawFiles, searchParametersFile, outputFolder, currentSpecies, currentSpeciesType, currentProjectName);
     }
 
     /**

@@ -29,6 +29,10 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      */
     private final ArrayList<File> spectrumFiles;
     /**
+     * The FASTA file.
+     */
+    private final File fastaFile;
+    /**
      * The identification files.
      */
     private final ArrayList<File> identificationFiles;
@@ -58,6 +62,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param reference the name of the experiment
      * @param spectrumFiles the spectrum files
      * @param cpsFile the cpsx file
+     * @param fastaFile the FASTA file
      * @param identificationFiles the search engines result files
      * @param showGuiProgress a boolean indicating whether the progress shall be
      * displayed in a GUI
@@ -71,7 +76,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String reference,
-            ArrayList<File> spectrumFiles, ArrayList<File> identificationFiles, File identificationParametersFile, 
+            ArrayList<File> spectrumFiles, File fastaFile, ArrayList<File> identificationFiles, File identificationParametersFile, 
             File cpsFile, boolean showGuiProgress,
             ProcessingParameters processingParameters, boolean includeData)
             throws IOException, ClassNotFoundException {
@@ -80,6 +85,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
         this.exceptionHandler = exceptionHandler;
         this.reference = reference;
         this.spectrumFiles = spectrumFiles;
+        this.fastaFile = fastaFile;
         this.identificationParametersFile = identificationParametersFile;
         this.identificationFiles = identificationFiles;
         this.cpsFile = cpsFile;
@@ -121,6 +127,8 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationFiles));
             process_name_array.add("-spectrum_files");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFiles));
+            process_name_array.add("-fasta_file");
+            process_name_array.add(CommandLineUtils.getCommandLineArgument(fastaFile));
             process_name_array.add("-id_params");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationParametersFile));
             process_name_array.add("-out");

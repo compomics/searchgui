@@ -17,6 +17,7 @@ public enum SearchCLIParams {
     // https://github.com/compomics/searchgui/wiki/SearchCLI.
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     SPECTRUM_FILES("spectrum_files", "Spectrum files (mgf format), comma separated list or an entire folder.", true),
+    FASTA_FILE("fasta_file", "The complete path to the FASTA file.", true),
     OUTPUT_FOLDER("output_folder", "The output folder.", true),
 
     THREADS("threads", "Number of threads to use for the processing, default: the number of cores.", false),
@@ -117,9 +118,8 @@ public enum SearchCLIParams {
 
         output += "Mandatory Parameters:\n\n";
         output += "-" + String.format(formatter, SPECTRUM_FILES.id) + " " + SPECTRUM_FILES.description + "\n";
+        output += "-" + String.format(formatter, FASTA_FILE.id) + " " + FASTA_FILE.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_FOLDER.id) + " " + OUTPUT_FOLDER.description + "\n";
-
-        output += "\n\nOptional Input Parameters:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.id) + " " + IdentificationParametersCLIParams.IDENTIFICATION_PARAMETERS.description + "\n";
         
         output += "\n\nSearch Engine Selection:\n\n";

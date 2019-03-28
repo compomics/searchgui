@@ -214,6 +214,7 @@ public class SearchCLI implements Callable {
 
             // Identification parameters
             IdentificationParameters identificationParameters = searchCLIInputBean.getIdentificationParameters();
+            identificationParameters.getFastaParameters().setTargetDecoyFileNameSuffix(searchCLIInputBean.getTargetDecoyFileNameTag());
             File parametersFile = searchCLIInputBean.getIdentificationParametersFile();
             if (parametersFile == null) {
                 String name = identificationParameters.getName();
@@ -234,7 +235,6 @@ public class SearchCLI implements Callable {
             }
 
             UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
-            userParameters.setTargetDecoyFileNameSuffix(searchCLIInputBean.getTargetDecoyFileNameTag());
             userParameters.setRefMass(searchCLIInputBean.getRefMass());
             userParameters.setRenameXTandemFile(searchCLIInputBean.renameXTandemFile());
             userParameters.setSearchGuiOutputParameters(searchCLIInputBean.getOutputOption());
@@ -245,7 +245,7 @@ public class SearchCLI implements Callable {
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
                     searchCLIInputBean.getOutputFolder(), searchCLIInputBean.getDefaultOutputFileName(),
-                    spectrumFiles, new ArrayList<File>(), parametersFile,
+                    spectrumFiles, searchCLIInputBean.getFastaFile(), false, new ArrayList<File>(), parametersFile,
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),

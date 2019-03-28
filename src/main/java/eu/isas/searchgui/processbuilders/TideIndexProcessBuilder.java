@@ -31,7 +31,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The FASTA file.
      */
-    private String fastaFile;
+    private String fastaFilePath;
     /**
      * The search parameters.
      */
@@ -49,6 +49,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param tideFolder the Tide folder
+     * @param fastaFile the FASTA file
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
@@ -56,13 +57,13 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown of there are problems creating the Tide
      * parameter file
      */
-    public TideIndexProcessBuilder(File tideFolder, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException {
+    public TideIndexProcessBuilder(File tideFolder, File fastaFile, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
         this.searchParameters = searchParameters;
         tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
-        this.fastaFile = searchParameters.getFastaFile();
+        fastaFilePath = fastaFile.getAbsolutePath();
 
         // make sure that the tide file is executable
         File tide = new File(tideFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
@@ -73,7 +74,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("tide-index");
 
         // add the fasta file
-        process_name_array.add(searchParameters.getFastaFile());
+        process_name_array.add(fastaFilePath);
 
         // the name of the index file
         process_name_array.add(tideParameters.getFastIndexFolderName()); // @TODO: put in the user temp folder instead?
@@ -450,6 +451,6 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getCurrentlyProcessedFileName() {
-        return Util.getFileName(fastaFile);
+        return Util.getFileName(fastaFilePath);
     }
 }

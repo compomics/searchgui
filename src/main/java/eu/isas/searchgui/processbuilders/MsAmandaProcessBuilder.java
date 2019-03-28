@@ -190,13 +190,14 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param msAmandaDirectory directory location of MSAmanda.exe
      * @param mgfPath the path to file containing the spectra
+     * @param fastaFile the FASA file
      * @param outputPath path where to output the results
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use (note: cannot be used)
      */
-    public MsAmandaProcessBuilder(File msAmandaDirectory, String mgfPath, String outputPath,
+    public MsAmandaProcessBuilder(File msAmandaDirectory, String mgfPath, File fastaFile, String outputPath,
             SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         this.waitingHandler = waitingHandler;
@@ -206,7 +207,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         // set the paths
         msAmandaFolder = msAmandaDirectory;
         spectrumFilePath = mgfPath;
-        database = (new File(searchParameters.getFastaFile())).getAbsoluteFile();
+        database = fastaFile.getAbsoluteFile();
         //msAmandTempFolder = ""; @TODO: allow the user to set the temp folder
 
         maxRank = msAmandaParameters.getMaxRank();
@@ -561,7 +562,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // use unimod name if possible
-        CvTerm cvTerm = modification.getCvTerm();
+        CvTerm cvTerm = modification.getUnimodCvTerm();
 
         if (cvTerm != null) {
             return "\t\t\t<modification" + fixedTag

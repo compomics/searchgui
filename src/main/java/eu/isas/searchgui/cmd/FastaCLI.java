@@ -8,7 +8,6 @@ import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.experiment.io.biology.protein.FastaSummary;
 import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverter;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
-import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
@@ -121,13 +120,10 @@ public class FastaCLI {
                 String decoySuffix = fastaCLIInputBean.getDecoySuffix();
 
                 if (decoySuffix != null) {
-
-                    UtilitiesUserParameters userPreferences = UtilitiesUserParameters.loadUserParameters();
-                    userPreferences.setTargetDecoyFileNameSuffix(decoySuffix + ".fasta");
-
+                    fastaParameters.setTargetDecoyFileNameSuffix(decoySuffix + ".fasta");
                 }
 
-                File newFile = generateTargetDecoyDatabase(waitingHandler);
+                File newFile = generateTargetDecoyDatabase(fastaParameters, waitingHandler);
 
                 System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
                 System.out.println("Output: " + newFile.getAbsolutePath() + System.getProperty("line.separator"));
@@ -151,9 +147,9 @@ public class FastaCLI {
      */
     public void writeDbProperties(FastaSummary fastaSummary, FastaParameters fastaParameters) {
 
-        System.out.println("Name: " + fastaParameters.getName());
-        System.out.println("Description: " + fastaParameters.getDescription());
-        System.out.println("Version: " + fastaParameters.getVersion());
+        System.out.println("Name: " + fastaSummary.getName());
+        System.out.println("Description: " + fastaSummary.getDescription());
+        System.out.println("Version: " + fastaSummary.getVersion());
 
         if (fastaParameters.isTargetDecoy()) {
 
@@ -191,24 +187,24 @@ public class FastaCLI {
     /**
      * Appends decoy sequences to the given target database file.
      *
+     * @param fastaParameters the FASTA parsing parameters
      * @param waitingHandler the waiting handler
      * 
      * @return the file created
      * @throws IOException exception thrown whenever an error happened while 
      * reading or writing a FASTA file
      */
-    public File generateTargetDecoyDatabase(WaitingHandler waitingHandler) throws IOException {
+    public File generateTargetDecoyDatabase(FastaParameters fastaParameters, WaitingHandler waitingHandler) throws IOException {
 
         // Get file in
         File fileIn = fastaCLIInputBean.getInputFile();
 
         // Get file out
-        UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
-        File fileOut = new File(fileIn.getParent(), Util.removeExtension(fileIn.getName()) + userParameters.getTargetDecoyFileNameSuffix() + ".fasta");
+        File fileOut = new File(fileIn.getParent(), Util.removeExtension(fileIn.getName()) + fastaParameters.getTargetDecoyFileNameSuffix() + ".fasta");
 
         // Write file
         waitingHandler.setWaitingText("Appending Decoy Sequences. Please Wait...");
-        DecoyConverter.appendDecoySequences(fileIn, fileOut, waitingHandler);
+        DecoyConverter.appendDecoySequences(fileIn, fileOut, fastaParameters, waitingHandler);
 
         return fileOut;
     }

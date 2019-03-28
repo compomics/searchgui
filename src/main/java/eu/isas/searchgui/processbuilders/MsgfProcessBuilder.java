@@ -85,6 +85,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param msgfDirectory directory location of MSGFPlus.jar
      * @param mgfFile name of the file containing the spectra
+     * @param fastaFile the FASTA file
      * @param outputFile the output file
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
@@ -97,7 +98,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
-    public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File outputFile, SearchParameters searchParameters,
+    public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File fastaFile, File outputFile, SearchParameters searchParameters,
             WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine)
             throws IOException, ClassNotFoundException {
 
@@ -156,7 +157,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the database
         process_name_array.add("-d");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(searchParameters.getFastaFile())));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(fastaFile));
 
         // set the output file
         process_name_array.add("-o");
@@ -441,7 +442,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
 
         // use unimod name if possible
         String cvTermName = modName;
-        CvTerm cvTerm = modification.getCvTerm();
+        CvTerm cvTerm = modification.getUnimodCvTerm();
         if (cvTerm != null) {
             cvTermName = cvTerm.getName();
         }

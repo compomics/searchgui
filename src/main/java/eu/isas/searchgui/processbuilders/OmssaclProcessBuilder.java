@@ -52,6 +52,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param omssacl_directory directory location of omssacl.exe
      * @param spectraFile string location of spectra file to search
+     * @param fastaFile the FASTA file
      * @param outputFile string location where to send omx/csv/pepxml formatted
      * results file
      * @param searchParameters the search parameters
@@ -66,7 +67,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File outputFile, SearchParameters searchParameters,
+    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File fastaFile, File outputFile, SearchParameters searchParameters,
             WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, Double refMass, int nThreads) throws IOException, ClassNotFoundException {
 
         this.spectraFile = spectraFile;
@@ -76,8 +77,8 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
 
         // The database file path and name.
-        File seqDBFile = new File(searchParameters.getFastaFile());
-        File dbFilePath = seqDBFile.getParentFile();
+        File seqDBFile = fastaFile;
+        File dbFilePath = fastaFile.getParentFile();
 
         // make sure that the omssacl file is executable
         File omssaFile = new File(omssacl_directory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);

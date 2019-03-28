@@ -25,6 +25,10 @@ public class SearchCLIInputBean {
      */
     private ArrayList<File> spectrumFiles;
     /**
+     * The FASTA file.
+     */
+    private File fastaFile;
+    /**
      * The output folder.
      */
     private File outputFolder;
@@ -194,8 +198,12 @@ public class SearchCLIInputBean {
         String spectrumFilesTxt = aLine.getOptionValue(SearchCLIParams.SPECTRUM_FILES.id);
         spectrumFiles = getSpectrumFiles(spectrumFilesTxt);
 
+        // get the FASTA file
+        String arg = aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id);
+        fastaFile = new File(arg);
+
         // output folder
-        String arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
+        arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
         outputFolder = new File(arg);
 
         // get the mgf size check settings
@@ -383,6 +391,15 @@ public class SearchCLIInputBean {
      */
     public ArrayList<File> getSpectrumFiles() {
         return spectrumFiles;
+    }
+    
+    /**
+     * Return the FASTA file.
+     *
+     * @return the FASTA file
+     */
+    public File getFastaFile() {
+        return fastaFile;
     }
 
     /**
@@ -717,6 +734,18 @@ public class SearchCLIInputBean {
                     System.out.println(System.getProperty("line.separator") + "Spectrum file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
                     return false;
                 }
+            }
+        }
+        
+        // check the FASTA file
+        if (!aLine.hasOption(SearchCLIParams.FASTA_FILE.id) || ((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)).equals("")) {
+            System.out.println(System.getProperty("line.separator") + "FASTA file not specified." + System.getProperty("line.separator"));
+            return false;
+        } else {
+            File file = new File(((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)));
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "FASTA file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
+                return false;
             }
         }
 
