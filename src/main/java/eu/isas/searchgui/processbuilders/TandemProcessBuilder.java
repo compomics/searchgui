@@ -374,7 +374,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         if (xtandemParameters.getParentMonoisotopicMassIsotopeError()) {
             parentMonoisotopicMassIsotopeError = "yes";
         } else {
-            parentMonoisotopicMassIsotopeError = "no";
+            parentMonoisotopicMassIsotopeError = "no"; // @TODO: why null in the current backend???
         }
 
         selectedIons = new HashSet<>();
