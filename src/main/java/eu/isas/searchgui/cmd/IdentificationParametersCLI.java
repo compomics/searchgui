@@ -2,27 +2,42 @@ package eu.isas.searchgui.cmd;
 
 import com.compomics.software.CompomicsWrapper;
 import com.compomics.cli.identification_parameters.AbstractIdentificationParametersCli;
-import eu.isas.searchgui.SearchHandler;
-import java.io.File;
+import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.waiting.WaitingHandler;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  * The SearchParametersCLI allows creating search parameters files using command
  * line arguments.
  *
  * @author Marc Vaudel
+ * @author Harald Barsnes
  */
 public class IdentificationParametersCLI extends AbstractIdentificationParametersCli {
 
     /**
-     * Construct a new SearchParametersCLI runnable from a list of arguments.
+     * The waiting handler.
+     */
+    private WaitingHandler waitingHandler;
+    
+    /**
+     * Construct a new IdentificationParametersCLI runnable from a list of arguments.
      * When initialization is successful, calling "run" will write the created
      * parameters file.
      *
      * @param args the command line arguments
      */
     public IdentificationParametersCLI(String[] args) {
-        initiate(args);
+        try {
+            waitingHandler = new WaitingHandlerCLIImpl();
+            // check if there are updates to the paths
+            String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
+            initiate(nonPathSettingArgsAsList);
+        } catch (ParseException ex) {
+            waitingHandler.appendReport("An error occurred while running the command line.", true, true);
+            ex.printStackTrace();
+        }
     }
 
     /**
