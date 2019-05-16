@@ -1567,7 +1567,7 @@ public class SearchHandler {
 
     /**
      * Returns the FASTA file.
-     * 
+     *
      * @return the FASTA file
      */
     public File getFastaFile() {
@@ -2526,41 +2526,50 @@ public class SearchHandler {
 
         File outputFile = getInputFile(folder);
         ArrayList<File> tempMgfFiles = new ArrayList<>(this.mgfFiles);
-        ArrayList<String> names = new ArrayList<>();
-        for (File file : tempMgfFiles) {
-            names.add(file.getName());
-        }
-        if (outputFile.exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(outputFile));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    // Skip empty lines.
-                    line = line.trim();
-                    if (!line.equals("")) {
-                        try {
-                            File newFile = new File(line);
-                            if (!names.contains(newFile.getName())) {
-                                names.add(newFile.getName());
-                                tempMgfFiles.add(newFile);
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                br.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-                // ignore error
-                tempMgfFiles = new ArrayList<>(this.mgfFiles);
-            }
-        }
+
+        // @TODO: don't see why the below code is needed..?
+//        ArrayList<String> names = new ArrayList<>();
+//        for (File file : tempMgfFiles) {
+//            names.add(file.getName());
+//        }
+//        if (outputFile.exists()) {
+//            try {
+//                BufferedReader br = new BufferedReader(new FileReader(outputFile));
+//                String line;
+//                while ((line = br.readLine()) != null) {
+//                    // Skip empty lines.
+//                    line = line.trim();
+//                    if (!line.equals("")) {
+//                        try {
+//                            File newFile = new File(line);
+//                            if (!names.contains(newFile.getName())) {
+//                                names.add(newFile.getName());
+//                                tempMgfFiles.add(newFile);
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//                br.close();
+//            } catch (IOException ioe) {
+//                ioe.printStackTrace();
+//                // ignore error
+//                tempMgfFiles = new ArrayList<>(this.mgfFiles);
+//            }
+//        }
+
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+
+            // add the fasta file
+            bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
+
+            // add the mgf files
             for (File mgfFile : tempMgfFiles) {
                 bw.write(mgfFile.getAbsolutePath() + System.getProperty("line.separator"));
             }
+
             bw.flush();
             bw.close();
         } catch (Exception e) {
@@ -2720,11 +2729,13 @@ public class SearchHandler {
     }
 
     /**
-     * Returns the file where the spectrum file names are saved.
+     * Returns the file where the paths to the spectrum and FASTA files are
+     * saved.
      *
-     * @param outputFolder the folder where this file shall be saved.
+     * @param outputFolder the folder where this file shall be saved
      *
-     * @return the file where the spectrum file names are saved
+     * @return the file where the paths to the spectrum and FASTA file paths are
+     * saved
      */
     public static File getInputFile(File outputFolder) {
         return new File(outputFolder, SEARCHGUI_INPUT);
