@@ -1771,10 +1771,61 @@ public class SearchHandler {
                         outputTempFolder = outputFolder;
                     }
                 }
+                
+                int nRawFiles = getRawFiles().size();
+                int nFilesToSearch = nRawFiles + getMgfFiles().size();
+                int nProgress = 2 + nRawFiles;
+                if (enableOmssa) {
+                    nProgress += nFilesToSearch;
+                    nProgress++; // the omssa indexing
+                }
+                if (enableXtandem) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableMsgf) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableMsAmanda) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableMyriMatch) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableComet) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableTide) {
+                    nProgress += nFilesToSearch;
+                    nProgress++; // the tide indexing
+                }
+                if (enableAndromeda) {
+                    nProgress += nFilesToSearch;
+                    nProgress++; // the adromeda indexing
+                }
+                if (enableNovor) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableDirecTag) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enablePeptideShaker) {
+                    nProgress++;
+                }
+                if (enableReporter) {
+                    nProgress++;
+                }
+                if (addDecoys) {
+                    nProgress++;
+                }
+
+                waitingHandler.setPrimaryProgressCounterIndeterminate(false);
+                waitingHandler.setMaxPrimaryProgressCounter(nProgress);
+                waitingHandler.increasePrimaryProgressCounter(); // just to not be stuck at 0% for the whole first search
 
                 // add decoys
                 if (addDecoys) {
                     generateTargetDecoyDatabase(waitingHandler);
+                    waitingHandler.increasePrimaryProgressCounter();
                 }
 
                 SearchParameters searchParameters = identificationParameters.getSearchParameters();
@@ -1814,6 +1865,8 @@ public class SearchHandler {
                     Util.copyFile(modsXmlFile, destinationFile);
                     destinationFile = new File(outputTempFolder, "omssa_usermods.xml");
                     Util.copyFile(userModsXmlFile, destinationFile);
+                    
+                    waitingHandler.increasePrimaryProgressCounter();
                 }
 
                 if (enableAndromeda) {
@@ -1834,51 +1887,9 @@ public class SearchHandler {
                     AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
                     AndromedaProcessBuilder.createPtmFile(andromedaLocation, identificationParameters, identificationParametersFile);
+                    
+                    waitingHandler.increasePrimaryProgressCounter();
                 }
-
-                int nRawFiles = getRawFiles().size();
-                int nFilesToSearch = nRawFiles + getMgfFiles().size();
-                int nProgress = 2 + nRawFiles;
-                if (isOmssaEnabled()) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableXtandem) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableMsgf) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableMsAmanda) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableMyriMatch) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableComet) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableTide) {
-                    nProgress += nFilesToSearch;
-                    nProgress++; // the tide indexing
-                }
-                if (enableAndromeda) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableNovor) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enableDirecTag) {
-                    nProgress += nFilesToSearch;
-                }
-                if (enablePeptideShaker) {
-                    nProgress++;
-                }
-                if (isReporterEnabled()) {
-                    nProgress++;
-                }
-
-                waitingHandler.setMaxPrimaryProgressCounter(nProgress);
-                waitingHandler.increasePrimaryProgressCounter(); // just to not be stuck at 0% for the whole first search
 
                 if (enableTide && !waitingHandler.isRunCanceled()) {
                     // create the tide index
@@ -1886,6 +1897,8 @@ public class SearchHandler {
                     waitingHandler.appendReport("Indexing " + fastaFile.getName() + " for Tide.", true, true);
                     waitingHandler.appendReportEndLine();
                     tideIndexProcessBuilder.startProcess();
+                    
+                    waitingHandler.increasePrimaryProgressCounter();
                 }
 
                 // convert raw files
@@ -3382,13 +3395,13 @@ public class SearchHandler {
 
             waitingHandler.appendReport("Appending Decoy Sequences. Please Wait...", true, true);
 
-            waitingHandler.setPrimaryProgressCounterIndeterminate(false);
-            waitingHandler.setPrimaryProgressCounter(0);
-            waitingHandler.setMaxPrimaryProgressCounter(fastaSummary.nSequences);
+            waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+            waitingHandler.setSecondaryProgressCounter(0);
+            waitingHandler.setMaxSecondaryProgressCounter(fastaSummary.nSequences);
 
             DecoyConverter.appendDecoySequences(originalFastaFile, newFile, identificationParameters.getFastaParameters(), waitingHandler);
 
-            waitingHandler.setPrimaryProgressCounterIndeterminate(true);
+            waitingHandler.setSecondaryProgressCounterIndeterminate(true);
 
             fastaFile = newFile;
             DecoyConverter.getDecoySummary(originalFastaFile, fastaSummary);
