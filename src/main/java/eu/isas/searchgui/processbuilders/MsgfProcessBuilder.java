@@ -183,6 +183,10 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // link to the msgf+ modifications file
         process_name_array.add("-mod");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(msgfModFile));
+        
+        // max variable modifications per peptide
+        process_name_array.add("-numMods");
+        process_name_array.add("" + msgfParameters.getNumberOfModificationsPerPeptide());
 
         // add min/max precursor charge
         process_name_array.add("-minCharge");
@@ -245,6 +249,24 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         //process_name_array.add("-ccm");
         //process_name_array.add("1.00727649"); // @TODO: implement?
 
+        // set the maximum missed cleavages
+        DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
+        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+            
+            Integer missedCleavages = null;
+            for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+                int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+                if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                    missedCleavages = enzymeMissedCleavages;
+                }
+            }
+
+            if (missedCleavages != null) {
+                process_name_array.add("-maxMissedCleavages");
+                process_name_array.add("" + missedCleavages);
+            }
+        }
+        
         // set the range of allowed isotope peak errors
         process_name_array.add("-ti");
         process_name_array.add(CommandLineUtils.getQuoteType()

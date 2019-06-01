@@ -271,7 +271,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the maximum missed cleavages
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
-            process_name_array.add("-MaxMissedCleavages");
+            
             Integer missedCleavages = null;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
                 int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
@@ -279,7 +279,11 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
                     missedCleavages = enzymeMissedCleavages;
                 }
             }
-            process_name_array.add("" + missedCleavages);
+
+            if (missedCleavages != null) {
+                process_name_array.add("-MaxMissedCleavages");
+                process_name_array.add("" + missedCleavages);
+            }
         }
         // advanced settings not used:
         //  ProteinSampleSize
