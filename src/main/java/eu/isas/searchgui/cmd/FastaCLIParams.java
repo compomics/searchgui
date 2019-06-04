@@ -14,7 +14,7 @@ public enum FastaCLIParams {
     // When adding an option don't forget to update the getOptions and getOptionsAsString methods
     in("in", "FASTA file", true, true),
     decoy("decoy", "Create a concatenated target/decoy database.", false, false),
-    decoy_suffix("decoy_suffix", "Target decoy suffix, defaults to _concatenated_target_decoy.fasta.", false, true);
+    decoy_suffix("decoy_suffix", "Target decoy suffix, defaults to _concatenated_target_decoy.", false, true);
     /**
      * Short Id for the CLI parameter.
      */
