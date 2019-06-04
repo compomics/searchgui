@@ -120,7 +120,7 @@ public class FastaCLI {
                 String decoySuffix = fastaCLIInputBean.getDecoySuffix();
 
                 if (decoySuffix != null) {
-                    fastaParameters.setTargetDecoyFileNameSuffix(decoySuffix + ".fasta");
+                    fastaParameters.setTargetDecoyFileNameSuffix(decoySuffix);
                 }
 
                 File newFile = generateTargetDecoyDatabase(fastaParameters, waitingHandler);
