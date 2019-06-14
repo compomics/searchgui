@@ -92,6 +92,7 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_PROTEINS.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_PROTEINS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_SEQUENCES.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_SEQUENCES.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_SPECTRA.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_SPECTRA.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_OUTPUT_HISTOGRAMS.id) + " " + IdentificationParametersCLIParams.XTANDEM_OUTPUT_HISTOGRAMS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_SKYLINE.id) + " " + IdentificationParametersCLIParams.XTANDEM_SKYLINE.description + "\n";
 
         output += "\n\nMyriMatch advanced parameters:\n\n";
