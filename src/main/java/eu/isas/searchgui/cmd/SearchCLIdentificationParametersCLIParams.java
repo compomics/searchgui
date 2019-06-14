@@ -78,6 +78,7 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_QUICK_ACETYL.id) + " " + IdentificationParametersCLIParams.XTANDEM_QUICK_ACETYL.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_QUICK_PYRO.id) + " " + IdentificationParametersCLIParams.XTANDEM_QUICK_PYRO.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_STP_BIAS.id) + " " + IdentificationParametersCLIParams.XTANDEM_STP_BIAS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_PTM_COMPLEXITY.id) + " " + IdentificationParametersCLIParams.XTANDEM_PTM_COMPLEXITY.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_REFINE.id) + " " + IdentificationParametersCLIParams.XTANDEM_REFINE.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_REFINE_EVALUE.id) + " " + IdentificationParametersCLIParams.XTANDEM_REFINE_EVALUE.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.XTANDEM_REFINE_UNANTICIPATED_CLEAVAGE.id) + " " + IdentificationParametersCLIParams.XTANDEM_REFINE_UNANTICIPATED_CLEAVAGE.description + "\n";
