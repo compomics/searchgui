@@ -130,6 +130,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private ArrayList<File> rawFiles = new ArrayList<>();
     /**
+     * Boolean indicating whether non-Thermo raw files are selected.
+     */
+    private boolean nonThermoRawFilesSelected = false;
+    /**
      * The modifications factory.
      */
     private ModificationFactory modificationFactory;
@@ -375,7 +379,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             // update the horizontal padding for the titled borders
             ((TitledBorder) inputFilesPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Input & Output" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
-            ((TitledBorder) preProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Pre Processing" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
+            ((TitledBorder) preProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Raw File Conversion" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
             ((TitledBorder) searchEnginesLocationPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Search Engines" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
             ((TitledBorder) deNovoPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "De Novo Algorithms" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
             ((TitledBorder) postProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Post Processing" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
@@ -466,8 +470,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             if (rawFiles != null && !rawFiles.isEmpty()) {
-                checkProteoWizard();
-                msconvertCheckBox.setSelected(!rawFiles.isEmpty());
+                msconvertCheckBox.setSelected(checkProteoWizard());
             }
 
             validateInput(false);
@@ -644,6 +647,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msconvertButton = new javax.swing.JButton();
         msconvertSettingsButton = new javax.swing.JButton();
         msconvertSupportButton = new javax.swing.JButton();
+        thermoRawFileParserCheckBox = new javax.swing.JCheckBox();
+        thermoRawFileParserButton = new javax.swing.JButton();
+        thermoRawFileParserSupportButton = new javax.swing.JButton();
+        thermoRawFileParserLabel = new javax.swing.JLabel();
+        thermoRawFileParserSettingsButton = new javax.swing.JButton();
         deNovoPanel = new javax.swing.JPanel();
         enableNovorJCheckBox = new javax.swing.JCheckBox();
         novorButton = new javax.swing.JButton();
@@ -1366,14 +1374,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(enableAndromedaJCheckBox))
                 .addGap(61, 61, 61)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(andromedaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(andromedaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(tideSupportButton)
@@ -1492,7 +1500,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(searchEnginesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
+                .addComponent(searchEnginesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
         );
 
         inputFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input & Output"));
@@ -1596,7 +1604,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 613, Short.MAX_VALUE)
+                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
                             .addComponent(databaseFileTxt))))
                 .addGap(10, 10, 10)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1780,7 +1788,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(35, 35, 35)
                 .addComponent(peptideShakerCheckBox)
                 .addGap(60, 60, 60)
-                .addComponent(peptideShakerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(peptideShakerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(peptideShakerSupportButton)
                 .addGap(34, 34, 34)
@@ -1801,7 +1809,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(peptideShakerSupportButton)))
         );
 
-        preProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Pre Processing"));
+        preProcessingPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Raw File Conversion"));
         preProcessingPanel.setOpaque(false);
 
         msconvertCheckBox.setToolTipText("Enable msconvert");
@@ -1858,9 +1866,67 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         msconvertSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        msconvertSupportButton.setToolTipText("<html>\nSupported on Windows, Mac and Linux<br>\nVendor raw file conversion requires Windows\n</html>");
+        msconvertSupportButton.setToolTipText("<html>\nSupported on Windows, Mac and Linux<br>\nVendor raw file conversion requires Windows!\n</html>");
         msconvertSupportButton.setBorderPainted(false);
         msconvertSupportButton.setContentAreaFilled(false);
+
+        thermoRawFileParserCheckBox.setToolTipText("Enable ThermoRawFileParser");
+        thermoRawFileParserCheckBox.setEnabled(false);
+        thermoRawFileParserCheckBox.setIconTextGap(15);
+        thermoRawFileParserCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thermoRawFileParserCheckBoxActionPerformed(evt);
+            }
+        });
+
+        thermoRawFileParserButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        thermoRawFileParserButton.setText("ThermoRawFileParser");
+        thermoRawFileParserButton.setBorder(null);
+        thermoRawFileParserButton.setBorderPainted(false);
+        thermoRawFileParserButton.setContentAreaFilled(false);
+        thermoRawFileParserButton.setEnabled(false);
+        thermoRawFileParserButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+
+        thermoRawFileParserSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        thermoRawFileParserSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        thermoRawFileParserSupportButton.setBorderPainted(false);
+        thermoRawFileParserSupportButton.setContentAreaFilled(false);
+
+        thermoRawFileParserLabel.setText("<html>Thermo Raw File Parser - <a href=\"https://github.com/compomics/ThermoRawFileParser\">ThermoRawFileParser web page</a></html>");
+        thermoRawFileParserLabel.setToolTipText("Open the ThermoRawFileParser web page");
+        thermoRawFileParserLabel.setEnabled(false);
+        thermoRawFileParserLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                thermoRawFileParserLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                thermoRawFileParserLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                thermoRawFileParserLabelMouseExited(evt);
+            }
+        });
+
+        thermoRawFileParserSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        thermoRawFileParserSettingsButton.setToolTipText("Edit ThermoRawFileParser Settings");
+        thermoRawFileParserSettingsButton.setBorder(null);
+        thermoRawFileParserSettingsButton.setBorderPainted(false);
+        thermoRawFileParserSettingsButton.setContentAreaFilled(false);
+        thermoRawFileParserSettingsButton.setEnabled(false);
+        thermoRawFileParserSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        thermoRawFileParserSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                thermoRawFileParserSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                thermoRawFileParserSettingsButtonMouseExited(evt);
+            }
+        });
+        thermoRawFileParserSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thermoRawFileParserSettingsButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout preProcessingPanelLayout = new javax.swing.GroupLayout(preProcessingPanel);
         preProcessingPanel.setLayout(preProcessingPanelLayout);
@@ -1868,20 +1934,39 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(preProcessingPanelLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(msconvertCheckBox)
-                .addGap(60, 60, 60)
-                .addComponent(msconvertButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(msconvertSupportButton)
-                .addGap(34, 34, 34)
-                .addComponent(msconvertLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(preProcessingPanelLayout.createSequentialGroup()
+                        .addComponent(msconvertCheckBox)
+                        .addGap(60, 60, 60)
+                        .addComponent(msconvertButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(msconvertSupportButton)
+                        .addGap(34, 34, 34)
+                        .addComponent(msconvertLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(preProcessingPanelLayout.createSequentialGroup()
+                        .addComponent(thermoRawFileParserCheckBox)
+                        .addGap(60, 60, 60)
+                        .addComponent(thermoRawFileParserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(thermoRawFileParserSupportButton)
+                        .addGap(34, 34, 34)
+                        .addComponent(thermoRawFileParserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(msconvertSettingsButton)
+                .addGroup(preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(msconvertSettingsButton)
+                    .addComponent(thermoRawFileParserSettingsButton))
                 .addGap(39, 39, 39))
         );
         preProcessingPanelLayout.setVerticalGroup(
             preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(preProcessingPanelLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(thermoRawFileParserCheckBox)
+                    .addComponent(thermoRawFileParserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thermoRawFileParserLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(thermoRawFileParserSettingsButton)
+                    .addComponent(thermoRawFileParserSupportButton))
                 .addGap(0, 0, 0)
                 .addGroup(preProcessingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(msconvertCheckBox)
@@ -2048,8 +2133,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(enableDirecTagJCheckBox))
                 .addGap(60, 60, 60)
                 .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(novorSupportButton)
@@ -2092,7 +2177,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addContainerGap()
                 .addGroup(taskEditorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(searchEnginesLocationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 949, Short.MAX_VALUE)
+                    .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 914, Short.MAX_VALUE)
                     .addComponent(inputFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskEditorPanelLayout.createSequentialGroup()
                         .addComponent(aboutButton)
@@ -2125,8 +2210,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5))
         );
-
-        taskEditorPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {postProcessingPanel, preProcessingPanel});
 
         fileMenu.setText("File");
 
@@ -2279,7 +2362,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         mgfFiles.clear();
         rawFiles.clear();
 
-        enableMsConvertPanel();
+        enableThermoRawFileParser(false);
+        thermoRawFileParserCheckBox.setSelected(false);
+        enableMsConvert(false);
+        msconvertCheckBox.setSelected(false);
+        
+        nonThermoRawFilesSelected = false;
 
         spectraFilesTxt.setText("");
         validateInput(false);
@@ -2410,6 +2498,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             rawFiles.add(tempRawfile);
                         }
                     }
+                    
+                    // check whether non-thermo raw files are selected
+                    for (File tempRawfile : rawFiles) {
+                        if (!tempRawfile.getName().toLowerCase().endsWith(MsFormat.raw.fileNameEnding)) {
+                            nonThermoRawFilesSelected =  true;
+                        }
+                    }
 
                     // iterate the mgf files and validate them
                     int fileCounter = 0;
@@ -2452,8 +2547,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         return;
                     }
 
-                    // check if proteowizard is installed in case raw files were selected
-                    checkProteoWizard();
+                    // check if proteowizard is installed in case none-thermo raw files were selected
+                    if (nonThermoRawFilesSelected) {
+                        boolean pwCheck = checkProteoWizard();
+                        msconvertCheckBox.setSelected(pwCheck);
+                        enableMsConvert(pwCheck);
+                    } else {
+                        thermoRawFileParserCheckBox.setSelected(!rawFiles.isEmpty());
+                        enableThermoRawFileParser(!rawFiles.isEmpty());
+                    }
 
                     // verify the sizes of the mgf files
                     if (utilitiesUserParameters.checkMgfSize()) {
@@ -2462,9 +2564,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     int nFiles = mgfFiles.size() + rawFiles.size();
                     spectraFilesTxt.setText(nFiles + " file(s) selected");
-                    msconvertCheckBox.setSelected(!rawFiles.isEmpty());
-
-                    enableMsConvertPanel();
 
                     validateInput(false);
                 }
@@ -2545,7 +2644,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         // validate the msconvert output format
-        if (!rawFiles.isEmpty() && msConvertParameters.getMsFormat() != MsFormat.mgf) {
+        if (nonThermoRawFilesSelected && msConvertParameters.getMsFormat() != MsFormat.mgf) { // @TODO: also need to do the same test for ThermoRawFileParser
             JOptionPane.showMessageDialog(this,
                     "Mgf is the only spectrum format compatible with SearchGUI.\n\n"
                     + "Please change the output format for msconvert.",
@@ -3345,14 +3444,35 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 spectraFilesTxt.setText(spectrumFiles.size() + " file(s) selected");
                 mgfFiles.clear();
                 rawFiles.clear();
+                nonThermoRawFilesSelected = false;
                 for (File file : spectrumFiles) {
                     if (file.getName().toLowerCase().endsWith("mgf")) {
                         mgfFiles.add(file);
                     } else {
+                        if (!file.getName().toLowerCase().endsWith(MsFormat.raw.fileNameEnding)) {
+                            nonThermoRawFilesSelected =  true;
+                        }
                         rawFiles.add(file);
                     }
                 }
-                msconvertCheckBox.setSelected(!rawFiles.isEmpty());
+                
+                if (nonThermoRawFilesSelected) {
+                    msconvertCheckBox.setSelected(true);
+                    thermoRawFileParserCheckBox.setSelected(false);
+                    enableMsConvert(true);
+                    enableThermoRawFileParser(false);
+                } else if (!rawFiles.isEmpty()) {
+                    msconvertCheckBox.setSelected(false);
+                    thermoRawFileParserCheckBox.setSelected(true);
+                    enableMsConvert(false);
+                    enableThermoRawFileParser(true);
+                } else {
+                    msconvertCheckBox.setSelected(false);
+                    thermoRawFileParserCheckBox.setSelected(false   );
+                    enableMsConvert(false);
+                    enableThermoRawFileParser(false);
+                }       
+                
                 validateInput(false);
             }
         }
@@ -4018,7 +4138,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void msconvertCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msconvertCheckBoxActionPerformed
-        msconvertCheckBox.setSelected(!rawFiles.isEmpty());
+        if (msconvertCheckBox.isSelected()) {
+            thermoRawFileParserCheckBox.setSelected(false);
+        }
     }//GEN-LAST:event_msconvertCheckBoxActionPerformed
 
     private void processingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processingMenuItemActionPerformed
@@ -4889,7 +5011,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             File folder = fastaFile.getParentFile();
             utilitiesUserParameters.setDbFolder(folder);
             lastSelectedFolder.setLastSelectedFolder(lastFolderKey, folder.getAbsolutePath());
-            
+
             databaseFileTxt.setText(fastaFile.getAbsolutePath());
 
             if (fastaFile.getName().contains(" ")) {
@@ -4902,6 +5024,78 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         validateInput(false);
 
     }//GEN-LAST:event_editDatabaseDetailsButtonActionPerformed
+
+    /**
+     * Set ThermoRawFileParser enabled.
+     *
+     * @param evt the action event
+     */
+    private void thermoRawFileParserCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thermoRawFileParserCheckBoxActionPerformed
+        if (thermoRawFileParserCheckBox.isSelected()) { 
+            msconvertCheckBox.setSelected(false);
+        }
+    }//GEN-LAST:event_thermoRawFileParserCheckBoxActionPerformed
+
+    /**
+     * Open the ThermoRawFileParser web page.
+     *
+     * @param evt
+     */
+
+    private void thermoRawFileParserLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserLabelMouseClicked
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        BareBonesBrowserLaunch.openURL("https://github.com/compomics/ThermoRawFileParser");
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_thermoRawFileParserLabelMouseClicked
+
+    /**
+     * Change the cursor to a hand cursor.
+     *
+     * @param evt the mouse event
+     */
+
+    private void thermoRawFileParserLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserLabelMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_thermoRawFileParserLabelMouseEntered
+
+    /**
+     * Change the cursor back to the default cursor.
+     *
+     * @param evt the mouse event
+     */
+
+    private void thermoRawFileParserLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserLabelMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_thermoRawFileParserLabelMouseExited
+
+    /**
+     * Change the cursor to a hand cursor.
+     *
+     * @param evt the mouse event
+     */
+
+    private void thermoRawFileParserSettingsButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_thermoRawFileParserSettingsButtonMouseEntered
+
+    /**
+     * Change the cursor back to the default cursor.
+     *
+     * @param evt the mouse event
+     */
+
+    private void thermoRawFileParserSettingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_thermoRawFileParserSettingsButtonMouseExited
+
+    /**
+     * Open the ThermoRawFileParser settings dialog.
+     *
+     * @param evt
+     */
+    private void thermoRawFileParserSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_thermoRawFileParserSettingsButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
@@ -5010,6 +5204,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JLabel spectraFilesLabel;
     private javax.swing.JTextField spectraFilesTxt;
     private javax.swing.JPanel taskEditorPanel;
+    private javax.swing.JButton thermoRawFileParserButton;
+    private javax.swing.JCheckBox thermoRawFileParserCheckBox;
+    private javax.swing.JLabel thermoRawFileParserLabel;
+    private javax.swing.JButton thermoRawFileParserSettingsButton;
+    private javax.swing.JButton thermoRawFileParserSupportButton;
     private javax.swing.JButton tideButton;
     private javax.swing.JLabel tideLinkLabel;
     private javax.swing.JButton tideSettingsButton;
@@ -6595,25 +6794,36 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * Check that the ProteoWizard folder is set.
      */
-    private void checkProteoWizard() {
+    private boolean checkProteoWizard() {
         if (!rawFiles.isEmpty() && utilitiesUserParameters.getProteoWizardPath() == null) {
             boolean folderSet = editProteoWizardInstallation();
             if (!folderSet) {
                 JOptionPane.showMessageDialog(this, "ProteoWizard folder not set. Raw file(s) not selected.", "Raw File Error", JOptionPane.WARNING_MESSAGE);
                 rawFiles.clear();
+                return false;
             }
         }
+        return true;
     }
 
     /**
-     * Enable/disable the msconvert options.
+     * Enable/disable msconvert.
      */
-    private void enableMsConvertPanel() {
-        msconvertSettingsButton.setEnabled(!rawFiles.isEmpty());
-        msconvertCheckBox.setEnabled(!rawFiles.isEmpty());
-        msconvertButton.setEnabled(!rawFiles.isEmpty());
-        msconvertLabel.setEnabled(!rawFiles.isEmpty());
-        msconvertCheckBox.setSelected(!rawFiles.isEmpty());
+    private void enableMsConvert(boolean enable) {
+        msconvertSettingsButton.setEnabled(enable);
+        msconvertCheckBox.setEnabled(enable);
+        msconvertButton.setEnabled(enable);
+        msconvertLabel.setEnabled(enable);
+    }
+    
+    /**
+     * Enable/disable ThermoRawFileParser.
+     */
+    private void enableThermoRawFileParser(boolean enable) {
+        thermoRawFileParserSettingsButton.setEnabled(enable);
+        thermoRawFileParserCheckBox.setEnabled(enable);
+        thermoRawFileParserButton.setEnabled(enable);
+        thermoRawFileParserLabel.setEnabled(enable);
     }
 
     /**

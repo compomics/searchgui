@@ -13,6 +13,7 @@ import com.compomics.util.experiment.io.mass_spectrometry.export.AplExporter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsFormat;
 import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
@@ -226,6 +227,10 @@ public class SearchHandler {
      * The msconvert process.
      */
     private ArrayList<MsConvertProcessBuilder> msConvertProcessBuilders = null;
+    /**
+     * The ThermoRawFileParser process.
+     */
+    private ArrayList<ThermoRawFileParserProcessBuilder> thermoRawFileParserProcessBuilders = null;
     /**
      * The makeblastdb process.
      */
@@ -516,7 +521,7 @@ public class SearchHandler {
         } else {
             loadSearchEngineLocation(null, false, true, true, true, false, false, true); // try to use the default
         }
-
+        
         // set this version as the default SearchGUI version
         if (!getJarFilePath().equalsIgnoreCase(".")) {
             UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
@@ -1707,6 +1712,11 @@ public class SearchHandler {
                     msConvertProcessBuilder.endProcess();
                 }
             }
+            if (thermoRawFileParserProcessBuilders != null) {
+                for (ThermoRawFileParserProcessBuilder thermoRawFileParserProcessBuilder : thermoRawFileParserProcessBuilders) {
+                    thermoRawFileParserProcessBuilder.endProcess();
+                }
+            }
 
             // stop the search engines and peptide shaker
             if (omssaProcessBuilder != null) {
@@ -1771,7 +1781,7 @@ public class SearchHandler {
                         outputTempFolder = outputFolder;
                     }
                 }
-                
+
                 int nRawFiles = getRawFiles().size();
                 int nFilesToSearch = nRawFiles + getMgfFiles().size();
                 int nProgress = 2 + nRawFiles;
@@ -1865,7 +1875,7 @@ public class SearchHandler {
                     Util.copyFile(modsXmlFile, destinationFile);
                     destinationFile = new File(outputTempFolder, "omssa_usermods.xml");
                     Util.copyFile(userModsXmlFile, destinationFile);
-                    
+
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
@@ -1887,7 +1897,7 @@ public class SearchHandler {
                     AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
                     AndromedaProcessBuilder.createPtmFile(andromedaLocation, identificationParameters, identificationParametersFile);
-                    
+
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
@@ -1897,7 +1907,7 @@ public class SearchHandler {
                     waitingHandler.appendReport("Indexing " + fastaFile.getName() + " for Tide.", true, true);
                     waitingHandler.appendReportEndLine();
                     tideIndexProcessBuilder.startProcess();
-                    
+
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
@@ -1911,31 +1921,66 @@ public class SearchHandler {
                     waitingHandler.resetSecondaryProgressCounter();
                     waitingHandler.setMaxSecondaryProgressCounter(rawFiles.size() * 100);
 
-                    msConvertProcessBuilders = new ArrayList<>();
-
                     Duration conversionDuration = new Duration();
                     if (rawFiles.size() > 1) {
                         conversionDuration.start();
                         waitingHandler.appendReport("Converting raw files.", true, true);
                     }
 
-                    for (int i = 0; i < rawFiles.size() && !waitingHandler.isRunCanceled(); i++) {
+                    boolean useThermoRawFileParser = true;
 
-                        File rawFile = rawFiles.get(i);
-                        String rawFileName = rawFile.getName();
-                        File folder = rawFile.getParentFile();
-                        String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
-                        File mgfFile = new File(folder, mgfFileName);
-                        if (!mgfFile.exists()) {
-                            MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(waitingHandler, exceptionHandler, rawFile, folder, getMsConvertParameters());
-                            msConvertProcessBuilders.add(msConvertProcessBuilder);
-                            pool.submit(msConvertProcessBuilder);
-                            // @TODO: validate the mgf file!
-                        } else {
-                            waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
-                            waitingHandler.appendReportEndLine();
+                    for (File tempRawFile : rawFiles) {
+                        if (!tempRawFile.getName().toLowerCase().endsWith(MsFormat.raw.fileNameEnding)) { // @TODO: could allow the user to still use msconvert for thermo raw files?
+                            useThermoRawFileParser = false;
                         }
-                        mgfFiles.add(mgfFile);
+                    }
+                    
+                    if (useThermoRawFileParser) {
+
+                        thermoRawFileParserProcessBuilders = new ArrayList<>();
+                        File thermoRawFileParserFolder = new File(getJarFilePath() + File.separator + "resources" + File.separator + "ThermoRawFileParser");
+
+                        for (int i = 0; i < rawFiles.size() && !waitingHandler.isRunCanceled(); i++) {
+
+                            File rawFile = rawFiles.get(i);
+                            String rawFileName = rawFile.getName();
+                            File folder = rawFile.getParentFile();
+                            String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
+                            File mgfFile = new File(folder, mgfFileName);
+                            if (!mgfFile.exists()) {
+                                ThermoRawFileParserProcessBuilder thermoRawFileParserProcessBuilder = new ThermoRawFileParserProcessBuilder(thermoRawFileParserFolder, rawFile, folder, waitingHandler, exceptionHandler);
+                                thermoRawFileParserProcessBuilders.add(thermoRawFileParserProcessBuilder);
+                                pool.submit(thermoRawFileParserProcessBuilder);
+                                // @TODO: validate the mgf file!
+                            } else {
+                                waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
+                                waitingHandler.appendReportEndLine();
+                            }
+                            mgfFiles.add(mgfFile);
+                        }
+                        
+                    } else {
+
+                        msConvertProcessBuilders = new ArrayList<>();
+
+                        for (int i = 0; i < rawFiles.size() && !waitingHandler.isRunCanceled(); i++) {
+
+                            File rawFile = rawFiles.get(i);
+                            String rawFileName = rawFile.getName();
+                            File folder = rawFile.getParentFile();
+                            String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
+                            File mgfFile = new File(folder, mgfFileName);
+                            if (!mgfFile.exists()) {
+                                MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(waitingHandler, exceptionHandler, rawFile, folder, getMsConvertParameters());
+                                msConvertProcessBuilders.add(msConvertProcessBuilder);
+                                pool.submit(msConvertProcessBuilder);
+                                // @TODO: validate the mgf file!
+                            } else {
+                                waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
+                                waitingHandler.appendReportEndLine();
+                            }
+                            mgfFiles.add(mgfFile);
+                        }
                     }
 
                     if (waitingHandler.isRunCanceled()) {

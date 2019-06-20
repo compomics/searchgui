@@ -69,7 +69,7 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
     public void startProcess() throws IOException {
 
         if (waitingHandler == null || !waitingHandler.isRunCanceled()) {
-            
+
             Duration processDuration = new Duration();
             processDuration.start();
 
@@ -89,18 +89,21 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
 
                 if (getType().equalsIgnoreCase("Comet")) {
 
-                    Scanner scan = new Scanner(inputStream);
-                    scan.useDelimiter("\n|\b ");
+                    Scanner scanner = new Scanner(inputStream);
+                    scanner.useDelimiter("\n|\b ");
                     String lastString = "";
 
                     // get input from scanner, send to std out and text box
-                    while (scan.hasNext() && !waitingHandler.isRunCanceled()) {
-                        String temp = scan.next();
+                    while (scanner.hasNext() && !waitingHandler.isRunCanceled()) {
+                        String temp = scanner.next();
                         if (!lastString.contains(temp)) {
                             waitingHandler.appendReport(temp + " ", false, temp.lastIndexOf("%") == -1 || temp.lastIndexOf("100%") != -1);
                         }
                         lastString = temp;
                     }
+
+                    scanner.close();
+
                 } else if (getType().equalsIgnoreCase("msconvert")) {
 
                     boolean progressOutputStarted = false;
@@ -141,6 +144,32 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                             }
                         }
                     }
+                } else if (getType().equalsIgnoreCase("ThermoRawFileParser")) {
+
+                    Scanner scanner = new Scanner(inputStream);
+                    scanner.useDelimiter("\\s|\\n");
+
+                    waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                    
+                    // get input from scanner, send to std out and text box
+                    while (scanner.hasNext() && !waitingHandler.isRunCanceled()) {
+                        String temp = scanner.next();
+
+                        if (!temp.isEmpty()) {
+
+                            if (temp.endsWith("%")) {
+                                waitingHandler.increaseSecondaryProgressCounter(10);
+                            } else {
+                                waitingHandler.appendReport(temp + " ", false, temp.endsWith("scans"));
+                            }
+                            
+                        } else {
+                            waitingHandler.appendReportEndLine();
+                        }
+                    }
+
+                    scanner.close();
+
                 } else {
                     String line;
 

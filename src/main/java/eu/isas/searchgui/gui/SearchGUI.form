@@ -309,7 +309,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="searchEnginesLocationPanel" alignment="0" max="32767" attributes="0"/>
-                      <Component id="postProcessingPanel" alignment="0" pref="949" max="32767" attributes="0"/>
+                      <Component id="postProcessingPanel" alignment="0" pref="914" max="32767" attributes="0"/>
                       <Component id="inputFilesPanel" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="aboutButton" min="-2" max="-2" attributes="0"/>
@@ -329,17 +329,17 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="inputFilesPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="preProcessingPanel" linkSize="10" min="-2" max="-2" attributes="0"/>
+                  <Component id="preProcessingPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="searchEnginesLocationPanel" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="deNovoPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="postProcessingPanel" linkSize="10" min="-2" pref="73" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="postProcessingPanel" min="-2" pref="73" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="aboutButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="searchGUIPublicationLabel" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -375,7 +375,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="searchEnginesScrollPane" pref="257" max="32767" attributes="0"/>
+                      <Component id="searchEnginesScrollPane" pref="258" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -414,14 +414,14 @@
                               </Group>
                               <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="xtandemButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <Component id="myriMatchButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <Component id="msAmandaButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <Component id="msgfButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <Component id="omssaButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <Component id="cometButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <Component id="tideButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                                  <Component id="andromedaButton" linkSize="6" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
+                                  <Component id="xtandemButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="myriMatchButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="msAmandaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="msgfButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="omssaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="cometButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="tideButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Component id="andromedaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -1161,7 +1161,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="settingsComboBox" max="32767" attributes="0"/>
-                                  <Component id="outputFolderTxt" pref="613" max="32767" attributes="0"/>
+                                  <Component id="outputFolderTxt" pref="578" max="32767" attributes="0"/>
                                   <Component id="databaseFileTxt" alignment="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -1421,7 +1421,7 @@
                       <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                       <Component id="peptideShakerCheckBox" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                      <Component id="peptideShakerButton" min="-2" pref="140" max="-2" attributes="0"/>
+                      <Component id="peptideShakerButton" min="-2" pref="180" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="peptideShakerSupportButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
@@ -1529,7 +1529,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Pre Processing"/>
+                <TitledBorder title="Raw File Conversion"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -1540,15 +1540,31 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-                      <Component id="msconvertCheckBox" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                      <Component id="msconvertButton" min="-2" pref="140" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="msconvertSupportButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
-                      <Component id="msconvertLabel" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="msconvertCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                              <Component id="msconvertButton" min="-2" pref="180" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="msconvertSupportButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                              <Component id="msconvertLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="thermoRawFileParserCheckBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
+                              <Component id="thermoRawFileParserButton" min="-2" pref="180" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="thermoRawFileParserSupportButton" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                              <Component id="thermoRawFileParserLabel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="msconvertSettingsButton" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="msconvertSettingsButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="thermoRawFileParserSettingsButton" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -1556,6 +1572,14 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="thermoRawFileParserCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="thermoRawFileParserButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                          <Component id="thermoRawFileParserLabel" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="thermoRawFileParserSettingsButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="thermoRawFileParserSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="msconvertCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -1634,10 +1658,79 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/icons/all_platforms_gray.png"/>
                 </Property>
-                <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Supported on Windows, Mac and Linux&lt;br&gt;&#xa;Vendor raw file conversion requires Windows&#xa;&lt;/html&gt;"/>
+                <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Supported on Windows, Mac and Linux&lt;br&gt;&#xa;Vendor raw file conversion requires Windows!&#xa;&lt;/html&gt;"/>
                 <Property name="borderPainted" type="boolean" value="false"/>
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JCheckBox" name="thermoRawFileParserCheckBox">
+              <Properties>
+                <Property name="toolTipText" type="java.lang.String" value="Enable ThermoRawFileParser"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="iconTextGap" type="int" value="15"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="thermoRawFileParserCheckBoxActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="thermoRawFileParserButton">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Segoe UI" size="15" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="ThermoRawFileParser"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
+                <Property name="borderPainted" type="boolean" value="false"/>
+                <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="horizontalAlignment" type="int" value="2"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="thermoRawFileParserSupportButton">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/all_platforms_gray.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Supported on Windows, Mac and Linux"/>
+                <Property name="borderPainted" type="boolean" value="false"/>
+                <Property name="contentAreaFilled" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="thermoRawFileParserLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;Thermo Raw File Parser - &lt;a href=&quot;https://github.com/compomics/ThermoRawFileParser&quot;&gt;ThermoRawFileParser web page&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="toolTipText" type="java.lang.String" value="Open the ThermoRawFileParser web page"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="thermoRawFileParserLabelMouseClicked"/>
+                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="thermoRawFileParserLabelMouseEntered"/>
+                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="thermoRawFileParserLabelMouseExited"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="thermoRawFileParserSettingsButton">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/edit_gray.png"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" value="Edit ThermoRawFileParser Settings"/>
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                  <Border info="null"/>
+                </Property>
+                <Property name="borderPainted" type="boolean" value="false"/>
+                <Property name="contentAreaFilled" type="boolean" value="false"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/icons/edit.png"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="thermoRawFileParserSettingsButtonMouseEntered"/>
+                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="thermoRawFileParserSettingsButtonMouseExited"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="thermoRawFileParserSettingsButtonActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -1662,8 +1755,8 @@
                       </Group>
                       <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="novorButton" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
-                          <Component id="direcTagButton" alignment="0" min="-2" pref="140" max="-2" attributes="0"/>
+                          <Component id="novorButton" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                          <Component id="direcTagButton" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">

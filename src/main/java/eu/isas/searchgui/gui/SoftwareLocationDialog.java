@@ -98,7 +98,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     }
 
     /**
-     * Loads the search engines location.
+     * Loads the search engine locations.
      */
     private void loadSearchEngines() {
 
@@ -319,7 +319,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         searchEnginesLocationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Folders"));
         searchEnginesLocationPanel.setOpaque(false);
 
-        xTandemLocationLabel.setText("X!Tandem");
+        xTandemLocationLabel.setText("X! Tandem");
 
         xTandemLocationTxt.setEditable(false);
 

@@ -292,7 +292,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="xTandemLocationLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="X!Tandem"/>
+                <Property name="text" type="java.lang.String" value="X! Tandem"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="xTandemLocationTxt">

@@ -1,0 +1,118 @@
+package eu.isas.searchgui.processbuilders;
+
+import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.waiting.WaitingHandler;
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * Process builder to run ThermoRawFileParser.
+ *
+ * @author Harald Barsnes
+ */
+public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
+
+    /**
+     * The raw file to convert.
+     */
+    private File rawFile;
+    /**
+     * The destination folder where to save the output files.
+     */
+    private File destinationFolder;
+    /**
+     * The ThermoRawFileParser folder.
+     */
+    private File thermoRawFileParserFolder;
+
+    /**
+     * Constructor for the process builder.
+     *
+     * @param thermoRawFileParserFolder the ThermoRawFileParser folder
+     * @param rawFile the raw file to convert
+     * @param destinationFolder the destination folder
+     * @param waitingHandler the waiting handler
+     * @param exceptionHandler the handler of exceptions
+     *
+     * @throws IOException thrown if there are problems accessing the files
+     * @throws ClassNotFoundException thrown if a class cannot be found
+     */
+    public ThermoRawFileParserProcessBuilder(File thermoRawFileParserFolder, File rawFile, File destinationFolder, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler)
+            throws IOException, ClassNotFoundException {
+
+        this.thermoRawFileParserFolder = thermoRawFileParserFolder;
+        this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
+        this.rawFile = rawFile;
+        this.destinationFolder = destinationFolder;
+
+        setUpProcessBuilder();
+    }
+
+    /**
+     * This method sets the process builder in the parent class.
+     *
+     * @throws IOException thrown if there are problems accessing the files
+     * @throws ClassNotFoundException thrown if a class cannot be found
+     */
+    private void setUpProcessBuilder() throws IOException, ClassNotFoundException {
+
+        // clear the previous process
+        process_name_array.clear();
+        
+        // use mono if not on windows
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+        if (!operatingSystem.contains("windows")) {
+            process_name_array.add("mono");
+        }
+        
+        // full path to executable
+        File thermoRawFileParserExecutable = new File(thermoRawFileParserFolder, "ThermoRawFileParser.exe");
+        thermoRawFileParserExecutable.setExecutable(true);
+        
+        // add the executable
+        process_name_array.add(thermoRawFileParserExecutable.getAbsolutePath());
+
+        // add the conversion parameters
+        process_name_array.add("-i=" + rawFile.getAbsolutePath());
+        process_name_array.add("-o=" + destinationFolder.getAbsolutePath());
+        process_name_array.add("-f=0"); // @TODO: allow the user to change the output type?
+        //process_name_array.add("-p"); // @TODO: allow the user to turn peakpicking off
+        process_name_array.add("-e");
+
+        process_name_array.trimToSize();
+
+        // print the command to the log file
+        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "ThermoRawFileParser command: ");
+
+        for (Object current_entry : process_name_array) {
+            System.out.print(current_entry + " ");
+        }
+
+        System.out.println(System.getProperty("line.separator"));
+
+        pb = new ProcessBuilder(process_name_array);
+
+        // set error out and std out to same stream
+        pb.redirectErrorStream(true);
+    }
+
+    @Override
+    public void startProcess() throws IOException {
+        if (!waitingHandler.isRunCanceled()) {
+            waitingHandler.appendReport("Processing " + rawFile.getName() + " with ThermoRawFileParser.", true, true);
+            waitingHandler.appendReportEndLine();
+            super.startProcess();
+        }
+    }
+
+    @Override
+    public String getType() {
+        return "ThermoRawFileParser";
+    }
+
+    @Override
+    public String getCurrentlyProcessedFileName() {
+        return rawFile.getName();
+    }
+}
