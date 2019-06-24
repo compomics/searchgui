@@ -475,9 +475,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (outputFolder != null && outputFolder.exists()) {
                 setOutputFolder(outputFolder);
             }
+            
+            // check whether non-thermo raw files are selected
+            for (File tempRawfile : rawFiles) {
+                if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
+                    nonThermoRawFilesSelected =  true;
+                }
+            }
 
-            if (rawFiles != null && !rawFiles.isEmpty()) {
-                msconvertCheckBox.setSelected(checkProteoWizard());
+            // check if proteowizard is installed in case none-thermo raw files were selected
+            if (nonThermoRawFilesSelected) {
+                boolean pwCheck = checkProteoWizard();
+                msconvertCheckBox.setSelected(pwCheck);
+                enableMsConvert(pwCheck);
+            } else {
+                thermoRawFileParserCheckBox.setSelected(!rawFiles.isEmpty());
+                enableThermoRawFileParser(!rawFiles.isEmpty());
             }
 
             validateInput(false);
