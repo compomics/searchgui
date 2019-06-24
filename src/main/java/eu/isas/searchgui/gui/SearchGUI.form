@@ -619,7 +619,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="myriMatchLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a href=&quot;http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MyriMatch web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -631,7 +631,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="andromedaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a href=&quot;http://coxdocs.org/doku.php?id=maxquant:andromeda:start&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://coxdocs.org/doku.php?id=maxquant:andromeda:start&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Andromeda web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -664,7 +664,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="tideLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Tide Search Algorithm - &lt;a href=https://cruxtoolkit.sourceforge.net&quot;&gt;Tide web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Tide Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=https://cruxtoolkit.sourceforge.net&quot;&gt;Tide web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Tide web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -738,7 +738,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="cometLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Comet Search Algorithm - &lt;a href=http://comet-ms.sourceforge.net&quot;&gt;Comet web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Comet Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=http://comet-ms.sourceforge.net&quot;&gt;Comet web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Comet web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -778,7 +778,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="xtandemLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;X! Tandem Search Algorithm - &lt;a href=&quot;https://www.thegpm.org/tandem&quot;&gt;X! Tandem web page&lt;/a&gt;&lt;/html&gt;&#xa;"/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;X! Tandem Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://www.thegpm.org/tandem&quot;&gt;X! Tandem web page&lt;/a&gt;&lt;/html&gt;&#xa;"/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the X! Tandem web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -862,7 +862,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="omssaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;OMSSA Search Algorithm - &lt;a href=&quot;https://www.ncbi.nlm.nih.gov/pubmed/15473683&quot;&gt;OMSSA web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;OMSSA Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://www.ncbi.nlm.nih.gov/pubmed/15473683&quot;&gt;OMSSA web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the OMSSA web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -905,7 +905,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="msAmandaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS Amanda Search Algorithm - &lt;a href=&quot;https://ms.imp.ac.at/?goto=msamanda&quot;&gt;MS Amanda web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS Amanda Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://ms.imp.ac.at/?goto=msamanda&quot;&gt;MS Amanda web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS Amanda web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -1044,7 +1044,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="msgfLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS-GF+ Search Algorithm - &lt;a href=&quot;https://github.com/MSGFPlus/msgfplus&quot;&gt;MS-GF+ web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS-GF+ Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://github.com/MSGFPlus/msgfplus&quot;&gt;MS-GF+ web page&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS-GF+ web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -1392,7 +1392,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="searchGUIPublicationLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a href=\u005c&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740\u005c&quot;&gt;Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 &lt;/a&gt;.&lt;/html&gt;" containsInvalidXMLChars="true"/>
+            <Property name="text" type="java.lang.String" value="&lt;html&gt;Please cite SearchGUI as &lt;a style=&quot;text-decoration: none&quot; href=\u005c&quot;http://www.ncbi.nlm.nih.gov/pubmed/29774740\u005c&quot;&gt;Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 &lt;/a&gt;.&lt;/html&gt;" containsInvalidXMLChars="true"/>
             <Property name="toolTipText" type="java.lang.String" value="Open the SearchGUI publication"/>
           </Properties>
           <Events>
@@ -1460,7 +1460,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="peptideShakerLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a href=&quot;https://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the PeptideShaker web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1606,7 +1606,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="msconvertLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;MSConvert File Conversion - &lt;a href=&quot;http://proteowizard.sourceforge.net/downloads.shtml&quot;&gt;ProteoWizard web page&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;MSConvert File Conversion - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://proteowizard.sourceforge.net/downloads.shtml&quot;&gt;ProteoWizard web page&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the ProteoWizard web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1700,7 +1700,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="thermoRawFileParserLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Thermo Raw File Parser - &lt;a href=&quot;https://github.com/compomics/ThermoRawFileParser&quot;&gt;ThermoRawFileParser web page&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;Thermo Raw File Parser - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://github.com/compomics/ThermoRawFileParser&quot;&gt;ThermoRawFileParser web page&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the ThermoRawFileParser web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1844,7 +1844,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="novorLinkLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Novor De Novo Peptide Sequencing - &lt;a href=&quot;https://rapidnovor.com&quot;&gt;Novor web page&lt;/a&gt;&lt;/html&gt; "/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;Novor De Novo Peptide Sequencing - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://rapidnovor.com&quot;&gt;Novor web page&lt;/a&gt;&lt;/html&gt; "/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the Novor web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1918,7 +1918,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="direcTagLinkLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;DirecTag MS/MS Sequence Tagging - &lt;a href=&quot;http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/&quot;&gt;DirecTag web page&lt;/a&gt;&lt;/html&gt; "/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;DirecTag MS/MS Sequence Tagging - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/&quot;&gt;DirecTag web page&lt;/a&gt;&lt;/html&gt; "/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the DirecTag web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>

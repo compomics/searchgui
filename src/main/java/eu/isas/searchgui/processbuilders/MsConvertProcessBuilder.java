@@ -3,7 +3,7 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
-import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsFormat;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardFilter;
 import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
@@ -38,23 +38,23 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Constructor for the process builder.
      *
-     * @param waitingHandler the waiting handler
      * @param rawFile the raw file to convert
      * @param destinationFolder the destination folder
      * @param msConvertParameters the msconvert parameters
+     * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      *
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    public MsConvertProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, File rawFile, File destinationFolder, MsConvertParameters msConvertParameters)
+    public MsConvertProcessBuilder(File rawFile, File destinationFolder, MsConvertParameters msConvertParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler)
             throws IOException, ClassNotFoundException {
 
-        this.waitingHandler = waitingHandler;
-        this.exceptionHandler = exceptionHandler;
         this.rawFile = rawFile;
         this.destinationFolder = destinationFolder;
         this.msConvertParameters = msConvertParameters;
+        this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
 
         setUpProcessBuilder();
     }
@@ -78,9 +78,9 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(CommandLineUtils.getCommandLineArgument(proteoWizardFolder));
         process_name_array.add(CommandLineUtils.getCommandLineArgument(rawFile));
 
-        MsFormat msFormat = msConvertParameters.getMsFormat();
+        ProteoWizardMsFormat msFormat = msConvertParameters.getMsFormat();
         if (msFormat == null) {
-            msFormat = MsFormat.mgf;
+            msFormat = ProteoWizardMsFormat.mgf;
         }
         process_name_array.add("--" + msFormat.commandLineOption);
         

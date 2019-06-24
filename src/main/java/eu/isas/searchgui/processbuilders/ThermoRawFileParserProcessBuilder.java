@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,10 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
      * The ThermoRawFileParser folder.
      */
     private File thermoRawFileParserFolder;
+    /**
+     * The ThermoRawFileParser parameters.
+     */
+    private ThermoRawFileParserParameters thermoRawFileParserParameters;
 
     /**
      * Constructor for the process builder.
@@ -31,20 +36,22 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
      * @param thermoRawFileParserFolder the ThermoRawFileParser folder
      * @param rawFile the raw file to convert
      * @param destinationFolder the destination folder
+     * @param thermoRawFileParserParameters the ThermoRawFileParser parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      *
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    public ThermoRawFileParserProcessBuilder(File thermoRawFileParserFolder, File rawFile, File destinationFolder, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler)
+    public ThermoRawFileParserProcessBuilder(File thermoRawFileParserFolder, File rawFile, File destinationFolder, ThermoRawFileParserParameters thermoRawFileParserParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler)
             throws IOException, ClassNotFoundException {
 
-        this.thermoRawFileParserFolder = thermoRawFileParserFolder;
-        this.waitingHandler = waitingHandler;
-        this.exceptionHandler = exceptionHandler;
         this.rawFile = rawFile;
         this.destinationFolder = destinationFolder;
+        this.thermoRawFileParserFolder = thermoRawFileParserFolder;
+        this.thermoRawFileParserParameters = thermoRawFileParserParameters;
+        this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
 
         setUpProcessBuilder();
     }
@@ -59,25 +66,27 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
 
         // clear the previous process
         process_name_array.clear();
-        
+
         // use mono if not on windows
         String operatingSystem = System.getProperty("os.name").toLowerCase();
         if (!operatingSystem.contains("windows")) {
             process_name_array.add("mono");
         }
-        
+
         // full path to executable
         File thermoRawFileParserExecutable = new File(thermoRawFileParserFolder, "ThermoRawFileParser.exe");
         thermoRawFileParserExecutable.setExecutable(true);
-        
+
         // add the executable
         process_name_array.add(thermoRawFileParserExecutable.getAbsolutePath());
 
         // add the conversion parameters
         process_name_array.add("-i=" + rawFile.getAbsolutePath());
         process_name_array.add("-o=" + destinationFolder.getAbsolutePath());
-        process_name_array.add("-f=0"); // @TODO: allow the user to change the output type?
-        //process_name_array.add("-p"); // @TODO: allow the user to turn peakpicking off
+        process_name_array.add("-f=" + thermoRawFileParserParameters.getOutputFormat().index);
+        if (!thermoRawFileParserParameters.isPeackPicking()) {
+            process_name_array.add("-p");
+        }
         process_name_array.add("-e");
 
         process_name_array.trimToSize();

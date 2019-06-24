@@ -25,9 +25,11 @@ import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfReader;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
-import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsFormat;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardFilter;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.gui.MsConvertParametersDialog;
+import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserParameters;
+import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.gui.ThermoRawFileParserParametersDialog;
 import com.compomics.util.gui.JOptionEditorPane;
 import com.compomics.util.gui.PrivacyParametersDialog;
 import com.compomics.util.gui.UtilitiesGUIDefaults;
@@ -175,6 +177,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The msconvert parameters.
      */
     private MsConvertParameters msConvertParameters;
+    /**
+     * The ThermoRawFileParser parameters.
+     */
+    private ThermoRawFileParserParameters thermoRawFileParserParameters;
     /**
      * The horizontal padding used before and after the text in the titled
      * borders. (Needed to make it look as good in Java 7 as it did in Java
@@ -367,10 +373,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
             }
 
-            // Set msconvert parameters
+            // set msconvert and ThermoRawFileParaer parameters
             msConvertParameters = new MsConvertParameters();
-            msConvertParameters.setMsFormat(MsFormat.mgf);
+            msConvertParameters.setMsFormat(ProteoWizardMsFormat.mgf);
             msConvertParameters.addFilter(ProteoWizardFilter.peakPicking.number, "");
+            thermoRawFileParserParameters = new ThermoRawFileParserParameters();
 
             settingsComboBox.setRenderer(new AlignedListCellRenderer(SwingConstants.CENTER));
 
@@ -866,7 +873,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         myrimatchSupportButton.setBorderPainted(false);
         myrimatchSupportButton.setContentAreaFilled(false);
 
-        myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a href=\"http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html\">MyriMatch web page</a></html> ");
+        myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a style=\"text-decoration: none\" href=\"http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html\">MyriMatch web page</a></html> ");
         myriMatchLinkLabel.setToolTipText("Open the MyriMatch web page");
         myriMatchLinkLabel.setEnabled(false);
         myriMatchLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -881,7 +888,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a href=\"http://coxdocs.org/doku.php?id=maxquant:andromeda:start\">Andromeda web page</a></html> ");
+        andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a style=\"text-decoration: none\" href=\"http://coxdocs.org/doku.php?id=maxquant:andromeda:start\">Andromeda web page</a></html> ");
         andromedaLinkLabel.setToolTipText("Open the Andromeda web page");
         andromedaLinkLabel.setEnabled(false);
         andromedaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -918,7 +925,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        tideLinkLabel.setText("<html>Tide Search Algorithm - <a href=https://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
+        tideLinkLabel.setText("<html>Tide Search Algorithm - <a style=\"text-decoration: none\" href=https://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
         tideLinkLabel.setToolTipText("Open the Tide web page");
         tideLinkLabel.setEnabled(false);
         tideLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -989,7 +996,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        cometLinkLabel.setText("<html>Comet Search Algorithm - <a href=http://comet-ms.sourceforge.net\">Comet web page</a></html> ");
+        cometLinkLabel.setText("<html>Comet Search Algorithm - <a style=\"text-decoration: none\" href=http://comet-ms.sourceforge.net\">Comet web page</a></html> ");
         cometLinkLabel.setToolTipText("Open the Comet web page");
         cometLinkLabel.setEnabled(false);
         cometLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1025,7 +1032,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        xtandemLinkLabel.setText("<html>X! Tandem Search Algorithm - <a href=\"https://www.thegpm.org/tandem\">X! Tandem web page</a></html>\n");
+        xtandemLinkLabel.setText("<html>X! Tandem Search Algorithm - <a style=\"text-decoration: none\" href=\"https://www.thegpm.org/tandem\">X! Tandem web page</a></html>\n");
         xtandemLinkLabel.setToolTipText("Open the X! Tandem web page");
         xtandemLinkLabel.setEnabled(false);
         xtandemLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1101,7 +1108,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msAmandaSupportButton.setBorderPainted(false);
         msAmandaSupportButton.setContentAreaFilled(false);
 
-        omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
+        omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a style=\"text-decoration: none\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
         omssaLinkLabel.setToolTipText("Open the OMSSA web page");
         omssaLinkLabel.setEnabled(false);
         omssaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1143,7 +1150,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         andromedaSupportButton.setBorderPainted(false);
         andromedaSupportButton.setContentAreaFilled(false);
 
-        msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a href=\"https://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
+        msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a style=\"text-decoration: none\" href=\"https://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
         msAmandaLinkLabel.setToolTipText("Open the MS Amanda web page");
         msAmandaLinkLabel.setEnabled(false);
         msAmandaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1280,7 +1287,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a href=\"https://github.com/MSGFPlus/msgfplus\">MS-GF+ web page</a></html> ");
+        msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a style=\"text-decoration: none\" href=\"https://github.com/MSGFPlus/msgfplus\">MS-GF+ web page</a></html> ");
         msgfLinkLabel.setToolTipText("Open the MS-GF+ web page");
         msgfLinkLabel.setEnabled(false);
         msgfLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1690,7 +1697,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a href=\\\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\\\">Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 </a>.</html>");
+        searchGUIPublicationLabel.setText("<html>Please cite SearchGUI as <a style=\"text-decoration: none\" href=\\\"http://www.ncbi.nlm.nih.gov/pubmed/29774740\\\">Barsnes and Vaudel: J Proteome Res. 2018 Jul 6;17(7):2552-5 </a>.</html>");
         searchGUIPublicationLabel.setToolTipText("Open the SearchGUI publication");
         searchGUIPublicationLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1717,7 +1724,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        peptideShakerLabel.setText("<html>PeptideShaker - <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">Visualize the results in PeptideShaker</a></html>");
+        peptideShakerLabel.setText("<html>PeptideShaker - <a style=\"text-decoration: none\" href=\"https://compomics.github.io/projects/peptide-shaker.html\">Visualize the results in PeptideShaker</a></html>");
         peptideShakerLabel.setToolTipText("Open the PeptideShaker web page");
         peptideShakerLabel.setEnabled(false);
         peptideShakerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1821,7 +1828,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msconvertLabel.setText("<html>MSConvert File Conversion - <a href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
+        msconvertLabel.setText("<html>MSConvert File Conversion - <a style=\"text-decoration: none\" href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
         msconvertLabel.setToolTipText("Open the ProteoWizard web page");
         msconvertLabel.setEnabled(false);
         msconvertLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1892,7 +1899,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         thermoRawFileParserSupportButton.setBorderPainted(false);
         thermoRawFileParserSupportButton.setContentAreaFilled(false);
 
-        thermoRawFileParserLabel.setText("<html>Thermo Raw File Parser - <a href=\"https://github.com/compomics/ThermoRawFileParser\">ThermoRawFileParser web page</a></html>");
+        thermoRawFileParserLabel.setText("<html>Thermo Raw File Parser - <a style=\"text-decoration: none\" href=\"https://github.com/compomics/ThermoRawFileParser\">ThermoRawFileParser web page</a></html>");
         thermoRawFileParserLabel.setToolTipText("Open the ThermoRawFileParser web page");
         thermoRawFileParserLabel.setEnabled(false);
         thermoRawFileParserLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2015,7 +2022,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         novorSupportButton.setBorderPainted(false);
         novorSupportButton.setContentAreaFilled(false);
 
-        novorLinkLabel.setText("<html>Novor De Novo Peptide Sequencing - <a href=\"https://rapidnovor.com\">Novor web page</a></html> ");
+        novorLinkLabel.setText("<html>Novor De Novo Peptide Sequencing - <a style=\"text-decoration: none\" href=\"https://rapidnovor.com\">Novor web page</a></html> ");
         novorLinkLabel.setToolTipText("Open the Novor web page");
         novorLinkLabel.setEnabled(false);
         novorLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2086,7 +2093,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         direcTagSupportButton.setBorderPainted(false);
         direcTagSupportButton.setContentAreaFilled(false);
 
-        direcTagLinkLabel.setText("<html>DirecTag MS/MS Sequence Tagging - <a href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/\">DirecTag web page</a></html> ");
+        direcTagLinkLabel.setText("<html>DirecTag MS/MS Sequence Tagging - <a style=\"text-decoration: none\" href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/\">DirecTag web page</a></html> ");
         direcTagLinkLabel.setToolTipText("Open the DirecTag web page");
         direcTagLinkLabel.setEnabled(false);
         direcTagLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -2393,7 +2400,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             @Override
             public boolean accept(File myFile) {
                 String lowercaseName = myFile.getName().toLowerCase();
-                for (MsFormat tempFormat : MsFormat.values()) {
+                for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
                     if (lowercaseName.endsWith(tempFormat.fileNameEnding)) {
                         return true;
                     }
@@ -2404,7 +2411,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             @Override
             public String getDescription() {
                 String description = "MS Files (";
-                for (MsFormat tempFormat : MsFormat.values()) {
+                for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
                     if (tempFormat.index > 0) {
                         description += ", ";
                     }
@@ -2455,10 +2462,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             File[] tempFiles = newFile.listFiles();
                             for (File file : tempFiles) {
                                 String lowercaseName = file.getName().toLowerCase();
-                                if (lowercaseName.endsWith(MsFormat.mgf.fileNameEnding)) {
+                                if (lowercaseName.endsWith(ProteoWizardMsFormat.mgf.fileNameEnding)) {
                                     tempMgfFiles.add(file);
                                 } else {
-                                    for (MsFormat tempFormat : MsFormat.values()) {
+                                    for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
                                         if (lowercaseName.endsWith(tempFormat.fileNameEnding)) {
                                             tempRawFiles.add(file);
                                         }
@@ -2468,10 +2475,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             lastSelectedFolder.setLastSelectedFolder(newFile.getAbsolutePath());
                         } else {
                             String lowercaseName = newFile.getName().toLowerCase();
-                            if (lowercaseName.endsWith(MsFormat.mgf.fileNameEnding)) {
+                            if (lowercaseName.endsWith(ProteoWizardMsFormat.mgf.fileNameEnding)) {
                                 tempMgfFiles.add(newFile);
                             } else {
-                                for (MsFormat tempFormat : MsFormat.values()) {
+                                for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
                                     if (lowercaseName.endsWith(tempFormat.fileNameEnding)) {
                                         tempRawFiles.add(newFile);
                                     }
@@ -2483,7 +2490,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     // if wiff files are used, check if the related wiff.scan is present
                     for (File tempRawfile : tempRawFiles) {
-                        if (tempRawfile.getName().endsWith(MsFormat.wiff.fileNameEnding)) {
+                        if (tempRawfile.getName().endsWith(ProteoWizardMsFormat.wiff.fileNameEnding)) {
 
                             String wiffScanFilePath = tempRawfile.getAbsolutePath() + ".scan";
 
@@ -2501,7 +2508,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     
                     // check whether non-thermo raw files are selected
                     for (File tempRawfile : rawFiles) {
-                        if (!tempRawfile.getName().toLowerCase().endsWith(MsFormat.raw.fileNameEnding)) {
+                        if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
                             nonThermoRawFilesSelected =  true;
                         }
                     }
@@ -2644,7 +2651,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         // validate the msconvert output format
-        if (nonThermoRawFilesSelected && msConvertParameters.getMsFormat() != MsFormat.mgf) { // @TODO: also need to do the same test for ThermoRawFileParser
+        if (nonThermoRawFilesSelected && msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mgf) { // @TODO: also need to do the same test for ThermoRawFileParser
             JOptionPane.showMessageDialog(this,
                     "Mgf is the only spectrum format compatible with SearchGUI.\n\n"
                     + "Please change the output format for msconvert.",
@@ -2915,7 +2922,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         if (!tempSpectrumFile.delete()) {
                             JOptionPane.showMessageDialog(this,
                                     new String[]{"Impossible to overwrite " + tempSpectrumFile.getName() + ". Please delete the file and retry."},
-                                    "X!Tandem File", JOptionPane.WARNING_MESSAGE);
+                                    "X! Tandem File", JOptionPane.WARNING_MESSAGE);
                             return;
                         }
                     }
@@ -2934,6 +2941,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setResultsFolder(outputFolder);
         searchHandler.setPeptideShakerEnabled(peptideShakerCheckBox.isSelected());
         searchHandler.setMsConvertParameters(msConvertParameters); //@TODO: check that proteowizard in installed?
+        searchHandler.setThermoRawFileParserParameters(thermoRawFileParserParameters);
 
         // incrementing the counter for a new SearchGUI start
         if (utilitiesUserParameters.isAutoUpdate()) {
@@ -3449,7 +3457,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     if (file.getName().toLowerCase().endsWith("mgf")) {
                         mgfFiles.add(file);
                     } else {
-                        if (!file.getName().toLowerCase().endsWith(MsFormat.raw.fileNameEnding)) {
+                        if (!file.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
                             nonThermoRawFilesSelected =  true;
                         }
                         rawFiles.add(file);
@@ -5094,7 +5102,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void thermoRawFileParserSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonActionPerformed
-        // TODO add your handling code here:
+            ThermoRawFileParserParametersDialog thermoRawFileParserParametersDialog = new ThermoRawFileParserParametersDialog(this, thermoRawFileParserParameters);
+            if (!thermoRawFileParserParametersDialog.isCanceled()) {
+                thermoRawFileParserParameters = thermoRawFileParserParametersDialog.getThermoRawFileParserParameters();
+            }
     }//GEN-LAST:event_thermoRawFileParserSettingsButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -6043,8 +6054,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (raw) {
                 try {
                     ArrayList<String> extensions = new ArrayList<>();
-                    for (MsFormat format : MsFormat.values()) {
-                        if (format != MsFormat.mgf) {
+                    for (ProteoWizardMsFormat format : ProteoWizardMsFormat.values()) {
+                        if (format != ProteoWizardMsFormat.mgf) {
                             extensions.add(format.fileNameEnding);
                         }
                     }

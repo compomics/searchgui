@@ -13,7 +13,8 @@ import com.compomics.util.experiment.io.mass_spectrometry.export.AplExporter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
-import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsFormat;
+import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
+import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserParameters;
 import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
@@ -291,6 +292,10 @@ public class SearchHandler {
      * The msconvert parameters.
      */
     private MsConvertParameters msConvertParameters;
+    /**
+     * The ThermoRawFileParser parameters.
+     */
+    private ThermoRawFileParserParameters thermoRawFileParserParameters;
     /**
      * The name for the SearchGUI output file.
      */
@@ -1930,7 +1935,7 @@ public class SearchHandler {
                     boolean useThermoRawFileParser = true;
 
                     for (File tempRawFile : rawFiles) {
-                        if (!tempRawFile.getName().toLowerCase().endsWith(MsFormat.raw.fileNameEnding)) { // @TODO: could allow the user to still use msconvert for thermo raw files?
+                        if (!tempRawFile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) { // @TODO: could allow the user to still use msconvert for thermo raw files?
                             useThermoRawFileParser = false;
                         }
                     }
@@ -1948,7 +1953,7 @@ public class SearchHandler {
                             String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
                             File mgfFile = new File(folder, mgfFileName);
                             if (!mgfFile.exists()) {
-                                ThermoRawFileParserProcessBuilder thermoRawFileParserProcessBuilder = new ThermoRawFileParserProcessBuilder(thermoRawFileParserFolder, rawFile, folder, waitingHandler, exceptionHandler);
+                                ThermoRawFileParserProcessBuilder thermoRawFileParserProcessBuilder = new ThermoRawFileParserProcessBuilder(thermoRawFileParserFolder, rawFile, folder, getThermoRawFileParserParameters(), waitingHandler, exceptionHandler);
                                 thermoRawFileParserProcessBuilders.add(thermoRawFileParserProcessBuilder);
                                 pool.submit(thermoRawFileParserProcessBuilder);
                                 // @TODO: validate the mgf file!
@@ -1971,7 +1976,7 @@ public class SearchHandler {
                             String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
                             File mgfFile = new File(folder, mgfFileName);
                             if (!mgfFile.exists()) {
-                                MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(waitingHandler, exceptionHandler, rawFile, folder, getMsConvertParameters());
+                                MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(rawFile, folder, getMsConvertParameters(), waitingHandler, exceptionHandler);
                                 msConvertProcessBuilders.add(msConvertProcessBuilder);
                                 pool.submit(msConvertProcessBuilder);
                                 // @TODO: validate the mgf file!
@@ -2706,6 +2711,24 @@ public class SearchHandler {
      */
     public void setMsConvertParameters(MsConvertParameters msConvertParameters) {
         this.msConvertParameters = msConvertParameters;
+    }
+    
+    /**
+     * Returns the ThermoRawFileParser parameters.
+     *
+     * @return the ThermoRawFileParser parameters
+     */
+    public ThermoRawFileParserParameters getThermoRawFileParserParameters() {
+        return thermoRawFileParserParameters;
+    }
+
+    /**
+     * Sets the ThermoRawFileParser parameters.
+     *
+     * @param thermoRawFileParserParameters the ThermoRawFileParser parameters
+     */
+    public void setThermoRawFileParserParameters(ThermoRawFileParserParameters thermoRawFileParserParameters) {
+        this.thermoRawFileParserParameters = thermoRawFileParserParameters;
     }
 
     /**
