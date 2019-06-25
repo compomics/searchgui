@@ -293,7 +293,6 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_ENZYMATICITY.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_ENZYMATICITY.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_EVIDENCE.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_EVIDENCE.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_UNCHARACTERIZED.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_UNCHARACTERIZED.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_VARIANT.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_VARIANT.description + "\n";
 
         output += "\n\nValidation Levels:\n\n";
