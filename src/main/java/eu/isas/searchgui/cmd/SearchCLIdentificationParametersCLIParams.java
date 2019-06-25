@@ -293,8 +293,11 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_ENZYMATICITY.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_ENZYMATICITY.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_EVIDENCE.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_EVIDENCE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_CONFIDENCE.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_CONFIDENCE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_CONFIDENCE_THRESHOLD.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_CONFIDENCE_THRESHOLD.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_VARIANT.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_VARIANT.description + "\n";
-
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.PROTEIN_INFERENCE_MODIFICATIONS.id) + " " + IdentificationParametersCLIParams.PROTEIN_INFERENCE_MODIFICATIONS.description + "\n";
+       
         output += "\n\nValidation Levels:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PSM_FDR.id) + " " + IdentificationParametersCLIParams.PSM_FDR.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PEPTIDE_FDR.id) + " " + IdentificationParametersCLIParams.PEPTIDE_FDR.description + "\n";
