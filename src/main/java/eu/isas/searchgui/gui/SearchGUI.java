@@ -475,15 +475,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (outputFolder != null && outputFolder.exists()) {
                 setOutputFolder(outputFolder);
             }
-            
+
             // check whether non-thermo raw files are selected
-            if (rawFiles!=null){
+            if (rawFiles != null) {
                 for (File tempRawfile : rawFiles) {
                     if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
-                        nonThermoRawFilesSelected =  true;
+                        nonThermoRawFilesSelected = true;
                     }
                 }
-            }   
+            }
 
             // check if proteowizard is installed in case none-thermo raw files were selected
             if (nonThermoRawFilesSelected) {
@@ -491,8 +491,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 msconvertCheckBox.setSelected(pwCheck);
                 enableMsConvert(pwCheck);
             } else {
-                thermoRawFileParserCheckBox.setSelected(!(rawFiles==null || rawFiles.isEmpty()));
-                enableThermoRawFileParser(!(rawFiles==null || rawFiles.isEmpty()));
+                thermoRawFileParserCheckBox.setSelected(!(rawFiles == null || rawFiles.isEmpty()));
+                enableThermoRawFileParser(!(rawFiles == null || rawFiles.isEmpty()));
             }
 
             validateInput(false);
@@ -2388,7 +2388,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         thermoRawFileParserCheckBox.setSelected(false);
         enableMsConvert(false);
         msconvertCheckBox.setSelected(false);
-        
+
         nonThermoRawFilesSelected = false;
 
         spectraFilesTxt.setText("");
@@ -2520,11 +2520,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             rawFiles.add(tempRawfile);
                         }
                     }
-                    
+
                     // check whether non-thermo raw files are selected
                     for (File tempRawfile : rawFiles) {
                         if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
-                            nonThermoRawFilesSelected =  true;
+                            nonThermoRawFilesSelected = true;
                         }
                     }
 
@@ -3473,12 +3473,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         mgfFiles.add(file);
                     } else {
                         if (!file.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
-                            nonThermoRawFilesSelected =  true;
+                            nonThermoRawFilesSelected = true;
                         }
                         rawFiles.add(file);
                     }
                 }
-                
+
                 if (nonThermoRawFilesSelected) {
                     msconvertCheckBox.setSelected(true);
                     thermoRawFileParserCheckBox.setSelected(false);
@@ -3491,11 +3491,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     enableThermoRawFileParser(true);
                 } else {
                     msconvertCheckBox.setSelected(false);
-                    thermoRawFileParserCheckBox.setSelected(false   );
+                    thermoRawFileParserCheckBox.setSelected(false);
                     enableMsConvert(false);
                     enableThermoRawFileParser(false);
-                }       
-                
+                }
+
                 validateInput(false);
             }
         }
@@ -5054,7 +5054,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void thermoRawFileParserCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thermoRawFileParserCheckBoxActionPerformed
-        if (thermoRawFileParserCheckBox.isSelected()) { 
+        if (thermoRawFileParserCheckBox.isSelected()) {
             msconvertCheckBox.setSelected(false);
         }
     }//GEN-LAST:event_thermoRawFileParserCheckBoxActionPerformed
@@ -5117,10 +5117,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void thermoRawFileParserSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonActionPerformed
-            ThermoRawFileParserParametersDialog thermoRawFileParserParametersDialog = new ThermoRawFileParserParametersDialog(this, thermoRawFileParserParameters);
-            if (!thermoRawFileParserParametersDialog.isCanceled()) {
-                thermoRawFileParserParameters = thermoRawFileParserParametersDialog.getThermoRawFileParserParameters();
-            }
+        ThermoRawFileParserParametersDialog thermoRawFileParserParametersDialog = new ThermoRawFileParserParametersDialog(this, thermoRawFileParserParameters);
+        if (!thermoRawFileParserParametersDialog.isCanceled()) {
+            thermoRawFileParserParameters = thermoRawFileParserParametersDialog.getThermoRawFileParserParameters();
+        }
     }//GEN-LAST:event_thermoRawFileParserSettingsButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -6841,7 +6841,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msconvertButton.setEnabled(enable);
         msconvertLabel.setEnabled(enable);
     }
-    
+
     /**
      * Enable/disable ThermoRawFileParser.
      */
