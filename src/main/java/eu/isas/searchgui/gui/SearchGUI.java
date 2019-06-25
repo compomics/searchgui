@@ -477,11 +477,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
             
             // check whether non-thermo raw files are selected
-            for (File tempRawfile : rawFiles) {
-                if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
-                    nonThermoRawFilesSelected =  true;
+            if (rawFiles!=null){
+                for (File tempRawfile : rawFiles) {
+                    if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
+                        nonThermoRawFilesSelected =  true;
+                    }
                 }
-            }
+            }   
 
             // check if proteowizard is installed in case none-thermo raw files were selected
             if (nonThermoRawFilesSelected) {
@@ -489,8 +491,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 msconvertCheckBox.setSelected(pwCheck);
                 enableMsConvert(pwCheck);
             } else {
-                thermoRawFileParserCheckBox.setSelected(!rawFiles.isEmpty());
-                enableThermoRawFileParser(!rawFiles.isEmpty());
+                thermoRawFileParserCheckBox.setSelected(!(rawFiles==null || rawFiles.isEmpty()));
+                enableThermoRawFileParser(!(rawFiles==null || rawFiles.isEmpty()));
             }
 
             validateInput(false);
