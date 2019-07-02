@@ -319,7 +319,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "print_expect_score = " + Util.convertBooleanToInteger(cometParameters.getPrintExpectScore()) + "                 # 0=no, 1=yes to replace Sp with expect in out & sqt" + System.getProperty("line.separator")
                     + "num_output_lines = " + cometParameters.getNumberOfSpectrumMatches() + "                 # num peptide results to show" + System.getProperty("line.separator")
                     + "show_fragment_ions = 0                 # 0=no, 1=yes for out files only" + System.getProperty("line.separator")
-                    + "sample_enzyme_number = " + enzymeId + "               # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator") // @TODO: set enzyme!
+                    + "sample_enzyme_number = " + enzymeId + "               # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator")
                     + "                                       # Used to calculate NTT & NMC in pepXML output (default=1 for trypsin)." + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////

@@ -349,15 +349,15 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
 //                else if (modificationType == PTM.MODN) { // protein n term
 //                    // @TODO: treated as a peptide ptm, should be variable instead?
 //                } else if (modificationType == PTM.MODNAA) { // protein n term specific amino acid
-//                    // @TODO: note suported? should be variable instead?
+//                    // @TODO: not supported? should be variable instead?
 //                } else if (modificationType == PTM.MODNPAA) { // peptide n term specifc amino acid
-//                    // @TODO: note suported? should be variable instead?
-//                } else if (modificationType == PTM.MODC) { // protein c term
+//                    // @TODO: not suported? should be variable instead?
+//                } else if (supported == PTM.MODC) { // protein c term
 //                    // @TODO: treated as a peptide ptm, should be variable instead?
 //                } else if (modificationType == PTM.MODCAA) { // protein c term specific amino acid
-//                    // @TODO: note suported? should be variable instead?
+//                    // @TODO: not supported? should be variable instead?
 //                } else if (modificationType == PTM.MODCPAA) { // peptide c term specific amino acid
-//                    // @TODO: note suported? should be variable instead?
+//                    // @TODO: not supported? should be variable instead?
 //                }
             }
         }
