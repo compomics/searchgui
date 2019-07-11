@@ -445,28 +445,28 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
                 result += "\t\t\t<MSModType value=\"modaa\">" + modificationType.index + "</MSModType>\n";
                 break;
             case modn_peptide:
-                result += "\t\t\t<MSModType value=\"modn\">" + modificationType.index + "</MSModType>\n";
-                break;
-            case modnaa_peptide:
-                result += "\t\t\t<MSModType value=\"modnaa\">" + modificationType.index + "</MSModType>\n";
-                break;
-            case modn_protein:
                 result += "\t\t\t<MSModType value=\"modnp\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case modnaa_protein:
+            case modnaa_peptide:
                 result += "\t\t\t<MSModType value=\"modnpaa\">" + modificationType.index + "</MSModType>\n";
                 break;
+            case modn_protein:
+                result += "\t\t\t<MSModType value=\"modn\">" + modificationType.index + "</MSModType>\n";
+                break;
+            case modnaa_protein:
+                result += "\t\t\t<MSModType value=\"modnaa\">" + modificationType.index + "</MSModType>\n";
+                break;
             case modc_peptide:
-                result += "\t\t\t<MSModType value=\"modc\">" + modificationType.index + "</MSModType>\n";
-                break;
-            case modcaa_peptide:
-                result += "\t\t\t<MSModType value=\"modcaa\">" + modificationType.index + "</MSModType>\n";
-                break;
-            case modc_protein:
                 result += "\t\t\t<MSModType value=\"modcp\">" + modificationType.index + "</MSModType>\n";
                 break;
-            case modcaa_protein:
+            case modcaa_peptide:
                 result += "\t\t\t<MSModType value=\"modcpaa\">" + modificationType.index + "</MSModType>\n";
+                break;
+            case modc_protein:
+                result += "\t\t\t<MSModType value=\"modc\">" + modificationType.index + "</MSModType>\n";
+                break;
+            case modcaa_protein:
+                result += "\t\t\t<MSModType value=\"modcaa\">" + modificationType.index + "</MSModType>\n";
                 break;
             default:
                 throw new UnsupportedOperationException("Export not implemented for modification of type " + modificationType + ".");
