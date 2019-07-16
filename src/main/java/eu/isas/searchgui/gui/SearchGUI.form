@@ -259,7 +259,7 @@
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="SearchGUI"/>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[775, 600]"/>
+      <Dimension value="[850, 700]"/>
     </Property>
   </Properties>
   <SyntheticProperties>
@@ -309,7 +309,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="searchEnginesLocationPanel" alignment="0" max="32767" attributes="0"/>
-                      <Component id="postProcessingPanel" alignment="0" pref="914" max="32767" attributes="0"/>
+                      <Component id="postProcessingPanel" alignment="0" pref="862" max="32767" attributes="0"/>
                       <Component id="inputFilesPanel" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="aboutButton" min="-2" max="-2" attributes="0"/>
@@ -320,7 +320,6 @@
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       </Group>
                       <Component id="preProcessingPanel" alignment="0" max="32767" attributes="0"/>
-                      <Component id="deNovoPanel" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -331,13 +330,11 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="inputFilesPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="preProcessingPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="searchEnginesLocationPanel" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="deNovoPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="postProcessingPanel" min="-2" pref="73" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -355,7 +352,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Search Engines"/>
+                <TitledBorder title="Search Engines &amp; De Novo Algorithms"/>
               </Border>
             </Property>
             <Property name="opaque" type="boolean" value="false"/>
@@ -374,8 +371,9 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="searchEnginesScrollPane" pref="258" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="searchEnginesScrollPane" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -400,63 +398,91 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="enableXTandemJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enableMyriMatchJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enableMsAmandaJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enableMsgfJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enableOmssaJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enableCometJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enableTideJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enableAndromedaJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="xtandemButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <Component id="myriMatchButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <Component id="msAmandaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <Component id="msgfButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <Component id="omssaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <Component id="cometButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <Component id="tideButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                                  <Component id="andromedaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="enableXTandemJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableMyriMatchJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableMsAmandaJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableMsgfJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableOmssaJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableCometJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableTideJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableAndromedaJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="xtandemButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                          <Component id="myriMatchButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                          <Component id="msAmandaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                          <Component id="msgfButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                          <Component id="omssaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                          <Component id="cometButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                          <Component id="tideButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                          <Component id="andromedaButton" linkSize="6" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="tideSupportButton" min="-2" max="-2" attributes="0"/>
+                                          <Component id="xtandemSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="myrimatchSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="msAmandaSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="msgfSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="cometSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="omssaSupportButton" min="-2" max="-2" attributes="0"/>
+                                          <Component id="andromedaSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="xtandemLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="msAmandaLinkLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="myriMatchLinkLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="msgfLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="omssaLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="cometLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="tideLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          <Component id="andromedaLinkLabel" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="166" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="2" attributes="0">
+                                          <Component id="msAmandaSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                          <Component id="myriMatchSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                          <Component id="omssaSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                          <Component id="xtandemSettingsButton" linkSize="8" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                          <Component id="msgfSettingsButton" linkSize="8" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                          <Component id="cometSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                          <Component id="tideSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                          <Component id="andromedaSettingsButton" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="novorSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                          <Component id="direcTagSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="enableNovorJCheckBox" min="-2" max="-2" attributes="0"/>
+                                          <Component id="enableDirecTagJCheckBox" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="novorButton" linkSize="6" min="-2" pref="105" max="-2" attributes="0"/>
+                                          <Component id="direcTagButton" linkSize="6" min="-2" pref="105" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="novorSupportButton" min="-2" max="-2" attributes="0"/>
+                                          <Component id="direcTagSupportButton" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="novorLinkLabel" min="-2" max="-2" attributes="0"/>
+                                          <Component id="direcTagLinkLabel" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="tideSupportButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="xtandemSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="myrimatchSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="msAmandaSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="msgfSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="cometSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="omssaSupportButton" min="-2" max="-2" attributes="0"/>
-                                  <Component id="andromedaSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="xtandemLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="msAmandaLinkLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="myriMatchLinkLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="msgfLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="omssaLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="cometLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="tideLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="andromedaLinkLabel" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="msAmandaSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
-                                  <Component id="myriMatchSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
-                                  <Component id="omssaSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
-                                  <Component id="xtandemSettingsButton" linkSize="8" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                                  <Component id="msgfSettingsButton" linkSize="8" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                                  <Component id="cometSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
-                                  <Component id="tideSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
-                                  <Component id="andromedaSettingsButton" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -526,6 +552,22 @@
                                   <Component id="andromedaSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="andromedaLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="andromedaSettingsButton" linkSize="9" alignment="2" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="enableNovorJCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="novorButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Component id="novorLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="novorSettingsButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Component id="novorSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="enableDirecTagJCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="direcTagButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Component id="direcTagLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="direcTagSettingsButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Component id="direcTagSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           </Group>
@@ -610,7 +652,7 @@
                     <Component class="javax.swing.JButton" name="myrimatchSupportButton">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/icons/windows_and_linux_gray.png"/>
+                          <Image iconType="3" name="/icons/windows_and_linux_gray-new.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="Supported on Windows and Linux"/>
                         <Property name="borderPainted" type="boolean" value="false"/>
@@ -619,7 +661,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="myriMatchLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MyriMatch Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html&quot;&gt;MyriMatch web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html&quot;&gt;MyriMatch search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MyriMatch web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -631,7 +673,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="andromedaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Andromeda Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://coxdocs.org/doku.php?id=maxquant:andromeda:start&quot;&gt;Andromeda web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;http://coxdocs.org/doku.php?id=maxquant:andromeda:start&quot;&gt;Andromeda search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Andromeda web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -664,7 +706,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="tideLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Tide Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=https://cruxtoolkit.sourceforge.net&quot;&gt;Tide web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=https://cruxtoolkit.sourceforge.net&quot;&gt;Tide search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Tide web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -738,7 +780,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="cometLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;Comet Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=http://comet-ms.sourceforge.net&quot;&gt;Comet web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=http://comet-ms.sourceforge.net&quot;&gt;Comet search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Comet web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -778,7 +820,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="xtandemLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;X! Tandem Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://www.thegpm.org/tandem&quot;&gt;X! Tandem web page&lt;/a&gt;&lt;/html&gt;&#xa;"/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;https://www.thegpm.org/tandem&quot;&gt;X! Tandem search algorithm&lt;/a&gt;&lt;/html&gt;&#xa;"/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the X! Tandem web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -862,7 +904,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="omssaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;OMSSA Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://www.ncbi.nlm.nih.gov/pubmed/15473683&quot;&gt;OMSSA web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;https://www.ncbi.nlm.nih.gov/pubmed/15473683&quot;&gt;OMSSA search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the OMSSA web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -905,7 +947,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="msAmandaLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS Amanda Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://ms.imp.ac.at/?goto=msamanda&quot;&gt;MS Amanda web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;https://ms.imp.ac.at/?goto=msamanda&quot;&gt;MS Amanda search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS Amanda web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -1044,7 +1086,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="msgfLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;MS-GF+ Search Algorithm - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://github.com/MSGFPlus/msgfplus&quot;&gt;MS-GF+ web page&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;https://github.com/MSGFPlus/msgfplus&quot;&gt;MS-GF+ search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the MS-GF+ web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
@@ -1067,7 +1109,7 @@
                     <Component class="javax.swing.JButton" name="cometSupportButton">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/icons/windows_and_linux_gray.png"/>
+                          <Image iconType="3" name="/icons/windows_and_linux_gray-new.png"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="Supported on Windows and Linux"/>
                         <Property name="borderPainted" type="boolean" value="false"/>
@@ -1125,6 +1167,154 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cometButtonActionPerformed"/>
                       </Events>
                     </Component>
+                    <Component class="javax.swing.JCheckBox" name="enableNovorJCheckBox">
+                      <Properties>
+                        <Property name="toolTipText" type="java.lang.String" value="Enable Novor"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableNovorJCheckBoxActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="enableDirecTagJCheckBox">
+                      <Properties>
+                        <Property name="toolTipText" type="java.lang.String" value="Enable DirecTag"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableDirecTagJCheckBoxActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="novorButton">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="15" style="1"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="Novor"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Enable Novor"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="null"/>
+                        </Property>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="horizontalAlignment" type="int" value="2"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorButtonMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorButtonMouseExited"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="novorButtonActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="direcTagButton">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="15" style="1"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="DirecTag"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Enable DirecTag"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="null"/>
+                        </Property>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="horizontalAlignment" type="int" value="2"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagButtonMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagButtonMouseExited"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="direcTagButtonActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="novorSupportButton">
+                      <Properties>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/all_platforms_gray.png"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Supported on Windows, Mac and Linux"/>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="direcTagSupportButton">
+                      <Properties>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/windows_and_linux_gray-new.png"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Supported on Windows and Linux"/>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="novorLinkLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;https://rapidnovor.com&quot;&gt;Novor de novo peptide sequencing&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="toolTipText" type="java.lang.String" value="Open the Novor web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorLinkLabelMouseClicked"/>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorLinkLabelMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorLinkLabelMouseExited"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="direcTagLinkLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/&quot;&gt;DirecTag MS/MS sequence tagging&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="toolTipText" type="java.lang.String" value="Open the DirecTag web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagLinkLabelMouseClicked"/>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagLinkLabelMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagLinkLabelMouseExited"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="novorSettingsButton">
+                      <Properties>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/edit_gray.png"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Edit Novor Advanced Settings"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="null"/>
+                        </Property>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/edit.png"/>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorSettingsButtonMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorSettingsButtonMouseExited"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="novorSettingsButtonActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="direcTagSettingsButton">
+                      <Properties>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/edit_gray.png"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Edit DirecTag Advanced Settings"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="null"/>
+                        </Property>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/edit.png"/>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagSettingsButtonMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagSettingsButtonMouseExited"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="direcTagSettingsButtonActionPerformed"/>
+                      </Events>
+                    </Component>
                   </SubComponents>
                 </Container>
               </SubComponents>
@@ -1145,46 +1335,40 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="resultFolderLbl" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="outputFolderTxt" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="databaseSettingsLbl" min="-2" pref="100" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="databaseFileTxt" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="searchSettingsLbl" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="settingsComboBox" max="32767" attributes="0"/>
+                          </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="spectraFilesLabel" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="spectraFilesTxt" max="32767" attributes="0"/>
                           </Group>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="searchSettingsLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <Component id="resultFolderLbl" linkSize="5" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
-                                  <Component id="databaseSettingsLbl" min="-2" pref="100" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="settingsComboBox" max="32767" attributes="0"/>
-                                  <Component id="outputFolderTxt" pref="578" max="32767" attributes="0"/>
-                                  <Component id="databaseFileTxt" alignment="0" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="editResultFolderButton" linkSize="2" alignment="0" pref="56" max="32767" attributes="0"/>
-                                  <Component id="addSettingsButton" linkSize="2" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="addSpectraButton" linkSize="2" alignment="0" min="-2" pref="51" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="clearSpectraButton" linkSize="2" alignment="0" pref="68" max="32767" attributes="0"/>
-                                  <Component id="editSettingsButton" linkSize="2" alignment="0" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="editDatabaseDetailsButton" linkSize="2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Component id="addDecoysCheckBox" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="addSettingsButton" linkSize="2" alignment="0" max="32767" attributes="0"/>
+                          <Component id="addSpectraButton" linkSize="2" alignment="0" min="-2" pref="51" max="-2" attributes="0"/>
+                          <Component id="editDatabaseDetailsButton" linkSize="2" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="editResultFolderButton" linkSize="2" alignment="0" pref="56" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="editSettingsButton" linkSize="2" alignment="1" max="32767" attributes="0"/>
+                          <Component id="clearSpectraButton" linkSize="2" alignment="1" pref="68" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -1193,7 +1377,14 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="searchSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="addSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="settingsComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="editSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="spectraFilesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spectraFilesTxt" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -1205,14 +1396,6 @@
                           <Component id="databaseSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="databaseFileTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="editDatabaseDetailsButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="addDecoysCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="searchSettingsLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="addSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="settingsComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="editSettingsButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -1220,7 +1403,7 @@
                           <Component id="editResultFolderButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="outputFolderTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1232,11 +1415,13 @@
                   <Color blue="0" green="0" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Spectrum File(s)"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="clearSpectraButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Clear"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearSpectraButtonActionPerformed"/>
@@ -1245,6 +1430,7 @@
             <Component class="javax.swing.JButton" name="addSpectraButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Add"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addSpectraButtonActionPerformed"/>
@@ -1254,6 +1440,7 @@
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="spectraFilesTxtMouseClicked"/>
@@ -1290,17 +1477,20 @@
                   <Color blue="0" green="0" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Output Folder"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="outputFolderTxt">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="editResultFolderButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Edit"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editResultFolderButtonActionPerformed"/>
@@ -1328,26 +1518,24 @@
                   <Color blue="0" green="0" red="ff" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Database File"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="databaseFileTxt">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JButton" name="editDatabaseDetailsButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Edit"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editDatabaseDetailsButtonActionPerformed"/>
               </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="addDecoysCheckBox">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Add Decoys"/>
-              </Properties>
             </Component>
           </SubComponents>
         </Container>
@@ -1460,7 +1648,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="peptideShakerLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;PeptideShaker - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Visualize the results in PeptideShaker&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;https://compomics.github.io/projects/peptide-shaker.html&quot;&gt;Interpretation of proteomics data&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the PeptideShaker web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1606,7 +1794,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="msconvertLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;MSConvert File Conversion - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://proteowizard.sourceforge.net/downloads.shtml&quot;&gt;ProteoWizard web page&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;http://proteowizard.sourceforge.net/downloads.shtml&quot;&gt;General raw file conversion&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the ProteoWizard web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1700,7 +1888,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="thermoRawFileParserLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Thermo Raw File Parser - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://github.com/compomics/ThermoRawFileParser&quot;&gt;ThermoRawFileParser web page&lt;/a&gt;&lt;/html&gt;"/>
+                <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=&quot;https://github.com/compomics/ThermoRawFileParser&quot;&gt;Thermo raw files conversion&lt;/a&gt;&lt;/html&gt;"/>
                 <Property name="toolTipText" type="java.lang.String" value="Open the ThermoRawFileParser web page"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
@@ -1730,224 +1918,6 @@
                 <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="thermoRawFileParserSettingsButtonMouseEntered"/>
                 <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="thermoRawFileParserSettingsButtonMouseExited"/>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="thermoRawFileParserSettingsButtonActionPerformed"/>
-              </Events>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="deNovoPanel">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="De Novo Algorithms"/>
-              </Border>
-            </Property>
-            <Property name="opaque" type="boolean" value="false"/>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="enableNovorJCheckBox" min="-2" max="-2" attributes="0"/>
-                          <Component id="enableDirecTagJCheckBox" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="novorButton" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                          <Component id="direcTagButton" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="novorSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="direcTagSupportButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="direcTagLinkLabel" min="-2" max="-2" attributes="0"/>
-                          <Component id="novorLinkLabel" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="novorSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
-                          <Component id="direcTagSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="enableNovorJCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="novorButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Component id="novorLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="novorSettingsButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Component id="novorSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="enableDirecTagJCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="direcTagButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Component id="direcTagLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="direcTagSettingsButton" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                          <Component id="direcTagSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JCheckBox" name="enableNovorJCheckBox">
-              <Properties>
-                <Property name="toolTipText" type="java.lang.String" value="Enable Novor"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableNovorJCheckBoxActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="novorButton">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="15" style="1"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Novor"/>
-                <Property name="toolTipText" type="java.lang.String" value="Enable Novor"/>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="null"/>
-                </Property>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-                <Property name="enabled" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorButtonMouseEntered"/>
-                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorButtonMouseExited"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="novorButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="novorSupportButton">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/all_platforms_gray.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Supported on Windows, Mac and Linux"/>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="novorLinkLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;Novor De Novo Peptide Sequencing - &lt;a style=&quot;text-decoration: none&quot; href=&quot;https://rapidnovor.com&quot;&gt;Novor web page&lt;/a&gt;&lt;/html&gt; "/>
-                <Property name="toolTipText" type="java.lang.String" value="Open the Novor web page"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorLinkLabelMouseClicked"/>
-                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorLinkLabelMouseEntered"/>
-                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorLinkLabelMouseExited"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="novorSettingsButton">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/edit_gray.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit Novor Advanced Settings"/>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="null"/>
-                </Property>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-                <Property name="enabled" type="boolean" value="false"/>
-                <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/edit.png"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorSettingsButtonMouseEntered"/>
-                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="novorSettingsButtonMouseExited"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="novorSettingsButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JCheckBox" name="enableDirecTagJCheckBox">
-              <Properties>
-                <Property name="toolTipText" type="java.lang.String" value="Enable DirecTag"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableDirecTagJCheckBoxActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="direcTagButton">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="15" style="1"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="DirecTag"/>
-                <Property name="toolTipText" type="java.lang.String" value="Enable DirecTag"/>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="null"/>
-                </Property>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-                <Property name="enabled" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagButtonMouseEntered"/>
-                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagButtonMouseExited"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="direcTagButtonActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="direcTagSupportButton">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/windows_and_linux_gray.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Supported on Windows and Linux"/>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="direcTagLinkLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="&lt;html&gt;DirecTag MS/MS Sequence Tagging - &lt;a style=&quot;text-decoration: none&quot; href=&quot;http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/&quot;&gt;DirecTag web page&lt;/a&gt;&lt;/html&gt; "/>
-                <Property name="toolTipText" type="java.lang.String" value="Open the DirecTag web page"/>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagLinkLabelMouseClicked"/>
-                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagLinkLabelMouseEntered"/>
-                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagLinkLabelMouseExited"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="direcTagSettingsButton">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/edit_gray.png"/>
-                </Property>
-                <Property name="toolTipText" type="java.lang.String" value="Edit DirecTag Advanced Settings"/>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="null"/>
-                </Property>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="contentAreaFilled" type="boolean" value="false"/>
-                <Property name="enabled" type="boolean" value="false"/>
-                <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/icons/edit.png"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagSettingsButtonMouseEntered"/>
-                <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagSettingsButtonMouseExited"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="direcTagSettingsButtonActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

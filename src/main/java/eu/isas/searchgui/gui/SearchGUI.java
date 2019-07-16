@@ -21,6 +21,7 @@ import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
+import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfReader;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
@@ -60,7 +61,7 @@ import com.compomics.util.gui.parameters.identification.algorithm.OmssaParameter
 import com.compomics.util.gui.parameters.identification.algorithm.TideParametersDialog;
 import com.compomics.util.gui.parameters.identification.algorithm.XTandemParametersDialog;
 import com.compomics.util.gui.parameters.identification.search.SearchParametersDialog;
-import static com.compomics.util.gui.parameters.identification.search.SequenceDbDetailsDialog.lastFolderKey;
+import com.compomics.util.gui.parameters.identification.search.SequenceDbDetailsDialog;
 import com.compomics.util.gui.parameters.tools.ProcessingParametersDialog;
 import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
@@ -168,7 +169,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * The search parameters.
      */
-    private IdentificationParameters identificationParameters;
+    private IdentificationParameters identificationParameters = null;
     /**
      * The processing preferences.
      */
@@ -335,7 +336,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // set the search parameters
             updateIdentificationParametersDropDownMenu(true);
 
-            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, fastaFile, false, rawFiles, identificationParametersFile, processingParameters, exceptionHandler);
+            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, fastaFile, rawFiles, identificationParametersFile, processingParameters, exceptionHandler);
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
             enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());
@@ -387,8 +388,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // update the horizontal padding for the titled borders
             ((TitledBorder) inputFilesPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Input & Output" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
             ((TitledBorder) preProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Raw File Conversion" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
-            ((TitledBorder) searchEnginesLocationPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Search Engines" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
-            ((TitledBorder) deNovoPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "De Novo Algorithms" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
+            ((TitledBorder) searchEnginesLocationPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Search Engines & De Novo Algorithms" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
             ((TitledBorder) postProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Post Processing" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
 
             searchEnginesLocationPanel.repaint();
@@ -638,6 +638,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msgfButton = new javax.swing.JButton();
         enableOmssaJCheckBox = new javax.swing.JCheckBox();
         cometButton = new javax.swing.JButton();
+        enableNovorJCheckBox = new javax.swing.JCheckBox();
+        enableDirecTagJCheckBox = new javax.swing.JCheckBox();
+        novorButton = new javax.swing.JButton();
+        direcTagButton = new javax.swing.JButton();
+        novorSupportButton = new javax.swing.JButton();
+        direcTagSupportButton = new javax.swing.JButton();
+        novorLinkLabel = new javax.swing.JLabel();
+        direcTagLinkLabel = new javax.swing.JLabel();
+        novorSettingsButton = new javax.swing.JButton();
+        direcTagSettingsButton = new javax.swing.JButton();
         inputFilesPanel = new javax.swing.JPanel();
         spectraFilesLabel = new javax.swing.JLabel();
         clearSpectraButton = new javax.swing.JButton();
@@ -653,7 +663,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         databaseSettingsLbl = new javax.swing.JLabel();
         databaseFileTxt = new javax.swing.JTextField();
         editDatabaseDetailsButton = new javax.swing.JButton();
-        addDecoysCheckBox = new javax.swing.JCheckBox();
         searchButton = new javax.swing.JButton();
         aboutButton = new javax.swing.JButton();
         searchGUIPublicationLabel = new javax.swing.JLabel();
@@ -674,17 +683,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         thermoRawFileParserSupportButton = new javax.swing.JButton();
         thermoRawFileParserLabel = new javax.swing.JLabel();
         thermoRawFileParserSettingsButton = new javax.swing.JButton();
-        deNovoPanel = new javax.swing.JPanel();
-        enableNovorJCheckBox = new javax.swing.JCheckBox();
-        novorButton = new javax.swing.JButton();
-        novorSupportButton = new javax.swing.JButton();
-        novorLinkLabel = new javax.swing.JLabel();
-        novorSettingsButton = new javax.swing.JButton();
-        enableDirecTagJCheckBox = new javax.swing.JCheckBox();
-        direcTagButton = new javax.swing.JButton();
-        direcTagSupportButton = new javax.swing.JButton();
-        direcTagLinkLabel = new javax.swing.JLabel();
-        direcTagSettingsButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -795,7 +793,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SearchGUI");
-        setMinimumSize(new java.awt.Dimension(775, 600));
+        setMinimumSize(new java.awt.Dimension(850, 700));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -804,7 +802,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         taskEditorPanel.setBackground(new java.awt.Color(230, 230, 230));
 
-        searchEnginesLocationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search Engines"));
+        searchEnginesLocationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search Engines & De Novo Algorithms"));
         searchEnginesLocationPanel.setOpaque(false);
 
         searchEnginesScrollPane.setBorder(null);
@@ -883,12 +881,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        myrimatchSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
+        myrimatchSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray-new.png"))); // NOI18N
         myrimatchSupportButton.setToolTipText("Supported on Windows and Linux");
         myrimatchSupportButton.setBorderPainted(false);
         myrimatchSupportButton.setContentAreaFilled(false);
 
-        myriMatchLinkLabel.setText("<html>MyriMatch Search Algorithm - <a style=\"text-decoration: none\" href=\"http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html\">MyriMatch web page</a></html> ");
+        myriMatchLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html\">MyriMatch search algorithm</a></html> ");
         myriMatchLinkLabel.setToolTipText("Open the MyriMatch web page");
         myriMatchLinkLabel.setEnabled(false);
         myriMatchLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -903,7 +901,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        andromedaLinkLabel.setText("<html>Andromeda Search Algorithm - <a style=\"text-decoration: none\" href=\"http://coxdocs.org/doku.php?id=maxquant:andromeda:start\">Andromeda web page</a></html> ");
+        andromedaLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"http://coxdocs.org/doku.php?id=maxquant:andromeda:start\">Andromeda search algorithm</a></html> ");
         andromedaLinkLabel.setToolTipText("Open the Andromeda web page");
         andromedaLinkLabel.setEnabled(false);
         andromedaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -940,7 +938,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        tideLinkLabel.setText("<html>Tide Search Algorithm - <a style=\"text-decoration: none\" href=https://cruxtoolkit.sourceforge.net\">Tide web page</a></html> ");
+        tideLinkLabel.setText("<html><a style=\"text-decoration: none\" href=https://cruxtoolkit.sourceforge.net\">Tide search algorithm</a></html> ");
         tideLinkLabel.setToolTipText("Open the Tide web page");
         tideLinkLabel.setEnabled(false);
         tideLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1011,7 +1009,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        cometLinkLabel.setText("<html>Comet Search Algorithm - <a style=\"text-decoration: none\" href=http://comet-ms.sourceforge.net\">Comet web page</a></html> ");
+        cometLinkLabel.setText("<html><a style=\"text-decoration: none\" href=http://comet-ms.sourceforge.net\">Comet search algorithm</a></html> ");
         cometLinkLabel.setToolTipText("Open the Comet web page");
         cometLinkLabel.setEnabled(false);
         cometLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1047,7 +1045,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        xtandemLinkLabel.setText("<html>X! Tandem Search Algorithm - <a style=\"text-decoration: none\" href=\"https://www.thegpm.org/tandem\">X! Tandem web page</a></html>\n");
+        xtandemLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"https://www.thegpm.org/tandem\">X! Tandem search algorithm</a></html>\n");
         xtandemLinkLabel.setToolTipText("Open the X! Tandem web page");
         xtandemLinkLabel.setEnabled(false);
         xtandemLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1123,7 +1121,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msAmandaSupportButton.setBorderPainted(false);
         msAmandaSupportButton.setContentAreaFilled(false);
 
-        omssaLinkLabel.setText("<html>OMSSA Search Algorithm - <a style=\"text-decoration: none\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA web page</a></html> ");
+        omssaLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"https://www.ncbi.nlm.nih.gov/pubmed/15473683\">OMSSA search algorithm</a></html> ");
         omssaLinkLabel.setToolTipText("Open the OMSSA web page");
         omssaLinkLabel.setEnabled(false);
         omssaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1165,7 +1163,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         andromedaSupportButton.setBorderPainted(false);
         andromedaSupportButton.setContentAreaFilled(false);
 
-        msAmandaLinkLabel.setText("<html>MS Amanda Search Algorithm - <a style=\"text-decoration: none\" href=\"https://ms.imp.ac.at/?goto=msamanda\">MS Amanda web page</a></html> ");
+        msAmandaLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"https://ms.imp.ac.at/?goto=msamanda\">MS Amanda search algorithm</a></html> ");
         msAmandaLinkLabel.setToolTipText("Open the MS Amanda web page");
         msAmandaLinkLabel.setEnabled(false);
         msAmandaLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1302,7 +1300,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msgfLinkLabel.setText("<html>MS-GF+ Search Algorithm - <a style=\"text-decoration: none\" href=\"https://github.com/MSGFPlus/msgfplus\">MS-GF+ web page</a></html> ");
+        msgfLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"https://github.com/MSGFPlus/msgfplus\">MS-GF+ search algorithm</a></html> ");
         msgfLinkLabel.setToolTipText("Open the MS-GF+ web page");
         msgfLinkLabel.setEnabled(false);
         msgfLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1322,7 +1320,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         tideSupportButton.setBorderPainted(false);
         tideSupportButton.setContentAreaFilled(false);
 
-        cometSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
+        cometSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray-new.png"))); // NOI18N
         cometSupportButton.setToolTipText("Supported on Windows and Linux");
         cometSupportButton.setBorderPainted(false);
         cometSupportButton.setContentAreaFilled(false);
@@ -1379,65 +1377,228 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
+        enableNovorJCheckBox.setToolTipText("Enable Novor");
+        enableNovorJCheckBox.setEnabled(false);
+        enableNovorJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableNovorJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        enableDirecTagJCheckBox.setToolTipText("Enable DirecTag");
+        enableDirecTagJCheckBox.setEnabled(false);
+        enableDirecTagJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableDirecTagJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        novorButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        novorButton.setText("Novor");
+        novorButton.setToolTipText("Enable Novor");
+        novorButton.setBorder(null);
+        novorButton.setBorderPainted(false);
+        novorButton.setContentAreaFilled(false);
+        novorButton.setEnabled(false);
+        novorButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        novorButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                novorButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                novorButtonMouseExited(evt);
+            }
+        });
+        novorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                novorButtonActionPerformed(evt);
+            }
+        });
+
+        direcTagButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        direcTagButton.setText("DirecTag");
+        direcTagButton.setToolTipText("Enable DirecTag");
+        direcTagButton.setBorder(null);
+        direcTagButton.setBorderPainted(false);
+        direcTagButton.setContentAreaFilled(false);
+        direcTagButton.setEnabled(false);
+        direcTagButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        direcTagButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                direcTagButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                direcTagButtonMouseExited(evt);
+            }
+        });
+        direcTagButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                direcTagButtonActionPerformed(evt);
+            }
+        });
+
+        novorSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        novorSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        novorSupportButton.setBorderPainted(false);
+        novorSupportButton.setContentAreaFilled(false);
+
+        direcTagSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray-new.png"))); // NOI18N
+        direcTagSupportButton.setToolTipText("Supported on Windows and Linux");
+        direcTagSupportButton.setBorderPainted(false);
+        direcTagSupportButton.setContentAreaFilled(false);
+
+        novorLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"https://rapidnovor.com\">Novor de novo peptide sequencing</a></html> ");
+        novorLinkLabel.setToolTipText("Open the Novor web page");
+        novorLinkLabel.setEnabled(false);
+        novorLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                novorLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                novorLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                novorLinkLabelMouseExited(evt);
+            }
+        });
+
+        direcTagLinkLabel.setText("<html><a style=\"text-decoration: none\" href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/\">DirecTag MS/MS sequence tagging</a></html> ");
+        direcTagLinkLabel.setToolTipText("Open the DirecTag web page");
+        direcTagLinkLabel.setEnabled(false);
+        direcTagLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                direcTagLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                direcTagLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                direcTagLinkLabelMouseExited(evt);
+            }
+        });
+
+        novorSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        novorSettingsButton.setToolTipText("Edit Novor Advanced Settings");
+        novorSettingsButton.setBorder(null);
+        novorSettingsButton.setBorderPainted(false);
+        novorSettingsButton.setContentAreaFilled(false);
+        novorSettingsButton.setEnabled(false);
+        novorSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        novorSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                novorSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                novorSettingsButtonMouseExited(evt);
+            }
+        });
+        novorSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                novorSettingsButtonActionPerformed(evt);
+            }
+        });
+
+        direcTagSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        direcTagSettingsButton.setToolTipText("Edit DirecTag Advanced Settings");
+        direcTagSettingsButton.setBorder(null);
+        direcTagSettingsButton.setBorderPainted(false);
+        direcTagSettingsButton.setContentAreaFilled(false);
+        direcTagSettingsButton.setEnabled(false);
+        direcTagSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        direcTagSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                direcTagSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                direcTagSettingsButtonMouseExited(evt);
+            }
+        });
+        direcTagSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                direcTagSettingsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout searchEnginesPanelLayout = new javax.swing.GroupLayout(searchEnginesPanel);
         searchEnginesPanel.setLayout(searchEnginesPanelLayout);
         searchEnginesPanelLayout.setHorizontalGroup(
             searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(enableXTandemJCheckBox)
-                    .addComponent(enableMyriMatchJCheckBox)
-                    .addComponent(enableMsAmandaJCheckBox)
-                    .addComponent(enableMsgfJCheckBox)
-                    .addComponent(enableOmssaJCheckBox)
-                    .addComponent(enableCometJCheckBox)
-                    .addComponent(enableTideJCheckBox)
-                    .addComponent(enableAndromedaJCheckBox))
-                .addGap(61, 61, 61)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(andromedaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(tideSupportButton)
-                    .addComponent(xtandemSupportButton)
-                    .addComponent(myrimatchSupportButton)
-                    .addComponent(msAmandaSupportButton)
-                    .addComponent(msgfSupportButton)
-                    .addComponent(cometSupportButton)
-                    .addComponent(omssaSupportButton)
-                    .addComponent(andromedaSupportButton))
-                .addGap(34, 34, 34)
-                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(myriMatchLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msgfLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(omssaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cometLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(omssaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xtandemSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(msgfSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cometSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(andromedaSettingsButton))
-                .addGap(10, 10, 10))
+                    .addGroup(searchEnginesPanelLayout.createSequentialGroup()
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(enableXTandemJCheckBox)
+                            .addComponent(enableMyriMatchJCheckBox)
+                            .addComponent(enableMsAmandaJCheckBox)
+                            .addComponent(enableMsgfJCheckBox)
+                            .addComponent(enableOmssaJCheckBox)
+                            .addComponent(enableCometJCheckBox)
+                            .addComponent(enableTideJCheckBox)
+                            .addComponent(enableAndromedaJCheckBox))
+                        .addGap(61, 61, 61)
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(xtandemButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(myriMatchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(msAmandaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(msgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(omssaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cometButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tideButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(andromedaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tideSupportButton)
+                            .addComponent(xtandemSupportButton)
+                            .addComponent(myrimatchSupportButton)
+                            .addComponent(msAmandaSupportButton)
+                            .addComponent(msgfSupportButton)
+                            .addComponent(cometSupportButton)
+                            .addComponent(omssaSupportButton)
+                            .addComponent(andromedaSupportButton))
+                        .addGap(34, 34, 34)
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(xtandemLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(msAmandaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(myriMatchLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(msgfLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(omssaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cometLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(omssaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(xtandemSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(msgfSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cometSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(andromedaSettingsButton)
+                            .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesPanelLayout.createSequentialGroup()
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(enableNovorJCheckBox)
+                            .addComponent(enableDirecTagJCheckBox))
+                        .addGap(61, 61, 61)
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(novorSupportButton)
+                            .addComponent(direcTagSupportButton))
+                        .addGap(34, 34, 34)
+                        .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaButton, cometButton, msAmandaButton, msgfButton, myriMatchButton, omssaButton, tideButton, xtandemButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaButton, cometButton, direcTagButton, msAmandaButton, msgfButton, myriMatchButton, novorButton, omssaButton, tideButton, xtandemButton});
 
         searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
 
@@ -1500,6 +1661,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(andromedaSupportButton)
                     .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaSettingsButton))
+                .addGap(0, 0, 0)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableNovorJCheckBox)
+                    .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(novorSupportButton))
+                .addGap(0, 0, 0)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableDirecTagJCheckBox)
+                    .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(direcTagSupportButton))
                 .addGap(0, 0, 0))
         );
 
@@ -1521,8 +1696,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchEnginesLocationPanelLayout.setVerticalGroup(
             searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(searchEnginesScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(searchEnginesScrollPane)
+                .addGap(7, 7, 7))
         );
 
         inputFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input & Output"));
@@ -1530,8 +1706,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         spectraFilesLabel.setForeground(new java.awt.Color(255, 0, 0));
         spectraFilesLabel.setText("Spectrum File(s)");
+        spectraFilesLabel.setEnabled(false);
 
         clearSpectraButton.setText("Clear");
+        clearSpectraButton.setEnabled(false);
         clearSpectraButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearSpectraButtonActionPerformed(evt);
@@ -1539,6 +1717,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         addSpectraButton.setText("Add");
+        addSpectraButton.setEnabled(false);
         addSpectraButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addSpectraButtonActionPerformed(evt);
@@ -1547,6 +1726,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         spectraFilesTxt.setEditable(false);
         spectraFilesTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        spectraFilesTxt.setEnabled(false);
         spectraFilesTxt.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 spectraFilesTxtMouseClicked(evt);
@@ -1573,11 +1753,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         resultFolderLbl.setForeground(new java.awt.Color(255, 0, 0));
         resultFolderLbl.setText("Output Folder");
+        resultFolderLbl.setEnabled(false);
 
         outputFolderTxt.setEditable(false);
         outputFolderTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        outputFolderTxt.setEnabled(false);
 
         editResultFolderButton.setText("Edit");
+        editResultFolderButton.setEnabled(false);
         editResultFolderButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editResultFolderButtonActionPerformed(evt);
@@ -1594,18 +1777,19 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         databaseSettingsLbl.setForeground(new java.awt.Color(255, 0, 0));
         databaseSettingsLbl.setText("Database File");
+        databaseSettingsLbl.setEnabled(false);
 
         databaseFileTxt.setEditable(false);
         databaseFileTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        databaseFileTxt.setEnabled(false);
 
         editDatabaseDetailsButton.setText("Edit");
+        editDatabaseDetailsButton.setEnabled(false);
         editDatabaseDetailsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editDatabaseDetailsButtonActionPerformed(evt);
             }
         });
-
-        addDecoysCheckBox.setText("Add Decoys");
 
         javax.swing.GroupLayout inputFilesPanelLayout = new javax.swing.GroupLayout(inputFilesPanel);
         inputFilesPanel.setLayout(inputFilesPanelLayout);
@@ -1614,46 +1798,49 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             .addGroup(inputFilesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
+                        .addComponent(resultFolderLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(outputFolderTxt))
+                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
+                        .addComponent(databaseSettingsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(databaseFileTxt))
+                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
+                        .addComponent(searchSettingsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputFilesPanelLayout.createSequentialGroup()
                         .addComponent(spectraFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spectraFilesTxt))
-                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
-                        .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchSettingsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(resultFolderLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(databaseSettingsLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(outputFolderTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
-                            .addComponent(databaseFileTxt))))
+                        .addComponent(spectraFilesTxt)))
                 .addGap(10, 10, 10)
-                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
-                        .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(editResultFolderButton, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
-                            .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(clearSpectraButton, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-                            .addComponent(editSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(inputFilesPanelLayout.createSequentialGroup()
-                        .addComponent(editDatabaseDetailsButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(addDecoysCheckBox)))
+                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(addSpectraButton, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editDatabaseDetailsButton)
+                    .addComponent(editResultFolderButton, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(editSettingsButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(clearSpectraButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addDecoysCheckBox, addSettingsButton, addSpectraButton, clearSpectraButton, editDatabaseDetailsButton, editResultFolderButton, editSettingsButton});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editDatabaseDetailsButton, editResultFolderButton, editSettingsButton});
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {resultFolderLbl, searchSettingsLbl, spectraFilesLabel});
 
         inputFilesPanelLayout.setVerticalGroup(
             inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(inputFilesPanelLayout.createSequentialGroup()
-                .addGap(2, 2, 2)
+                .addContainerGap()
+                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchSettingsLbl)
+                    .addComponent(addSettingsButton)
+                    .addComponent(settingsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(editSettingsButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(spectraFilesLabel)
                     .addComponent(spectraFilesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1663,20 +1850,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(databaseSettingsLbl)
                     .addComponent(databaseFileTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editDatabaseDetailsButton)
-                    .addComponent(addDecoysCheckBox))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(searchSettingsLbl)
-                    .addComponent(addSettingsButton)
-                    .addComponent(settingsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editSettingsButton))
+                    .addComponent(editDatabaseDetailsButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(resultFolderLbl)
                     .addComponent(editResultFolderButton)
                     .addComponent(outputFolderTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editResultFolderButton, editSettingsButton});
@@ -1739,7 +1919,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        peptideShakerLabel.setText("<html>PeptideShaker - <a style=\"text-decoration: none\" href=\"https://compomics.github.io/projects/peptide-shaker.html\">Visualize the results in PeptideShaker</a></html>");
+        peptideShakerLabel.setText("<html><a style=\"text-decoration: none\" href=\"https://compomics.github.io/projects/peptide-shaker.html\">Interpretation of proteomics data</a></html>");
         peptideShakerLabel.setToolTipText("Open the PeptideShaker web page");
         peptideShakerLabel.setEnabled(false);
         peptideShakerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1843,7 +2023,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        msconvertLabel.setText("<html>MSConvert File Conversion - <a style=\"text-decoration: none\" href=\"http://proteowizard.sourceforge.net/downloads.shtml\">ProteoWizard web page</a></html>");
+        msconvertLabel.setText("<html><a style=\"text-decoration: none\" href=\"http://proteowizard.sourceforge.net/downloads.shtml\">General raw file conversion</a></html>");
         msconvertLabel.setToolTipText("Open the ProteoWizard web page");
         msconvertLabel.setEnabled(false);
         msconvertLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1914,7 +2094,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         thermoRawFileParserSupportButton.setBorderPainted(false);
         thermoRawFileParserSupportButton.setContentAreaFilled(false);
 
-        thermoRawFileParserLabel.setText("<html>Thermo Raw File Parser - <a style=\"text-decoration: none\" href=\"https://github.com/compomics/ThermoRawFileParser\">ThermoRawFileParser web page</a></html>");
+        thermoRawFileParserLabel.setText("<html><a style=\"text-decoration: none\" href=\"https://github.com/compomics/ThermoRawFileParser\">Thermo raw files conversion</a></html>");
         thermoRawFileParserLabel.setToolTipText("Open the ThermoRawFileParser web page");
         thermoRawFileParserLabel.setEnabled(false);
         thermoRawFileParserLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1999,198 +2179,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(0, 0, 0))
         );
 
-        deNovoPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("De Novo Algorithms"));
-        deNovoPanel.setOpaque(false);
-
-        enableNovorJCheckBox.setToolTipText("Enable Novor");
-        enableNovorJCheckBox.setEnabled(false);
-        enableNovorJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableNovorJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        novorButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        novorButton.setText("Novor");
-        novorButton.setToolTipText("Enable Novor");
-        novorButton.setBorder(null);
-        novorButton.setBorderPainted(false);
-        novorButton.setContentAreaFilled(false);
-        novorButton.setEnabled(false);
-        novorButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        novorButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                novorButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                novorButtonMouseExited(evt);
-            }
-        });
-        novorButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                novorButtonActionPerformed(evt);
-            }
-        });
-
-        novorSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
-        novorSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
-        novorSupportButton.setBorderPainted(false);
-        novorSupportButton.setContentAreaFilled(false);
-
-        novorLinkLabel.setText("<html>Novor De Novo Peptide Sequencing - <a style=\"text-decoration: none\" href=\"https://rapidnovor.com\">Novor web page</a></html> ");
-        novorLinkLabel.setToolTipText("Open the Novor web page");
-        novorLinkLabel.setEnabled(false);
-        novorLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                novorLinkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                novorLinkLabelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                novorLinkLabelMouseExited(evt);
-            }
-        });
-
-        novorSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        novorSettingsButton.setToolTipText("Edit Novor Advanced Settings");
-        novorSettingsButton.setBorder(null);
-        novorSettingsButton.setBorderPainted(false);
-        novorSettingsButton.setContentAreaFilled(false);
-        novorSettingsButton.setEnabled(false);
-        novorSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
-        novorSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                novorSettingsButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                novorSettingsButtonMouseExited(evt);
-            }
-        });
-        novorSettingsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                novorSettingsButtonActionPerformed(evt);
-            }
-        });
-
-        enableDirecTagJCheckBox.setToolTipText("Enable DirecTag");
-        enableDirecTagJCheckBox.setEnabled(false);
-        enableDirecTagJCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                enableDirecTagJCheckBoxActionPerformed(evt);
-            }
-        });
-
-        direcTagButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        direcTagButton.setText("DirecTag");
-        direcTagButton.setToolTipText("Enable DirecTag");
-        direcTagButton.setBorder(null);
-        direcTagButton.setBorderPainted(false);
-        direcTagButton.setContentAreaFilled(false);
-        direcTagButton.setEnabled(false);
-        direcTagButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        direcTagButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                direcTagButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                direcTagButtonMouseExited(evt);
-            }
-        });
-        direcTagButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                direcTagButtonActionPerformed(evt);
-            }
-        });
-
-        direcTagSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray.png"))); // NOI18N
-        direcTagSupportButton.setToolTipText("Supported on Windows and Linux");
-        direcTagSupportButton.setBorderPainted(false);
-        direcTagSupportButton.setContentAreaFilled(false);
-
-        direcTagLinkLabel.setText("<html>DirecTag MS/MS Sequence Tagging - <a style=\"text-decoration: none\" href=\"http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/\">DirecTag web page</a></html> ");
-        direcTagLinkLabel.setToolTipText("Open the DirecTag web page");
-        direcTagLinkLabel.setEnabled(false);
-        direcTagLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                direcTagLinkLabelMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                direcTagLinkLabelMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                direcTagLinkLabelMouseExited(evt);
-            }
-        });
-
-        direcTagSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
-        direcTagSettingsButton.setToolTipText("Edit DirecTag Advanced Settings");
-        direcTagSettingsButton.setBorder(null);
-        direcTagSettingsButton.setBorderPainted(false);
-        direcTagSettingsButton.setContentAreaFilled(false);
-        direcTagSettingsButton.setEnabled(false);
-        direcTagSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
-        direcTagSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                direcTagSettingsButtonMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                direcTagSettingsButtonMouseExited(evt);
-            }
-        });
-        direcTagSettingsButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                direcTagSettingsButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout deNovoPanelLayout = new javax.swing.GroupLayout(deNovoPanel);
-        deNovoPanel.setLayout(deNovoPanelLayout);
-        deNovoPanelLayout.setHorizontalGroup(
-            deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(deNovoPanelLayout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(enableNovorJCheckBox)
-                    .addComponent(enableDirecTagJCheckBox))
-                .addGap(60, 60, 60)
-                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(novorSupportButton)
-                    .addComponent(direcTagSupportButton))
-                .addGap(35, 35, 35)
-                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(37, 37, 37))
-        );
-        deNovoPanelLayout.setVerticalGroup(
-            deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(deNovoPanelLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(enableNovorJCheckBox)
-                    .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(novorSupportButton))
-                .addGap(0, 0, 0)
-                .addGroup(deNovoPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(enableDirecTagJCheckBox)
-                    .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(direcTagSupportButton))
-                .addGap(0, 0, 0))
-        );
-
         javax.swing.GroupLayout taskEditorPanelLayout = new javax.swing.GroupLayout(taskEditorPanel);
         taskEditorPanel.setLayout(taskEditorPanelLayout);
         taskEditorPanelLayout.setHorizontalGroup(
@@ -2199,7 +2187,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addContainerGap()
                 .addGroup(taskEditorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(searchEnginesLocationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 914, Short.MAX_VALUE)
+                    .addComponent(postProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 862, Short.MAX_VALUE)
                     .addComponent(inputFilesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskEditorPanelLayout.createSequentialGroup()
                         .addComponent(aboutButton)
@@ -2208,8 +2196,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12))
-                    .addComponent(preProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(deNovoPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(preProcessingPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         taskEditorPanelLayout.setVerticalGroup(
@@ -2221,8 +2208,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addComponent(preProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchEnginesLocationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(deNovoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(postProcessingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2951,7 +2936,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setProcessingParameters(processingParameters);
         searchHandler.setMgfFiles(mgfFiles);
         searchHandler.setFastaFile(fastaFile);
-        searchHandler.setAddDecoys(addDecoysCheckBox.isSelected());
         searchHandler.setRawFiles(rawFiles);
         searchHandler.setResultsFolder(outputFolder);
         searchHandler.setPeptideShakerEnabled(peptideShakerCheckBox.isSelected());
@@ -4195,7 +4179,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             "PTM Definition Changed", JOptionPane.WARNING_MESSAGE);
                 }
 
-                enableSearchEngineAndDeNovoPanels(true);
+                enableSearchSettingsDependentFeatures(true);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
                         "Failed to import search parameters from: " + identificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
@@ -4203,7 +4187,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 e.printStackTrace();
             }
         } else {
-            enableSearchEngineAndDeNovoPanels(false);
+            enableSearchSettingsDependentFeatures(false);
         }
 
         validateInput(false);
@@ -4993,55 +4977,42 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void editDatabaseDetailsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editDatabaseDetailsButtonActionPerformed
 
-        File startLocation = null;
+        String selectedFastaFile = null;
 
-        if (utilitiesUserParameters.getDbFolder() != null && utilitiesUserParameters.getDbFolder().exists()) {
-
-            startLocation = utilitiesUserParameters.getDbFolder();
-
+        if (!databaseFileTxt.getText().trim().isEmpty()) {
+            selectedFastaFile = databaseFileTxt.getText();
         }
 
-        if (startLocation == null) {
+        SequenceDbDetailsDialog sequenceDbDetailsDialog = new SequenceDbDetailsDialog(
+                this, selectedFastaFile, identificationParameters.getFastaParameters(), lastSelectedFolder, true,
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
 
-            startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
-
+        if (selectedFastaFile == null) {
+            boolean success = sequenceDbDetailsDialog.selectDB(true);
+            if (success) {
+                sequenceDbDetailsDialog.setVisible(true);
+                databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
+            }
+        } else {
+            sequenceDbDetailsDialog.setVisible(true);
+            databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
         }
 
-        JFileChooser fc = new JFileChooser(startLocation);
+        // see if we need to save the new fasta parameters
+        if (!sequenceDbDetailsDialog.isCanceled()) {
 
-        FileFilter filter = new FileFilter() {
+            FastaParameters newFastaParameters = sequenceDbDetailsDialog.getFastaParameters();
 
-            @Override
-            public boolean accept(File myFile) {
-
-                return myFile.getName().toLowerCase().endsWith("fasta")
-                        || myFile.isDirectory();
+            if (!newFastaParameters.equals(identificationParameters.getFastaParameters())) {
+                identificationParameters.setFastaParameters(newFastaParameters);
+                try {
+                    identificationParametersFactory.addIdentificationParameters(identificationParameters);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-
-            @Override
-            public String getDescription() {
-                return "FASTA (.fasta)";
-            }
-
-        };
-
-        fc.setFileFilter(filter);
-        int result = fc.showOpenDialog(this);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-
-            fastaFile = fc.getSelectedFile();
-            File folder = fastaFile.getParentFile();
-            utilitiesUserParameters.setDbFolder(folder);
-            lastSelectedFolder.setLastSelectedFolder(lastFolderKey, folder.getAbsolutePath());
-
-            databaseFileTxt.setText(fastaFile.getAbsolutePath());
-
-            if (fastaFile.getName().contains(" ")) {
-
-                JOptionPane.showMessageDialog(this, "Your FASTA file name contains white space and ougth to be renamed.", "File Name Warning", JOptionPane.WARNING_MESSAGE);
-            }
-
         }
 
         validateInput(false);
@@ -5126,7 +5097,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JCheckBox addDecoysCheckBox;
     private javax.swing.JButton addSettingsButton;
     private javax.swing.JButton addSpectraButton;
     private javax.swing.JMenuItem advancedSettingsMenuItem;
@@ -5141,7 +5111,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JButton cometSupportButton;
     private javax.swing.JTextField databaseFileTxt;
     private javax.swing.JLabel databaseSettingsLbl;
-    private javax.swing.JPanel deNovoPanel;
     private javax.swing.JButton direcTagButton;
     private javax.swing.JLabel direcTagLinkLabel;
     private javax.swing.JButton direcTagSettingsButton;
@@ -6857,7 +6826,19 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param enable if true, the panel is enabled
      */
-    private void enableSearchEngineAndDeNovoPanels(boolean enable) {
+    private void enableSearchSettingsDependentFeatures(boolean enable) {
+
+        // spectrum files, database and outputfolder
+        spectraFilesLabel.setEnabled(enable);
+        spectraFilesTxt.setEnabled(enable);
+        addSpectraButton.setEnabled(enable);
+        clearSpectraButton.setEnabled(enable);
+        databaseSettingsLbl.setEnabled(enable);
+        databaseFileTxt.setEnabled(enable);
+        editDatabaseDetailsButton.setEnabled(enable);
+        resultFolderLbl.setEnabled(enable);
+        outputFolderTxt.setEnabled(enable);
+        editResultFolderButton.setEnabled(enable);
 
         // search engines
         xtandemSettingsButton.setEnabled(enable);

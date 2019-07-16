@@ -112,7 +112,7 @@ public class FastaCLI {
             String fastaFilePath = fastaCLIInputBean.getInputFile().getAbsolutePath();
             System.out.println("Input: " + fastaFilePath + System.getProperty("line.separator"));
 
-            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFilePath, fastaParameters, waitingHandler);
+            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFilePath, fastaParameters, true, waitingHandler);
             writeDbProperties(fastaSummary, fastaParameters);
 
             if (fastaCLIInputBean.isDecoy()) {

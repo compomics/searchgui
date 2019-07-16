@@ -7,8 +7,6 @@ import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
-import com.compomics.util.experiment.io.biology.protein.FastaSummary;
-import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.AplExporter;
 import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
 import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
@@ -143,11 +141,6 @@ public class SearchHandler {
      * If true, Reporter will be used.
      */
     private boolean enableReporter = false;
-    /**
-     * If true, decoys will be added to the provided FASTA file before starting
-     * the search.
-     */
-    private boolean addDecoys = false;
     /**
      * The identification parameters.
      */
@@ -347,15 +340,13 @@ public class SearchHandler {
      * @param resultsFolder the results folder
      * @param mgfFiles list of peak list files in the mgf format
      * @param fastaFile the FASTA file
-     * @param addDecoys if true, decoys will be added to the FASTA file before
-     * starting the search
      * @param rawFiles list of raw files
      * @param identificationParametersFile the identification parameters file
      * @param processingParameters the processing parameters
      * @param exceptionHandler a handler for exceptions
      */
     public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles,
-            File fastaFile, boolean addDecoys,
+            File fastaFile,
             ArrayList<File> rawFiles, File identificationParametersFile, ProcessingParameters processingParameters,
             ExceptionHandler exceptionHandler) {
 
@@ -363,7 +354,6 @@ public class SearchHandler {
         //this.defaultOutputFileName = defaultOutputFileName; // @TODO: implement? 
         this.mgfFiles = mgfFiles;
         this.fastaFile = fastaFile;
-        this.addDecoys = addDecoys;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
         enableOmssa = loadSearchEngineLocation(Advocate.omssa, false, true, true, true, false, false, false);
@@ -393,8 +383,6 @@ public class SearchHandler {
      * @param mgfFiles list of peak list files in the mgf format
      * @param defaultOutputFileName the default output file name
      * @param fastaFile the FASTA file
-     * @param addDecoys if true, decoys will be added to the FASTA file before
-     * starting the search
      * @param rawFiles list of raw files
      * @param identificationParametersFile the search parameters file
      * @param searchOmssa if true the OMSSA search is enabled
@@ -431,7 +419,7 @@ public class SearchHandler {
      * null the default location is used
      * @param processingParameters the processing preferences
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, String defaultOutputFileName, ArrayList<File> mgfFiles, File fastaFile, boolean addDecoys, ArrayList<File> rawFiles, File identificationParametersFile,
+    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, String defaultOutputFileName, ArrayList<File> mgfFiles, File fastaFile, ArrayList<File> rawFiles, File identificationParametersFile,
             boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
             boolean runNovor, boolean runDirecTag,
             File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder,
@@ -444,7 +432,6 @@ public class SearchHandler {
         }
         this.mgfFiles = mgfFiles;
         this.fastaFile = fastaFile;
-        this.addDecoys = addDecoys;
         this.rawFiles = rawFiles;
         this.enableOmssa = searchOmssa;
         this.enableXtandem = searchXTandem;
@@ -1594,28 +1581,6 @@ public class SearchHandler {
     }
 
     /**
-     * Returns true if decoys are to be added to the FASTA file before starting
-     * the search.
-     *
-     * @return true if decoys are to be added to the FASTA file before starting
-     * the search
-     */
-    public boolean addDecoys() {
-        return addDecoys;
-    }
-
-    /**
-     * Set if decoys are to be added to the FASTA file before starting the
-     * search.
-     *
-     * @param addDecoys if decoys are to be added to the FASTA file before
-     * starting the search
-     */
-    public void setAddDecoys(boolean addDecoys) {
-        this.addDecoys = addDecoys;
-    }
-
-    /**
      * Returns the list of raw files.
      *
      * @return the raw files
@@ -1829,19 +1794,10 @@ public class SearchHandler {
                 if (enableReporter) {
                     nProgress++;
                 }
-                if (addDecoys) {
-                    nProgress++;
-                }
 
                 waitingHandler.setPrimaryProgressCounterIndeterminate(false);
                 waitingHandler.setMaxPrimaryProgressCounter(nProgress);
                 waitingHandler.increasePrimaryProgressCounter(); // just to not be stuck at 0% for the whole first search
-
-                // add decoys
-                if (addDecoys) {
-                    generateTargetDecoyDatabase(waitingHandler);
-                    waitingHandler.increasePrimaryProgressCounter();
-                }
 
                 SearchParameters searchParameters = identificationParameters.getSearchParameters();
 
@@ -3433,61 +3389,5 @@ public class SearchHandler {
      */
     public static void setDefaultOutputFileName(String aDefaultOutputFileName) {
         defaultOutputFileName = aDefaultOutputFileName;
-    }
-
-    /**
-     * Appends decoy sequences to the given target database file.
-     *
-     * @param targetFile the target database file
-     * @param progressDialog the progress dialog
-     */
-    private void generateTargetDecoyDatabase(WaitingHandler waitingHandler) {
-
-        try {
-            // set up the new fasta file name
-            String newFasta = fastaFile.getAbsolutePath();
-            File originalFastaFile = fastaFile;
-
-            // remove the ending .fasta (if there)
-            if (fastaFile.getAbsolutePath().lastIndexOf(".") != -1) {
-                newFasta = fastaFile.getAbsolutePath().substring(0, fastaFile.getAbsolutePath().lastIndexOf("."));
-            }
-
-            // get the fasta summary
-            FastaSummary fastaSummary = FastaSummary.getSummary(fastaFile.getAbsolutePath(), identificationParameters.getFastaParameters(), waitingHandler);
-
-            // add the target decoy tag
-            newFasta += identificationParameters.getFastaParameters().getTargetDecoyFileNameSuffix() + ".fasta";
-
-            File newFile = new File(newFasta);
-
-            waitingHandler.appendReport("Appending Decoy Sequences. Please Wait...", true, true);
-
-            waitingHandler.setSecondaryProgressCounterIndeterminate(false);
-            waitingHandler.setSecondaryProgressCounter(0);
-            waitingHandler.setMaxSecondaryProgressCounter(fastaSummary.nSequences);
-
-            DecoyConverter.appendDecoySequences(originalFastaFile, newFile, identificationParameters.getFastaParameters(), waitingHandler);
-
-            waitingHandler.setSecondaryProgressCounterIndeterminate(true);
-
-            fastaFile = newFile;
-            DecoyConverter.getDecoySummary(originalFastaFile, fastaSummary);
-
-        } catch (FileNotFoundException e) {
-
-            JOptionPane.showMessageDialog(null,
-                    new String[]{"FASTA Import Error.", "File " + fastaFile.getAbsolutePath() + " not found."},
-                    "FASTA Import Error", JOptionPane.WARNING_MESSAGE);
-            e.printStackTrace();
-
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(null,
-                    new String[]{"FASTA Import Error.", "File " + fastaFile.getAbsolutePath() + " could not be imported."},
-                    "FASTA Import Error", JOptionPane.WARNING_MESSAGE);
-            e.printStackTrace();
-
-        }
     }
 }

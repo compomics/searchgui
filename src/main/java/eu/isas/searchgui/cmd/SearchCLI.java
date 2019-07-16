@@ -245,7 +245,7 @@ public class SearchCLI implements Callable {
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(identificationParameters,
                     searchCLIInputBean.getOutputFolder(), searchCLIInputBean.getDefaultOutputFileName(),
-                    spectrumFiles, searchCLIInputBean.getFastaFile(), false, new ArrayList<File>(), parametersFile,
+                    spectrumFiles, searchCLIInputBean.getFastaFile(), new ArrayList<File>(), parametersFile,
                     searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
                     searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
                     searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),
