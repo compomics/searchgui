@@ -304,6 +304,7 @@ public class SearchCLIdentificationParametersCLIParams {
         
         output += "\n\nSpectrum Annotation:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_LEVEL.id) + " " + IdentificationParametersCLIParams.ANNOTATION_LEVEL.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_LEVEL_TYPE.id) + " " + IdentificationParametersCLIParams.ANNOTATION_LEVEL_TYPE.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_MZ_TOLERANCE.id) + " " + IdentificationParametersCLIParams.ANNOTATION_MZ_TOLERANCE.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_HIGH_RESOLUTION.id) + " " + IdentificationParametersCLIParams.ANNOTATION_HIGH_RESOLUTION.description + "\n";
 
