@@ -4993,10 +4993,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (success) {
                 sequenceDbDetailsDialog.setVisible(true);
                 databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
+                fastaFile = new File(sequenceDbDetailsDialog.getSelectedFastaFile());
             }
         } else {
             sequenceDbDetailsDialog.setVisible(true);
             databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
+            fastaFile = new File(sequenceDbDetailsDialog.getSelectedFastaFile());
         }
 
         // see if we need to save the new fasta parameters

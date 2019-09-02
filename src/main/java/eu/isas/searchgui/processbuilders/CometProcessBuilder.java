@@ -50,7 +50,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2018.01 rev. 4"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2019.01 rev. 0"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -280,6 +280,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "# search enzyme" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
                     + "search_enzyme_number = " + enzymeId + "           # choose from list at end of this params file" + System.getProperty("line.separator")
+                    + "search_enzyme2_number = 0           # second enzyme; set to 0 if no second enzyme" + System.getProperty("line.separator") // @TODO: implement?
                     + "num_enzyme_termini = " + enzymeType + "           # valid values are 1 (semi-digested), 2 (fully digested, default), 8 N-term, 9 C-term" + System.getProperty("line.separator")
                     + "allowed_missed_cleavage = " + nMissedCleavages + "           # maximum value is 5; for enzyme search" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
@@ -341,7 +342,9 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "# misc parameters" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
                     + "digest_mass_range = " + cometParameters.getMinPrecursorMass() + " " + cometParameters.getMaxPrecursorMass() + "                 # MH+ peptide mass range to analyze" + System.getProperty("line.separator")
+                    + "peptide_length_range = " + cometParameters.getMinPeptideLength() + " " + cometParameters.getMaxPeptideLength() + "                 # minimum and maximum peptide length to analyze (default 1 63; max length 63)"  + System.getProperty("line.separator")
                     + "num_results = " + cometParameters.getNumberOfSpectrumMatches() + "                 # number of search hits to store internally" + System.getProperty("line.separator")
+                    + "max_duplicate_proteins = 0             # maximum number of protein names to report for each peptide identification; -1 reports all duplicates" + System.getProperty("line.separator") // @TODO: implement?
                     + "skip_researching = 1                   # for '.out' file output only, 0=search everything again (default), 1=don't search if .out exists" + System.getProperty("line.separator")
                     + "max_fragment_charge = " + cometParameters.getMaxFragmentCharge() + "                 # set maximum fragment charge state to analyze (allowed max 5)" + System.getProperty("line.separator")
                     + "max_precursor_charge = " + searchParameters.getMaxChargeSearched() + "                 # set maximum precursor charge state to analyze (allowed max 9)" + System.getProperty("line.separator")
@@ -351,6 +354,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "decoy_prefix = DECOY_                  # decoy entries are denoted by this string which is pre-pended to each protein accession" + System.getProperty("line.separator")
                     + "output_suffix = .comet                 # add a suffix to output base names i.e. suffix \"-C\" generates base-C.pep.xml from base.mzXML input" + System.getProperty("line.separator")
                     + "mass_offsets =                         # one or more mass offsets to search (values substracted from deconvoluted precursor mass)" + System.getProperty("line.separator") // @TODO: implement?
+                    + "precursor_NL_ions =                    # one or more precursor neutral loss masses, will be added to xcorr analysis" + System.getProperty("line.separator") // @TODO: implement?
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // spectral processing
@@ -541,7 +545,15 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             //      1 = modification is required 
             result.append("0"); // @TODO: make this a user parameter?
 
+            // add fragment neutral loss
+            //      For any fragment ion that contain the variable modification, a neutral loss will 
+            //      also be analyzed if the specified neutral loss value is not zero (0.0).
+            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) { 
+                result.append(" ").append(modification.getNeutralLosses().get(0).getMass()); // @TODO: verify wether only taking the first neutal ion is always the best option?
+            }
+            
             result.append(System.getProperty("line.separator"));
+   
         }
 
         // add empty lines for the remaining modification parameter lines
