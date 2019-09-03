@@ -1066,7 +1066,7 @@ public class SearchHandler {
      */
     public static String getMsAmandaFileName(String spectrumFileName, MsAmandaParameters msAmandaParameters) {
         if (msAmandaParameters.getOutputFormat().equalsIgnoreCase("mzIdentML")) {
-            return Util.removeExtension(spectrumFileName) + ".ms-amanda.mzid";
+            return Util.removeExtension(spectrumFileName) + ".ms-amanda.mzid.gz";
         } else {
             return Util.removeExtension(spectrumFileName) + ".ms-amanda.csv";
         }

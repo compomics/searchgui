@@ -132,6 +132,11 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private boolean generateDecoys;
     /**
+     * False = combine ranks for target and decoy, true = own rankings for
+     * target and decoy.
+     */
+    private boolean reportBothBestHitsForTD;
+    /**
      * Defines whether the low memory mode is used.
      *
      * @deprecated since MS Amanda 2.0
@@ -164,9 +169,13 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private Integer maxNeutralLossesPerModification = 2;
     /**
-     * Minimum peptide length.
+     * Minimum peptide length (0-20).
      */
     private Integer minPeptideLength = 6;
+    /**
+     * Maximum peptide length (0-60).
+     */
+    private Integer maxPeptideLength = 30;
     /**
      * Maximum number of proteins loaded into memory (1000-500000).
      */
@@ -212,6 +221,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         maxRank = msAmandaParameters.getMaxRank();
         generateDecoys = msAmandaParameters.generateDecoy();
+        reportBothBestHitsForTD = msAmandaParameters.reportBothBestHitsForTD();
         monoisotopic = msAmandaParameters.isMonoIsotopic();
         performDeisotoping = msAmandaParameters.isPerformDeisotoping();
         maxModifications = msAmandaParameters.getMaxModifications();
@@ -220,6 +230,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         maxNeutralLosses = msAmandaParameters.getMaxNeutralLosses();
         maxNeutralLossesPerModification = msAmandaParameters.getMaxNeutralLossesPerModification();
         minPeptideLength = msAmandaParameters.getMinPeptideLength();
+        maxPeptideLength = msAmandaParameters.getMaxPeptideLength();
         maxLoadedProteins = msAmandaParameters.getMaxLoadedProteins();
         maxLoadedSpectra = msAmandaParameters.getMaxLoadedSpectra();
 
@@ -264,7 +275,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         } else { // whole protein
             enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
-            missedCleavages = 0; 
+            missedCleavages = 0;
         }
 
         // set the modifications
@@ -423,26 +434,28 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<ms1_tol unit=\"" + precursorUnit + "\">" + precursorMassError + "</ms1_tol> " + System.getProperty("line.separator")
                     + "\t\t<ms2_tol unit=\"" + fragmentUnit + "\">" + fragmentMassError + "</ms2_tol> " + System.getProperty("line.separator")
                     + "\t\t<max_rank>" + maxRank + "</max_rank> " + System.getProperty("line.separator")
-                    + "\t\t<generate_decoy>" + generateDecoys + "</generate_decoy> " + System.getProperty("line.separator")     
+                    + "\t\t<generate_decoy>" + generateDecoys + "</generate_decoy> " + System.getProperty("line.separator")
                     + "\t\t<PerformDeisotoping>" + performDeisotoping + "</PerformDeisotoping> " + System.getProperty("line.separator")
                     + "\t\t<MaxNoModifs>" + maxModifications + "</MaxNoModifs> " + System.getProperty("line.separator")
-                    + "\t\t<MaxNoDynModifs>" + maxVariableModifications + "</MaxNoDynModifs> " + System.getProperty("line.separator")        
-                    + "\t\t<MaxNumberModSites>" + maxModificationSites + "</MaxNumberModSites> " + System.getProperty("line.separator") 
-                    + "\t\t<MaxNumberNeutralLoss>" + maxNeutralLosses + "</MaxNumberNeutralLoss> " + System.getProperty("line.separator") 
+                    + "\t\t<MaxNoDynModifs>" + maxVariableModifications + "</MaxNoDynModifs> " + System.getProperty("line.separator")
+                    + "\t\t<MaxNumberModSites>" + maxModificationSites + "</MaxNumberModSites> " + System.getProperty("line.separator")
+                    + "\t\t<MaxNumberNeutralLoss>" + maxNeutralLosses + "</MaxNumberNeutralLoss> " + System.getProperty("line.separator")
                     + "\t\t<MaxNumberNeutralLossModifications>" + maxNeutralLosses + "</MaxNumberNeutralLossModifications> " + System.getProperty("line.separator")
                     + "\t\t<MinimumPepLength>" + minPeptideLength + "</MinimumPepLength> " + System.getProperty("line.separator")
+                    + "\t\t<MaximumPepLength>" + maxPeptideLength + "</MaximumPepLength> " + System.getProperty("line.separator")
+                    + "\t\t<ReportBothBestHitsForTD>" + reportBothBestHitsForTD + "</ReportBothBestHitsForTD> " + System.getProperty("line.separator")
                     + "\t</search_settings> " + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     + "\t<basic_settings> " + System.getProperty("line.separator")
                     + "\t\t<instruments_file>" + new File(msAmandaFolder, INSTRUMENTS_FILE).getAbsolutePath() + "</instruments_file> " + System.getProperty("line.separator")
                     + "\t\t<unimod_file>" + new File(msAmandaFolder, UNIMOD_FILE).getAbsolutePath() + "</unimod_file> " + System.getProperty("line.separator")
                     + "\t\t<enzyme_file>" + new File(msAmandaFolder, ENZYMES_FILE).getAbsolutePath() + "</enzyme_file> " + System.getProperty("line.separator")
-                    + "\t\t<unimod_obo_file>" + new File(msAmandaFolder, UNIMOD_OBO_FILE).getAbsolutePath() + "</unimod_obo_file> " + System.getProperty("line.separator")        
+                    + "\t\t<unimod_obo_file>" + new File(msAmandaFolder, UNIMOD_OBO_FILE).getAbsolutePath() + "</unimod_obo_file> " + System.getProperty("line.separator")
                     + "\t\t<psims_obo_file>" + new File(msAmandaFolder, PSI_MS_OBO_FILE).getAbsolutePath() + "</psims_obo_file> " + System.getProperty("line.separator")
                     + "\t\t<monoisotopic>" + monoisotopic + "</monoisotopic> " + System.getProperty("line.separator")
                     + "\t\t<considered_charges>" + getChargeRangeAsString() + "</considered_charges> " + System.getProperty("line.separator")
                     + "\t\t<LoadedProteinsAtOnce>" + maxLoadedProteins + "</LoadedProteinsAtOnce> " + System.getProperty("line.separator")
-                    + "\t\t<LoadedSpectraAtOnce>" + maxLoadedSpectra + "</LoadedSpectraAtOnce> " + System.getProperty("line.separator")      
+                    + "\t\t<LoadedSpectraAtOnce>" + maxLoadedSpectra + "</LoadedSpectraAtOnce> " + System.getProperty("line.separator")
                     + "\t\t<data_folder>" + msAmandaTempFolder + "</data_folder> " + System.getProperty("line.separator")
                     + "\t</basic_settings> " + System.getProperty("line.separator")
                     + "</settings>"
@@ -590,5 +603,25 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         return charges;
+    }
+
+    /**
+     * Returns true if target and decoy are ranked separately, false if shared
+     * rank.
+     *
+     * @return true if target and decoy are ranked separately, false if shared
+     * rank
+     */
+    public boolean reportBothBestHitsForTD() {
+        return reportBothBestHitsForTD;
+    }
+
+    /**
+     * Set if target and decoy are ranked separately or shared.
+     * 
+     * @param reportBothBestHitsForTD the reportBothBestHitsForTD to set
+     */
+    public void setReportBothBestHitsForTD(boolean reportBothBestHitsForTD) {
+        this.reportBothBestHitsForTD = reportBothBestHitsForTD;
     }
 }
