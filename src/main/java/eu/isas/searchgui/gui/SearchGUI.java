@@ -6455,6 +6455,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             String mono = null;
             if (!operatingSystem.contains("windows")) {
                 mono = "mono";
+                // modern mac os x versions need a specific mono path
+                if (operatingSystem.contains("mac os x")) {
+                    StringTokenizer versionTokens = new StringTokenizer(System.getProperty("os.version"), ".");
+                    if (versionTokens.countTokens() > 1) {
+                        int mainVersion = new Integer(versionTokens.nextToken());
+                        int subversion = new Integer(versionTokens.nextToken());
+                        if (mainVersion >= 10 && subversion >= 11) {
+                            mono = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
+                        }
+                    }
+                }
             }
             return validateSearchEngineInstallation(Advocate.msAmanda, MsAmandaProcessBuilder.EXECUTABLE_FILE_NAME, null, mono, searchEngineLocation, null, false, feedBackInDialog, msAmandaErrorMessage);
         } else if (advocate == Advocate.myriMatch) {

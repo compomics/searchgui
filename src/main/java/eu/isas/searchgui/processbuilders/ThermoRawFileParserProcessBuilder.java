@@ -5,6 +5,7 @@ import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.Th
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 /**
  * Process builder to run ThermoRawFileParser.
@@ -70,7 +71,21 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
         // use mono if not on windows
         String operatingSystem = System.getProperty("os.name").toLowerCase();
         if (!operatingSystem.contains("windows")) {
-            process_name_array.add("mono");
+            String monoPath = "mono";
+
+            // modern mac os x versions need a specific mono path
+            if (operatingSystem.contains("mac os x")) {
+                StringTokenizer versionTokens = new StringTokenizer(System.getProperty("os.version"), ".");
+                if (versionTokens.countTokens() > 1) {
+                    int mainVersion = new Integer(versionTokens.nextToken());
+                    int subversion = new Integer(versionTokens.nextToken());
+                    if (mainVersion >= 10 && subversion >= 11) {
+                        monoPath = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
+                    }
+                }
+            }
+            
+            process_name_array.add(monoPath);
         }
 
         // full path to executable
