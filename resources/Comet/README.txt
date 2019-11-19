@@ -1,8 +1,30 @@
-2019/08/19
+2019/11/18
 
-Comet version "2019.01 rev. 0".
-This is a full release of Comet.
+Comet version "2019.01 rev. 2".
+This is a minor maintenance release.
 http://comet-ms.sourceforge.net
+
+release 2019.01 rev. 1 (2019.01.1), release date 2019/11/18
+- Bug fix: introduced in the 2019.01 rev. 0 release, Comet would not
+  properly handle a "clip_nterm_methionine_" search. This bug would
+  manifest as either a segmentation fault or as a NULL character
+  reported for a flanking residue due to not properly tracking the
+  shortened protein length when the start methione is clipped off.
+  Thanks to the Villen Lab and R. Johnson for reporting the issue.
+
+release 2019.01 rev. 1 (2019.01.1), release date 2019/09/06
+- Known bug: a NULL character can show up as the flanking residu
+  (peptide_next_aa attribute in pep.xml output) for an internal decoy
+  match.
+- In Percolator .pin output, change ExpMass and CalcMass from neutral
+  masses to singly protonated masses.  Thanks to W. Fondrie and the
+  Crux team for reporting that Percolator expects these masses to be
+  singly protonated.
+- Bug fix:  correct missing residue in StaticMod header entry of SQT
+  output.  Thanks to A. Zelter for reporting the issue.
+- Bug fix:  update database indexing and index search to correctly
+  handle terminal variable modifications.  Thanks to T. Zhao for
+  reporting the issue.
 
 release 2019.01 rev. 0 (2018.01.0), release date 2019/08/19
 - Add support for user specified fragment neutral loss ions (such 
@@ -18,8 +40,7 @@ release 2019.01 rev. 0 (2018.01.0), release date 2019/08/19
   of a second digestion enzyme. Enzyme specificity and missed 
   cleavage settings are are shared between both 
   "search_enzyme_number" and "search_enzyme2_number".
-- Update "max_variable_mods_in_peptide" parameter to support value 
-  0.
+- Update "max_variable_mods_in_peptide" parameter to support value 0.
 - In the example comet.params files available here. and the when 
   generated using "comet -p", the "spectrum_batch_size" parameter 
   is now set to 15000 instead of 0. For high-res "fragment_bin_tol" 
