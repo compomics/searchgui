@@ -95,7 +95,7 @@ import eu.isas.searchgui.processbuilders.OmssaclProcessBuilder;
 import eu.isas.searchgui.processbuilders.TandemProcessBuilder;
 import eu.isas.searchgui.processbuilders.TideSearchProcessBuilder;
 import java.awt.Dimension;
-import java.net.URISyntaxException;
+import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import net.jimmc.jshortcut.JShellLink;
@@ -6700,10 +6700,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // no internet connection
             System.out.println("Checking for new version failed. No internet connection.");
             return false;
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ConnectException ex) {
+            // connection refused
+            System.out.println("Checking for new version failed. Connection refused.");
             return false;
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
