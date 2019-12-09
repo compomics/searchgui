@@ -1,10 +1,15 @@
-2019/11/18
+2019/12/06
 
-Comet version "2019.01 rev. 2".
+Comet version "2019.01 rev. 3".
 This is a minor maintenance release.
 http://comet-ms.sourceforge.net
 
-release 2019.01 rev. 1 (2019.01.1), release date 2019/11/18
+release 2019.01 rev. 3 (2019.01.3), release date 2019/11/18
+- Bug fix: Searches against mzML files would report the wrong scan number.
+  The issue was due to the MSToolkit update for release 2019.01.0.  Using the
+  latest MSToolkit commit 2021e7e from 12/3/19 fixes this error.  Thanks to
+  Z. Sun for reporting the bug.
+release 2019.01 rev. 2 (2019.01.2), release date 2019/11/18
 - Bug fix: introduced in the 2019.01 rev. 0 release, Comet would not
   properly handle a "clip_nterm_methionine_" search. This bug would
   manifest as either a segmentation fault or as a NULL character
