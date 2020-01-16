@@ -1,14 +1,22 @@
-2019/12/06
+2020/01/15
 
-Comet version "2019.01 rev. 3".
+Comet version "2019.01 rev. 4".
 This is a minor maintenance release.
 http://comet-ms.sourceforge.net
 
-release 2019.01 rev. 3 (2019.01.3), release date 2019/11/18
-- Bug fix: Searches against mzML files would report the wrong scan number.
-  The issue was due to the MSToolkit update for release 2019.01.0.  Using the
-  latest MSToolkit commit 2021e7e from 12/3/19 fixes this error.  Thanks to
-  Z. Sun for reporting the bug.
+release 2019.01 rev. 4 (2019.01.4), release date 2020/01/15
+- Add support for searching mzML and mzXML files that do not contain the
+  optional scan index.  Such files would previously not have been searched
+  as MSToolkit would throw an error message about the missing index.
+- Bug fix: PEFF substitutions on flanking residues, generating a new
+  peptide that would otherwise not be analyzed, are treated more rigorously.
+
+release 2019.01 rev. 3 (2019.01.3), release date 2019/12/06
+- Bug fix: Searches against mzML files would report the wrong scan
+  number. The issue was due to the MSToolkit update for release 2019.01.0.
+  Using the latest MSToolkit commit 2021e7e from 12/3/19 fixes this error.
+  Thanks to Z. Sun for reporting the bug.
+
 release 2019.01 rev. 2 (2019.01.2), release date 2019/11/18
 - Bug fix: introduced in the 2019.01 rev. 0 release, Comet would not
   properly handle a "clip_nterm_methionine_" search. This bug would
@@ -18,7 +26,7 @@ release 2019.01 rev. 2 (2019.01.2), release date 2019/11/18
   Thanks to the Villen Lab and R. Johnson for reporting the issue.
 
 release 2019.01 rev. 1 (2019.01.1), release date 2019/09/06
-- Known bug: a NULL character can show up as the flanking residu
+- Known bug: a NULL character can show up as the flanking residue
   (peptide_next_aa attribute in pep.xml output) for an internal decoy
   match.
 - In Percolator .pin output, change ExpMass and CalcMass from neutral
