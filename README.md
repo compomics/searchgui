@@ -32,7 +32,7 @@
 
 ## Introduction
 
-SearchGUI is a a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MS-GF+](http://www.ncbi.nlm.nih.gov/pubmed/?term=25358478), [MS Amanda](http://ms.imp.ac.at/?goto#msamanda), [MyriMatch](http://www.ncbi.nlm.nih.gov/pubmed/?term=17269722), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.coxdocs.org/doku.php?id=maxquant:andromeda:start), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Novor](http://rapidnovor.com) and [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/).
+SearchGUI is a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MS-GF+](http://www.ncbi.nlm.nih.gov/pubmed/?term=25358478), [MS Amanda](http://ms.imp.ac.at/?goto#msamanda), [MyriMatch](http://www.ncbi.nlm.nih.gov/pubmed/?term=17269722), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.coxdocs.org/doku.php?id=maxquant:andromeda:start), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Novor](http://rapidnovor.com) and [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/). It can be used in command line or via a user-friendly interface. 
 
 To start using SearchGUI, unzip the downloaded file, and double-click the `SearchGUI-X.Y.Z.jar file`. No additional installation required!
 
@@ -113,7 +113,7 @@ In this example we are also writing the ouput of the command (`-out` parameter) 
 
 ### Easybuild
 
-A [Easybuild](http://easybuilders.github.io/easybuild) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
+An [Easybuild](http://easybuilders.github.io/easybuild) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
 
 
 ```bash
