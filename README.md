@@ -10,8 +10,8 @@
 ----
 
 ## SearchGUI Publications:
- * Barsnes H and Vaudel M: SearchGUI: a highly adaptable common interface for proteomics search and de novo engines. [J Proteome Res. 2018;17(7):2552-2555](https://www.ncbi.nlm.nih.gov/pubmed/29774740).
- * Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches. [Proteomics 2011;11(5):996-9](http://www.ncbi.nlm.nih.gov/pubmed/21337703). 
+ * Barsnes H and Vaudel M: SearchGUI: a highly adaptable common interface for proteomics search and de novo engines. [J Proteome Res. 2018;17(7):2552-2555](https://www.ncbi.nlm.nih.gov/pubmed/29774740) [pdf (accepted version)](https://github.com/mvaudel/Publications/blob/master/docs/aam/Barsnes_et_al_SearchGUI%20-%20revision.pdf) [Request a reprint](mailto:marc.vaudel@uib.no).
+ * Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches. [Proteomics 2011;11(5):996-9](http://www.ncbi.nlm.nih.gov/pubmed/21337703) [pdf (accepted version)](https://github.com/mvaudel/Publications/blob/master/docs/aam/Vaudel_et_al_SearchGUI_17092010.pdf) [Request a reprint](mailto:Harald.Barsnes@uib.no). 
  * If you use SearchGUI as part of a publication, please refer to the most recent publication.
 
 ----
@@ -165,15 +165,17 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
 ----
 
-## Code of Conduct
+## Errors, questions, and bug report
+
+### Code of Conduct
 
 As part of our efforts toward delivering open and inclusive science, we follow the [Contributor Convenant](https://www.contributor-covenant.org/) [Code of Conduct for Open Source Projects](docs/CODE_OF_CONDUCT.md).
 
-[Go to top of page](#searchgui)
+### Issue Tracker
 
-----
+Despite our efforts at enforcing good practices in our work, like every software, SearchGUI might crash, fail to cover specific use cases, not perform as well as expected. We apologize for any inconvenience and will try to fix things to the best of our capabilities. We welcome bug reports, suggestions of improvements, and contributions _via_ our [issue tracker](https://github.com/compomics/searchgui/issues). 
 
-## Troubleshooting
+### Troubleshooting
 
  * **Does Not Start I** - Do you have Java installed? Download the latest version of Java  [here](http://java.sun.com/javase/downloads/index.jsp) and try again. (You only need the JRE version (and not the JDK version) to run SearchGUI.)
 
