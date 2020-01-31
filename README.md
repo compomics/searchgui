@@ -2,7 +2,7 @@
 
  * [Introduction](#introduction)
  * [Read Me](#read-me)
- * [Errors, questions, and bug report](#Errors-questions-and-bug-report)
+ * [Issues, Questions and Bug report](#Issues-questions-and-bug-reports)
 
  * [Bioinformatics for Proteomics Tutorial](http://compomics.com/bioinformatics-for-proteomics)
 
@@ -164,7 +164,7 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
 ----
 
-## Errors, questions, and bug report
+## Issues, Questions and Bug Reports
 
 ### Code of Conduct
 
