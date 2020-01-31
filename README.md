@@ -2,6 +2,7 @@
 
  * [Introduction](#introduction)
  * [Read Me](#read-me)
+ * [Code of Conduct](#code-of-conduct)
  * [Troubleshooting](#troubleshooting)
 
  * [Bioinformatics for Proteomics Tutorial](http://compomics.com/bioinformatics-for-proteomics)
@@ -159,6 +160,14 @@ Note that this option is only available via the graphical user interface. From t
 ### Result Analysis
 
 To visualize and analyze the SearchGUI results we recommend the use of [PeptideShaker](http://compomics.github.io/projects/peptide-shaker.html). PeptideShaker is a search engine independent platform for visualization of peptide and protein identification results from multiple search engines.
+
+[Go to top of page](#searchgui)
+
+----
+
+## Code of Conduct
+
+As part of our efforts toward delivering open and inclusive science, we follow the [Contributor Convenant](https://www.contributor-covenant.org/) [Code of Conduct for Open Source Projects](docs/CODE_OF_CONDUCT.md).
 
 [Go to top of page](#searchgui)
 
