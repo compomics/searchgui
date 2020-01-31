@@ -2,7 +2,6 @@
 
  * [Introduction](#introduction)
  * [Read Me](#read-me)
- * [Code of Conduct](#code-of-conduct)
  * [Troubleshooting](#troubleshooting)
 
  * [Bioinformatics for Proteomics Tutorial](http://compomics.com/bioinformatics-for-proteomics)
