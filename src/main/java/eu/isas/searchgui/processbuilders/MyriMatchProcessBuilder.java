@@ -357,14 +357,26 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      * Returns the variable modification as a string in the MyriMatch format.
      *
      * @param variablePtms the list of variable PTMs
+     * 
+     * @throws IndexOutOfBoundsException if there are more variable
+     * modifications than there are symbols to represent them
+     * 
      * @return the variable modification as a string
      */
-    private String getVariableModificationsAsString(ArrayList<String> variablePtms) {
+    private String getVariableModificationsAsString(ArrayList<String> variablePtms) throws IndexOutOfBoundsException {
 
         String variableModifications = "";
         char[] symbols = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '^', '@', '|', '§', '+', '-', '&', '%', '='}; // @TODO: add more symbols?
         int symbolsCounter = 0;
 
+        // more variable modifications than symbols to represent them?
+        if (variablePtms.size() > symbols.length) {
+            throw new IndexOutOfBoundsException("There are more variable modifications ("
+                    + variablePtms.size() + ") than symbols to represent them in MyriMatch ("
+                    + symbols.length + "). Search canceled.");
+        }
+
+        
         for (String ptmName : variablePtms) {
             
             PTM tempPtm = ptmFactory.getPTM(ptmName);
