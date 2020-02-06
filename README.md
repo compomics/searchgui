@@ -2,15 +2,15 @@
 
  * [Introduction](#introduction)
  * [Read Me](#read-me)
- * [Troubleshooting](#troubleshooting)
+ * [Issues, Questions and Bug reports](#Issues-questions-and-bug-reports)
 
  * [Bioinformatics for Proteomics Tutorial](http://compomics.com/bioinformatics-for-proteomics)
 
 ----
 
 ## SearchGUI Publications:
- * Barsnes H and Vaudel M: SearchGUI: a highly adaptable common interface for proteomics search and de novo engines. [J Proteome Res. 2018;17(7):2552-2555](https://www.ncbi.nlm.nih.gov/pubmed/29774740).
- * Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches. [Proteomics 2011;11(5):996-9](http://www.ncbi.nlm.nih.gov/pubmed/21337703). 
+ * Barsnes H and Vaudel M: _SearchGUI: a highly adaptable common interface for proteomics search and de novo engines_. [[PMID 29774740](https://www.ncbi.nlm.nih.gov/pubmed/29774740)] [[pdf (accepted version)](https://github.com/mvaudel/Publications/blob/master/docs/aam/Barsnes_et_al_SearchGUI%20-%20revision.pdf)] [[Request a reprint](mailto:marc.vaudel@uib.no)].
+ * Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: _SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches_. [[PMID 21337703](http://www.ncbi.nlm.nih.gov/pubmed/21337703)] [[pdf (accepted version)](https://github.com/mvaudel/Publications/blob/master/docs/aam/Vaudel_et_al_SearchGUI_17092010.pdf)] [[Request a reprint](mailto:Harald.Barsnes@uib.no)]. 
  * If you use SearchGUI as part of a publication, please refer to the most recent publication.
 
 ----
@@ -32,7 +32,7 @@
 
 ## Introduction
 
-SearchGUI is a a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MS-GF+](http://www.ncbi.nlm.nih.gov/pubmed/?term=25358478), [MS Amanda](http://ms.imp.ac.at/?goto#msamanda), [MyriMatch](http://www.ncbi.nlm.nih.gov/pubmed/?term=17269722), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.coxdocs.org/doku.php?id=maxquant:andromeda:start), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Novor](http://rapidnovor.com) and [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/).
+SearchGUI is a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MS-GF+](http://www.ncbi.nlm.nih.gov/pubmed/?term=25358478), [MS Amanda](http://ms.imp.ac.at/?goto#msamanda), [MyriMatch](http://www.ncbi.nlm.nih.gov/pubmed/?term=17269722), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.coxdocs.org/doku.php?id=maxquant:andromeda:start), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Novor](http://rapidnovor.com) and [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/). It can be used in command line mode or via a user-friendly graphical interface.
 
 To start using SearchGUI, unzip the downloaded file, and double-click the `SearchGUI-X.Y.Z.jar file`. No additional installation required!
 
@@ -113,7 +113,7 @@ In this example we are also writing the ouput of the command (`-out` parameter) 
 
 ### Easybuild
 
-A [Easybuild](http://easybuilders.github.io/easybuild) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
+An [Easybuild](http://easybuilders.github.io/easybuild) easyconfig file is available in the [Easybuild development branch](https://github.com/easybuilders/easybuild-easyconfigs/blob/develop/easybuild/easyconfigs/s/SearchGUI/SearchGUI-3.3.3-Java-1.8.0_152.eb). SearchGUI can be installed with:
 
 
 ```bash
@@ -164,7 +164,17 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
 ----
 
-## Troubleshooting
+## Issues, Questions and Bug Reports
+
+### Code of Conduct
+
+As part of our efforts toward delivering open and inclusive science, we follow the [Contributor Convenant](https://www.contributor-covenant.org/) [Code of Conduct for Open Source Projects](docs/CODE_OF_CONDUCT.md).
+
+### Issue Tracker
+
+Despite our efforts at enforcing good practices in our work, like every software, SearchGUI might crash, fail to cover specific use cases, not perform as well as expected. We apologize for any inconvenience and will try to fix things to the best of our capabilities. We welcome bug reports, suggestions of improvements, and contributions _via_ our [issue tracker](https://github.com/compomics/searchgui/issues). 
+
+### Troubleshooting
 
  * **Does Not Start I** - Do you have Java installed? Download the latest version of Java  [here](http://java.sun.com/javase/downloads/index.jsp) and try again. (You only need the JRE version (and not the JDK version) to run SearchGUI.)
 
