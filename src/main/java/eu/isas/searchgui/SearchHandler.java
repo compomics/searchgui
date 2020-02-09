@@ -17,6 +17,7 @@ import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.io.IoUtils;
 import com.compomics.util.io.compression.ZipUtils;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
@@ -1833,9 +1834,9 @@ public class SearchHandler {
 
                     // Copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
-                    Util.copyFile(modsXmlFile, destinationFile);
+                    IoUtils.copyFile(modsXmlFile, destinationFile);
                     destinationFile = new File(outputTempFolder, "omssa_usermods.xml");
-                    Util.copyFile(userModsXmlFile, destinationFile);
+                    IoUtils.copyFile(userModsXmlFile, destinationFile);
 
                     waitingHandler.increasePrimaryProgressCounter();
                 }
@@ -2233,7 +2234,7 @@ public class SearchHandler {
 
                             File tempResultFile = new File(aplFile.getParent(), getAndromedaFileName(spectrumFileName));
                             if (tempResultFile.exists()) {
-                                Util.copyFile(tempResultFile, andromedaOutputFile);
+                                IoUtils.copyFile(tempResultFile, andromedaOutputFile);
                                 try {
                                     tempResultFile.delete();
                                 } catch (Exception e) {
@@ -2346,8 +2347,11 @@ public class SearchHandler {
                         waitingHandler.appendReport("Preparing output files.", true, true);
                     }
                     waitingHandler.appendReportEndLine();
+                    
                     organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, utilitiesUserParameters.isIncludeDateInOutputName());
+                    
                     waitingHandler.increasePrimaryProgressCounter();
+                
                 }
 
                 if (enablePeptideShaker && !waitingHandler.isRunCanceled()) { // @TODO: the output file checks below don't work when the date is added to the file name... 
@@ -3044,10 +3048,10 @@ public class SearchHandler {
                     File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
 
-                    Util.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
+                    IoUtils.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
 
                     for (File spectrumFile : getMgfFiles()) {
-                        Util.copyFile(spectrumFile, new File(dataFolder, spectrumFile.getName()));
+                        IoUtils.copyFile(spectrumFile, new File(dataFolder, spectrumFile.getName()));
                     }
                 }
         }
