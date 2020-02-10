@@ -1757,7 +1757,7 @@ public class SearchHandler {
 
                 int nRawFiles = getRawFiles().size();
                 int nFilesToSearch = nRawFiles + getMgfFiles().size();
-                int nProgress = 2 + nRawFiles;
+                int nProgress = 3 + nRawFiles;
                 if (enableOmssa) {
                     nProgress += nFilesToSearch;
                     nProgress++; // the omssa indexing

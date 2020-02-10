@@ -4988,21 +4988,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
 
+        boolean fileSelected = false;
+        
         if (selectedFastaFile == null) {
-            boolean success = sequenceDbDetailsDialog.selectDB(true);
-            if (success) {
+            fileSelected = sequenceDbDetailsDialog.selectDB(true);
+            if (fileSelected) {
                 sequenceDbDetailsDialog.setVisible(true);
                 databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
                 fastaFile = new File(sequenceDbDetailsDialog.getSelectedFastaFile());
             }
         } else {
+            fileSelected = true;
             sequenceDbDetailsDialog.setVisible(true);
             databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
             fastaFile = new File(sequenceDbDetailsDialog.getSelectedFastaFile());
         }
 
         // see if we need to save the new fasta parameters
-        if (!sequenceDbDetailsDialog.isCanceled()) {
+        if (!sequenceDbDetailsDialog.isCanceled() && fileSelected) {
 
             FastaParameters newFastaParameters = sequenceDbDetailsDialog.getFastaParameters();
 
