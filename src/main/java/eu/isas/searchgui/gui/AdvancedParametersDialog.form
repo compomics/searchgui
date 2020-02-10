@@ -90,13 +90,13 @@
                           <Component id="identificationParametersPanel" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="okButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="openDialogHelpJButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="closeButton" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -116,29 +116,8 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="maxMgfFileSizeLabel" max="32767" attributes="1"/>
-                                          <Component id="maxSpectraPerFileLabel" max="32767" attributes="1"/>
-                                      </Group>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="mgfMaxSizeTxt" min="-2" pref="150" max="-2" attributes="2"/>
-                                          <Component id="mgfReducedSizeTxt" min="-2" pref="150" max="-2" attributes="2"/>
-                                      </Group>
-                                  </Group>
-                                  <Group type="102" attributes="0">
-                                      <Component id="spectrumChargeRangeLabel" max="32767" attributes="1"/>
-                                      <EmptySpace min="-2" pref="137" max="-2" attributes="0"/>
-                                      <Component id="highSpectrumChargeRangeTxt" linkSize="4" min="-2" pref="55" max="-2" attributes="2"/>
-                                  </Group>
-                              </Group>
-                          </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
@@ -153,26 +132,46 @@
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="checkSpectrumChargesLabel" min="-2" pref="200" max="-2" attributes="1"/>
-                                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Component id="checkSpectrumChargesComboBox" min="-2" pref="150" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace min="-2" pref="206" max="-2" attributes="0"/>
+                                      <Component id="lowSpectrumChargeRangeTxt" linkSize="4" min="-2" pref="62" max="-2" attributes="2"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="spectrumChargeRangeDelimiterLabel" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
                                       <Component id="checkMgfFileSizeLabel" min="-2" pref="200" max="-2" attributes="1"/>
-                                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="checkMgfFileSizeComboBox" min="-2" pref="150" max="-2" attributes="0"/>
-                                          <Group type="102" attributes="0">
-                                              <Component id="lowSpectrumChargeRangeTxt" linkSize="4" min="-2" pref="62" max="-2" attributes="2"/>
-                                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                                              <Component id="spectrumChargeRangeDelimiterLabel" min="-2" max="-2" attributes="0"/>
-                                          </Group>
-                                      </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="checkMgfFileSizeComboBox" min="-2" pref="150" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="spectrumChargeRangeLabel" max="32767" attributes="1"/>
+                                      <EmptySpace min="-2" pref="137" max="-2" attributes="0"/>
+                                      <Component id="highSpectrumChargeRangeTxt" linkSize="4" min="-2" pref="55" max="-2" attributes="2"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="maxMgfFileSizeLabel" max="32767" attributes="1"/>
+                                          <Component id="maxSpectraPerFileLabel" max="32767" attributes="1"/>
+                                      </Group>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="mgfMaxSizeTxt" min="-2" pref="150" max="-2" attributes="2"/>
+                                          <Component id="mgfReducedSizeTxt" min="-2" pref="150" max="-2" attributes="2"/>
+                                      </Group>
+                                  </Group>
+                              </Group>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -211,12 +210,12 @@
                           <Component id="maxMgfFileSizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="mgfMaxSizeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="maxSpectraPerFileLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="mgfReducedSizeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -389,27 +388,37 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="renameXTandemFileLabel" min="-2" pref="200" max="-2" attributes="1"/>
-                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                              <Component id="renameCmb" max="32767" attributes="2"/>
-                          </Group>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="groupResultFilesTxt" min="-2" pref="200" max="-2" attributes="1"/>
-                                  <Component id="includeDataTxt" alignment="1" min="-2" pref="190" max="-2" attributes="0"/>
-                                  <Component id="includeDateLbl" min="-2" pref="200" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="renameXTandemFileLabel" min="-2" pref="200" max="-2" attributes="1"/>
+                                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                                      <Component id="renameCmb" max="32767" attributes="2"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="groupResultFilesTxt" min="-2" pref="200" max="-2" attributes="1"/>
+                                          <Component id="includeDataTxt" alignment="1" min="-2" pref="190" max="-2" attributes="0"/>
+                                          <Component id="includeDateLbl" min="-2" pref="200" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="includeDateCmb" min="-2" pref="150" max="-2" attributes="0"/>
+                                          <Component id="includeDataCmb" min="-2" pref="150" max="-2" attributes="0"/>
+                                          <Component id="groupResultFilesCmb" min="-2" pref="150" max="-2" attributes="2"/>
+                                      </Group>
+                                  </Group>
                               </Group>
+                              <EmptySpace min="0" pref="2" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="zipIdFilesLabel" min="-2" pref="200" max="-2" attributes="1"/>
                               <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="includeDateCmb" min="-2" pref="150" max="-2" attributes="0"/>
-                                  <Component id="includeDataCmb" min="-2" pref="150" max="-2" attributes="0"/>
-                                  <Component id="groupResultFilesCmb" min="-2" pref="150" max="-2" attributes="2"/>
-                              </Group>
+                              <Component id="zipIdFilesCmb" max="32767" attributes="2"/>
                           </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -435,6 +444,11 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="renameCmb" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="renameXTandemFileLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="zipIdFilesCmb" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="zipIdFilesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -498,6 +512,21 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="renameCmb">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                  <StringArray count="2">
+                    <StringItem index="0" value="Yes"/>
+                    <StringItem index="1" value="No"/>
+                  </StringArray>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="zipIdFilesLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Zip Individual ID Files"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="zipIdFilesCmb">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="2">
