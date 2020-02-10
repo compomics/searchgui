@@ -54,7 +54,8 @@ public enum SearchCLIParams {
     REFERENCE_MASS("ref_mass", "Reference mass for the conversion of the fragment ion tolerance from ppm to Dalton. Default is '2000'.", false),
     
     OUTPUT_DEFAULT_NAME("output_default_name", "Optional output default name, default is 'searchgui_out'.", false),
-    OUTPUT_OPTION("output_option", "Optional result file compression (" + OutputParameters.getCommandLineOptions() + "), default is '0'.", false),
+    OUTPUT_GZIP("output_gzip", "Gzip result files (0: no, 1: yes, default is '1').", false),
+    OUTPUT_OPTION("output_option", "Optional result file packaging (" + OutputParameters.getCommandLineOptions() + "), default is '0'.", false),
     OUTPUT_DATA("output_data", "Include mgf and FASTA file in zipped output (0: no, 1: yes, default is '0').", false),
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
     RENAME_XTANDEM_OUTPUT("rename_xtandem", "Turn the renaming of the X! Tandem files on/off. (0: off, 1: on, default is '1').", false),

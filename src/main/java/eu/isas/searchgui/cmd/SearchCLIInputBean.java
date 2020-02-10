@@ -157,6 +157,10 @@ public class SearchCLIInputBean {
      */
     private int nThreads = Runtime.getRuntime().availableProcessors();
     /**
+     * Boolean indicating whether the output files should be gzipped.
+     */
+    private boolean gzip = true;
+    /**
      * The way the output should be organized.
      */
     private OutputParameters outputParameters = OutputParameters.grouped;
@@ -215,12 +219,12 @@ public class SearchCLIInputBean {
         }
         if (aLine.hasOption(SearchCLIParams.MGF_SPLITTING_LIMIT.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.MGF_SPLITTING_LIMIT.id);
-            Integer option = new Integer(arg);
+            int option = Integer.parseInt(arg);
             mgfMaxSize = option;
         }
         if (aLine.hasOption(SearchCLIParams.MGF_MAX_SPECTRA.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.MGF_MAX_SPECTRA.id);
-            Integer option = new Integer(arg);
+            int option = Integer.parseInt(arg);
             mgfNSpectra = option;
         }
 
@@ -317,7 +321,7 @@ public class SearchCLIInputBean {
         // check how duplicate spectrum titles should be handled
         if (aLine.hasOption(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.DUPLICATE_TITLE_HANDLING.id);
-            Integer option = new Integer(arg);
+            int option = Integer.parseInt(arg);
             if (option == 0 || option == 1 || option == 2) {
                 duplicateSpectrumTitleHandling = option;
             } else {
@@ -328,7 +332,7 @@ public class SearchCLIInputBean {
         // check how missing spectrum titles should be handled
         if (aLine.hasOption(SearchCLIParams.MISSING_TITLE_HANDLING.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.MISSING_TITLE_HANDLING.id);
-            Integer option = new Integer(arg);
+            int option = Integer.parseInt(arg);
             if (option == 0 || option == 1) {
                 missingSpectrumTitleHandling = option;
             } else {
@@ -339,7 +343,7 @@ public class SearchCLIInputBean {
         // get the number of threads
         if (aLine.hasOption(SearchCLIParams.THREADS.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.THREADS.id);
-            nThreads = new Integer(arg);
+            nThreads = Integer.parseInt(arg);
         }
 
         // set the target-decoy tag
@@ -360,20 +364,24 @@ public class SearchCLIInputBean {
             arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_DEFAULT_NAME.id);
             defaultOutputFileName = arg;
         }
+        if (aLine.hasOption(SearchCLIParams.OUTPUT_GZIP.id)) {
+            int option = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.OUTPUT_GZIP.id));
+            gzip = option == 1;
+        }
         if (aLine.hasOption(SearchCLIParams.OUTPUT_OPTION.id)) {
-            int option = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id));
+            int option = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id));
             outputParameters = OutputParameters.getOutputParameters(option);
         }
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATA.id)) {
-            int input = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATA.id));
+            int input = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATA.id));
             outputData = input == 1;
         }
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATE.id)) {
-            int input = new Integer(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATE.id));
+            int input = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATE.id));
             outputDate = input == 1;
         }
         if (aLine.hasOption(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id)) {
-            int input = new Integer(aLine.getOptionValue(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id));
+            int input = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.RENAME_XTANDEM_OUTPUT.id));
             renameXTandemFile = input == 1;
         }
 
@@ -771,7 +779,7 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.OUTPUT_OPTION.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_OPTION.id);
             try {
-                int option = new Integer(input);
+                int option = Integer.parseInt(input);
                 if (OutputParameters.getOutputParameters(option) == null) {
                     System.out.println(System.getProperty("line.separator") + "Output option \'" + option + "\' not recognized." + System.getProperty("line.separator"));
                     return false;
@@ -1050,6 +1058,15 @@ public class SearchCLIInputBean {
      */
     public void setDefaultOutputFileName(String defaultOutputFileName) {
         this.defaultOutputFileName = defaultOutputFileName;
+    }
+
+    /**
+     * Indicates whether identification files should be gzipped.
+     * 
+     * @return A boolean indicating whether identification files should be gzipped.
+     */
+    public boolean isGzip() {
+        return gzip;
     }
 
     /**

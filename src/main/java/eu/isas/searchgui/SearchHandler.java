@@ -18,6 +18,7 @@ import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.io.IoUtils;
+import com.compomics.util.io.compression.GzUtils;
 import com.compomics.util.io.compression.ZipUtils;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
@@ -40,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -514,7 +516,7 @@ public class SearchHandler {
         } else {
             loadSearchEngineLocation(null, false, true, true, true, false, false, true); // try to use the default
         }
-        
+
         // set this version as the default SearchGUI version
         if (!getJarFilePath().equalsIgnoreCase(".")) {
             UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
@@ -1896,7 +1898,7 @@ public class SearchHandler {
                             useThermoRawFileParser = false;
                         }
                     }
-                    
+
                     if (useThermoRawFileParser) {
 
                         thermoRawFileParserProcessBuilders = new ArrayList<>();
@@ -1920,7 +1922,7 @@ public class SearchHandler {
                             }
                             mgfFiles.add(mgfFile);
                         }
-                        
+
                     } else {
 
                         msConvertProcessBuilders = new ArrayList<>();
@@ -2347,11 +2349,11 @@ public class SearchHandler {
                         waitingHandler.appendReport("Preparing output files.", true, true);
                     }
                     waitingHandler.appendReportEndLine();
-                    
+
                     organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, utilitiesUserParameters.isIncludeDateInOutputName());
-                    
+
                     waitingHandler.increasePrimaryProgressCounter();
-                
+
                 }
 
                 if (enablePeptideShaker && !waitingHandler.isRunCanceled()) { // @TODO: the output file checks below don't work when the date is added to the file name... 
@@ -2581,7 +2583,6 @@ public class SearchHandler {
 //                tempMgfFiles = new ArrayList<>(this.mgfFiles);
 //            }
 //        }
-
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
 
@@ -2672,7 +2673,7 @@ public class SearchHandler {
     public void setMsConvertParameters(MsConvertParameters msConvertParameters) {
         this.msConvertParameters = msConvertParameters;
     }
-    
+
     /**
      * Returns the ThermoRawFileParser parameters.
      *
@@ -2797,9 +2798,51 @@ public class SearchHandler {
      *
      * @throws IOException thrown if there is a problem with the files
      */
-    public void organizeOutput(File outputFolder, File tempOutputFolder, HashMap<String, HashMap<Integer, File>> identificationFiles, File parametersFile, boolean includeDate) throws IOException {
+    public void organizeOutput(
+            File outputFolder,
+            File tempOutputFolder,
+            HashMap<String, HashMap<Integer, File>> identificationFiles,
+            File parametersFile,
+            boolean includeDate
+    ) throws IOException {
 
         UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+
+        if (utilitiesUserParameters.isGzip()) {
+
+            identificationFiles.values().stream()
+                    .flatMap(
+                            map -> map.values().stream()
+                    )
+                    .parallel()
+                    .forEach(
+                            file -> GzUtils.gzFile(
+                                    file,
+                                    true
+                            )
+                    );
+
+            HashMap<String, HashMap<Integer, File>> compressedIdentificationFiles = new HashMap<>(identificationFiles.size());
+
+            for (Entry<String, HashMap<Integer, File>> entry1 : identificationFiles.entrySet()) {
+
+                HashMap<Integer, File> map = entry1.getValue();
+                HashMap<Integer, File> newMap = new HashMap<>(map.size());
+                compressedIdentificationFiles.put(entry1.getKey(), newMap);
+
+                for (Entry<Integer, File> entry2 : map.entrySet()) {
+
+                    File file = entry2.getValue();
+                    File gzFile = new File(file.getAbsolutePath() + ".gz");
+
+                    newMap.put(entry2.getKey(), gzFile);
+
+                }
+            }
+
+            identificationFiles = compressedIdentificationFiles;
+
+        }
 
         switch (utilitiesUserParameters.getSearchGuiOutputParameters()) {
 
@@ -2812,65 +2855,50 @@ public class SearchHandler {
                     zipFile.delete();
                 }
 
-                FileOutputStream fos = new FileOutputStream(zipFile);
+                try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
-                try {
-                    BufferedOutputStream bos = new BufferedOutputStream(fos);
+                    // find the uncompressed size of all the files to add to the zip
+                    long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFiles);
+                    waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                    waitingHandler.setSecondaryProgressCounter(0);
+                    waitingHandler.setMaxSecondaryProgressCounter(100);
 
-                    try {
-                        ZipOutputStream out = new ZipOutputStream(bos);
+                    // add input file
+                    File inputFile = getInputFile(tempOutputFolder);
+                    ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
 
-                        // find the uncompressed size of all the files to add to the zip
-                        long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFiles);
-                        waitingHandler.setSecondaryProgressCounterIndeterminate(false);
-                        waitingHandler.setSecondaryProgressCounter(0);
-                        waitingHandler.setMaxSecondaryProgressCounter(100);
+                    // add search parameters files
+                    ZipUtils.addFileToZip(parametersFile, out, waitingHandler, totalUncompressedSize);
 
-                        try {
-                            // add input file
-                            File inputFile = getInputFile(tempOutputFolder);
-                            ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
+                    if (enableOmssa) {
+                        // add OMSSA modification files
+                        File modificationsFile = new File(tempOutputFolder, "omssa_mods.xml");
+                        ZipUtils.addFileToZip(modificationsFile, out, waitingHandler, totalUncompressedSize);
 
-                            // add search parameters files
-                            ZipUtils.addFileToZip(parametersFile, out, waitingHandler, totalUncompressedSize);
-
-                            if (enableOmssa) {
-                                // add OMSSA modification files
-                                File modificationsFile = new File(tempOutputFolder, "omssa_mods.xml");
-                                ZipUtils.addFileToZip(modificationsFile, out, waitingHandler, totalUncompressedSize);
-
-                                File userModificationsFile = new File(tempOutputFolder, "omssa_usermods.xml");
-                                ZipUtils.addFileToZip(userModificationsFile, out, waitingHandler, totalUncompressedSize);
-                            }
-
-                            if (enableMsAmanda) {
-                                // add MS Amanda settings file
-                                for (File spectrumFile : mgfFiles) {
-                                    String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
-                                    File settingsFile = new File(tempOutputFolder, newName);
-                                    if (settingsFile.exists()) {
-                                        ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
-                                    }
-                                }
-                            }
-
-                            for (HashMap<Integer, File> fileMap : identificationFiles.values()) {
-                                for (File identificationFile : fileMap.values()) {
-                                    ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
-                                }
-                            }
-
-                            if (utilitiesUserParameters.outputData()) {
-                                addDataToZip(out, totalUncompressedSize);
-                            }
-                        } finally {
-                            out.close();
-                        }
-                    } finally {
-                        bos.close();
+                        File userModificationsFile = new File(tempOutputFolder, "omssa_usermods.xml");
+                        ZipUtils.addFileToZip(userModificationsFile, out, waitingHandler, totalUncompressedSize);
                     }
-                } finally {
-                    fos.close();
+
+                    if (enableMsAmanda) {
+                        // add MS Amanda settings file
+                        for (File spectrumFile : mgfFiles) {
+                            String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
+                            File settingsFile = new File(tempOutputFolder, newName);
+                            if (settingsFile.exists()) {
+                                ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
+                            }
+                        }
+                    }
+
+                    for (HashMap<Integer, File> fileMap : identificationFiles.values()) {
+                        for (File identificationFile : fileMap.values()) {
+                            ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
+                        }
+                    }
+
+                    if (utilitiesUserParameters.outputData()) {
+                        addDataToZip(out, totalUncompressedSize);
+                    }
                 }
 
                 break;
@@ -2909,52 +2937,41 @@ public class SearchHandler {
                     if (zipFile.exists()) {
                         zipFile.delete();
                     }
-                    fos = new FileOutputStream(zipFile);
-                    try {
-                        BufferedOutputStream bos = new BufferedOutputStream(fos);
-                        try {
-                            ZipOutputStream out = new ZipOutputStream(bos);
-                            try {
-                                // add input file
-                                ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
 
-                                // add search parameters files
-                                ZipUtils.addFileToZip(parametersFile, out, waitingHandler, totalUncompressedSize);
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
-                                if (algorithm == Advocate.omssa.getIndex()) {
-                                    File modificationsFile = new File(tempOutputFolder, "omssa_mods.xml");
-                                    ZipUtils.addFileToZip(modificationsFile, out, waitingHandler, totalUncompressedSize);
+                        // add input file
+                        ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
 
-                                    File userModificationsFile = new File(tempOutputFolder, "omssa_usermods.xml");
-                                    ZipUtils.addFileToZip(userModificationsFile, out, waitingHandler, totalUncompressedSize);
-                                }
-                                if (algorithm == Advocate.msAmanda.getIndex()) {
-                                    // add MS Amanda settings file
-                                    for (File spectrumFile : mgfFiles) {
-                                        String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
-                                        File settingsFile = new File(tempOutputFolder, newName);
-                                        if (settingsFile.exists()) {
-                                            ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
-                                        }
-                                    }
-                                }
+                        // add search parameters files
+                        ZipUtils.addFileToZip(parametersFile, out, waitingHandler, totalUncompressedSize);
 
-                                for (File identificationFile : algorithmToFileMap.get(algorithm)) {
-                                    ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
-                                }
+                        if (algorithm == Advocate.omssa.getIndex()) {
+                            File modificationsFile = new File(tempOutputFolder, "omssa_mods.xml");
+                            ZipUtils.addFileToZip(modificationsFile, out, waitingHandler, totalUncompressedSize);
 
-                                if (utilitiesUserParameters.outputData()) {
-                                    addDataToZip(out, totalUncompressedSize);
-                                }
-
-                            } finally {
-                                out.close();
-                            }
-                        } finally {
-                            bos.close();
+                            File userModificationsFile = new File(tempOutputFolder, "omssa_usermods.xml");
+                            ZipUtils.addFileToZip(userModificationsFile, out, waitingHandler, totalUncompressedSize);
                         }
-                    } finally {
-                        fos.close();
+                        if (algorithm == Advocate.msAmanda.getIndex()) {
+                            // add MS Amanda settings file
+                            for (File spectrumFile : mgfFiles) {
+                                String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
+                                File settingsFile = new File(tempOutputFolder, newName);
+                                if (settingsFile.exists()) {
+                                    ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
+                                }
+                            }
+                        }
+
+                        for (File identificationFile : algorithmToFileMap.get(algorithm)) {
+                            ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
+                        }
+
+                        if (utilitiesUserParameters.outputData()) {
+                            addDataToZip(out, totalUncompressedSize);
+                        }
+
                     }
                 }
 
@@ -2967,11 +2984,15 @@ public class SearchHandler {
 
                 // find the uncompressed size of all the files to add to the zip
                 totalUncompressedSize = 0;
+
                 for (String mgfFileName : identificationFiles.keySet()) {
+
                     String mgfFileNameWithoutExtension = Util.removeExtension(mgfFileName);
                     File mgfFile = idFileToSpectrumFileMap.get(mgfFileName);
                     totalUncompressedSize += getTotalUncompressedSizeRun(inputFile, tempOutputFolder, mgfFileNameWithoutExtension, mgfFileName, parametersFile, identificationFiles, mgfFile);
+
                 }
+
                 waitingHandler.setSecondaryProgressCounterIndeterminate(false);
                 waitingHandler.setSecondaryProgressCounter(0);
                 waitingHandler.setMaxSecondaryProgressCounter(100);
@@ -2985,56 +3006,40 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    fos = new FileOutputStream(zipFile);
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                        // add input file
+                        ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
 
-                    try {
-                        BufferedOutputStream bos = new BufferedOutputStream(fos);
+                        // add search parameters files
+                        ZipUtils.addFileToZip(parametersFile, out, waitingHandler, totalUncompressedSize);
 
-                        try {
-                            ZipOutputStream out = new ZipOutputStream(bos);
+                        if (enableOmssa) {
+                            // add omssa modification files
+                            File modificationsFile = new File(tempOutputFolder, "omssa_mods.xml");
+                            ZipUtils.addFileToZip(modificationsFile, out, waitingHandler, totalUncompressedSize);
 
-                            try {
-                                // add input file
-                                ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
-
-                                // add search parameters files
-                                ZipUtils.addFileToZip(parametersFile, out, waitingHandler, totalUncompressedSize);
-
-                                if (enableOmssa) {
-                                    // add omssa modification files
-                                    File modificationsFile = new File(tempOutputFolder, "omssa_mods.xml");
-                                    ZipUtils.addFileToZip(modificationsFile, out, waitingHandler, totalUncompressedSize);
-
-                                    File userModificationsFile = new File(tempOutputFolder, "omssa_usermods.xml");
-                                    ZipUtils.addFileToZip(userModificationsFile, out, waitingHandler, totalUncompressedSize);
-                                }
-
-                                if (enableMsAmanda) {
-                                    // add ms amanda settings file
-                                    String newName = mgfFileNameWithoutExtension + "_settings.xml";
-                                    File settingsFile = new File(tempOutputFolder, newName);
-                                    if (settingsFile.exists()) {
-                                        ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
-                                    }
-                                }
-
-                                HashMap<Integer, File> fileMap = identificationFiles.get(mgfFileName);
-                                for (File identificationFile : fileMap.values()) {
-                                    ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
-                                }
-
-                                if (utilitiesUserParameters.outputData()) {
-                                    addDataToZip(out, totalUncompressedSize, mgfFileName);
-                                }
-
-                            } finally {
-                                out.close();
-                            }
-                        } finally {
-                            bos.close();
+                            File userModificationsFile = new File(tempOutputFolder, "omssa_usermods.xml");
+                            ZipUtils.addFileToZip(userModificationsFile, out, waitingHandler, totalUncompressedSize);
                         }
-                    } finally {
-                        fos.close();
+
+                        if (enableMsAmanda) {
+                            // add ms amanda settings file
+                            String newName = mgfFileNameWithoutExtension + "_settings.xml";
+                            File settingsFile = new File(tempOutputFolder, newName);
+                            if (settingsFile.exists()) {
+                                ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
+                            }
+                        }
+
+                        HashMap<Integer, File> fileMap = identificationFiles.get(mgfFileName);
+                        for (File identificationFile : fileMap.values()) {
+                            ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
+                        }
+
+                        if (utilitiesUserParameters.outputData()) {
+                            addDataToZip(out, totalUncompressedSize, mgfFileName);
+                        }
+
                     }
                 }
 
@@ -3080,7 +3085,11 @@ public class SearchHandler {
      *
      * @throws IOException
      */
-    private void addDataToZip(ZipOutputStream out, long totalUncompressedSize, String mgfFileName) throws IOException {
+    private void addDataToZip(
+            ZipOutputStream out, 
+            long totalUncompressedSize, 
+            String mgfFileName
+    ) throws IOException {
 
         // create the data folder in the zip file
         ZipUtils.addFolderToZip(DEFAULT_DATA_FOLDER, out);
@@ -3110,7 +3119,11 @@ public class SearchHandler {
      *
      * @return the total uncompressed size
      */
-    private long getTotalUncompressedSize(File outputFolder, File parametersFile, HashMap<String, HashMap<Integer, File>> identificationFiles) {
+    private long getTotalUncompressedSize(
+            File outputFolder, 
+            File parametersFile, 
+            HashMap<String, HashMap<Integer, File>> identificationFiles
+    ) {
 
         long totalUncompressedSize = 0;
 
@@ -3165,7 +3178,13 @@ public class SearchHandler {
      *
      * @return the total uncompressed size per algorithm
      */
-    private long getTotalUncompressedSizeAlgorithm(File inputFile, File outputFolder, Integer algorithm, File parametersFile, ArrayList<File> identificationFiles) {
+    private long getTotalUncompressedSizeAlgorithm(
+            File inputFile, 
+            File outputFolder, 
+            Integer algorithm, 
+            File parametersFile, 
+            ArrayList<File> identificationFiles
+    ) {
 
         long totalUncompressedSize = 0;
 
@@ -3218,8 +3237,15 @@ public class SearchHandler {
      *
      * @return the total uncompressed size of the files for the given run
      */
-    private long getTotalUncompressedSizeRun(File inputFile, File outputFolder, String runName, String run,
-            File parametersFile, HashMap<String, HashMap<Integer, File>> identificationFiles, File mgfFile) {
+    private long getTotalUncompressedSizeRun(
+            File inputFile, 
+            File outputFolder, 
+            String runName, 
+            String run,
+            File parametersFile, 
+            HashMap<String, HashMap<Integer, File>> identificationFiles, 
+            File mgfFile
+    ) {
 
         long totalUncompressedSize = 0;
 
@@ -3271,7 +3297,9 @@ public class SearchHandler {
      *
      * @return the total uncompressed size of the FASTA and spectrum files
      */
-    private long getTotalUncompressedSizeOfData(File mgfFile) {
+    private long getTotalUncompressedSizeOfData(
+            File mgfFile
+    ) {
 
         long totalUncompressedSize = fastaFile.length();
 
@@ -3292,7 +3320,9 @@ public class SearchHandler {
      * @param jarFilePath the path to the jar file
      * @return the folder to use to store peak lists
      */
-    public static File getPeakListFolder(String jarFilePath) {
+    public static File getPeakListFolder(
+            String jarFilePath
+    ) {
         File peakListFolder = new File(getTempFolderPath(jarFilePath), PEAK_LIST_SUBFOLDER);
         if (!peakListFolder.exists()) {
             peakListFolder.mkdirs();
@@ -3316,7 +3346,9 @@ public class SearchHandler {
      * @param jarFilePath the path to the jar file
      * @return the folder to use for temporary files
      */
-    public static String getTempFolderPath(String jarFilePath) {
+    public static String getTempFolderPath(
+            String jarFilePath
+    ) {
         if (tempFolderPath == null) {
             if (jarFilePath.equals(".")) {
                 tempFolderPath = "resources" + File.separator + "temp";
@@ -3334,10 +3366,12 @@ public class SearchHandler {
     /**
      * Sets the folder to use for temporary files.
      *
-     * @param aTempFolderPath the folder to use for temporary files
+     * @param tempFolderPath the folder to use for temporary files
      */
-    public static void setTempFolderPath(String aTempFolderPath) {
-        tempFolderPath = aTempFolderPath;
+    public static void setTempFolderPath(
+            String tempFolderPath
+    ) {
+        tempFolderPath = tempFolderPath;
     }
 
     /**
@@ -3345,7 +3379,9 @@ public class SearchHandler {
      *
      * @param logFolder the log folder
      */
-    public void setLogFolder(File logFolder) {
+    public void setLogFolder(
+            File logFolder
+    ) {
         this.logFolder = logFolder;
     }
 
@@ -3357,7 +3393,9 @@ public class SearchHandler {
      * @param searchParameters the search parameters to load
      * @return an error message if one was already loaded, null otherwise
      */
-    public static String loadModifications(SearchParameters searchParameters) {
+    public static String loadModifications(
+            SearchParameters searchParameters
+    ) {
         String error = null;
         ArrayList<String> toCheck = ModificationFactory.getInstance().loadBackedUpModifications(searchParameters, true);
         if (!toCheck.isEmpty()) {
@@ -3389,9 +3427,11 @@ public class SearchHandler {
     /**
      * Sets the default output file name.
      *
-     * @param aDefaultOutputFileName the defaultOutputFileName to set
+     * @param defaultOutputFileName the defaultOutputFileName to set
      */
-    public static void setDefaultOutputFileName(String aDefaultOutputFileName) {
-        defaultOutputFileName = aDefaultOutputFileName;
+    public static void setDefaultOutputFileName(
+            String defaultOutputFileName
+    ) {
+        defaultOutputFileName = defaultOutputFileName;
     }
 }
