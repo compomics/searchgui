@@ -2,9 +2,8 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.software.CompomicsWrapper;
-import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
-import com.compomics.util.parameters.identification.IdentificationParameters;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.parameters.tools.ProcessingParameters;
 import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
@@ -134,7 +133,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-out");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(cpsFile));
             if (includeData) {
-                File zipFile = new File(cpsFile.getParentFile(), Util.removeExtension(cpsFile.getName()) + ".zip");
+                File zipFile = new File(cpsFile.getParentFile(), IoUtil.removeExtension(cpsFile.getName()) + ".zip");
                 process_name_array.add("-zip");
                 process_name_array.add(CommandLineUtils.getCommandLineArgument(zipFile));
             }

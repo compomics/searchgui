@@ -1,8 +1,8 @@
 package eu.isas.searchgui.processbuilders;
 
-import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.compomics.util.parameters.identification.tool_specific.TideParameters;
 import com.compomics.util.waiting.WaitingHandler;
@@ -92,7 +92,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the mgf file to the result file name
         process_name_array.add("--fileroot");
-        process_name_array.add(Util.removeExtension(spectrumFile.getName()));
+        process_name_array.add(IoUtil.removeExtension(spectrumFile.getName()));
 
         // calculate p-values
         process_name_array.add("--exact-p-value");

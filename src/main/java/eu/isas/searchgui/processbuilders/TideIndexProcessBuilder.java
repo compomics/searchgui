@@ -1,6 +1,5 @@
 package eu.isas.searchgui.processbuilders;
 
-import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
@@ -8,6 +7,7 @@ import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.parameters.identification.search.SearchParameters;
@@ -451,6 +451,6 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getCurrentlyProcessedFileName() {
-        return Util.getFileName(fastaFilePath);
+        return IoUtil.getFileName(fastaFilePath);
     }
 }

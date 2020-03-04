@@ -5,8 +5,6 @@ import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
-import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
-import com.compomics.util.experiment.io.mass_spectrometry.mgf.IndexedMgfReader;
 import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
@@ -17,13 +15,10 @@ import com.compomics.util.parameters.UtilitiesUserParameters;
 import eu.isas.searchgui.SearchHandler;
 import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.concurrent.Callable;
 import org.apache.commons.cli.*;
 
@@ -152,7 +147,7 @@ public class SearchCLI implements Callable {
             }
 
             // get the spectrum files
-            ArrayList<File> spectrumFiles = new ArrayList<>();
+            ArrayList<File> spectrumFiles = searchCLIInputBean.getSpectrumFiles();
 
             // Processing
             ProcessingParameters processingParameters = new ProcessingParameters();
@@ -182,7 +177,6 @@ public class SearchCLI implements Callable {
             
             }
 
-            // Load the fasta file in the factory
             SearchParameters searchParameters = identificationParameters.getSearchParameters();
             String error = SearchHandler.loadModifications(searchParameters);
             if (error != null) {

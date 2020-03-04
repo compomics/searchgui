@@ -1,6 +1,5 @@
 package eu.isas.searchgui.processbuilders;
 
-import com.compomics.util.Util;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.aminoacids.AminoAcid;
 import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
@@ -14,6 +13,7 @@ import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.io.biology.protein.converters.GenericFastaConverter;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.search.ModificationParameters;
@@ -233,7 +233,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         File databaseFolder = new File(andromedaFolder, "conf");
         File databaseFile = new File(databaseFolder, "databases.xml");
-        File genericFastaFile = getGenericFastaFile(andromedaFolder, Util.getFileName(fastaFile));
+        File genericFastaFile = getGenericFastaFile(andromedaFolder, IoUtil.getFileName(fastaFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFile));
         String dbName = genericFastaFile.getName();
         String date = "0001-01-01T00:00:00";
@@ -667,7 +667,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         String fileName;
         try {
-            fileName = Util.removeExtension(searchParametersFile.getName()) + ".apar";
+            fileName = IoUtil.removeExtension(searchParametersFile.getName()) + ".apar";
         } catch (Exception e) {
             fileName = "SearchGUI.apar";
         }
@@ -783,7 +783,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.newLine();
             }
 
-            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, Util.getFileName(fastaFile)).getAbsolutePath() + "\"");
+            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, IoUtil.getFileName(fastaFile)).getAbsolutePath() + "\"");
             bw.newLine();
             bw.write("decoy mode=" + andromedaParameters.getDecoyMode());
             bw.newLine();

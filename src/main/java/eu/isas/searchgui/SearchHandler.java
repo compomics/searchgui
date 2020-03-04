@@ -526,7 +526,6 @@ public class SearchHandler {
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
      * @param processingParameters the processing preferences
-     * @param msFileHandler The mass spectrometry file handler.
      */
     public SearchHandler(
             IdentificationParameters identificationParameters,
@@ -557,8 +556,7 @@ public class SearchHandler {
             File novorFolder,
             File direcTagFolder,
             File makeblastdbFolder,
-            ProcessingParameters processingParameters,
-            MsFileHandler msFileHandler
+            ProcessingParameters processingParameters
     ) {
 
         this.resultsFolder = resultsFolder;
@@ -582,7 +580,6 @@ public class SearchHandler {
         this.identificationParameters = identificationParameters;
         this.processingParameters = processingParameters;
         this.identificationParametersFile = identificationParametersFile;
-        this.msFileHandler = msFileHandler;
 
         if (omssaFolder != null) {
             this.omssaLocation = omssaFolder;
@@ -758,6 +755,8 @@ public class SearchHandler {
             UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
 
         }
+        
+        this.msFileHandler = new MsFileHandler();
 
         searchDuration = new Duration();
     }
