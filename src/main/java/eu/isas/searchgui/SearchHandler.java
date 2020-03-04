@@ -7,9 +7,9 @@ import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
-import com.compomics.util.experiment.io.mass_spectrometry.export.AplExporter;
-import com.compomics.util.experiment.io.mass_spectrometry.export.Ms2Exporter;
-import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
+import com.compomics.util.experiment.io.mass_spectrometry.MsFileExporter;
+import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
+import com.compomics.util.experiment.mass_spectrometry.SpectrumProvider;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
 import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserParameters;
@@ -17,7 +17,7 @@ import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
-import com.compomics.util.io.IoUtils;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.io.compression.GzUtils;
 import com.compomics.util.io.compression.ZipUtils;
 import com.compomics.util.parameters.identification.IdentificationParameters;
@@ -157,9 +157,9 @@ public class SearchHandler {
      */
     private ArrayList<File> rawFiles;
     /**
-     * The mgf files.
+     * The mass spectrometry files in supported format.
      */
-    private ArrayList<File> mgfFiles;
+    private ArrayList<File> msFiles;
     /**
      * The FASTA file.
      */
@@ -332,9 +332,13 @@ public class SearchHandler {
      * The identification parameters factory.
      */
     private IdentificationParametersFactory identificationParametersFactory = IdentificationParametersFactory.getInstance();
+    /**
+     * The mass spectrometry file handler.
+     */
+    private final MsFileHandler msFileHandler;
 
     /**
-     * Constructor for the SearchGUI command line interface. Uses the
+     * Constructor for the SearchGUI command line interface.Uses the
      * configuration file searchGUI_configuration.txt to get the default search
      * engine locations and which search engines that are enabled. Mainly for
      * use via the graphical UI.
@@ -346,34 +350,135 @@ public class SearchHandler {
      * @param rawFiles list of raw files
      * @param identificationParametersFile the identification parameters file
      * @param processingParameters the processing parameters
+     * @param msFileHandler The mass spectrometry file handler.
      * @param exceptionHandler a handler for exceptions
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, ArrayList<File> mgfFiles,
+    public SearchHandler(
+            IdentificationParameters identificationParameters,
+            File resultsFolder,
+            ArrayList<File> mgfFiles,
             File fastaFile,
-            ArrayList<File> rawFiles, File identificationParametersFile, ProcessingParameters processingParameters,
-            ExceptionHandler exceptionHandler) {
+            ArrayList<File> rawFiles,
+            File identificationParametersFile,
+            ProcessingParameters processingParameters,
+            MsFileHandler msFileHandler,
+            ExceptionHandler exceptionHandler
+    ) {
 
         this.resultsFolder = resultsFolder;
         //this.defaultOutputFileName = defaultOutputFileName; // @TODO: implement? 
-        this.mgfFiles = mgfFiles;
+        this.msFiles = mgfFiles;
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
-        enableOmssa = loadSearchEngineLocation(Advocate.omssa, false, true, true, true, false, false, false);
-        enableXtandem = loadSearchEngineLocation(Advocate.xtandem, false, true, true, true, true, false, true);
-        enableMsgf = loadSearchEngineLocation(Advocate.msgf, true, true, true, true, false, false, false);
-        enableMsAmanda = loadSearchEngineLocation(Advocate.msAmanda, true, true, true, true, false, false, false);
-        enableMyriMatch = loadSearchEngineLocation(Advocate.myriMatch, false, true, false, true, true, false, true);
-        enableComet = loadSearchEngineLocation(Advocate.comet, false, true, false, true, true, false, false);
-        enableTide = loadSearchEngineLocation(Advocate.tide, false, true, true, true, true, false, true);
-        enableAndromeda = loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false);
-        enableNovor = loadSearchEngineLocation(Advocate.novor, true, true, true, true, false, false, false);
-        enableDirecTag = loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, true);
+
+        enableOmssa = loadSearchEngineLocation(
+                Advocate.omssa,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+        );
+        enableXtandem = loadSearchEngineLocation(
+                Advocate.xtandem,
+                false,
+                true,
+                true,
+                true,
+                true,
+                false,
+                true
+        );
+        enableMsgf = loadSearchEngineLocation(
+                Advocate.msgf,
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+        );
+        enableMsAmanda = loadSearchEngineLocation(
+                Advocate.msAmanda,
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+        );
+        enableMyriMatch = loadSearchEngineLocation(
+                Advocate.myriMatch,
+                false,
+                true,
+                false,
+                true,
+                true,
+                false,
+                true
+        );
+        enableComet = loadSearchEngineLocation(
+                Advocate.comet,
+                false,
+                true,
+                false,
+                true,
+                true,
+                false,
+                false
+        );
+        enableTide = loadSearchEngineLocation(
+                Advocate.tide,
+                false,
+                true,
+                true,
+                true,
+                true,
+                false,
+                true
+        );
+        enableAndromeda = loadSearchEngineLocation(
+                Advocate.andromeda,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false,
+                false
+        );
+        enableNovor = loadSearchEngineLocation(
+                Advocate.novor,
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+        );
+        enableDirecTag = loadSearchEngineLocation(
+                Advocate.direcTag,
+                false,
+                true,
+                false,
+                true,
+                true,
+                false,
+                true
+        );
         this.identificationParametersFile = identificationParametersFile;
         this.processingParameters = processingParameters;
-
         this.identificationParameters = identificationParameters;
+        this.msFileHandler = msFileHandler;
+
         searchDuration = new Duration();
+
     }
 
     /**
@@ -388,14 +493,14 @@ public class SearchHandler {
      * @param fastaFile the FASTA file
      * @param rawFiles list of raw files
      * @param identificationParametersFile the search parameters file
-     * @param searchOmssa if true the OMSSA search is enabled
-     * @param searchXTandem if true the XTandem search is enabled
-     * @param searchMsgf if true the MS-GF+ search is enabled
-     * @param searchMsAmanda if true the MS Amanda search is enabled
-     * @param searchMyriMatch if true the MyriMatch search is enabled
-     * @param searchComet if true the Comet search is enabled
-     * @param searchTide if true the Tide search is enabled
-     * @param searchAndromeda if true the Andromeda search is enabled
+     * @param runOmssa if true the OMSSA search is enabled
+     * @param runXTandem if true the XTandem search is enabled
+     * @param runMsgf if true the MS-GF+ search is enabled
+     * @param runMsAmanda if true the MS Amanda search is enabled
+     * @param runMyriMatch if true the MyriMatch search is enabled
+     * @param runComet if true the Comet search is enabled
+     * @param runTide if true the Tide search is enabled
+     * @param runAndromeda if true the Andromeda search is enabled
      * @param runNovor if true the Novor search is enabled
      * @param runDirecTag if true the DirecTag search is enabled
      * @param omssaFolder the folder where OMSSA is installed, if null the
@@ -421,108 +526,237 @@ public class SearchHandler {
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
      * @param processingParameters the processing preferences
+     * @param msFileHandler The mass spectrometry file handler.
      */
-    public SearchHandler(IdentificationParameters identificationParameters, File resultsFolder, String defaultOutputFileName, ArrayList<File> mgfFiles, File fastaFile, ArrayList<File> rawFiles, File identificationParametersFile,
-            boolean searchOmssa, boolean searchXTandem, boolean searchMsgf, boolean searchMsAmanda, boolean searchMyriMatch, boolean searchComet, boolean searchTide, boolean searchAndromeda,
-            boolean runNovor, boolean runDirecTag,
-            File omssaFolder, File xTandemFolder, File msgfFolder, File msAmandaFolder, File myriMatchFolder, File cometFolder, File tideFolder, File andromedaFolder,
-            File novorFolder, File direcTagFolder, File makeblastdbFolder,
-            ProcessingParameters processingParameters) {
+    public SearchHandler(
+            IdentificationParameters identificationParameters,
+            File resultsFolder,
+            String defaultOutputFileName,
+            ArrayList<File> mgfFiles,
+            File fastaFile,
+            ArrayList<File> rawFiles,
+            File identificationParametersFile,
+            boolean runOmssa,
+            boolean runXTandem,
+            boolean runMsgf,
+            boolean runMsAmanda,
+            boolean runMyriMatch,
+            boolean runComet,
+            boolean runTide,
+            boolean runAndromeda,
+            boolean runNovor,
+            boolean runDirecTag,
+            File omssaFolder,
+            File xTandemFolder,
+            File msgfFolder,
+            File msAmandaFolder,
+            File myriMatchFolder,
+            File cometFolder,
+            File tideFolder,
+            File andromedaFolder,
+            File novorFolder,
+            File direcTagFolder,
+            File makeblastdbFolder,
+            ProcessingParameters processingParameters,
+            MsFileHandler msFileHandler
+    ) {
 
         this.resultsFolder = resultsFolder;
         if (defaultOutputFileName != null) {
             this.defaultOutputFileName = defaultOutputFileName;
         }
-        this.mgfFiles = mgfFiles;
+        this.msFiles = mgfFiles;
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
-        this.enableOmssa = searchOmssa;
-        this.enableXtandem = searchXTandem;
-        this.enableMsgf = searchMsgf;
-        this.enableMsAmanda = searchMsAmanda;
-        this.enableMyriMatch = searchMyriMatch;
-        this.enableComet = searchComet;
-        this.enableTide = searchTide;
-        this.enableAndromeda = searchAndromeda;
+        this.enableOmssa = runOmssa;
+        this.enableXtandem = runXTandem;
+        this.enableMsgf = runMsgf;
+        this.enableMsAmanda = runMsAmanda;
+        this.enableMyriMatch = runMyriMatch;
+        this.enableComet = runComet;
+        this.enableTide = runTide;
+        this.enableAndromeda = runAndromeda;
         this.enableNovor = runNovor;
         this.enableDirecTag = runDirecTag;
 
         this.identificationParameters = identificationParameters;
         this.processingParameters = processingParameters;
         this.identificationParametersFile = identificationParametersFile;
+        this.msFileHandler = msFileHandler;
 
         if (omssaFolder != null) {
             this.omssaLocation = omssaFolder;
         } else {
-            loadSearchEngineLocation(Advocate.omssa, false, true, true, true, false, false, false); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.omssa,
+                    false,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
         }
 
         if (xTandemFolder != null) {
             this.xtandemLocation = xTandemFolder;
         } else {
-            loadSearchEngineLocation(Advocate.xtandem, false, true, true, true, true, false, true); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.xtandem,
+                    false,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    true
+            ); // try to use the default
         }
 
         if (msgfFolder != null) {
             this.msgfLocation = msgfFolder;
         } else {
-            loadSearchEngineLocation(Advocate.msgf, true, true, true, true, false, false, false); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.msgf,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
         }
 
         if (msAmandaFolder != null) {
             this.msAmandaLocation = msAmandaFolder;
         } else {
-            loadSearchEngineLocation(Advocate.msAmanda, true, true, true, true, false, false, false); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.msAmanda,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
         }
 
         if (myriMatchFolder != null) {
             this.myriMatchLocation = myriMatchFolder;
         } else {
-            loadSearchEngineLocation(Advocate.myriMatch, false, true, false, true, true, false, true); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.myriMatch,
+                    false,
+                    true,
+                    false,
+                    true,
+                    true,
+                    false,
+                    true
+            ); // try to use the default
         }
 
         if (cometFolder != null) {
             this.cometLocation = cometFolder;
         } else {
-            loadSearchEngineLocation(Advocate.comet, false, true, false, true, true, false, false); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.comet,
+                    false,
+                    true,
+                    false,
+                    true,
+                    true,
+                    false,
+                    false
+            ); // try to use the default
         }
 
         if (tideFolder != null) {
             this.tideLocation = tideFolder;
         } else {
-            loadSearchEngineLocation(Advocate.tide, false, true, true, true, true, false, true); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.tide,
+                    false,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    true
+            ); // try to use the default
         }
 
         if (andromedaFolder != null) {
             this.andromedaLocation = andromedaFolder;
         } else {
-            loadSearchEngineLocation(Advocate.andromeda, false, true, false, false, false, false, false); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.andromeda,
+                    false,
+                    true,
+                    false,
+                    false,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
         }
 
         if (novorFolder != null) {
             this.novorLocation = novorFolder;
         } else {
-            loadSearchEngineLocation(Advocate.novor, true, true, true, true, false, false, false); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.novor,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
         }
 
         if (direcTagFolder != null) {
             this.direcTagLocation = direcTagFolder;
         } else {
-            loadSearchEngineLocation(Advocate.direcTag, false, true, false, true, true, false, true); // try to use the default
+            loadSearchEngineLocation(
+                    Advocate.direcTag,
+                    false,
+                    true,
+                    false,
+                    true,
+                    true,
+                    false,
+                    true
+            ); // try to use the default
         }
 
         if (makeblastdbFolder != null) {
             this.makeblastdbLocation = makeblastdbFolder;
         } else {
-            loadSearchEngineLocation(null, false, true, true, true, false, false, true); // try to use the default
+            loadSearchEngineLocation(
+                    null,
+                    false,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    true
+            ); // try to use the default
         }
 
         // set this version as the default SearchGUI version
         if (!getJarFilePath().equalsIgnoreCase(".")) {
+
             UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
             String versionNumber = new eu.isas.searchgui.utilities.Properties().getVersion();
             utilitiesUserParameters.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
             UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
+
         }
 
         searchDuration = new Duration();
@@ -535,7 +769,9 @@ public class SearchHandler {
      *
      * @throws InterruptedException thrown if the process is interrupted
      */
-    public synchronized void startSearch(WaitingHandler waitingHandler) throws InterruptedException {
+    public synchronized void startSearch(
+            WaitingHandler waitingHandler
+    ) throws InterruptedException {
 
         this.waitingHandler = waitingHandler;
         searchDuration.start();
@@ -602,10 +838,17 @@ public class SearchHandler {
             if (waitingHandler != null) {
                 if (waitingHandler instanceof WaitingDialog) {
                     // change the icon back to the default version
-                    ((JFrame) ((WaitingDialog) waitingHandler).getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
+                    ((JFrame) ((WaitingDialog) waitingHandler).getParent())
+                            .setIconImage(
+                                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif"))
+                            );
                 }
                 searchDuration.end();
-                waitingHandler.appendReport("Search Completed (" + searchDuration.toString() + ").", true, true);
+                waitingHandler.appendReport(
+                        "Search Completed (" + searchDuration.toString() + ").",
+                        true,
+                        true
+                );
                 waitingHandler.appendReportEndLine();
             }
 
@@ -660,7 +903,12 @@ public class SearchHandler {
                         e.printStackTrace();
                     }
                 } else if (waitingHandler != null) {
-                    waitingHandler.appendReport("PeptideShaker file (" + peptideShakerFile.getAbsolutePath() + ") not found!", true, true);
+
+                    waitingHandler.appendReport(
+                            "PeptideShaker file (" + peptideShakerFile.getAbsolutePath() + ") not found!",
+                            true,
+                            true
+                    );
                 }
             }
 
@@ -675,12 +923,15 @@ public class SearchHandler {
      * Save the SearchGUI report to the results folder.
      */
     private void saveReport() {
+
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
         String fileName = "SearchGUI Report " + df.format(new Date()) + ".html";
         String report = "";
 
         if (waitingHandler instanceof WaitingDialog) {
+
             report = "<pre>" + ((WaitingDialog) waitingHandler).getReport(new File(resultsFolder, fileName)) + "</pre>";
+
         }
 
         // append the search parameters
@@ -696,7 +947,11 @@ public class SearchHandler {
             }
         } catch (IOException e) {
             if (waitingHandler != null) {
-                waitingHandler.appendReport("Failed to write to the report file!", true, true);
+                waitingHandler.appendReport(
+                        "Failed to write to the report file!",
+                        true,
+                        true
+                );
             }
             e.printStackTrace();
         }
@@ -767,9 +1022,16 @@ public class SearchHandler {
      *
      * @return boolean if the search engine can be selected or not
      */
-    private boolean loadSearchEngineLocation(Advocate searchEngineAdvocate,
-            boolean sameVersionForAll, boolean windowsSupported, boolean osxSupported, boolean linuxSupported,
-            boolean windowsBitVersions, boolean osxBitVersions, boolean linuxBitVersions) {
+    private boolean loadSearchEngineLocation(
+            Advocate searchEngineAdvocate,
+            boolean sameVersionForAll,
+            boolean windowsSupported,
+            boolean osxSupported,
+            boolean linuxSupported,
+            boolean windowsBitVersions,
+            boolean osxBitVersions,
+            boolean linuxBitVersions
+    ) {
 
         boolean enableSearchEngine = false;
         String advocateName;
@@ -904,7 +1166,7 @@ public class SearchHandler {
      * @return the name of the X!Tandem result file
      */
     public static String getXTandemFileName(String spectrumFileName) {
-        return Util.removeExtension(spectrumFileName) + ".t.xml";
+        return IoUtil.removeExtension(spectrumFileName) + ".t.xml";
     }
 
     /**
@@ -932,19 +1194,19 @@ public class SearchHandler {
         if (cometParameters.getSelectedOutputFormat() != null) {
             switch (cometParameters.getSelectedOutputFormat()) {
                 case PepXML:
-                    return Util.removeExtension(spectrumFileName) + ".comet.pep.xml";
+                    return IoUtil.removeExtension(spectrumFileName) + ".comet.pep.xml";
                 case Percolator:
-                    return Util.removeExtension(spectrumFileName) + ".comet.pin";
+                    return IoUtil.removeExtension(spectrumFileName) + ".comet.pin";
                 case SQT:
-                    return Util.removeExtension(spectrumFileName) + ".comet.sqt";
+                    return IoUtil.removeExtension(spectrumFileName) + ".comet.sqt";
                 case TXT:
-                    return Util.removeExtension(spectrumFileName) + ".comet.txt";
+                    return IoUtil.removeExtension(spectrumFileName) + ".comet.txt";
                 default:
                     break;
             }
         }
 
-        return Util.removeExtension(spectrumFileName) + ".comet.pep.xml";
+        return IoUtil.removeExtension(spectrumFileName) + ".comet.pep.xml";
     }
 
     /**
@@ -968,15 +1230,15 @@ public class SearchHandler {
      */
     public static String getTideFileName(String spectrumFileName, TideParameters tideParameters) {
         if (tideParameters.getTextOutput()) {
-            return Util.removeExtension(spectrumFileName) + ".tide-search.target.txt";
+            return IoUtil.removeExtension(spectrumFileName) + ".tide-search.target.txt";
         } else if (tideParameters.getMzidOutput()) {
-            return Util.removeExtension(spectrumFileName) + ".tide-search.target.mzid";
+            return IoUtil.removeExtension(spectrumFileName) + ".tide-search.target.mzid";
         } else if (tideParameters.getPepXmlOutput()) {
-            return Util.removeExtension(spectrumFileName) + ".tide-search.target.pep.xml";
+            return IoUtil.removeExtension(spectrumFileName) + ".tide-search.target.pep.xml";
         } else if (tideParameters.getSqtOutput()) {
-            return Util.removeExtension(spectrumFileName) + ".tide-search.target.sqt";
+            return IoUtil.removeExtension(spectrumFileName) + ".tide-search.target.sqt";
         } else {
-            return Util.removeExtension(spectrumFileName) + ".tide-search.target.pin";
+            return IoUtil.removeExtension(spectrumFileName) + ".tide-search.target.pin";
         }
     }
 
@@ -988,7 +1250,7 @@ public class SearchHandler {
      * @return the name of the Andromeda result file
      */
     public static String getAndromedaFileName(String spectrumFileName) {
-        return Util.removeExtension(spectrumFileName) + ".res";
+        return IoUtil.removeExtension(spectrumFileName) + ".res";
     }
 
     /**
@@ -999,7 +1261,7 @@ public class SearchHandler {
      * @return the name of the Novor result file
      */
     public static String getNovorFileName(String spectrumFileName) {
-        return Util.removeExtension(spectrumFileName) + ".novor.csv";
+        return IoUtil.removeExtension(spectrumFileName) + ".novor.csv";
     }
 
     /**
@@ -1010,7 +1272,7 @@ public class SearchHandler {
      * @return the name of the DirecTag result file
      */
     public static String getDirecTagFileName(String spectrumFileName) {
-        return Util.removeExtension(spectrumFileName) + ".tags";
+        return IoUtil.removeExtension(spectrumFileName) + ".tags";
     }
 
     /**
@@ -1033,7 +1295,7 @@ public class SearchHandler {
      * @return the name of the OMSSA result file
      */
     public static String getOMSSAFileName(String spectrumFileName, OmssaParameters omssaParameters) {
-        return Util.removeExtension(spectrumFileName) + "." + omssaParameters.getSelectedOutput().toLowerCase();
+        return IoUtil.removeExtension(spectrumFileName) + "." + omssaParameters.getSelectedOutput().toLowerCase();
     }
 
     /**
@@ -1044,7 +1306,7 @@ public class SearchHandler {
      * @return the name of the MS-GF+ result file
      */
     public static String getMsgfFileName(String spectrumFileName) {
-        return Util.removeExtension(spectrumFileName) + ".msgf.mzid";
+        return IoUtil.removeExtension(spectrumFileName) + ".msgf.mzid";
     }
 
     /**
@@ -1069,9 +1331,9 @@ public class SearchHandler {
      */
     public static String getMsAmandaFileName(String spectrumFileName, MsAmandaParameters msAmandaParameters) {
         if (msAmandaParameters.getOutputFormat().equalsIgnoreCase("mzIdentML")) {
-            return Util.removeExtension(spectrumFileName) + ".ms-amanda.mzid.gz";
+            return IoUtil.removeExtension(spectrumFileName) + ".ms-amanda.mzid.gz";
         } else {
-            return Util.removeExtension(spectrumFileName) + ".ms-amanda.csv";
+            return IoUtil.removeExtension(spectrumFileName) + ".ms-amanda.csv";
         }
     }
 
@@ -1096,9 +1358,9 @@ public class SearchHandler {
      */
     public static String getMyriMatchFileName(String spectrumFileName, MyriMatchParameters myriMatchParameters) {
         if (myriMatchParameters.getOutputFormat().equalsIgnoreCase("mzIdentML")) {
-            return Util.removeExtension(spectrumFileName) + ".myrimatch.mzid";
+            return IoUtil.removeExtension(spectrumFileName) + ".myrimatch.mzid";
         } else {
-            return Util.removeExtension(spectrumFileName) + ".myrimatch.pepXML";
+            return IoUtil.removeExtension(spectrumFileName) + ".myrimatch.pepXML";
         }
     }
 
@@ -1553,7 +1815,7 @@ public class SearchHandler {
      * @return the mgf files
      */
     public ArrayList<File> getMgfFiles() {
-        return mgfFiles;
+        return msFiles;
     }
 
     /**
@@ -1562,7 +1824,7 @@ public class SearchHandler {
      * @param mgfFiles the mgf files
      */
     public void setMgfFiles(ArrayList<File> mgfFiles) {
-        this.mgfFiles = mgfFiles;
+        this.msFiles = mgfFiles;
     }
 
     /**
@@ -1662,7 +1924,10 @@ public class SearchHandler {
 
             if (waitingHandler instanceof WaitingDialog) {
                 // make sure the icon is set to the waiting icon
-                ((JFrame) ((WaitingDialog) waitingHandler).getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                ((JFrame) ((WaitingDialog) waitingHandler).getParent())
+                        .setIconImage(
+                                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif"))
+                        );
             }
         }
 
@@ -1745,7 +2010,7 @@ public class SearchHandler {
                     try {
                         outputTempFolder = new File(outputFolder, OUTPUT_TEMP_FOLDER_NAME);
                         if (outputTempFolder.exists()) {
-                            Util.deleteDir(outputTempFolder);
+                            IoUtil.deleteDir(outputTempFolder);
                         }
                         outputTempFolder.mkdirs();
                         TempFilesManager.registerTempFolder(outputTempFolder);
@@ -1813,15 +2078,25 @@ public class SearchHandler {
                         // @TODO: should the MS-GF+ database formatting be done here as well..?
                         if (waitingHandler != null) {
                             if (!useCommandLine) {
-                                waitingHandler.setWaitingText("Formatting " + makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " for OMSSA.");
+                                waitingHandler.setWaitingText(
+                                        "Formatting " + makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " for OMSSA."
+                                );
                             }
-                            waitingHandler.appendReport("Formatting " + makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " for OMSSA.", true, true);
+                            waitingHandler.appendReport(
+                                    "Formatting " + makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " for OMSSA.",
+                                    true,
+                                    true
+                            );
                             waitingHandler.appendReportEndLine();
                         }
                         makeblastdbProcessBuilder.startProcess();
 
                         if (waitingHandler != null) {
-                            waitingHandler.appendReport(makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " formatted for OMSSA.", true, true);
+                            waitingHandler.appendReport(
+                                    makeblastdbProcessBuilder.getCurrentlyProcessedFileName() + " formatted for OMSSA.",
+                                    true,
+                                    true
+                            );
                             waitingHandler.appendReportEndLine();
                         }
                     }
@@ -1832,13 +2107,17 @@ public class SearchHandler {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
                     }
                     File userModsXmlFile = new File(omssaLocation, "usermods.xml");
-                    OmssaclProcessBuilder.writeOmssaUserModificationsFile(userModsXmlFile, identificationParameters, identificationParametersFile);
+                    OmssaclProcessBuilder.writeOmssaUserModificationsFile(
+                            userModsXmlFile,
+                            identificationParameters,
+                            identificationParametersFile
+                    );
 
                     // Copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
-                    IoUtils.copyFile(modsXmlFile, destinationFile);
+                    IoUtil.copyFile(modsXmlFile, destinationFile);
                     destinationFile = new File(outputTempFolder, "omssa_usermods.xml");
-                    IoUtils.copyFile(userModsXmlFile, destinationFile);
+                    IoUtil.copyFile(userModsXmlFile, destinationFile);
 
                     waitingHandler.increasePrimaryProgressCounter();
                 }
@@ -1851,24 +2130,53 @@ public class SearchHandler {
 
                     }
 
-                    waitingHandler.appendReport("Andromeda configuration.", true, true);
+                    waitingHandler.appendReport(
+                            "Andromeda configuration.",
+                            true,
+                            true
+                    );
                     waitingHandler.appendReportEndLine();
+
                     // Create generic database
-                    AndromedaProcessBuilder.createGenericFastaFile(andromedaLocation, fastaFile, waitingHandler);
+                    AndromedaProcessBuilder.createGenericFastaFile(
+                            andromedaLocation,
+                            fastaFile,
+                            waitingHandler
+                    );
                     // write Andromeda database configuration file
-                    AndromedaProcessBuilder.createDatabaseFile(andromedaLocation, fastaFile);
+                    AndromedaProcessBuilder.createDatabaseFile(
+                            andromedaLocation,
+                            fastaFile
+                    );
                     // write Andromeda enzyme configuration file
-                    AndromedaProcessBuilder.createEnzymesFile(andromedaLocation);
+                    AndromedaProcessBuilder.createEnzymesFile(
+                            andromedaLocation
+                    );
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
-                    AndromedaProcessBuilder.createPtmFile(andromedaLocation, identificationParameters, identificationParametersFile);
+                    AndromedaProcessBuilder.createPtmFile(
+                            andromedaLocation,
+                            identificationParameters,
+                            identificationParametersFile
+                    );
 
                     waitingHandler.increasePrimaryProgressCounter();
                 }
 
                 if (enableTide && !waitingHandler.isRunCanceled()) {
+
                     // create the tide index
-                    tideIndexProcessBuilder = new TideIndexProcessBuilder(tideLocation, fastaFile, searchParameters, waitingHandler, exceptionHandler);
-                    waitingHandler.appendReport("Indexing " + fastaFile.getName() + " for Tide.", true, true);
+                    tideIndexProcessBuilder = new TideIndexProcessBuilder(
+                            tideLocation,
+                            fastaFile,
+                            searchParameters,
+                            waitingHandler,
+                            exceptionHandler
+                    );
+                    waitingHandler.appendReport(
+                            "Indexing " + fastaFile.getName() + " for Tide.",
+                            true,
+                            true
+                    );
                     waitingHandler.appendReportEndLine();
                     tideIndexProcessBuilder.startProcess();
 
@@ -1886,9 +2194,15 @@ public class SearchHandler {
                     waitingHandler.setMaxSecondaryProgressCounter(rawFiles.size() * 100);
 
                     Duration conversionDuration = new Duration();
+
                     if (rawFiles.size() > 1) {
+
                         conversionDuration.start();
-                        waitingHandler.appendReport("Converting raw files.", true, true);
+                        waitingHandler.appendReport(
+                                "Converting raw files.",
+                                true,
+                                true
+                        );
                     }
 
                     boolean useThermoRawFileParser = true;
@@ -1909,18 +2223,37 @@ public class SearchHandler {
                             File rawFile = rawFiles.get(i);
                             String rawFileName = rawFile.getName();
                             File folder = rawFile.getParentFile();
-                            String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
+                            String mgfFileName = IoUtil.removeExtension(rawFileName) + ".mgf";
                             File mgfFile = new File(folder, mgfFileName);
+
                             if (!mgfFile.exists()) {
-                                ThermoRawFileParserProcessBuilder thermoRawFileParserProcessBuilder = new ThermoRawFileParserProcessBuilder(thermoRawFileParserFolder, rawFile, folder, getThermoRawFileParserParameters(), waitingHandler, exceptionHandler);
+
+                                ThermoRawFileParserProcessBuilder thermoRawFileParserProcessBuilder = new ThermoRawFileParserProcessBuilder(
+                                        thermoRawFileParserFolder,
+                                        rawFile,
+                                        folder,
+                                        getThermoRawFileParserParameters(),
+                                        waitingHandler,
+                                        exceptionHandler
+                                );
+
                                 thermoRawFileParserProcessBuilders.add(thermoRawFileParserProcessBuilder);
                                 pool.submit(thermoRawFileParserProcessBuilder);
                                 // @TODO: validate the mgf file!
+
                             } else {
-                                waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
+
+                                waitingHandler.appendReport(
+                                        mgfFileName + " already exists. Conversion canceled.",
+                                        true,
+                                        true
+                                );
                                 waitingHandler.appendReportEndLine();
+
                             }
-                            mgfFiles.add(mgfFile);
+
+                            msFiles.add(mgfFile);
+
                         }
 
                     } else {
@@ -1932,59 +2265,103 @@ public class SearchHandler {
                             File rawFile = rawFiles.get(i);
                             String rawFileName = rawFile.getName();
                             File folder = rawFile.getParentFile();
-                            String mgfFileName = Util.removeExtension(rawFileName) + ".mgf";
-                            File mgfFile = new File(folder, mgfFileName);
-                            if (!mgfFile.exists()) {
-                                MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(rawFile, folder, getMsConvertParameters(), waitingHandler, exceptionHandler);
+                            String msFileName = IoUtil.removeExtension(rawFileName) + ".mgf";
+                            File msFile = new File(folder, msFileName);
+
+                            if (!msFile.exists()) {
+
+                                MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(
+                                        rawFile,
+                                        folder,
+                                        getMsConvertParameters(),
+                                        waitingHandler,
+                                        exceptionHandler
+                                );
                                 msConvertProcessBuilders.add(msConvertProcessBuilder);
                                 pool.submit(msConvertProcessBuilder);
-                                // @TODO: validate the mgf file!
+                                // @TODO: validate the output file!
+
                             } else {
-                                waitingHandler.appendReport(mgfFileName + " already exists. Conversion canceled.", true, true);
+
+                                waitingHandler.appendReport(msFileName + " already exists. Conversion canceled.",
+                                        true,
+                                        true
+                                );
+
                                 waitingHandler.appendReportEndLine();
+
                             }
-                            mgfFiles.add(mgfFile);
+
+                            msFiles.add(msFile);
+
                         }
                     }
 
                     if (waitingHandler.isRunCanceled()) {
+
                         pool.shutdownNow();
+
                     } else {
+
                         pool.shutdown();
+
                         if (!pool.awaitTermination(1 * rawFiles.size(), TimeUnit.DAYS)) {
+
                             throw new InterruptedException("Conversion timed out. Please contact the developers.");
+
                         }
 
                         if (!waitingHandler.isRunCanceled() && rawFiles.size() > 1) {
+
                             conversionDuration.end();
-                            waitingHandler.appendReport("Raw files conversion completed (" + conversionDuration.toString() + ").", true, true);
+                            waitingHandler.appendReport(
+                                    "Raw files conversion completed (" + conversionDuration.toString() + ").",
+                                    true,
+                                    true
+                            );
+
                         }
                     }
 
                     waitingHandler.setSecondaryProgressCounterIndeterminate(true);
+
                 }
 
                 if (!waitingHandler.isRunCanceled()) {
+
                     // indexing the spectrum files
                     waitingHandler.appendReportEndLine();
-                    waitingHandler.appendReport("Indexing spectrum files.", true, true);
-                    SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
-                    for (File mgfFile : mgfFiles) {
-                        spectrumFactory.addSpectra(mgfFile);
+                    waitingHandler.appendReport(
+                            "Importing spectrum files.",
+                            true,
+                            true
+                    );
+
+                    for (File msFile : msFiles) {
+
+                        msFileHandler.register(msFile);
+
                     }
 
                     // indexing the spectrum files
-                    waitingHandler.appendReport("Extracting search settings.", true, true);
+                    waitingHandler.appendReport(
+                            "Extracting search settings.",
+                            true,
+                            true
+                    );
                     waitingHandler.appendReportEndLine();
+
                 }
 
                 if (!waitingHandler.isRunCanceled()) {
+
                     saveInputFile(outputTempFolder);
                     waitingHandler.increasePrimaryProgressCounter();
+
                 }
 
                 // keep track of the identification files created in a map: spectrum file name -> algorithm index -> identification file
-                HashMap<String, HashMap<Integer, File>> identificationFiles = new HashMap<>(mgfFiles.size());
+                HashMap<String, HashMap<Integer, File>> identificationFiles = new HashMap<>(msFiles.size());
 
                 // keep track of the spectrum files used to generate the id files
                 idFileToSpectrumFileMap = new HashMap<>();
@@ -1994,149 +2371,317 @@ public class SearchHandler {
                     File spectrumFile = getMgfFiles().get(i);
 
                     String spectrumFileName = spectrumFile.getName();
+                    
                     if (useCommandLine) {
-                        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator")
-                                + "Processing: " + spectrumFileName + " (" + (i + 1) + "/" + getMgfFiles().size() + ")");
+
+                        System.out.println(
+                                System.getProperty("line.separator") + System.getProperty("line.separator")
+                                + "Processing: " + spectrumFileName + " (" + (i + 1) + "/" + getMgfFiles().size() + ")"
+                        );
+
                     } else {
+
                         waitingHandler.setWaitingText("Processing: " + spectrumFileName + " (" + (i + 1) + "/" + getMgfFiles().size() + ")");
+
                     }
 
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
-                        File xTandemOutputFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
-                        xTandemProcessBuilder = new TandemProcessBuilder(xtandemLocation,
-                                spectrumFile.getAbsolutePath(), fastaFile, xTandemOutputFile.getAbsolutePath(),
-                                searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
 
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.xtandem.getName() + ".", true, true);
+                        File xTandemOutputFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
+
+                        xTandemProcessBuilder = new TandemProcessBuilder(
+                                xtandemLocation,
+                                spectrumFile.getAbsolutePath(),
+                                fastaFile,
+                                xTandemOutputFile.getAbsolutePath(),
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler,
+                                processingParameters.getnThreads()
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.xtandem.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         xTandemProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
+
                             if (utilitiesUserParameters.renameXTandemFile()) {
+
                                 ArrayList<File> result = getXTandemFiles(outputTempFolder, spectrumFileName);
+
                                 if (result.size() == 1) {
+
                                     File xTandemFile = result.get(0);
                                     File destinationFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
+
                                     try {
+
                                         xTandemFile.renameTo(destinationFile);
+
                                     } catch (Exception e) {
+
                                         e.printStackTrace();
-                                        waitingHandler.appendReport("Could not rename " + Advocate.xtandem.getName() + " result for " + spectrumFileName + ".", true, true);
+                                        waitingHandler.appendReport(
+                                                "Could not rename " + Advocate.xtandem.getName() + " result for " + spectrumFileName + ".",
+                                                true,
+                                                true
+                                        );
                                     }
                                 } else {
-                                    waitingHandler.appendReport("Could not rename " + Advocate.xtandem.getName() + " result for " + spectrumFileName + ".", true, true);
+
+                                    waitingHandler.appendReport(
+                                            "Could not rename " + Advocate.xtandem.getName() + " result for " + spectrumFileName + ".",
+                                            true,
+                                            true
+                                    );
+
                                 }
                             }
+
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (xTandemOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.xtandem.getIndex(), xTandemOutputFile);
                                 idFileToSpectrumFileMap.put(xTandemOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.xtandem.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.xtandem.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
+
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
                         }
                     }
 
                     if (enableMyriMatch && !waitingHandler.isRunCanceled()) {
+
                         File myriMatchOutputFile = new File(outputTempFolder, getMyriMatchFileName(spectrumFileName));
-                        myriMatchProcessBuilder = new MyriMatchProcessBuilder(myriMatchLocation,
-                                spectrumFile.getAbsolutePath(), fastaFile, outputTempFolder, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.myriMatch.getName() + ".", true, true);
+
+                        myriMatchProcessBuilder = new MyriMatchProcessBuilder(
+                                myriMatchLocation,
+                                spectrumFile.getAbsolutePath(),
+                                fastaFile,
+                                outputTempFolder,
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler,
+                                processingParameters.getnThreads()
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.myriMatch.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         myriMatchProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
+
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (myriMatchOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.myriMatch.getIndex(), myriMatchOutputFile);
                                 idFileToSpectrumFileMap.put(myriMatchOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.myriMatch.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.myriMatch.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
+
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
+
                         }
                     }
 
                     if (enableMsAmanda && !waitingHandler.isRunCanceled()) {
+
                         File msAmandaOutputFile = new File(outputTempFolder, getMsAmandaFileName(spectrumFileName));
                         String filePath = msAmandaOutputFile.getAbsolutePath();
-                        msAmandaProcessBuilder = new MsAmandaProcessBuilder(msAmandaLocation,
-                                spectrumFile.getAbsolutePath(), fastaFile, filePath, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads());
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msAmanda.getName() + ".", true, true);
+
+                        msAmandaProcessBuilder = new MsAmandaProcessBuilder(
+                                msAmandaLocation,
+                                spectrumFile.getAbsolutePath(),
+                                fastaFile,
+                                filePath,
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler,
+                                processingParameters.getnThreads()
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.msAmanda.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         msAmandaProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
+
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (msAmandaOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.msAmanda.getIndex(), msAmandaOutputFile);
                                 idFileToSpectrumFileMap.put(msAmandaOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.msAmanda.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.msAmanda.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
                             }
                             waitingHandler.increasePrimaryProgressCounter();
                         }
                     }
 
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
+
                         File msgfOutputFile = new File(outputTempFolder, getMsgfFileName(spectrumFileName));
-                        msgfProcessBuilder = new MsgfProcessBuilder(msgfLocation,
-                                spectrumFile.getAbsolutePath(), fastaFile, msgfOutputFile, searchParameters, waitingHandler, exceptionHandler, processingParameters.getnThreads(), useCommandLine);
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".", true, true);
+
+                        msgfProcessBuilder = new MsgfProcessBuilder(
+                                msgfLocation,
+                                spectrumFile.getAbsolutePath(),
+                                fastaFile,
+                                msgfOutputFile,
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler,
+                                processingParameters.getnThreads(),
+                                useCommandLine
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         msgfProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
+
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (msgfOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.msgf.getIndex(), msgfOutputFile);
                                 idFileToSpectrumFileMap.put(msgfOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.msgf.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.msgf.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
+
                         }
                     }
 
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
+
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
-                        omssaProcessBuilder = new OmssaclProcessBuilder(omssaLocation,
-                                spectrumFile.getAbsolutePath(), fastaFile, omssaOutputFile, searchParameters, waitingHandler, exceptionHandler,
-                                utilitiesUserParameters.getRefMass(), processingParameters.getnThreads());
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".", true, true);
+
+                        omssaProcessBuilder = new OmssaclProcessBuilder(
+                                omssaLocation,
+                                spectrumFile.getAbsolutePath(),
+                                fastaFile,
+                                omssaOutputFile,
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler,
+                                utilitiesUserParameters.getRefMass(),
+                                processingParameters.getnThreads()
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         omssaProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
+
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (omssaOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.omssa.getIndex(), omssaOutputFile);
                                 idFileToSpectrumFileMap.put(omssaOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.omssa.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.omssa.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
+
                         }
                     }
 
@@ -2147,9 +2692,24 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
-                        cometProcessBuilder = new CometProcessBuilder(cometLocation, searchParameters, spectrumFile, fastaFile, waitingHandler, exceptionHandler,
-                                processingParameters.getnThreads(), utilitiesUserParameters.getRefMass());
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".", true, true);
+
+                        cometProcessBuilder = new CometProcessBuilder(
+                                cometLocation,
+                                searchParameters,
+                                spectrumFile,
+                                fastaFile,
+                                waitingHandler,
+                                exceptionHandler,
+                                processingParameters.getnThreads(),
+                                utilitiesUserParameters.getRefMass()
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".",
+                                true,
+                                true
+                        );
+
                         waitingHandler.appendReportEndLine();
                         cometProcessBuilder.startProcess();
 
@@ -2160,16 +2720,28 @@ public class SearchHandler {
                             FileUtils.moveFile(tempCometOutputFile, cometOutputFile);
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (cometOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.comet.getIndex(), cometOutputFile);
                                 idFileToSpectrumFileMap.put(cometOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.comet.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.comet.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
                         }
                     }
@@ -2178,17 +2750,35 @@ public class SearchHandler {
 
                     if (enableTide && !waitingHandler.isRunCanceled()) {
 
-                        waitingHandler.appendReport("Converting spectrum file " + spectrumFileName + " for Tide.", true, true);
-                        ms2File = new File(getPeakListFolder(getJarFilePath()), Util.removeExtension(spectrumFileName) + ".ms2");
-                        Ms2Exporter.mgfToMs2(spectrumFile, ms2File, true);
+                        waitingHandler.appendReport(
+                                "Converting spectrum file " + spectrumFileName + " for Tide.",
+                                true,
+                                true
+                        );
+
+                        ms2File = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".ms2");
+
+                        MsFileExporter.writeMs2File(msFileHandler, spectrumFileName, fastaFile);
 
                         File tideOutputFile = new File(outputTempFolder, getTideFileName(spectrumFileName));
 
                         // perform the tide search
                         if (!waitingHandler.isRunCanceled()) {
-                            tideSearchProcessBuilder = new TideSearchProcessBuilder(tideLocation, searchParameters,
-                                    ms2File, waitingHandler, exceptionHandler, processingParameters.getnThreads());
-                            waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.tide.getName() + ".", true, true);
+
+                            tideSearchProcessBuilder = new TideSearchProcessBuilder(
+                                    tideLocation,
+                                    searchParameters,
+                                    ms2File,
+                                    waitingHandler,
+                                    exceptionHandler,
+                                    processingParameters.getnThreads()
+                            );
+
+                            waitingHandler.appendReport(
+                                    "Processing " + spectrumFileName + " with " + Advocate.tide.getName() + ".",
+                                    true,
+                                    true
+                            );
                             waitingHandler.appendReportEndLine();
                             tideSearchProcessBuilder.startProcess();
                         }
@@ -2202,33 +2792,68 @@ public class SearchHandler {
                             FileUtils.moveFile(tempTideOutputFile, tideOutputFile);
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (tideOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.tide.getIndex(), tideOutputFile);
                                 idFileToSpectrumFileMap.put(tideOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.tide.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.tide.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
+
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
+
                         }
                     }
 
                     File aplFile = null;
+
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
-                        waitingHandler.appendReport("Converting spectrum file " + spectrumFileName + " for Andromeda.", true, true);
-                        aplFile = new File(getPeakListFolder(getJarFilePath()), Util.removeExtension(spectrumFileName) + ".apl");
-                        AndromedaParameters andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
-                        AplExporter.mgfToApl(spectrumFile, aplFile, andromedaParameters.getFragmentationMethod(), searchParameters.getMinChargeSearched(), searchParameters.getMaxChargeSearched());
+
+                        waitingHandler.appendReport(
+                                "Converting spectrum file " + spectrumFileName + " for Andromeda.",
+                                true,
+                                true
+                        );
+                        
+                        aplFile = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".apl");
+                        MsFileExporter.writeAplFile(msFileHandler, spectrumFileName, aplFile, searchParameters);
+
                     }
 
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-                        andromedaProcessBuilder = new AndromedaProcessBuilder(andromedaLocation, searchParameters, identificationParametersFile, aplFile, fastaFile, waitingHandler, exceptionHandler, processingParameters.getnThreads());
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".", true, true);
+
+                        andromedaProcessBuilder = new AndromedaProcessBuilder(
+                                andromedaLocation,
+                                searchParameters,
+                                identificationParametersFile,
+                                aplFile,
+                                fastaFile,
+                                waitingHandler,
+                                exceptionHandler,
+                                processingParameters.getnThreads()
+                        );
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         andromedaProcessBuilder.startProcess();
 
@@ -2236,27 +2861,51 @@ public class SearchHandler {
 
                             File tempResultFile = new File(aplFile.getParent(), getAndromedaFileName(spectrumFileName));
                             if (tempResultFile.exists()) {
-                                IoUtils.copyFile(tempResultFile, andromedaOutputFile);
+                                IoUtil.copyFile(tempResultFile, andromedaOutputFile);
                                 try {
                                     tempResultFile.delete();
                                 } catch (Exception e) {
-                                    waitingHandler.appendReport("An error occurred when attempting to delete " + tempResultFile.getName() + ".", true, true);
+                                    waitingHandler.appendReport(
+                                            "An error occurred when attempting to delete " + tempResultFile.getName() + ".",
+                                            true,
+                                            true
+                                    );
                                 }
+
                                 HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                                 if (runIdentificationFiles == null) {
+
                                     runIdentificationFiles = new HashMap<>();
                                     identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                                 }
+
                                 if (andromedaOutputFile.exists()) {
+
                                     runIdentificationFiles.put(Advocate.andromeda.getIndex(), andromedaOutputFile);
                                     idFileToSpectrumFileMap.put(andromedaOutputFile.getName(), spectrumFile);
+
                                 } else {
-                                    waitingHandler.appendReport("Could not find " + Advocate.andromeda.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                    waitingHandler.appendReport(
+                                            "Could not find " + Advocate.andromeda.getName() + " result file for " + spectrumFileName + ".",
+                                            true,
+                                            true
+                                    );
+
                                 }
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.andromeda.getName() + " .res file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.andromeda.getName() + " .res file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
+
                         }
                     }
 
@@ -2269,50 +2918,102 @@ public class SearchHandler {
                     }
 
                     if (enableNovor && !waitingHandler.isRunCanceled()) {
+
                         File novorOutputFile = new File(outputTempFolder, getNovorFileName(spectrumFileName));
-                        novorProcessBuilder = new NovorProcessBuilder(novorLocation,
-                                spectrumFile, novorOutputFile, searchParameters, useCommandLine, waitingHandler, exceptionHandler);
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.novor.getName() + ".", true, true);
+
+                        novorProcessBuilder = new NovorProcessBuilder(
+                                novorLocation,
+                                spectrumFile,
+                                novorOutputFile,
+                                searchParameters,
+                                useCommandLine,
+                                waitingHandler,
+                                exceptionHandler
+                        );
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.novor.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         novorProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
+
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
+
                             if (novorOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.novor.getIndex(), novorOutputFile);
                                 idFileToSpectrumFileMap.put(novorOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.novor.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.novor.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
+
                         }
                     }
 
                     if (enableDirecTag && !waitingHandler.isRunCanceled()) {
+
                         File direcTagOutputFile = new File(outputTempFolder, getDirecTagFileName(spectrumFileName));
-                        direcTagProcessBuilder = new DirecTagProcessBuilder(direcTagLocation,
-                                spectrumFile, processingParameters.getnThreads(), outputTempFolder, searchParameters, waitingHandler, exceptionHandler);
-                        waitingHandler.appendReport("Processing " + spectrumFileName + " with " + Advocate.direcTag.getName() + ".", true, true);
+
+                        direcTagProcessBuilder = new DirecTagProcessBuilder(
+                                direcTagLocation,
+                                spectrumFile, processingParameters.getnThreads(),
+                                outputTempFolder,
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler
+                        );
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.direcTag.getName() + ".",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         direcTagProcessBuilder.startProcess();
 
                         if (!waitingHandler.isRunCanceled()) {
+
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
                             if (runIdentificationFiles == null) {
+
                                 runIdentificationFiles = new HashMap<>();
                                 identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
                             }
                             if (direcTagOutputFile.exists()) {
+
                                 runIdentificationFiles.put(Advocate.direcTag.getIndex(), direcTagOutputFile);
                                 idFileToSpectrumFileMap.put(direcTagOutputFile.getName(), spectrumFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.direcTag.getName() + " result file for " + spectrumFileName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.direcTag.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
                             }
+
                             waitingHandler.increasePrimaryProgressCounter();
+
                         }
                     }
                 }
@@ -2323,15 +3024,22 @@ public class SearchHandler {
                     TideParameters tideParameters = ((TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex()));
 
                     if (tideParameters.getRemoveTempFolders()) {
+
                         String tideResultsFolderName = tideParameters.getOutputFolderName();
                         File tideResultsFolder = new File(tideLocation, tideResultsFolderName);
+
                         if (tideResultsFolder.exists()) {
+
                             FileUtils.deleteDirectory(tideResultsFolder);
+
                         }
 
                         File tideIndexFolder = new File(tideLocation, "fasta-index");
+
                         if (tideIndexFolder.exists()) {
+
                             FileUtils.deleteDirectory(tideIndexFolder);
+
                         }
                     }
                 }
@@ -2342,15 +3050,34 @@ public class SearchHandler {
                 outputTimeStamp = getOutputDate();
 
                 if (!waitingHandler.isRunCanceled()) {
+
                     // organize the output files
                     if (utilitiesUserParameters.getSearchGuiOutputParameters() != OutputParameters.no_zip) {
-                        waitingHandler.appendReport("Zipping output files.", true, true);
+
+                        waitingHandler.appendReport(
+                                "Zipping output files.",
+                                true,
+                                true
+                        );
+
                     } else {
-                        waitingHandler.appendReport("Preparing output files.", true, true);
+
+                        waitingHandler.appendReport(
+                                "Preparing output files.",
+                                true,
+                                true
+                        );
                     }
+
                     waitingHandler.appendReportEndLine();
 
-                    organizeOutput(outputFolder, outputTempFolder, identificationFiles, identificationParametersFile, utilitiesUserParameters.isIncludeDateInOutputName());
+                    organizeOutput(
+                            outputFolder,
+                            outputTempFolder,
+                            identificationFiles,
+                            identificationParametersFile,
+                            utilitiesUserParameters.isIncludeDateInOutputName()
+                    );
 
                     waitingHandler.increasePrimaryProgressCounter();
 
@@ -2362,59 +3089,146 @@ public class SearchHandler {
                     identificationFilesList.addAll(mascotFiles);
 
                     if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.grouped) {
+
                         File outputFile = getDefaultOutputFile(outputFolder, utilitiesUserParameters.isIncludeDateInOutputName());
+
                         if (outputFile.exists()) {
+
                             identificationFilesList.add(outputFile);
+
                         } else {
-                            waitingHandler.appendReport("Could not find SearchGUI results.", true, true);
+
+                            waitingHandler.appendReport(
+                                    "Could not find SearchGUI results.",
+                                    true,
+                                    true
+                            );
                         }
                     } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.algorithm) {
+
                         if (enableMsAmanda) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.msAmanda.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.msAmanda.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.msAmanda.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableMsgf) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.msgf.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.msgf.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.msgf.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableMyriMatch) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.myriMatch.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.myriMatch.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.myriMatch.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableOmssa) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.omssa.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.omssa.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.omssa.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableXtandem) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.xtandem.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.xtandem.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.xtandem.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableComet) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.comet.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.comet.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.comet.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.comet.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableTide) {
@@ -2426,68 +3240,152 @@ public class SearchHandler {
                             }
                         }
                         if (enableAndromeda) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.andromeda.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.andromeda.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.andromeda.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.andromeda.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableNovor) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.novor.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.novor.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.novor.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.novor.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                         if (enableDirecTag) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.direcTag.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.direcTag.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("Could not find " + Advocate.direcTag.getName() + " results.", true, true);
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.direcTag.getName() + " results.",
+                                        true,
+                                        true
+                                );
                             }
                         }
                     } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.run) {
+
                         for (String run : identificationFiles.keySet()) {
-                            String runName = Util.removeExtension(run);
+
+                            String runName = IoUtil.removeExtension(run);
                             File outputFile = getDefaultOutputFile(outputFolder, runName, utilitiesUserParameters.isIncludeDateInOutputName());
+
                             if (outputFile.exists()) {
+
                                 identificationFilesList.add(outputFile);
+
                             } else {
-                                waitingHandler.appendReport("SearchGUI results not found for run " + runName + ".", true, true);
+
+                                waitingHandler.appendReport(
+                                        "SearchGUI results not found for run " + runName + ".",
+                                        true,
+                                        true
+                                );
                             }
                         }
                     } else {
+
                         for (HashMap<Integer, File> fileMap : identificationFiles.values()) {
+
                             for (File identificationFile : fileMap.values()) {
+
                                 identificationFilesList.add(identificationFile);
+
                             }
                         }
                     }
 
                     if (utilitiesUserParameters.getPeptideShakerPath() == null || !new File(utilitiesUserParameters.getPeptideShakerPath()).exists()) {
-                        waitingHandler.appendReport("PeptideShaker not found! Please check the PeptideShaker path.", true, true);
+
+                        waitingHandler.appendReport(
+                                "PeptideShaker not found! Please check the PeptideShaker path.",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                         waitingHandler.setRunCanceled();
+
                     } else if (!identificationFiles.isEmpty()) {
+
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
-                                waitingHandler, exceptionHandler, experimentLabel, mgfFiles, fastaFile, identificationFilesList,
-                                identificationParametersFile, peptideShakerFile, true, processingParameters, utilitiesUserParameters.outputData());
-                        waitingHandler.appendReport("Processing identification files with PeptideShaker.", true, true);
+                                waitingHandler,
+                                exceptionHandler,
+                                experimentLabel,
+                                msFiles,
+                                fastaFile,
+                                identificationFilesList,
+                                identificationParametersFile,
+                                peptideShakerFile,
+                                true,
+                                processingParameters,
+                                utilitiesUserParameters.outputData()
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing identification files with PeptideShaker.",
+                                true,
+                                true
+                        );
 
                         peptideShakerProcessBuilder.startProcess();
+
                     } else {
+
                         enablePeptideShaker = false;
                         waitingHandler.appendReportEndLine();
-                        waitingHandler.appendReport("No identification files to process with PeptideShaker!", true, true);
+
+                        waitingHandler.appendReport(
+                                "No identification files to process with PeptideShaker.",
+                                true,
+                                true
+                        );
                         waitingHandler.appendReportEndLine();
                     }
                 }
 
                 if (!outputFolder.getAbsolutePath().equals(outputTempFolder.getAbsolutePath())) {
+
                     boolean deleteTempFolder = true;
+
                     if (!identificationFiles.isEmpty() && waitingHandler.isRunCanceled() && waitingHandler instanceof WaitingDialog) {
 
                         WaitingDialog guiWaitingDialog = (WaitingDialog) waitingHandler;
@@ -2495,40 +3393,68 @@ public class SearchHandler {
                         // change the icon to the normal icon
                         ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
-                        int option = JOptionPane.showConfirmDialog(guiWaitingDialog, "Keep the partial search results?", "Keep Partial Results?", JOptionPane.YES_NO_OPTION);
+                        int option = JOptionPane.showConfirmDialog(
+                                guiWaitingDialog,
+                                "Keep the partial search results?",
+                                "Keep Partial Results?",
+                                JOptionPane.YES_NO_OPTION
+                        );
+
                         deleteTempFolder = (option == JOptionPane.NO_OPTION);
 
                         // change the icon to the waiting icon
                         ((JFrame) guiWaitingDialog.getParent()).setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
                     }
                     if (deleteTempFolder) {
-                        Util.deleteDir(outputTempFolder);
+
+                        IoUtil.deleteDir(outputTempFolder);
+
                     }
                 }
 
                 if (enableAndromeda && AndromedaProcessBuilder.getTempFolderPath() != null) {
+
                     File andromedaTempFolder = new File(AndromedaProcessBuilder.getTempFolderPath());
+
                     if (andromedaTempFolder.exists()) {
-                        Util.emptyDir(andromedaTempFolder);
+
+                        IoUtil.emptyDir(andromedaTempFolder);
+
                     }
                 }
 
                 finished = true;
+
                 if (!waitingHandler.isRunCanceled()) {
+
                     searchCompleted();
+
                 } else {
+
                     searchCrashed();
+
                 }
 
                 notifySearchFinished();
 
                 return 0;
+
             } catch (Exception e) {
-                waitingHandler.appendReport("Error: " + e.getMessage(), true, true);
-                waitingHandler.appendReport("An error occurred while running SearchGUI. Please contact the developers.", true, true);
+
+                waitingHandler.appendReport(
+                        "Error: " + e.getMessage(),
+                        true,
+                        true
+                );
+                waitingHandler.appendReport(
+                        "An error occurred while running SearchGUI. Please contact the developers.",
+                        true,
+                        true
+                );
                 e.printStackTrace();
                 searchCrashed();
                 return 1;
+
             }
         }
 
@@ -2550,7 +3476,7 @@ public class SearchHandler {
     public void saveInputFile(File folder) {
 
         File outputFile = getInputFile(folder);
-        ArrayList<File> tempMgfFiles = new ArrayList<>(this.mgfFiles);
+        ArrayList<File> tempMgfFiles = new ArrayList<>(this.msFiles);
 
         // @TODO: don't see why the below code is needed..?
 //        ArrayList<String> names = new ArrayList<>();
@@ -2881,8 +3807,8 @@ public class SearchHandler {
 
                     if (enableMsAmanda) {
                         // add MS Amanda settings file
-                        for (File spectrumFile : mgfFiles) {
-                            String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
+                        for (File spectrumFile : msFiles) {
+                            String newName = IoUtil.removeExtension(spectrumFile.getName()) + "_settings.xml";
                             File settingsFile = new File(tempOutputFolder, newName);
                             if (settingsFile.exists()) {
                                 ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
@@ -2955,8 +3881,8 @@ public class SearchHandler {
                         }
                         if (algorithm == Advocate.msAmanda.getIndex()) {
                             // add MS Amanda settings file
-                            for (File spectrumFile : mgfFiles) {
-                                String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
+                            for (File spectrumFile : msFiles) {
+                                String newName = IoUtil.removeExtension(spectrumFile.getName()) + "_settings.xml";
                                 File settingsFile = new File(tempOutputFolder, newName);
                                 if (settingsFile.exists()) {
                                     ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
@@ -2987,10 +3913,17 @@ public class SearchHandler {
 
                 for (String mgfFileName : identificationFiles.keySet()) {
 
-                    String mgfFileNameWithoutExtension = Util.removeExtension(mgfFileName);
+                    String mgfFileNameWithoutExtension = IoUtil.removeExtension(mgfFileName);
                     File mgfFile = idFileToSpectrumFileMap.get(mgfFileName);
-                    totalUncompressedSize += getTotalUncompressedSizeRun(inputFile, tempOutputFolder, mgfFileNameWithoutExtension, mgfFileName, parametersFile, identificationFiles, mgfFile);
-
+                    totalUncompressedSize += getTotalUncompressedSizeRun(
+                            inputFile,
+                            tempOutputFolder,
+                            mgfFileNameWithoutExtension,
+                            mgfFileName,
+                            parametersFile,
+                            identificationFiles,
+                            mgfFile
+                    );
                 }
 
                 waitingHandler.setSecondaryProgressCounterIndeterminate(false);
@@ -2999,7 +3932,7 @@ public class SearchHandler {
 
                 for (String mgfFileName : identificationFiles.keySet()) {
 
-                    String mgfFileNameWithoutExtension = Util.removeExtension(mgfFileName);
+                    String mgfFileNameWithoutExtension = IoUtil.removeExtension(mgfFileName);
                     zipFile = getDefaultOutputFile(outputFolder, mgfFileNameWithoutExtension, includeDate);
 
                     if (zipFile.exists()) {
@@ -3053,16 +3986,16 @@ public class SearchHandler {
                     File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
 
-                    IoUtils.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
+                    IoUtil.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
 
                     for (File spectrumFile : getMgfFiles()) {
-                        IoUtils.copyFile(spectrumFile, new File(dataFolder, spectrumFile.getName()));
+                        IoUtil.copyFile(spectrumFile, new File(dataFolder, spectrumFile.getName()));
                     }
                 }
         }
 
         if (!outputFolder.getAbsolutePath().equals(tempOutputFolder.getAbsolutePath())) {
-            Util.deleteDir(tempOutputFolder);
+            IoUtil.deleteDir(tempOutputFolder);
         }
     }
 
@@ -3086,8 +4019,8 @@ public class SearchHandler {
      * @throws IOException
      */
     private void addDataToZip(
-            ZipOutputStream out, 
-            long totalUncompressedSize, 
+            ZipOutputStream out,
+            long totalUncompressedSize,
             String mgfFileName
     ) throws IOException {
 
@@ -3120,8 +4053,8 @@ public class SearchHandler {
      * @return the total uncompressed size
      */
     private long getTotalUncompressedSize(
-            File outputFolder, 
-            File parametersFile, 
+            File outputFolder,
+            File parametersFile,
             HashMap<String, HashMap<Integer, File>> identificationFiles
     ) {
 
@@ -3140,8 +4073,8 @@ public class SearchHandler {
 
         if (enableMsAmanda) {
             // ms amanda settings file
-            for (File spectrumFile : mgfFiles) {
-                String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
+            for (File spectrumFile : msFiles) {
+                String newName = IoUtil.removeExtension(spectrumFile.getName()) + "_settings.xml";
                 File settingsFile = new File(outputFolder, newName);
                 if (settingsFile.exists()) {
                     totalUncompressedSize += settingsFile.length();
@@ -3179,10 +4112,10 @@ public class SearchHandler {
      * @return the total uncompressed size per algorithm
      */
     private long getTotalUncompressedSizeAlgorithm(
-            File inputFile, 
-            File outputFolder, 
-            Integer algorithm, 
-            File parametersFile, 
+            File inputFile,
+            File outputFolder,
+            Integer algorithm,
+            File parametersFile,
             ArrayList<File> identificationFiles
     ) {
 
@@ -3200,8 +4133,8 @@ public class SearchHandler {
         }
 
         if (algorithm == Advocate.msAmanda.getIndex()) {
-            for (File spectrumFile : mgfFiles) {
-                String newName = Util.removeExtension(spectrumFile.getName()) + "_settings.xml";
+            for (File spectrumFile : msFiles) {
+                String newName = IoUtil.removeExtension(spectrumFile.getName()) + "_settings.xml";
                 File settingsFile = new File(outputFolder, newName);
                 if (settingsFile.exists()) {
                     totalUncompressedSize += settingsFile.length();
@@ -3238,12 +4171,12 @@ public class SearchHandler {
      * @return the total uncompressed size of the files for the given run
      */
     private long getTotalUncompressedSizeRun(
-            File inputFile, 
-            File outputFolder, 
-            String runName, 
+            File inputFile,
+            File outputFolder,
+            String runName,
             String run,
-            File parametersFile, 
-            HashMap<String, HashMap<Integer, File>> identificationFiles, 
+            File parametersFile,
+            HashMap<String, HashMap<Integer, File>> identificationFiles,
             File mgfFile
     ) {
 
@@ -3427,11 +4360,11 @@ public class SearchHandler {
     /**
      * Sets the default output file name.
      *
-     * @param defaultOutputFileName the defaultOutputFileName to set
+     * @param newOutputFileName the defaultOutputFileName to set
      */
     public static void setDefaultOutputFileName(
-            String defaultOutputFileName
+            String newOutputFileName
     ) {
-        defaultOutputFileName = defaultOutputFileName;
+        defaultOutputFileName = newOutputFileName;
     }
 }

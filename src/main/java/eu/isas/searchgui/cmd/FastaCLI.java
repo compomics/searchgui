@@ -3,11 +3,11 @@ package eu.isas.searchgui.cmd;
 import com.compomics.cli.fasta.FastaParametersCLIParams;
 import com.compomics.cli.fasta.FastaParametersInputBean;
 import com.compomics.software.CompomicsWrapper;
-import com.compomics.util.Util;
 import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.experiment.io.biology.protein.FastaSummary;
 import com.compomics.util.experiment.io.biology.protein.converters.DecoyConverter;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
@@ -145,7 +145,10 @@ public class FastaCLI {
      * @param fastaSummary the summary information on the FASTA file
      * @param fastaParameters the FASTA parsing parameters
      */
-    public void writeDbProperties(FastaSummary fastaSummary, FastaParameters fastaParameters) {
+    public void writeDbProperties(
+            FastaSummary fastaSummary, 
+            FastaParameters fastaParameters
+    ) {
 
         System.out.println("Name: " + fastaSummary.getName());
         System.out.println("Description: " + fastaSummary.getDescription());
@@ -194,13 +197,16 @@ public class FastaCLI {
      * @throws IOException exception thrown whenever an error happened while 
      * reading or writing a FASTA file
      */
-    public File generateTargetDecoyDatabase(FastaParameters fastaParameters, WaitingHandler waitingHandler) throws IOException {
+    public File generateTargetDecoyDatabase(
+            FastaParameters fastaParameters, 
+            WaitingHandler waitingHandler
+    ) throws IOException {
 
         // Get file in
         File fileIn = fastaCLIInputBean.getInputFile();
 
         // Get file out
-        File fileOut = new File(fileIn.getParent(), Util.removeExtension(fileIn.getName()) + fastaParameters.getTargetDecoyFileNameSuffix() + ".fasta");
+        File fileOut = new File(fileIn.getParent(), IoUtil.removeExtension(fileIn.getName()) + fastaParameters.getTargetDecoyFileNameSuffix() + ".fasta");
 
         // Write file
         waitingHandler.setWaitingText("Appending Decoy Sequences. Please Wait...");

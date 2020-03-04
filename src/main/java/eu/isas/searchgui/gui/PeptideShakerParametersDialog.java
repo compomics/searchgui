@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.stream.XMLStreamException;
 import static com.compomics.software.autoupdater.DownloadLatestZipFromRepo.downloadLatestZipFromRepo;
+import com.compomics.util.gui.file_handling.FileChooserUtil;
 import com.compomics.util.parameters.UtilitiesUserParameters;
 
 /**
@@ -519,8 +520,15 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
             searchGUI.getLastSelectedFolder().setLastSelectedFolder(new File(outputFileTextField.getText()).getParentFile().getAbsolutePath());
         }
 
-        File selectedFile = Util.getUserSelectedFile(this, ".cpsx", "Compomics Peptide Shaker format (*.cpsx)", "Select PeptideShaker Output",
-                searchGUI.getLastSelectedFolder().getLastSelectedFolder(), "PeptideShaker_output.cpsx", false);
+        File selectedFile = FileChooserUtil.getUserSelectedFile(
+                this, 
+                ".cpsx", 
+                "Compomics Peptide Shaker format (*.cpsx)", 
+                "Select PeptideShaker Output",
+                searchGUI.getLastSelectedFolder().getLastSelectedFolder(), 
+                "PeptideShaker_output.cpsx", 
+                false
+        );
 
         if (selectedFile != null) {
             if (!selectedFile.getName().endsWith(".cpsx")) {
@@ -857,7 +865,14 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
 
         if (installPath == null) {
             installPath = "user.home";
-            downloadFolder = Util.getUserSelectedFolder(this, "Select PeptideShaker Folder", installPath, "PeptideShaker Folder", "Select", false);
+            downloadFolder = FileChooserUtil.getUserSelectedFolder(
+                    this, 
+                    "Select PeptideShaker Folder", 
+                    installPath, 
+                    "PeptideShaker Folder", 
+                    "Select", 
+                    false
+            );
         } else {
             firstTimeInstall = false;
             downloadFolder = new File(installPath);

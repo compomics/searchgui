@@ -4,9 +4,9 @@ import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
+import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
-import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfReader;
-import com.compomics.util.experiment.mass_spectrometry.SpectrumFactory;
+import com.compomics.util.experiment.io.mass_spectrometry.mgf.IndexedMgfReader;
 import com.compomics.util.gui.file_handling.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
@@ -44,9 +44,9 @@ public class SearchCLI implements Callable {
      */
     private EnzymeFactory enzymeFactory;
     /**
-     * The spectrum factory.
+     * The mass spectrometry file handler.
      */
-    private SpectrumFactory spectrumFactory = SpectrumFactory.getInstance();
+    private final MsFileHandler msFileHandler = new MsFileHandler();
     /**
      * The log folder given on the command line. Null if not set.
      */
@@ -72,11 +72,19 @@ public class SearchCLI implements Callable {
             waitingHandler = new WaitingHandlerCLIImpl();
 
             try {
+            
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
                 speciesFactory.initiate(getJarFilePath());
+            
             } catch (Exception e) {
-                waitingHandler.appendReport("An error occurred while loading the species.", true, true);
+                
+                waitingHandler.appendReport(
+                        "An error occurred while loading the species.", 
+                        true, 
+                        true
+                );
                 e.printStackTrace();
+            
             }
 
             // parse the rest of the options   
@@ -86,6 +94,7 @@ public class SearchCLI implements Callable {
             CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
             if (!SearchCLIInputBean.isValidStartup(line)) {
+                
                 PrintWriter lPrintWriter = new PrintWriter(System.out);
                 lPrintWriter.print(System.getProperty("line.separator") + "======================" + System.getProperty("line.separator"));
                 lPrintWriter.print("SearchCLI" + System.getProperty("line.separator"));
@@ -97,12 +106,20 @@ public class SearchCLI implements Callable {
 
                 System.exit(0);
             } else {
+                
                 searchCLIInputBean = new SearchCLIInputBean(line);
                 call();
+            
             }
         } catch (Exception e) {
-            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
+            
+            waitingHandler.appendReport(
+                    "An error occurred while running the command line. " + getLogFileMessage(), 
+                    true, 
+                    true
+            );
             e.printStackTrace();
+        
         }
     }
 
@@ -115,98 +132,27 @@ public class SearchCLI implements Callable {
         enzymeFactory = EnzymeFactory.getInstance();
 
         try {
-            // @TODO: not sure if this is the best place to perform the mgf validation and splitting??
+            
+// @TODO: not sure if this is the best place to perform the mgf validation and splitting??
             WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
 
             // @TODO: merge with code from the gui (and make it gui independent!)
             // validate that all the spectra has unique spectrum titles
-            for (File tempMgfFile : searchCLIInputBean.getSpectrumFiles()) {
-                waitingHandlerCLIImpl.appendReport("Validating MGF file: " + tempMgfFile.getAbsolutePath(), true, true);
+            for (File spectrumFile : searchCLIInputBean.getSpectrumFiles()) {
+                
+                waitingHandlerCLIImpl.appendReport(
+                        "Validating MGF file: " + spectrumFile.getAbsolutePath(), 
+                        true, 
+                        true
+                );
 
                 // index the spectrum file
-                spectrumFactory.addSpectra(tempMgfFile, waitingHandlerCLIImpl);
-                File indexFile = new File(tempMgfFile.getParent(), tempMgfFile.getName() + ".cui");
-
-                // check for missing spectrum titles
-                if (spectrumFactory.getIndex(indexFile).getSpectrumTitles().size() < spectrumFactory.getIndex(indexFile).getNSpectra()) {
-                    if (searchCLIInputBean.getMissingSpectrumTitleHandling() == 0) {
-                        if (spectrumFactory.getIndex(indexFile).getSpectrumTitles().isEmpty()) {
-                            waitingHandlerCLIImpl.appendReport("Warning: No spectrum titles found in file: " + tempMgfFile.getAbsolutePath() + "! "
-                                    + "Titles are mandatory. See the missing_titles option. File will be ignored.", true, true);
-                        } else {
-                            waitingHandlerCLIImpl.appendReport("Warning: Spectrum titles missing in file: " + tempMgfFile.getAbsolutePath() + "! "
-                                    + "Titles are mandatory. See the missing_titles option. File will be ignored.", true, true);
-                        }
-                    } else {
-                        // add missing spectrum titles
-                        waitingHandlerCLIImpl.appendReport("Adding missing spectrum titles in file: " + tempMgfFile.getAbsolutePath(), true, true);
-                        spectrumFactory.closeFiles();
-                        MgfReader.addMissingSpectrumTitles(tempMgfFile, waitingHandlerCLIImpl);
-                        spectrumFactory.addSpectra(tempMgfFile, waitingHandlerCLIImpl);
-                    }
-                }
-
-                // check for lack of peak picking
-                if (!spectrumFactory.getIndex(indexFile).isPeakPicked()) {
-                    waitingHandlerCLIImpl.appendReport("Warning: The file \'" + tempMgfFile.getName() + "\' contains zero intensity peaks. "
-                            + "It is highly recommended to apply peak picking before starting a search!", true, true);
-                }
-
-                // check for ms2 spectra
-                if (spectrumFactory.getIndex(indexFile).getMaxPeakCount() == 0) {
-                    waitingHandlerCLIImpl.appendReport("Warning: No MS2 spectra found in file: " + tempMgfFile.getName() + "! File will be ignored.", true, true);
-                }
-
-                // check for duplicate headers
-                HashMap<String, Integer> duplicatedSpectrumTitles = spectrumFactory.getIndex(indexFile).getDuplicatedSpectrumTitles();
-
-                if (duplicatedSpectrumTitles != null && duplicatedSpectrumTitles.size() > 0) {
-                    waitingHandlerCLIImpl.appendReport("Warning: The spectrum file contains non-unique spectrum titles!", true, true);
-
-                    // rename or delete spectra with duplicated spectrum titles
-                    if (searchCLIInputBean.getDuplicateSpectrumTitleHandling() == 1) {
-                        waitingHandlerCLIImpl.appendReport("Renaming duplicated spectrum titles in file: " + tempMgfFile.getAbsolutePath(), true, true);
-                        spectrumFactory.closeFiles();
-                        MgfReader.renameDuplicateSpectrumTitles(tempMgfFile, null);
-                        spectrumFactory.addSpectra(tempMgfFile, waitingHandlerCLIImpl);
-                    } else if (searchCLIInputBean.getDuplicateSpectrumTitleHandling() == 2) {
-                        waitingHandlerCLIImpl.appendReport("Removing spectra with duplicated titles in file: " + tempMgfFile.getAbsolutePath(), true, true);
-                        spectrumFactory.closeFiles();
-                        MgfReader.removeDuplicateSpectrumTitles(tempMgfFile, null);
-                        spectrumFactory.addSpectra(tempMgfFile, waitingHandlerCLIImpl);
-                    }
-                }
+                msFileHandler.register(spectrumFile);
+                
             }
 
             // get the spectrum files
             ArrayList<File> spectrumFiles = new ArrayList<>();
-
-            // see if we need to split any of the mgf files
-            ArrayList<File> fatMgfFiles = new ArrayList<>();
-            for (File tempMgfFile : searchCLIInputBean.getSpectrumFiles()) {
-                if (searchCLIInputBean.checkMgfSize() && tempMgfFile.length() > (((long) searchCLIInputBean.getMgfMaxSize()) * 1048576)) {
-                    fatMgfFiles.add(tempMgfFile);
-                } else {
-                    spectrumFiles.add(tempMgfFile);
-                }
-            }
-
-            // did we find any mgf files that are too big?
-            if (!fatMgfFiles.isEmpty()) {
-                waitingHandlerCLIImpl.appendReportEndLine();
-                waitingHandlerCLIImpl.appendReport("MGF files requires splitting. (See options: mgf_splitting and mgf_spectrum_count.)", true, true);
-                ArrayList<File> splitMgfs = splitFiles(fatMgfFiles, waitingHandlerCLIImpl);
-                if (splitMgfs != null) {
-                    for (File tempMgfFile : splitMgfs) {
-                        spectrumFiles.add(tempMgfFile);
-                    }
-                }
-
-                waitingHandlerCLIImpl.appendReport("Current MGF input (listed in \"output_folder\"\\searchGUI_input.txt): ", true, true);
-                for (File tempMgfFile : spectrumFiles) {
-                    waitingHandlerCLIImpl.appendReport(tempMgfFile.getAbsolutePath(), false, true);
-                }
-            }
 
             // Processing
             ProcessingParameters processingParameters = new ProcessingParameters();
@@ -216,15 +162,24 @@ public class SearchCLI implements Callable {
             IdentificationParameters identificationParameters = searchCLIInputBean.getIdentificationParameters();
             identificationParameters.getFastaParameters().setTargetDecoyFileNameSuffix(searchCLIInputBean.getTargetDecoyFileNameTag());
             File parametersFile = searchCLIInputBean.getIdentificationParametersFile();
+
             if (parametersFile == null) {
+
                 String name = identificationParameters.getName();
+
                 if (name == null) {
+
                     name = "SearchCLI.par";
+
                 } else {
+
                     name += ".par";
+
                 }
+                
                 parametersFile = new File(searchCLIInputBean.getOutputFolder(), name);
                 IdentificationParameters.saveIdentificationParameters(identificationParameters, parametersFile);
+            
             }
 
             // Load the fasta file in the factory
@@ -244,100 +199,81 @@ public class SearchCLI implements Callable {
             UtilitiesUserParameters.saveUserParameters(userParameters);
 
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
-            SearchHandler searchHandler = new SearchHandler(identificationParameters,
-                    searchCLIInputBean.getOutputFolder(), searchCLIInputBean.getDefaultOutputFileName(),
-                    spectrumFiles, searchCLIInputBean.getFastaFile(), new ArrayList<File>(), parametersFile,
-                    searchCLIInputBean.isOmssaEnabled(), searchCLIInputBean.isXTandemEnabled(),
-                    searchCLIInputBean.isMsgfEnabled(), searchCLIInputBean.isMsAmandaEnabled(),
-                    searchCLIInputBean.isMyriMatchEnabled(), searchCLIInputBean.isCometEnabled(),
-                    searchCLIInputBean.isTideEnabled(), searchCLIInputBean.isAndromedaEnabled(),
-                    searchCLIInputBean.isNovorEnabled(), searchCLIInputBean.isDirecTagEnabled(),
-                    searchCLIInputBean.getOmssaLocation(), searchCLIInputBean.getXtandemLocation(),
-                    searchCLIInputBean.getMsgfLocation(), searchCLIInputBean.getMsAmandaLocation(),
-                    searchCLIInputBean.getMyriMatchLocation(), searchCLIInputBean.getCometLocation(),
-                    searchCLIInputBean.getTideLocation(), searchCLIInputBean.getAndromedaLocation(),
-                    searchCLIInputBean.getNovorLocation(), searchCLIInputBean.getDirecTagLocation(),
+            SearchHandler searchHandler = new SearchHandler(
+                    identificationParameters,
+                    searchCLIInputBean.getOutputFolder(), 
+                    searchCLIInputBean.getDefaultOutputFileName(),
+                    spectrumFiles, 
+                    searchCLIInputBean.getFastaFile(), 
+                    new ArrayList<File>(), 
+                    parametersFile,
+                    searchCLIInputBean.isOmssaEnabled(), 
+                    searchCLIInputBean.isXTandemEnabled(),
+                    searchCLIInputBean.isMsgfEnabled(), 
+                    searchCLIInputBean.isMsAmandaEnabled(),
+                    searchCLIInputBean.isMyriMatchEnabled(), 
+                    searchCLIInputBean.isCometEnabled(),
+                    searchCLIInputBean.isTideEnabled(), 
+                    searchCLIInputBean.isAndromedaEnabled(),
+                    searchCLIInputBean.isNovorEnabled(), 
+                    searchCLIInputBean.isDirecTagEnabled(),
+                    searchCLIInputBean.getOmssaLocation(), 
+                    searchCLIInputBean.getXtandemLocation(),
+                    searchCLIInputBean.getMsgfLocation(), 
+                    searchCLIInputBean.getMsAmandaLocation(),
+                    searchCLIInputBean.getMyriMatchLocation(), 
+                    searchCLIInputBean.getCometLocation(),
+                    searchCLIInputBean.getTideLocation(), 
+                    searchCLIInputBean.getAndromedaLocation(),
+                    searchCLIInputBean.getNovorLocation(), 
+                    searchCLIInputBean.getDirecTagLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
-                    processingParameters);
+                    processingParameters
+            );
 
             searchHandler.setLogFolder(logFolder);
 
             // incrementing the counter for a new SearchGUI start
             if (userParameters.isAutoUpdate()) {
-                Util.sendGAUpdate("UA-36198780-2", "startrun-cl", "searchgui-" + (new Properties().getVersion()));
+                
+                Util.sendGAUpdate(
+                        "UA-36198780-2", 
+                        "startrun-cl", 
+                        "searchgui-" + (new Properties().getVersion())
+                );
+
             }
 
             searchHandler.startSearch(waitingHandlerCLIImpl);
+            
         } catch (Exception e) {
-            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
+            
+            waitingHandler.appendReport(
+                    "An error occurred while running the command line. " + getLogFileMessage(), 
+                    true, 
+                    true
+            );
             e.printStackTrace();
+        
         }
 
         try {
+            
             TempFilesManager.deleteTempFolders();
+        
         } catch (Exception e) {
-            waitingHandler.appendReport("An error occurred while deleting the temp folder. " + getLogFileMessage(), true, true);
+        
+            waitingHandler.appendReport(
+                    "An error occurred while deleting the temp folder. " + getLogFileMessage(), 
+                    true, 
+                    true
+            );
             e.printStackTrace();
+        
         }
 
         return null;
-    }
-
-    /**
-     * Splits the given MGF files.
-     *
-     * @param mgfFiles the files to split
-     * @param waitingHandler the waiting handler
-     * @return the split mgf files
-     */
-    private ArrayList<File> splitFiles(ArrayList<File> mgfFiles, WaitingHandler waitingHandler) {
-
-        ArrayList<File> splitMgfFiles = new ArrayList<>();
-        MgfReader mgfReader = new MgfReader();
-
-        for (File originalFile : mgfFiles) {
-
-            ArrayList<MgfIndex> indexes;
-            waitingHandler.appendReport("Splitting " + originalFile.getName() + ". Please Wait...", true, true);
-
-            try {
-                indexes = mgfReader.splitFile(originalFile, searchCLIInputBean.getMgfNSpectra(), waitingHandler);
-            } catch (FileNotFoundException e) {
-                waitingHandler.appendReport("File " + originalFile.getName() + " not found.", true, true);
-                e.printStackTrace();
-                return null;
-            } catch (IOException e) {
-                waitingHandler.appendReport("An error occurred while reading/writing the mgf file.", true, true);
-                e.printStackTrace();
-                return null;
-            } catch (OutOfMemoryError error) {
-                waitingHandler.appendReport("SearchGUI used up all the available memory and had to be stopped.\n"
-                        + "Memory boundaries are set in the Edit menu (Edit > Java Options).", true, true);
-                error.printStackTrace();
-                return null;
-            }
-
-            try {
-                if (indexes != null && !indexes.isEmpty()) {
-                    waitingHandler.appendReport("Writing Indexes. Please Wait...", true, true);
-                    for (MgfIndex currentIndex : indexes) {
-                        spectrumFactory.writeIndex(currentIndex, originalFile.getParentFile());
-                    }
-                }
-            } catch (IOException e) {
-                waitingHandler.appendReport("An error occurred while writing an mgf index.", true, true);
-                e.printStackTrace();
-                return null;
-            }
-
-            for (MgfIndex currentIndex : indexes) {
-                File newFile = new File(originalFile.getParent(), currentIndex.getFileName());
-                splitMgfFiles.add(newFile);
-            }
-        }
-
-        waitingHandler.appendReport("MGF file(s) split and selected.", true, true);
-        return splitMgfFiles;
+        
     }
 
     /**
