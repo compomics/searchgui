@@ -88,7 +88,16 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown whenever an error occurred while reading or
      * writing a file.
      */
-    public AndromedaProcessBuilder(File andromedaFolder, SearchParameters searchParameters, File searchParametersFile, File spectrumFile, File fastaFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
+    public AndromedaProcessBuilder(
+            File andromedaFolder, 
+            SearchParameters searchParameters, 
+            File searchParametersFile, 
+            File spectrumFile, 
+            File fastaFile, 
+            WaitingHandler waitingHandler, 
+            ExceptionHandler exceptionHandler, 
+            int nThreads
+    ) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;

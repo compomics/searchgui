@@ -1353,9 +1353,9 @@
                               <Component id="settingsComboBox" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="spectraFilesLabel" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
+                              <Component id="spectrumFilesLabel" linkSize="5" min="-2" pref="100" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="spectraFilesTxt" max="32767" attributes="0"/>
+                              <Component id="spectrumFilesTxt" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
@@ -1386,8 +1386,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="spectraFilesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="spectraFilesTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="spectrumFilesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="spectrumFilesTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="clearSpectraButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="addSpectraButton" linkSize="4" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -1409,7 +1409,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="spectraFilesLabel">
+            <Component class="javax.swing.JLabel" name="spectrumFilesLabel">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="0" green="0" red="ff" type="rgb"/>
@@ -1436,14 +1436,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addSpectraButtonActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JTextField" name="spectraFilesTxt">
+            <Component class="javax.swing.JTextField" name="spectrumFilesTxt">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="horizontalAlignment" type="int" value="0"/>
                 <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="spectraFilesTxtMouseClicked"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="spectrumFilesTxtMouseClicked"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="searchSettingsLbl">

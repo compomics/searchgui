@@ -22,6 +22,8 @@ import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.experiment.io.biology.protein.FastaParameters;
+import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
+import com.compomics.util.experiment.io.mass_spectrometry.MsFileIterator;
 import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
@@ -59,10 +61,12 @@ import com.compomics.util.gui.parameters.identification.algorithm.TideParameters
 import com.compomics.util.gui.parameters.identification.algorithm.XTandemParametersDialog;
 import com.compomics.util.gui.parameters.identification.search.SearchParametersDialog;
 import com.compomics.util.gui.parameters.identification.search.SequenceDbDetailsDialog;
+import com.compomics.util.gui.parameters.proteowizard.MsConvertParametersDialog;
 import com.compomics.util.gui.parameters.tools.ProcessingParametersDialog;
 import com.compomics.util.waiting.WaitingActionListener;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.io.file.LastSelectedFolder;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
@@ -79,6 +83,7 @@ import com.compomics.util.parameters.identification.tool_specific.XtandemParamet
 import com.compomics.util.parameters.tools.ProcessingParameters;
 import com.compomics.util.parameters.searchgui.OutputParameters;
 import com.compomics.util.parameters.UtilitiesUserParameters;
+import com.google.common.collect.Sets;
 import eu.isas.searchgui.SearchGUIWrapper;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
@@ -95,6 +100,8 @@ import java.awt.Dimension;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.jimmc.jshortcut.JShellLink;
 
 /**
@@ -120,7 +127,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * The mgf files.
      */
-    private ArrayList<File> mgfFiles = new ArrayList<>();
+    private ArrayList<File> spectrumFiles = new ArrayList<>();
     /**
      * The FASTA file.
      */
@@ -138,10 +145,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private ModificationFactory modificationFactory;
     /**
-     * The spectrum factory.
-     */
-    private SpectrumFactory spectrumFactory;
-    /**
      * The enzyme factory.
      */
     private EnzymeFactory enzymeFactory;
@@ -149,10 +152,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The SearchCLI instance.
      */
     private SearchHandler searchHandler;
-    /**
-     * The MGF reader.
-     */
-    private MgfReader mgfReader;
     /**
      * A boolean indicating if the user has visited the Parameters tab. If the
      * user does not visit the settings tab before starting the search a warning
@@ -231,6 +230,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The identification parameters factory.
      */
     private IdentificationParametersFactory identificationParametersFactory = IdentificationParametersFactory.getInstance();
+    /**
+     * The ms file handler.
+     */
+    private final MsFileHandler msFileHandler = new MsFileHandler();
 
     /**
      * Empty constructor for instantiation purposes.
@@ -245,16 +248,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param spectrumFiles the spectrum files (can be null)
      * @param fastaFile the FASTA file
      * @param rawFiles the raw files (can be null)
-     * @param aIdentificationParametersFile the identification settings file
-     * (can be null)
+     * @param identificationParametersFile the identification settings file (can
+     * be null)
      * @param outputFolder the output folder (can be null)
      * @param species the species (can be null)
      * @param speciesType the species type (can be null)
      * @param projectName the PeptideShaker project name
      */
-    public SearchGUI(ArrayList<File> spectrumFiles, File fastaFile, ArrayList<File> rawFiles, File aIdentificationParametersFile, File outputFolder, String species, String speciesType, String projectName) {
+    public SearchGUI(
+            ArrayList<File> spectrumFiles,
+            File fastaFile,
+            ArrayList<File> rawFiles,
+            File identificationParametersFile,
+            File outputFolder,
+            String species,
+            String speciesType,
+            String projectName
+    ) {
 
-        this.identificationParametersFile = aIdentificationParametersFile;
+        this.identificationParametersFile = identificationParametersFile;
 
         // set path configuration
         try {
@@ -271,7 +283,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         modificationFactory = ModificationFactory.getInstance();
-        spectrumFactory = SpectrumFactory.getInstance();
         enzymeFactory = EnzymeFactory.getInstance();
 
         initComponents();
@@ -333,7 +344,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // set the search parameters
             updateIdentificationParametersDropDownMenu(true);
 
-            searchHandler = new SearchHandler(identificationParameters, outputFolder, spectrumFiles, fastaFile, rawFiles, identificationParametersFile, processingParameters, exceptionHandler);
+            searchHandler = new SearchHandler(
+                    identificationParameters,
+                    outputFolder,
+                    spectrumFiles,
+                    fastaFile,
+                    rawFiles,
+                    identificationParametersFile,
+                    processingParameters,
+                    msFileHandler,
+                    exceptionHandler
+            );
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
             enableXTandemJCheckBox.setSelected(searchHandler.isXtandemEnabled());
@@ -373,7 +394,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             // set msconvert and ThermoRawFileParaer parameters
             msConvertParameters = new MsConvertParameters();
-            msConvertParameters.setMsFormat(ProteoWizardMsFormat.mgf);
+            msConvertParameters.setMsFormat(ProteoWizardMsFormat.mzML);
             msConvertParameters.addFilter(ProteoWizardFilter.peakPicking.number, "");
             thermoRawFileParserParameters = new ThermoRawFileParserParameters();
 
@@ -383,15 +404,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             UIManager.put("TitledBorder.titleColor", new Color(59, 59, 59));
 
             // update the horizontal padding for the titled borders
-            ((TitledBorder) inputFilesPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Input & Output" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
-            ((TitledBorder) preProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Raw File Conversion" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
-            ((TitledBorder) searchEnginesLocationPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Search Engines & De Novo Algorithms" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
-            ((TitledBorder) postProcessingPanel.getBorder()).setTitle(SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Post Processing" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING);
+            ((TitledBorder) inputFilesPanel.getBorder())
+                    .setTitle(
+                            SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Input & Output" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING
+                    );
+            ((TitledBorder) preProcessingPanel.getBorder())
+                    .setTitle(
+                            SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Raw File Conversion" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING
+                    );
+            ((TitledBorder) searchEnginesLocationPanel.getBorder())
+                    .setTitle(
+                            SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Search Engines & De Novo Algorithms" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING
+                    );
+            ((TitledBorder) postProcessingPanel.getBorder())
+                    .setTitle(
+                            SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING + "Post Processing" + SearchGUI.TITLED_BORDER_HORIZONTAL_PADDING
+                    );
 
             searchEnginesLocationPanel.repaint();
             inputFilesPanel.repaint();
-
-            mgfReader = new MgfReader();
 
             defaultModifications = utilitiesUserParameters.getDefaultModifications();
 
@@ -399,6 +430,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             // disable myrimatch, comet and directag if mac
             if (operatingSystem.contains("mac os")) {
+
                 enableMyriMatchJCheckBox.setSelected(false);
                 enableMyriMatchJCheckBox.setEnabled(false);
                 enableMyriMatchJCheckBox.setToolTipText("Not available for Mac");
@@ -428,10 +460,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 direcTagSettingsButton.setToolTipText("Not available for Mac");
                 direcTagLinkLabel.setEnabled(false);
                 searchHandler.setCometEnabled(false);
+
             }
 
             // disable andromeda on non-windows platforms
             if (!operatingSystem.contains("windows")) {
+
                 enableAndromedaJCheckBox.setSelected(false);
                 enableAndromedaJCheckBox.setEnabled(false);
                 enableAndromedaJCheckBox.setToolTipText("Only available for Windows");
@@ -441,12 +475,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 andromedaSettingsButton.setToolTipText("Only available for Windows");
                 andromedaLinkLabel.setEnabled(false);
                 searchHandler.setCometEnabled(false);
+
             }
 
             validateSearchEngines(true);
 
             // set the spectra files
             if ((spectrumFiles != null && !spectrumFiles.isEmpty()) || (rawFiles != null && !rawFiles.isEmpty())) {
+
                 setSpectrumFiles(spectrumFiles, rawFiles);
 
                 String experimentLabel = "PeptideShakerProject";
@@ -466,6 +502,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 searchHandler.setExperimentLabel(experimentLabel);
                 searchHandler.setPeptideShakerFile(new File(tempFiles.get(0).getParentFile(), experimentLabel + ".cpsx"));
                 peptideShakerCheckBox.setSelected(true);
+
             }
 
             // set the results folder
@@ -515,6 +552,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (identificationParametersFile != null && loadParameters) {
 
             try {
+
                 identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
 
                 // load project specific PTMs
@@ -530,6 +568,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
                 identificationParametersFactory.addIdentificationParameters(identificationParameters);
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null,
                         "Failed to import search parameters from: " + identificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
@@ -646,10 +685,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         novorSettingsButton = new javax.swing.JButton();
         direcTagSettingsButton = new javax.swing.JButton();
         inputFilesPanel = new javax.swing.JPanel();
-        spectraFilesLabel = new javax.swing.JLabel();
+        spectrumFilesLabel = new javax.swing.JLabel();
         clearSpectraButton = new javax.swing.JButton();
         addSpectraButton = new javax.swing.JButton();
-        spectraFilesTxt = new javax.swing.JTextField();
+        spectrumFilesTxt = new javax.swing.JTextField();
         searchSettingsLbl = new javax.swing.JLabel();
         editSettingsButton = new javax.swing.JButton();
         addSettingsButton = new javax.swing.JButton();
@@ -1701,9 +1740,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         inputFilesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Input & Output"));
         inputFilesPanel.setOpaque(false);
 
-        spectraFilesLabel.setForeground(new java.awt.Color(255, 0, 0));
-        spectraFilesLabel.setText("Spectrum File(s)");
-        spectraFilesLabel.setEnabled(false);
+        spectrumFilesLabel.setForeground(new java.awt.Color(255, 0, 0));
+        spectrumFilesLabel.setText("Spectrum File(s)");
+        spectrumFilesLabel.setEnabled(false);
 
         clearSpectraButton.setText("Clear");
         clearSpectraButton.setEnabled(false);
@@ -1721,12 +1760,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        spectraFilesTxt.setEditable(false);
-        spectraFilesTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        spectraFilesTxt.setEnabled(false);
-        spectraFilesTxt.addMouseListener(new java.awt.event.MouseAdapter() {
+        spectrumFilesTxt.setEditable(false);
+        spectrumFilesTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        spectrumFilesTxt.setEnabled(false);
+        spectrumFilesTxt.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                spectraFilesTxtMouseClicked(evt);
+                spectrumFilesTxtMouseClicked(evt);
             }
         });
 
@@ -1808,9 +1847,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(settingsComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, inputFilesPanelLayout.createSequentialGroup()
-                        .addComponent(spectraFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(spectrumFilesLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spectraFilesTxt)))
+                        .addComponent(spectrumFilesTxt)))
                 .addGap(10, 10, 10)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addSettingsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1826,7 +1865,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {addSettingsButton, addSpectraButton, clearSpectraButton, editDatabaseDetailsButton, editResultFolderButton, editSettingsButton});
 
-        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {resultFolderLbl, searchSettingsLbl, spectraFilesLabel});
+        inputFilesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {resultFolderLbl, searchSettingsLbl, spectrumFilesLabel});
 
         inputFilesPanelLayout.setVerticalGroup(
             inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1839,8 +1878,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(editSettingsButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(inputFilesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(spectraFilesLabel)
-                    .addComponent(spectraFilesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spectrumFilesLabel)
+                    .addComponent(spectrumFilesTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(clearSpectraButton)
                     .addComponent(addSpectraButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -2363,7 +2402,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void clearSpectraButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSpectraButtonActionPerformed
-        mgfFiles.clear();
+        spectrumFiles.clear();
         rawFiles.clear();
 
         enableThermoRawFileParser(false);
@@ -2373,7 +2412,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         nonThermoRawFilesSelected = false;
 
-        spectraFilesTxt.setText("");
+        spectrumFilesTxt.setText("");
         validateInput(false);
     }//GEN-LAST:event_clearSpectraButtonActionPerformed
 
@@ -2387,8 +2426,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         // First check whether a file has already been selected.
         // If so, start from that file's parent.
         File startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
-        if (mgfFiles.size() > 0) {
-            File temp = mgfFiles.get(0);
+        if (spectrumFiles.size() > 0) {
+            File temp = spectrumFiles.get(0);
             startLocation = temp.getParentFile();
         }
 
@@ -2445,99 +2484,139 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
             }, "ProgressDialog").start();
 
-            new Thread("ValidateMgfThread") {
+            new Thread("ValidateSpectrumFilesThread") {
                 @Override
                 public void run() {
 
                     validSpectrumTitles = true;
-                    ArrayList<File> tempMgfFiles = new ArrayList<>();
+                    ArrayList<File> tempSpectrumFiles = new ArrayList<>();
                     ArrayList<File> tempRawFiles = new ArrayList<>();
 
-                    // get the mgf files
+                HashSet<String> supportedMsFormats = Sets.newHashSet(MsFileIterator.getSupportedExtensions());
+
+                    // get the spectrum files
                     for (File newFile : finalJFileChooser.getSelectedFiles()) {
+                       
                         if (newFile.isDirectory()) {
+                        
                             File[] tempFiles = newFile.listFiles();
+                            
                             for (File file : tempFiles) {
-                                String lowercaseName = file.getName().toLowerCase();
-                                if (lowercaseName.endsWith(ProteoWizardMsFormat.mgf.fileNameEnding)) {
-                                    tempMgfFiles.add(file);
+                            
+                                String extension = IoUtil.getExtension(file).toLowerCase();
+                                
+                                if (supportedMsFormats.contains(extension)) {
+                                    
+                                    tempSpectrumFiles.add(file);
+                                
                                 } else {
+                                
                                     for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
-                                        if (lowercaseName.endsWith(tempFormat.fileNameEnding)) {
+                                    
+                                        if (extension.equals(tempFormat.fileNameEnding.toLowerCase())) {
+                                        
                                             tempRawFiles.add(file);
+                                        
                                         }
                                     }
                                 }
                             }
+                            
                             lastSelectedFolder.setLastSelectedFolder(newFile.getAbsolutePath());
+
                         } else {
+
                             String lowercaseName = newFile.getName().toLowerCase();
+
                             if (lowercaseName.endsWith(ProteoWizardMsFormat.mgf.fileNameEnding)) {
-                                tempMgfFiles.add(newFile);
+
+                                tempSpectrumFiles.add(newFile);
+
                             } else {
+
                                 for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
+
                                     if (lowercaseName.endsWith(tempFormat.fileNameEnding)) {
+
                                         tempRawFiles.add(newFile);
+
                                     }
                                 }
                             }
+
                             lastSelectedFolder.setLastSelectedFolder(newFile.getParent());
+
                         }
                     }
 
                     // if wiff files are used, check if the related wiff.scan is present
                     for (File tempRawfile : tempRawFiles) {
+
                         if (tempRawfile.getName().endsWith(ProteoWizardMsFormat.wiff.fileNameEnding)) {
 
                             String wiffScanFilePath = tempRawfile.getAbsolutePath() + ".scan";
 
                             if (!new File(wiffScanFilePath).exists()) {
-                                JOptionPane.showMessageDialog(finalRef,
+
+                                JOptionPane.showMessageDialog(
+                                        finalRef,
                                         "Could not find the related .wiff.scan file for " + tempRawfile.getName() + "."
-                                        + "\nPlease put it in the same folder as the wiff file.", "Missing Scan File", JOptionPane.INFORMATION_MESSAGE);
+                                        + "\nPlease put it in the same folder as the wiff file.", 
+                                        "Missing Scan File", 
+                                        JOptionPane.INFORMATION_MESSAGE
+                                );
+                            
                             } else {
+                            
                                 rawFiles.add(tempRawfile);
+                            
                             }
+                        
                         } else {
+                        
                             rawFiles.add(tempRawfile);
+                        
                         }
                     }
 
                     // check whether non-thermo raw files are selected
                     for (File tempRawfile : rawFiles) {
+         
                         if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
+                        
                             nonThermoRawFilesSelected = true;
+                        
                         }
                     }
 
                     // iterate the mgf files and validate them
                     int fileCounter = 0;
-                    for (File mgfFile : tempMgfFiles) {
+                    for (File mgfFile : tempSpectrumFiles) {
 
-                        progressDialog.setTitle("Validating Spectrum Files. Please Wait... (" + ++fileCounter + "/" + tempMgfFiles.size() + ")");
-                        validSpectrumTitles = validateMgfFile(mgfFile, progressDialog);
+                        progressDialog.setTitle("Validating Spectrum Files. Please Wait... (" + ++fileCounter + "/" + tempSpectrumFiles.size() + ")");
+                        
                         if (validSpectrumTitles) {
-                            mgfFiles.add(mgfFile);
+                            spectrumFiles.add(mgfFile);
                             lastSelectedFolder.setLastSelectedFolder(mgfFile.getAbsolutePath());
                         }
 
                         if (progressDialog.isRunCanceled()) {
-                            mgfFiles.clear();
+                            spectrumFiles.clear();
                             progressDialog.setRunFinished();
                             return;
                         }
                     }
 
                     if (!validSpectrumTitles) {
-                        mgfFiles.clear();
+                        spectrumFiles.clear();
                         progressDialog.setRunFinished();
                         return;
                     }
 
                     // check for duplicate mgf file names
                     if (!verifyMgfFilesNames()) {
-                        mgfFiles.clear();
-                        spectraFilesTxt.setText("");
+                        spectrumFiles.clear();
+                        spectrumFilesTxt.setText("");
                         validateInput(false);
                         progressDialog.setRunFinished();
                         return;
@@ -2546,30 +2625,37 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     progressDialog.setRunFinished();
 
                     // check if we found any valid mgf files
-                    if (mgfFiles.isEmpty() && rawFiles.isEmpty()) {
-                        JOptionPane.showMessageDialog(finalRef, "The selection contained no valid spectrum files.", "No Spectrum Files", JOptionPane.INFORMATION_MESSAGE);
+                    if (spectrumFiles.isEmpty() && rawFiles.isEmpty()) {
+                        
+                        JOptionPane.showMessageDialog(
+                                finalRef, 
+                                "The selection contained no valid spectrum files.", 
+                                "No Spectrum Files", 
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
                         return;
+                    
                     }
 
                     // check if proteowizard is installed in case none-thermo raw files were selected
                     if (nonThermoRawFilesSelected) {
+                        
                         boolean pwCheck = checkProteoWizard();
                         msconvertCheckBox.setSelected(pwCheck);
                         enableMsConvert(pwCheck);
+                    
                     } else {
+                    
                         thermoRawFileParserCheckBox.setSelected(!rawFiles.isEmpty());
                         enableThermoRawFileParser(!rawFiles.isEmpty());
+                    
                     }
 
-                    // verify the sizes of the mgf files
-                    if (utilitiesUserParameters.checkMgfSize()) {
-                        verifyMgfFilesSize();
-                    }
-
-                    int nFiles = mgfFiles.size() + rawFiles.size();
-                    spectraFilesTxt.setText(nFiles + " file(s) selected");
+                    int nFiles = spectrumFiles.size() + rawFiles.size();
+                    spectrumFilesTxt.setText(nFiles + " file(s) selected");
 
                     validateInput(false);
+                
                 }
             }.start();
         }
@@ -2605,27 +2691,49 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             File tempDir = fc.getSelectedFile();
 
             if (!tempDir.exists()) {
-                int value = JOptionPane.showConfirmDialog(this, "The folder \'" + tempDir.getAbsolutePath() + "\' does not exist.\n"
-                        + "Do you want to create it?", "Create Folder?", JOptionPane.YES_NO_OPTION);
+
+                int value = JOptionPane.showConfirmDialog(
+                        this,
+                        "The folder \'" + tempDir.getAbsolutePath() + "\' does not exist.\n"
+                        + "Do you want to create it?",
+                        "Create Folder?",
+                        JOptionPane.YES_NO_OPTION
+                );
+
                 if (value == JOptionPane.NO_OPTION) {
+
                     return;
+
                 } else { // yes option selected
+
                     boolean success = tempDir.mkdir();
 
                     if (!success) {
-                        JOptionPane.showMessageDialog(this, "Failed to create the folder. Please create it manually and then select it.",
-                                "File Error", JOptionPane.INFORMATION_MESSAGE);
+
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Failed to create the folder. Please create it manually and then select it.",
+                                "File Error",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+
                         return;
+
                     }
                 }
             }
 
             outputFolder = fc.getSelectedFile();
             outputFolderTxt.setText(outputFolder.getAbsolutePath());
+
             if (outputFolderTxt.getText().length() > 70) {
+
                 outputFolderTxt.setHorizontalAlignment(JTextField.LEADING);
+
             } else {
+
                 outputFolderTxt.setHorizontalAlignment(JTextField.CENTER);
+
             }
 
             // set the peptideshaker output file
@@ -2633,6 +2741,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             lastSelectedFolder.setLastSelectedFolder(outputFolder.getAbsolutePath());
             validateInput(false);
+
         }
     }//GEN-LAST:event_editResultFolderButtonActionPerformed
 
@@ -2649,72 +2758,132 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // validate the msconvert output format
         if (nonThermoRawFilesSelected && msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mgf) { // @TODO: also need to do the same test for ThermoRawFileParser
-            JOptionPane.showMessageDialog(this,
+
+            JOptionPane.showMessageDialog(
+                    this,
                     "Mgf is the only spectrum format compatible with SearchGUI.\n\n"
                     + "Please change the output format for msconvert.",
-                    "Output Format Error", JOptionPane.WARNING_MESSAGE);
+                    "Output Format Error",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
+
         }
 
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
 
         // check if the file paths for xtandem are xml compatible
         if (enableXTandemJCheckBox.isSelected()) {
-            for (File tempFile : mgfFiles) {
+
+            for (File tempFile : spectrumFiles) {
+
                 if (tempFile.getAbsolutePath().contains("&")) {
-                    JOptionPane.showMessageDialog(this,
+
+                    JOptionPane.showMessageDialog(
+                            this,
                             "Spectrum files with \'&\' in the file path (" + tempFile.getAbsolutePath() + ")\n"
-                            + "are not allowed in X!Tandem. Please rename of remove the file.", "Spectrum File Error", JOptionPane.WARNING_MESSAGE);
+                            + "are not allowed in X!Tandem. Please rename of remove the file.", "Spectrum File Error",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+
                     return;
+
                 }
             }
             for (File tempFile : rawFiles) {
+
                 if (tempFile.getAbsolutePath().contains("&")) {
-                    JOptionPane.showMessageDialog(this,
+
+                    JOptionPane.showMessageDialog(
+                            this,
                             "Spectrum files with \'&\' in the file path (" + tempFile.getAbsolutePath() + ")\n"
-                            + "are not allowed in X!Tandem. Please rename of remove the file.", "Spectrum File Error", JOptionPane.WARNING_MESSAGE);
+                            + "are not allowed in X!Tandem. Please rename of remove the file.",
+                            "Spectrum File Error",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+
                     return;
+
                 }
             }
 
             if (outputFolder.getAbsolutePath().contains("&")) {
-                JOptionPane.showMessageDialog(this,
+
+                JOptionPane.showMessageDialog(
+                        this,
                         "Output folders with \'&\' in the file path (" + outputFolder.getAbsolutePath() + ")\n"
-                        + "are not allowed in X!Tandem. Please rename of replace the folder.", "Output Folder Error", JOptionPane.WARNING_MESSAGE);
+                        + "are not allowed in X!Tandem. Please rename of replace the folder.",
+                        "Output Folder Error",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
                 return;
+
             }
 
             if (fastaFile != null && fastaFile.getAbsolutePath().contains("&")) {
-                JOptionPane.showMessageDialog(this,
+
+                JOptionPane.showMessageDialog(
+                        this,
                         "Database files with \'&\' in the file path (" + fastaFile + ")\n"
-                        + "are not allowed in X!Tandem. Please rename of replace the database.", "Database File Error", JOptionPane.WARNING_MESSAGE);
+                        + "are not allowed in X!Tandem. Please rename of replace the database.",
+                        "Database File Error",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
                 return;
+
             }
         }
 
         // check if the fasta file name is not too long for ms amanda
         if (enableMsAmandaJCheckBox.isSelected()) {
-            if (fastaFile != null && Util.removeExtension(Util.getFileName(fastaFile)).length() > MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH) {
-                JOptionPane.showMessageDialog(this,
+
+            if (fastaFile != null && IoUtil.removeExtension(IoUtil.getFileName(fastaFile)).length() > MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH) {
+
+                JOptionPane.showMessageDialog(
+                        this,
                         "Database files names longer than " + MsAmandaParameters.MAX_MS_AMANDA_FASTA_FILE_NAME_LENGTH + " characters are not allowed in MS Amanda.\n"
-                        + "Please rename of replace the database.", "Database File Error", JOptionPane.WARNING_MESSAGE);
+                        + "Please rename of replace the database.",
+                        "Database File Error",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
                 return;
+
             }
         }
 
         // check if there are not too many PTMs for OMSSA
         if (enableOmssaJCheckBox.isSelected() && searchParameters.getModificationParameters().getAllModifications().size() > 30) {
-            JOptionPane.showMessageDialog(this,
-                    "OMSSA cannot be operated with >30 modifications.", "Unsupported parameters", JOptionPane.WARNING_MESSAGE);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "OMSSA cannot be operated with >30 modifications.",
+                    "Unsupported parameters",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
+
         }
 
         // check if there are less than 10 ptms (variable and fixed) for novor
         if (enableNovorJCheckBox.isSelected()) {
+
             if ((searchParameters.getModificationParameters().getFixedModifications().size() + searchParameters.getModificationParameters().getVariableModifications().size()) > 10) {
-                JOptionPane.showMessageDialog(this, "Maximum ten modifications are allowed when running Novor.\n"
-                        + "Please remove some of the modifications or disable Novor.", "Parameters Error", JOptionPane.WARNING_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Maximum ten modifications are allowed when running Novor.\n"
+                        + "Please remove some of the modifications or disable Novor.",
+                        "Parameters Error",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
                 return;
+
             }
         }
 
@@ -2726,11 +2895,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .anyMatch(modification -> modification.getModificationType() != ModificationType.modaa);
 
             if (terminalModificationsSelected) {
-                int option = JOptionPane.showConfirmDialog(this,
+
+                int option = JOptionPane.showConfirmDialog(
+                        this,
                         "Terminal modifications are not supported for DirecTag and will be ignored.\n"
-                        + "Do you still want to continue?", "Parameters Error", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                        + "Do you still want to continue?",
+                        "Parameters Error",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
                 if (option == JOptionPane.NO_OPTION) {
+
                     return;
+
                 }
             }
         }
@@ -2743,98 +2921,162 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         MsAmandaParameters msAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
 
         if (peptideShakerCheckBox.isSelected() && enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
-            JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected OMSSA output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
-                    + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
-                    "Format Warning", JOptionPane.WARNING_MESSAGE);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    JOptionEditorPane.getJOptionEditorPane(
+                            "The selected OMSSA output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
+                            + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."
+                    ),
+                    "Format Warning",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
+
         } else if (peptideShakerCheckBox.isSelected() && enableMyriMatchJCheckBox.isSelected() && myriMatchParameters.getOutputFormat().equals("pepXML")) {
-            JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected MyriMatch output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "mzIdentML in the Advanced Parameters, or disable MyriMatch or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
-                    "Format Warning", JOptionPane.WARNING_MESSAGE);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    JOptionEditorPane.getJOptionEditorPane(
+                            "The selected MyriMatch output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
+                            + "mzIdentML in the Advanced Parameters, or disable MyriMatch or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."
+                    ),
+                    "Format Warning",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
+
         } else if (peptideShakerCheckBox.isSelected() && enableTideJCheckBox.isSelected() && !tideParameters.getTextOutput()) {
-            JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected Tide output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "Tide text output in the Advanced Parameters, or disable Tide or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
-                    "Format Warning", JOptionPane.WARNING_MESSAGE);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    JOptionEditorPane.getJOptionEditorPane(
+                            "The selected Tide output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
+                            + "Tide text output in the Advanced Parameters, or disable Tide or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."
+                    ),
+                    "Format Warning",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
+
         } else if (peptideShakerCheckBox.isSelected() && enableCometJCheckBox.isSelected() && cometParameters.getSelectedOutputFormat() != CometParameters.CometOutputFormat.PepXML) {
-            JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
-                    "The selected Comet output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
-                    + "Comet PepXML output in the Advanced Parameters, or disable Comet or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
-                    "Format Warning", JOptionPane.WARNING_MESSAGE);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    JOptionEditorPane.getJOptionEditorPane(
+                            "The selected Comet output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to<br>"
+                            + "Comet PepXML output in the Advanced Parameters, or disable Comet or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."
+                    ),
+                    "Format Warning",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
+
         } else {
+
             // check if the output files already exist
             boolean fileFound = false;
 
-            ArrayList<File> spectrumFiles = new ArrayList<>(mgfFiles);
+            ArrayList<File> spectrumFiles = new ArrayList<>(this.spectrumFiles);
             spectrumFiles.addAll(rawFiles);
+
             for (File spectrumFile : spectrumFiles) {
 
                 String spectrumFileName = spectrumFile.getName();
 
                 if (searchHandler.isOmssaEnabled()) {
+
                     File omssaOutputFile = new File(outputFolder, SearchHandler.getOMSSAFileName(spectrumFileName, omssaParameters));
+
                     if (omssaOutputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
 
                 if (searchHandler.isXtandemEnabled() && utilitiesUserParameters.renameXTandemFile()
                         && !searchHandler.getXTandemFiles(outputFolder, spectrumFileName).isEmpty()) {
+
                     fileFound = true;
                     break;
+
                 }
 
                 if (searchHandler.isMsgfEnabled()) {
+
                     File msgfOutputFile = new File(outputFolder, SearchHandler.getMsgfFileName(spectrumFileName));
+
                     if (msgfOutputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
 
                 if (searchHandler.isMsAmandaEnabled()) {
+
                     File msAmandaOutputFile = new File(outputFolder, SearchHandler.getMsAmandaFileName(spectrumFileName, msAmandaParameters));
+
                     if (msAmandaOutputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
 
                 if (searchHandler.isMyriMatchEnabled()) {
+
                     File myriMatchOutputFile = new File(outputFolder, SearchHandler.getMyriMatchFileName(spectrumFileName, myriMatchParameters));
+
                     if (myriMatchOutputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
 
                 if (searchHandler.isCometEnabled()) {
+
                     File cometOutputFile = new File(outputFolder, SearchHandler.getCometFileName(spectrumFileName, cometParameters));
+
                     if (cometOutputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
 
                 if (searchHandler.isTideEnabled()) {
+
                     File tideOutputFile = new File(outputFolder, SearchHandler.getTideFileName(spectrumFileName, tideParameters));
+
                     if (tideOutputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
 
                 if (searchHandler.isAndromedaEnabled()) {
+
                     File andromedaOutputFile = new File(outputFolder, SearchHandler.getAndromedaFileName(spectrumFileName));
+
                     if (andromedaOutputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
             }
@@ -2844,62 +3086,121 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             OutputParameters outputOption = utilitiesUserParameters.getSearchGuiOutputParameters();
 
             if (outputOption == OutputParameters.grouped) {
-                File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, utilitiesUserParameters.isIncludeDateInOutputName());
+
+                File outputFile = SearchHandler.getDefaultOutputFile(
+                        outputFolder,
+                        utilitiesUserParameters.isIncludeDateInOutputName()
+                );
+
                 if (outputFile.exists()) {
+
                     fileFound = true;
+
                 }
             } else if (outputOption == OutputParameters.algorithm) {
 
                 if (searchHandler.isOmssaEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.omssa.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                    File outputFile = SearchHandler.getDefaultOutputFile(
+                            outputFolder,
+                            Advocate.omssa.getName(),
+                            utilitiesUserParameters.isIncludeDateInOutputName()
+                    );
+
                     if (outputFile.exists()) {
+
                         fileFound = true;
+
                     }
                 }
 
                 if (searchHandler.isXtandemEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.xtandem.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                    File outputFile = SearchHandler.getDefaultOutputFile(
+                            outputFolder,
+                            Advocate.xtandem.getName(),
+                            utilitiesUserParameters.isIncludeDateInOutputName()
+                    );
+
                     if (outputFile.exists()) {
+
                         fileFound = true;
+
                     }
                 }
 
                 if (searchHandler.isMsgfEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msgf.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                    File outputFile = SearchHandler.getDefaultOutputFile(
+                            outputFolder,
+                            Advocate.msgf.getName(),
+                            utilitiesUserParameters.isIncludeDateInOutputName()
+                    );
+
                     if (outputFile.exists()) {
+
                         fileFound = true;
+
                     }
                 }
 
                 if (searchHandler.isMsAmandaEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.msAmanda.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                    File outputFile = SearchHandler.getDefaultOutputFile(
+                            outputFolder,
+                            Advocate.msAmanda.getName(),
+                            utilitiesUserParameters.isIncludeDateInOutputName()
+                    );
+
                     if (outputFile.exists()) {
+
                         fileFound = true;
+
                     }
                 }
 
                 if (searchHandler.isMyriMatchEnabled()) {
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, Advocate.myriMatch.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+
+                    File outputFile = SearchHandler.getDefaultOutputFile(
+                            outputFolder,
+                            Advocate.myriMatch.getName(),
+                            utilitiesUserParameters.isIncludeDateInOutputName()
+                    );
+
                     if (outputFile.exists()) {
+
                         fileFound = true;
+
                     }
                 }
             } else if (outputOption == OutputParameters.run) {
+
                 for (File spectrumFile : spectrumFiles) {
-                    String runName = Util.removeExtension(spectrumFile.getName());
-                    File outputFile = SearchHandler.getDefaultOutputFile(outputFolder, runName, utilitiesUserParameters.isIncludeDateInOutputName());
+
+                    String runName = IoUtil.removeExtension(spectrumFile.getName());
+
+                    File outputFile = SearchHandler.getDefaultOutputFile(
+                            outputFolder,
+                            runName,
+                            utilitiesUserParameters.isIncludeDateInOutputName()
+                    );
+
                     if (outputFile.exists()) {
+
                         fileFound = true;
                         break;
+
                     }
                 }
             }
 
             if (fileFound) {
 
-                int outcome = JOptionPane.showConfirmDialog(this,
+                int outcome = JOptionPane.showConfirmDialog(
+                        this,
                         "Existing output files found.\nOverwrite?", "Overwrite Files?",
-                        JOptionPane.YES_NO_OPTION);
+                        JOptionPane.YES_NO_OPTION
+                );
 
                 if (outcome != JOptionPane.YES_OPTION) {
 
@@ -2910,17 +3211,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             // check if the xtandem files can be renamed
             if (searchHandler.isXtandemEnabled() && utilitiesUserParameters.renameXTandemFile()) {
+
                 for (File spectrumFile : spectrumFiles) {
+
                     String spectrumFileName = spectrumFile.getName();
 
                     ArrayList<File> tempFiles = searchHandler.getXTandemFiles(outputFolder, spectrumFileName);
 
                     for (File tempSpectrumFile : tempFiles) {
+
                         if (!tempSpectrumFile.delete()) {
-                            JOptionPane.showMessageDialog(this,
+
+                            JOptionPane.showMessageDialog(
+                                    this,
                                     new String[]{"Impossible to overwrite " + tempSpectrumFile.getName() + ". Please delete the file and retry."},
-                                    "X! Tandem File", JOptionPane.WARNING_MESSAGE);
+                                    "X! Tandem File",
+                                    JOptionPane.WARNING_MESSAGE
+                            );
+
                             return;
+
                         }
                     }
                 }
@@ -2931,7 +3241,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setIdentificationParameters(identificationParameters);
         searchHandler.setIdentificationParametersFile(identificationParametersFile);
         searchHandler.setProcessingParameters(processingParameters);
-        searchHandler.setMgfFiles(mgfFiles);
+        searchHandler.setMgfFiles(spectrumFiles);
         searchHandler.setFastaFile(fastaFile);
         searchHandler.setRawFiles(rawFiles);
         searchHandler.setResultsFolder(outputFolder);
@@ -2941,7 +3251,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // incrementing the counter for a new SearchGUI start
         if (utilitiesUserParameters.isAutoUpdate()) {
+
             Util.sendGAUpdate("UA-36198780-2", "startrun-gui", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
+
         }
 
         startSearch();
@@ -2993,13 +3305,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void addSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSettingsButtonActionPerformed
 
         IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
-                this, null, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, true);
+                this,
+                null,
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
+                lastSelectedFolder,
+                true
+        );
 
         if (!identificationParametersEditionDialog.isCanceled()) {
+
             IdentificationParameters tempIdentificationParameters = identificationParametersEditionDialog.getIdentificationParameters();
             identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(tempIdentificationParameters.getName());
             setIdentificationParameters(tempIdentificationParameters);
+
         }
     }//GEN-LAST:event_addSettingsButtonActionPerformed
 
@@ -3040,10 +3359,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuItemActionPerformed
-        new HelpDialog(this, getClass().getResource("/helpFiles/SearchGUI.html"),
+        new HelpDialog(
+                this,
+                getClass().getResource("/helpFiles/SearchGUI.html"),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/help.GIF")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                "SearchGUI - Help", 500, 50);
+                "SearchGUI - Help",
+                500,
+                50
+        );
     }//GEN-LAST:event_helpMenuItemActionPerformed
 
     /**
@@ -3052,10 +3376,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void aboutMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutMenuItemActionPerformed
-        new HelpDialog(this, getClass().getResource("/helpFiles/AboutSearchGUI.html"),
+        new HelpDialog(
+                this,
+                getClass().getResource("/helpFiles/AboutSearchGUI.html"),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/help.GIF")),
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                "About SearchGUI", 500, 50);
+                "About SearchGUI",
+                500,
+                50
+        );
     }//GEN-LAST:event_aboutMenuItemActionPerformed
 
     /**
@@ -3064,10 +3393,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void logReportMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logReportMenuActionPerformed
-        new BugReport(this, lastSelectedFolder, "SearchGUI", "searchgui",
+        new BugReport(
+                this,
+                lastSelectedFolder,
+                "SearchGUI",
+                "searchgui",
                 new eu.isas.searchgui.utilities.Properties().getVersion(),
-                "peptide-shaker", "PeptideShaker",
-                new File(getJarFilePath() + "/resources/SearchGUI.log"));
+                "peptide-shaker",
+                "PeptideShaker",
+                new File(getJarFilePath() + "/resources/SearchGUI.log")
+        );
     }//GEN-LAST:event_logReportMenuActionPerformed
 
     /**
@@ -3208,14 +3543,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableOmssaJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableOmssaJCheckBoxActionPerformed
+
         searchHandler.setOmssaEnabled(enableOmssaJCheckBox.isSelected());
+
         if (enableOmssaJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.omssa, searchHandler.getOmssaLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.omssa,
+                    searchHandler.getOmssaLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableOmssaJCheckBoxActionPerformed
 
     /**
@@ -3224,14 +3571,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableXTandemJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableXTandemJCheckBoxActionPerformed
+
         searchHandler.setXtandemEnabled(enableXTandemJCheckBox.isSelected());
+
         if (enableXTandemJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.xtandem, searchHandler.getXtandemLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.xtandem,
+                    searchHandler.getXtandemLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableXTandemJCheckBoxActionPerformed
 
     /**
@@ -3402,7 +3761,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void editReporterSettingsLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editReporterSettingsLabelMouseClicked
-        JOptionPane.showMessageDialog(this, "Not yet implemented...", "Not Implemented", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(
+                this,
+                "Not yet implemented...",
+                "Not Implemented",
+                JOptionPane.WARNING_MESSAGE
+        );
         // @TODO: implement me!!
     }//GEN-LAST:event_editReporterSettingsLabelMouseClicked
 
@@ -3438,49 +3802,71 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the mouse event
      */
-    private void spectraFilesTxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_spectraFilesTxtMouseClicked
-        if (!mgfFiles.isEmpty() || !rawFiles.isEmpty()) {
-            ArrayList<File> spectrumFiles = new ArrayList<>(mgfFiles);
+    private void spectrumFilesTxtMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_spectrumFilesTxtMouseClicked
+
+        if (!spectrumFiles.isEmpty() || !rawFiles.isEmpty()) {
+
+            ArrayList<File> spectrumFiles = new ArrayList<>(this.spectrumFiles);
             spectrumFiles.addAll(rawFiles);
             FileDisplayDialog fileDisplayDialog = new FileDisplayDialog(this, spectrumFiles, true);
+
             if (!fileDisplayDialog.canceled()) {
+
                 spectrumFiles = fileDisplayDialog.getSelectedFiles();
-                spectraFilesTxt.setText(spectrumFiles.size() + " file(s) selected");
-                mgfFiles.clear();
+                spectrumFilesTxt.setText(spectrumFiles.size() + " file(s) selected");
+                this.spectrumFiles.clear();
                 rawFiles.clear();
                 nonThermoRawFilesSelected = false;
+
+                HashSet<String> supportedMsFormats = Sets.newHashSet(MsFileIterator.getSupportedExtensions());
+
                 for (File file : spectrumFiles) {
-                    if (file.getName().toLowerCase().endsWith("mgf")) {
-                        mgfFiles.add(file);
+
+                    if (supportedMsFormats.contains(file.getName())) {
+
+                        this.spectrumFiles.add(file);
+
                     } else {
+
                         if (!file.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
+
                             nonThermoRawFilesSelected = true;
+
                         }
+
                         rawFiles.add(file);
+
                     }
                 }
 
                 if (nonThermoRawFilesSelected) {
+
                     msconvertCheckBox.setSelected(true);
                     thermoRawFileParserCheckBox.setSelected(false);
                     enableMsConvert(true);
                     enableThermoRawFileParser(false);
+
                 } else if (!rawFiles.isEmpty()) {
+
                     msconvertCheckBox.setSelected(false);
                     thermoRawFileParserCheckBox.setSelected(true);
                     enableMsConvert(false);
                     enableThermoRawFileParser(true);
+
                 } else {
+
                     msconvertCheckBox.setSelected(false);
                     thermoRawFileParserCheckBox.setSelected(false);
                     enableMsConvert(false);
                     enableThermoRawFileParser(false);
+
                 }
 
                 validateInput(false);
+
             }
         }
-    }//GEN-LAST:event_spectraFilesTxtMouseClicked
+    }//GEN-LAST:event_spectrumFilesTxtMouseClicked
 
     /**
      * Change the cursor to a hand cursor.
@@ -3542,14 +3928,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableMsgfJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableMsgfJCheckBoxActionPerformed
+
         searchHandler.setMsgfEnabled(enableMsgfJCheckBox.isSelected());
+
         if (enableMsgfJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.msgf, searchHandler.getMsgfLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.msgf,
+                    searchHandler.getMsgfLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableMsgfJCheckBoxActionPerformed
 
     /**
@@ -3633,14 +4031,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableMsAmandaJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableMsAmandaJCheckBoxActionPerformed
+
         searchHandler.setMsAmandaEnabled(enableMsAmandaJCheckBox.isSelected());
+
         if (enableMsAmandaJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.msAmanda, searchHandler.getMsAmandaLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.msAmanda,
+                    searchHandler.getMsAmandaLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableMsAmandaJCheckBoxActionPerformed
 
     /**
@@ -3724,7 +4134,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void privacyMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privacyMenuItemActionPerformed
-        new PrivacyParametersDialog(this, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
+        new PrivacyParametersDialog(
+                this,
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif"))
+        );
     }//GEN-LAST:event_privacyMenuItemActionPerformed
 
     /**
@@ -3733,14 +4146,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableMyriMatchJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableMyriMatchJCheckBoxActionPerformed
+
         searchHandler.setMyriMatchEnabled(enableMyriMatchJCheckBox.isSelected());
+
         if (enableMyriMatchJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.myriMatch, searchHandler.getMyriMatchLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.myriMatch,
+                    searchHandler.getMyriMatchLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableMyriMatchJCheckBoxActionPerformed
 
     /**
@@ -3813,14 +4238,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableCometJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableCometJCheckBoxActionPerformed
+
         searchHandler.setCometEnabled(enableCometJCheckBox.isSelected());
+
         if (enableCometJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.comet, searchHandler.getCometLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.comet,
+                    searchHandler.getCometLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableCometJCheckBoxActionPerformed
 
     /**
@@ -3913,14 +4350,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableTideJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableTideJCheckBoxActionPerformed
+
         searchHandler.setTideEnabled(enableTideJCheckBox.isSelected());
+
         if (enableTideJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.tide, searchHandler.getTideLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.tide,
+                    searchHandler.getTideLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableTideJCheckBoxActionPerformed
 
     /**
@@ -4004,14 +4453,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableAndromedaJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableAndromedaJCheckBoxActionPerformed
+
         searchHandler.setAndromedaEnabled(enableAndromedaJCheckBox.isSelected());
+
         if (enableAndromedaJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.andromeda, searchHandler.getAndromedaLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.andromeda,
+                    searchHandler.getAndromedaLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableAndromedaJCheckBoxActionPerformed
 
     /**
@@ -4148,9 +4609,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }//GEN-LAST:event_msconvertCheckBoxActionPerformed
 
     private void processingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processingMenuItemActionPerformed
-        ProcessingParametersDialog processingParametersDialog = new ProcessingParametersDialog(this, processingParameters, true);
+
+        ProcessingParametersDialog processingParametersDialog = new ProcessingParametersDialog(
+                this,
+                processingParameters,
+                true
+        );
+
         if (!processingParametersDialog.isCanceled()) {
+
             processingParameters = processingParametersDialog.getProcessingParameters();
+
         }
     }//GEN-LAST:event_processingMenuItemActionPerformed
 
@@ -4164,27 +4633,45 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         editSettingsButton.setEnabled(settingsComboBox.getSelectedIndex() != 0);
 
         if (settingsComboBox.getSelectedIndex() != 0) {
+
             identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile((String) settingsComboBox.getSelectedItem());
+
             try {
+
                 identificationParameters = IdentificationParameters.getIdentificationParameters(identificationParametersFile);
 
                 // load project specific PTMs
                 String error = SearchHandler.loadModifications(identificationParameters.getSearchParameters());
+
                 if (error != null) {
-                    JOptionPane.showMessageDialog(this,
+
+                    JOptionPane.showMessageDialog(
+                            this,
                             error,
-                            "PTM Definition Changed", JOptionPane.WARNING_MESSAGE);
+                            "PTM Definition Changed",
+                            JOptionPane.WARNING_MESSAGE
+                    );
                 }
 
                 enableSearchSettingsDependentFeatures(true);
+
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null,
-                        "Failed to import search parameters from: " + identificationParametersFile.getAbsolutePath() + ".", "Search Parameters",
-                        JOptionPane.WARNING_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Failed to import search parameters from: " + identificationParametersFile.getAbsolutePath() + ".",
+                        "Search Parameters",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
                 e.printStackTrace();
+
             }
+
         } else {
+
             enableSearchSettingsDependentFeatures(false);
+
         }
 
         validateInput(false);
@@ -4196,14 +4683,23 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void msconvertSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msconvertSettingsButtonActionPerformed
+
         boolean canceled = false;
+
         if (utilitiesUserParameters.getProteoWizardPath() == null) {
+
             canceled = !editProteoWizardInstallation();
+
         }
+
         if (!canceled) {
+
             MsConvertParametersDialog msConvertParametersDialog = new MsConvertParametersDialog(this, msConvertParameters);
+
             if (!msConvertParametersDialog.isCanceled()) {
+
                 msConvertParameters = msConvertParametersDialog.getMsConvertParameters();
+
             }
         }
     }//GEN-LAST:event_msconvertSettingsButtonActionPerformed
@@ -4214,53 +4710,93 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void xtandemSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xtandemSettingsButtonActionPerformed
+
         UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         XtandemParameters oldXtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
-        XTandemParametersDialog xtandemParametersDialog = new XTandemParametersDialog(this, oldXtandemParameters, searchParameters.getModificationParameters(),
-                searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserParameters.getRefMass()), true);
+        XTandemParametersDialog xtandemParametersDialog = new XTandemParametersDialog(
+                this,
+                oldXtandemParameters,
+                searchParameters.getModificationParameters(),
+                searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserParameters.getRefMass()),
+                true
+        );
 
         boolean xtandemParametersSet = false;
 
         while (!xtandemParametersSet) {
 
             if (!xtandemParametersDialog.isCancelled()) {
+
                 XtandemParameters newXtandemParameters = xtandemParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldXtandemParameters.equals(newXtandemParameters) || xtandemParametersDialog.modProfileEdited()) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\n"
+                            + "Do you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
-                                searchParameters.setModificationParameters(xtandemParametersDialog.getModificationProfile());
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                xtandemParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
+                            searchParameters.setModificationParameters(xtandemParametersDialog.getModificationProfile());
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            xtandemParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName()
+                                    + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            xtandemParametersDialog = new XTandemParametersDialog(this, newXtandemParameters, searchParameters.getModificationParameters(),
-                                    searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserParameters.getRefMass()), true);
+
+                            xtandemParametersDialog = new XTandemParametersDialog(
+                                    this,
+                                    newXtandemParameters,
+                                    searchParameters.getModificationParameters(),
+                                    searchParameters.getFragmentIonAccuracyInDaltons(utilitiesUserParameters.getRefMass()),
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             xtandemParametersSet = true;
                             break;
+
                         default:
+
                             break;
+
                     }
+
                 } else {
+
                     xtandemParametersSet = true;
+
                 }
+
             } else {
+
                 xtandemParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_xtandemSettingsButtonActionPerformed
@@ -4271,6 +4807,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void myriMatchSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_myriMatchSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MyriMatchParameters oldMyriMatchParameters = (MyriMatchParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex());
         MyriMatchParametersDialog myriMatchParametersDialog = new MyriMatchParametersDialog(this, oldMyriMatchParameters, true);
@@ -4289,31 +4826,54 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                myriMatchParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            myriMatchParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            myriMatchParametersDialog = new MyriMatchParametersDialog(this, newMyriMatchParameters, true);
+
+                            myriMatchParametersDialog = new MyriMatchParametersDialog(
+                                    this,
+                                    newMyriMatchParameters,
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             myriMatchParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     myriMatchParametersSet = true;
+
                 }
             } else {
+
                 myriMatchParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_myriMatchSettingsButtonActionPerformed
@@ -4324,6 +4884,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void msAmandaSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msAmandaSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MsAmandaParameters oldMsAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
         MsAmandaParametersDialog msAmandaParametersDialog = new MsAmandaParametersDialog(this, oldMsAmandaParameters, true);
@@ -4338,35 +4899,60 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMsAmandaParameters.equals(newMsAmandaParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\n" + "Do you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
                         case JOptionPane.YES_OPTION:
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                msAmandaParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            msAmandaParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            msAmandaParametersDialog = new MsAmandaParametersDialog(this, newMsAmandaParameters, true);
+
+                            msAmandaParametersDialog = new MsAmandaParametersDialog(
+                                    this,
+                                    newMsAmandaParameters,
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             msAmandaParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     msAmandaParametersSet = true;
+
                 }
             } else {
+
                 msAmandaParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_msAmandaSettingsButtonActionPerformed
@@ -4377,52 +4963,84 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void msgfSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_msgfSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         MsgfParameters oldMsgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
-        if (oldMsgfParameters == null) { //backward compatibility check
-            oldMsgfParameters = new MsgfParameters();
-        }
-        MsgfParametersDialog msgfParametersDialog = new MsgfParametersDialog(this, oldMsgfParameters, true);
+
+        MsgfParametersDialog msgfParametersDialog = new MsgfParametersDialog(
+                this,
+                oldMsgfParameters,
+                true
+        );
 
         boolean msgfParametersSet = false;
 
         while (!msgfParametersSet) {
 
             if (!msgfParametersDialog.isCancelled()) {
+
                 MsgfParameters newMsgfParameters = msgfParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldMsgfParameters.equals(newMsgfParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                msgfParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            msgfParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            msgfParametersDialog = new MsgfParametersDialog(this, newMsgfParameters, true);
+
+                            msgfParametersDialog = new MsgfParametersDialog(
+                                    this,
+                                    newMsgfParameters,
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             msgfParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     msgfParametersSet = true;
+
                 }
             } else {
+
                 msgfParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_msgfSettingsButtonActionPerformed
@@ -4433,11 +5051,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void omssaSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_omssaSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         OmssaParameters oldOmssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
-        if (oldOmssaParameters == null) { //backward compatibility check
-            oldOmssaParameters = new OmssaParameters();
-        }
         OmssaParametersDialog omssaParametersDialog = new OmssaParametersDialog(this, oldOmssaParameters, true);
 
         boolean omssaParametersSet = false;
@@ -4445,40 +5061,64 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         while (!omssaParametersSet) {
 
             if (!omssaParametersDialog.isCancelled()) {
+
                 OmssaParameters newOmssaParameters = omssaParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldOmssaParameters.equals(newOmssaParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                omssaParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            omssaParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
+
                             omssaParametersDialog = new OmssaParametersDialog(this, newOmssaParameters, true);
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             omssaParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     omssaParametersSet = true;
+
                 }
             } else {
+
                 omssaParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_omssaSettingsButtonActionPerformed
@@ -4489,6 +5129,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void cometSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cometSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         CometParameters oldCometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
         CometParametersDialog cometParametersDialog = new CometParametersDialog(this, oldCometParameters, true);
@@ -4498,40 +5139,64 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         while (!cometParametersSet) {
 
             if (!cometParametersDialog.isCancelled()) {
+
                 CometParameters newCometParameters = cometParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldCometParameters.equals(newCometParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+                       
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                cometParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            cometParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
+
                             cometParametersDialog = new CometParametersDialog(this, newCometParameters, true);
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             cometParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     cometParametersSet = true;
+
                 }
             } else {
+
                 cometParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_cometSettingsButtonActionPerformed
@@ -4542,11 +5207,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void tideSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tideSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         TideParameters oldTideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
-        if (oldTideParameters == null) { //backward compatibility check
-            oldTideParameters = new TideParameters();
-        }
         TideParametersDialog tideParametersDialog = new TideParametersDialog(this, oldTideParameters, true);
 
         boolean tideParametersSet = false;
@@ -4554,40 +5217,69 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         while (!tideParametersSet) {
 
             if (!tideParametersDialog.isCancelled()) {
+
                 TideParameters newTideParameters = tideParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldTideParameters.equals(newTideParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                tideParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            tideParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            tideParametersDialog = new TideParametersDialog(this, newTideParameters, true);
+
+                            tideParametersDialog = new TideParametersDialog(
+                                    this,
+                                    newTideParameters,
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             tideParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     tideParametersSet = true;
+
                 }
             } else {
+
                 tideParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_tideSettingsButtonActionPerformed
@@ -4598,11 +5290,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void andromedaSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_andromedaSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         AndromedaParameters oldAndromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
-        if (oldAndromedaParameters == null) { //backward compatibility check
-            oldAndromedaParameters = new AndromedaParameters();
-        }
         AndromedaParametersDialog andromedaParametersDialog = new AndromedaParametersDialog(this, oldAndromedaParameters, true);
 
         boolean andromedaParametersSet = false;
@@ -4610,40 +5300,69 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         while (!andromedaParametersSet) {
 
             if (!andromedaParametersDialog.isCancelled()) {
+
                 AndromedaParameters newAndromedaParameters = andromedaParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldAndromedaParameters.equals(newAndromedaParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                andromedaParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            andromedaParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            andromedaParametersDialog = new AndromedaParametersDialog(this, newAndromedaParameters, true);
+
+                            andromedaParametersDialog = new AndromedaParametersDialog(
+                                    this,
+                                    newAndromedaParameters,
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             andromedaParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     andromedaParametersSet = true;
+
                 }
             } else {
+
                 andromedaParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_andromedaSettingsButtonActionPerformed
@@ -4663,9 +5382,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the mouse event
      */
     private void myriMatchLinkLabelMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_myriMatchLinkLabelMouseReleased
+
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         BareBonesBrowserLaunch.openURL("http://htmlpreview.github.io/?https://github.com/ProteoWizard/pwiz/blob/master/pwiz_tools/Bumbershoot/myrimatch/doc/index.html");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
     }//GEN-LAST:event_myriMatchLinkLabelMouseReleased
 
     /**
@@ -4684,6 +5405,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void direcTagSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_direcTagSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         DirecTagParameters oldDirecTagParameters = (DirecTagParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.direcTag.getIndex());
         DirecTagParametersDialog direcTagParametersDialog = new DirecTagParametersDialog(this, oldDirecTagParameters, true);
@@ -4693,40 +5415,69 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         while (!direcTagParametersSet) {
 
             if (!direcTagParametersDialog.isCancelled()) {
+
                 DirecTagParameters newDirecTagParameters = direcTagParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldDirecTagParameters.equals(newDirecTagParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.direcTag.getIndex(), newDirecTagParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                direcTagParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.direcTag.getIndex(), newDirecTagParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            direcTagParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            direcTagParametersDialog = new DirecTagParametersDialog(this, newDirecTagParameters, true);
+
+                            direcTagParametersDialog = new DirecTagParametersDialog(
+                                    this,
+                                    newDirecTagParameters,
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             direcTagParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     direcTagParametersSet = true;
+
                 }
             } else {
+
                 direcTagParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_direcTagSettingsButtonActionPerformed
@@ -4773,9 +5524,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void direcTagLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_direcTagLinkLabelMouseClicked
+
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         BareBonesBrowserLaunch.openURL("http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
     }//GEN-LAST:event_direcTagLinkLabelMouseClicked
 
     /**
@@ -4812,14 +5565,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableDirecTagJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableDirecTagJCheckBoxActionPerformed
+
         searchHandler.setDirecTagEnabled(enableDirecTagJCheckBox.isSelected());
+
         if (enableDirecTagJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.direcTag, searchHandler.getDirecTagLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.direcTag,
+                    searchHandler.getDirecTagLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableDirecTagJCheckBoxActionPerformed
 
     /**
@@ -4828,6 +5593,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void novorSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novorSettingsButtonActionPerformed
+
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
         NovorParameters oldNovorParameters = (NovorParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
         NovorParametersDialog novorParametersDialog = new NovorParametersDialog(this, oldNovorParameters, true);
@@ -4837,40 +5603,70 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         while (!novorParametersSet) {
 
             if (!novorParametersDialog.isCancelled()) {
+
                 NovorParameters newNovorParameters = novorParametersDialog.getInput();
 
                 // see if there are changes to the parameters and ask the user if these are to be saved
                 if (!oldNovorParameters.equals(newNovorParameters)) {
 
-                    int value = JOptionPane.showConfirmDialog(this, "The search parameters have changed."
-                            + "\nDo you want to save the changes?", "Save Changes?", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
 
                     switch (value) {
+
                         case JOptionPane.YES_OPTION:
+
                             try {
-                                searchParameters.setIdentificationAlgorithmParameter(Advocate.novor.getIndex(), newNovorParameters);
-                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                                novorParametersSet = true;
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName()
-                                        + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
-                            }
-                            break;
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.novor.getIndex(), newNovorParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            novorParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+
+                        break;
+
                         case JOptionPane.CANCEL_OPTION:
-                            novorParametersDialog = new NovorParametersDialog(this, newNovorParameters, true);
+
+                            novorParametersDialog = new NovorParametersDialog(
+                                    this,
+                                    newNovorParameters,
+                                    true
+                            );
                             break;
+
                         case JOptionPane.NO_OPTION:
+
                             novorParametersSet = true;
                             break;
+
                         default:
                             break;
+
                     }
                 } else {
+
                     novorParametersSet = true;
+
                 }
             } else {
+
                 novorParametersSet = true;
+
             }
         }
     }//GEN-LAST:event_novorSettingsButtonActionPerformed
@@ -4917,9 +5713,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void novorLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_novorLinkLabelMouseClicked
+
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         BareBonesBrowserLaunch.openURL("https://rapidnovor.com");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
     }//GEN-LAST:event_novorLinkLabelMouseClicked
 
     /**
@@ -4956,14 +5754,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void enableNovorJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableNovorJCheckBoxActionPerformed
+
         searchHandler.setNovorEnabled(enableNovorJCheckBox.isSelected());
+
         if (enableNovorJCheckBox.isSelected()) {
-            boolean valid = validateSearchEngineInstallation(Advocate.novor, searchHandler.getNovorLocation(), true);
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.novor,
+                    searchHandler.getNovorLocation(),
+                    true
+            );
+
             if (!valid) {
+
                 new SoftwareLocationDialog(this, true);
+
             }
         }
+
         validateInput(false);
+
     }//GEN-LAST:event_enableNovorJCheckBoxActionPerformed
 
     /**
@@ -4977,28 +5787,41 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         String selectedFastaFile = null;
 
         if (!databaseFileTxt.getText().trim().isEmpty()) {
+
             selectedFastaFile = databaseFileTxt.getText();
+
         }
 
         SequenceDbDetailsDialog sequenceDbDetailsDialog = new SequenceDbDetailsDialog(
-                this, selectedFastaFile, identificationParameters.getFastaParameters(), lastSelectedFolder, true,
+                this,
+                selectedFastaFile,
+                identificationParameters.getFastaParameters(),
+                lastSelectedFolder,
+                true,
                 Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif"))
+        );
 
         boolean fileSelected = false;
-        
+
         if (selectedFastaFile == null) {
+
             fileSelected = sequenceDbDetailsDialog.selectDB(true);
+
             if (fileSelected) {
+
                 sequenceDbDetailsDialog.setVisible(true);
                 databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
                 fastaFile = new File(sequenceDbDetailsDialog.getSelectedFastaFile());
+
             }
         } else {
+
             fileSelected = true;
             sequenceDbDetailsDialog.setVisible(true);
             databaseFileTxt.setText(sequenceDbDetailsDialog.getSelectedFastaFile());
             fastaFile = new File(sequenceDbDetailsDialog.getSelectedFastaFile());
+
         }
 
         // see if we need to save the new fasta parameters
@@ -5007,12 +5830,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             FastaParameters newFastaParameters = sequenceDbDetailsDialog.getFastaParameters();
 
             if (!newFastaParameters.equals(identificationParameters.getFastaParameters())) {
+
                 identificationParameters.setFastaParameters(newFastaParameters);
+
                 try {
+
                     identificationParametersFactory.addIdentificationParameters(identificationParameters);
+
                 } catch (Exception e) {
+
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(null, "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.", "File Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                            "File Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         }
@@ -5027,8 +5860,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void thermoRawFileParserCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thermoRawFileParserCheckBoxActionPerformed
+
         if (thermoRawFileParserCheckBox.isSelected()) {
+
             msconvertCheckBox.setSelected(false);
+
         }
     }//GEN-LAST:event_thermoRawFileParserCheckBoxActionPerformed
 
@@ -5039,9 +5875,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
 
     private void thermoRawFileParserLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserLabelMouseClicked
+
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         BareBonesBrowserLaunch.openURL("https://github.com/compomics/ThermoRawFileParser");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
     }//GEN-LAST:event_thermoRawFileParserLabelMouseClicked
 
     /**
@@ -5090,9 +5928,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt
      */
     private void thermoRawFileParserSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonActionPerformed
+
         ThermoRawFileParserParametersDialog thermoRawFileParserParametersDialog = new ThermoRawFileParserParametersDialog(this, thermoRawFileParserParameters);
+
         if (!thermoRawFileParserParametersDialog.isCanceled()) {
+
             thermoRawFileParserParameters = thermoRawFileParserParametersDialog.getThermoRawFileParserParameters();
+
         }
     }//GEN-LAST:event_thermoRawFileParserSettingsButtonActionPerformed
 
@@ -5198,8 +6040,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JLabel searchGUIPublicationLabel;
     private javax.swing.JLabel searchSettingsLbl;
     private javax.swing.JComboBox settingsComboBox;
-    private javax.swing.JLabel spectraFilesLabel;
-    private javax.swing.JTextField spectraFilesTxt;
+    private javax.swing.JLabel spectrumFilesLabel;
+    private javax.swing.JTextField spectrumFilesTxt;
     private javax.swing.JPanel taskEditorPanel;
     private javax.swing.JButton thermoRawFileParserButton;
     private javax.swing.JCheckBox thermoRawFileParserCheckBox;
@@ -5222,13 +6064,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void editIdentificationParameters() {
 
         IdentificationParametersEditionDialog identificationParametersEditionDialog = new IdentificationParametersEditionDialog(
-                this, identificationParameters, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), lastSelectedFolder, true);
+                this,
+                identificationParameters,
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
+                lastSelectedFolder,
+                true
+        );
 
         if (!identificationParametersEditionDialog.isCanceled()) {
+
             IdentificationParameters tempIdentificationParameters = identificationParametersEditionDialog.getIdentificationParameters();
             identificationParametersFile = IdentificationParametersFactory.getIdentificationParametersFile(tempIdentificationParameters.getName());
             setIdentificationParameters(tempIdentificationParameters);
+
         }
     }
 
@@ -5236,39 +6085,72 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Opens a dialog allowing the setting of paths.
      */
     public void editPathParameters() {
+
         try {
+
             HashMap<PathKey, String> pathParameters = new HashMap<>();
+
             for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
+
                 pathParameters.put(searchGUIPathKey, SearchGUIPathParameters.getPathParameter(searchGUIPathKey, getJarFilePath()));
+
             }
+
             for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
+
                 pathParameters.put(utilitiesPathKey, UtilitiesPathParameters.getPathParameter(utilitiesPathKey));
+
             }
+
             PathParametersDialog pathParametersDialog = new PathParametersDialog(this, "SearchGUI", pathParameters);
+
             if (!pathParametersDialog.isCanceled()) {
+
                 HashMap<PathKey, String> newParameters = pathParametersDialog.getKeyToPathMap();
+
                 for (PathKey pathKey : pathParameters.keySet()) {
+
                     String oldPath = pathParameters.get(pathKey);
                     String newPath = newParameters.get(pathKey);
+
                     if (oldPath == null && newPath != null
                             || oldPath != null && newPath == null
                             || oldPath != null && newPath != null && !oldPath.equals(newPath)) {
+
                         SearchGUIPathParameters.setPathParameter(pathKey, newPath);
+
                     }
                 }
+
                 // write path file preference
                 File destinationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+
                 try {
+
                     SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getJarFilePath());
                     restart();
+
                 } catch (Exception e) {
+
                     e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, new String[]{"An error occurred while setting the configuration ", e.getMessage()}, "Error Reading File", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            this,
+                            new String[]{"An error occurred while setting the configuration ", e.getMessage()},
+                            "Error Reading File",
+                            JOptionPane.WARNING_MESSAGE
+                    );
                 }
             }
+
         } catch (Exception e) {
+
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, new String[]{"An error occurred while setting the configuration ", e.getMessage()}, "Error Reading File", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this,
+                    new String[]{"An error occurred while setting the configuration ", e.getMessage()},
+                    "Error Reading File",
+                    JOptionPane.WARNING_MESSAGE
+            );
         }
     }
 
@@ -5277,7 +6159,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void editPeptideShakerParameters() {
 
-        PeptideShakerParametersDialog psParametersDialog = new PeptideShakerParametersDialog(this, true, searchHandler.getMascotFiles());
+        PeptideShakerParametersDialog psParametersDialog = new PeptideShakerParametersDialog(
+                this,
+                true,
+                searchHandler.getMascotFiles()
+        );
 
         if (!psParametersDialog.isCanceled()) {
 
@@ -5298,13 +6184,20 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param aFolder the new output folder
      */
     private void setOutputFolder(File aFolder) {
+
         if (aFolder != null) {
+
             outputFolder = aFolder;
             outputFolderTxt.setText(outputFolder.getAbsolutePath());
+
             if (outputFolderTxt.getText().length() > 70) {
+
                 outputFolderTxt.setHorizontalAlignment(JTextField.LEADING);
+
             } else {
+
                 outputFolderTxt.setHorizontalAlignment(JTextField.CENTER);
+
             }
         }
     }
@@ -5321,31 +6214,33 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     /**
      * Set the spectrum files.
      *
-     * @param files the spectrum files.
+     * @param spectrumFiles the spectrum files.
+     * @param rawFiles the raw files.
      */
-    private void setSpectrumFiles(ArrayList<File> mgfFiles, ArrayList<File> rawFiles) {
+    private void setSpectrumFiles(ArrayList<File> spectrumFiles, ArrayList<File> rawFiles) {
 
-        if (mgfFiles != null) {
-            this.mgfFiles = mgfFiles;
+        if (spectrumFiles != null) {
+
+            this.spectrumFiles = spectrumFiles;
+
         } else {
-            mgfFiles = new ArrayList<>();
+
+            spectrumFiles = new ArrayList<>(0);
+
         }
 
         if (rawFiles != null) {
+
             this.rawFiles = rawFiles;
+
         } else {
-            rawFiles = new ArrayList<>();
+
+            rawFiles = new ArrayList<>(0);
+
         }
 
-        // note: already done in the command line
-//        // verify that all mgf files have different names
-//        if (!verifyMgfFilesNames()) {
-//            mgfFiles.clear();
-//        } else {
-//            // check if some of the mgfs are too big
-//            verifyMgfFilesSize();
-//        }
-        spectraFilesTxt.setText((mgfFiles.size() + rawFiles.size()) + " file(s) selected");
+        spectrumFilesTxt.setText((spectrumFiles.size() + rawFiles.size()) + " file(s) selected");
+
     }
 
     /**
@@ -5354,7 +6249,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @return the spectra file selected
      */
     public ArrayList<File> getMgfFiles() {
-        return mgfFiles;
+        return spectrumFiles;
     }
 
     /**
@@ -5377,39 +6272,101 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean direcTagValid = true;
 
         if (enableOmssaJCheckBox.isSelected()) {
-            omssaValid = validateSearchEngineInstallation(Advocate.omssa, searchHandler.getOmssaLocation(), showMessage);
+
+            omssaValid = validateSearchEngineInstallation(
+                    Advocate.omssa,
+                    searchHandler.getOmssaLocation(),
+                    showMessage
+            );
+
         }
         if (enableXTandemJCheckBox.isSelected()) {
-            xtandemValid = validateSearchEngineInstallation(Advocate.xtandem, searchHandler.getXtandemLocation(), showMessage);
+
+            xtandemValid = validateSearchEngineInstallation(
+                    Advocate.xtandem,
+                    searchHandler.getXtandemLocation(),
+                    showMessage
+            );
+
         }
         if (enableMsgfJCheckBox.isSelected()) {
-            msgfValid = validateSearchEngineInstallation(Advocate.msgf, searchHandler.getMsgfLocation(), showMessage);
+
+            msgfValid = validateSearchEngineInstallation(
+                    Advocate.msgf,
+                    searchHandler.getMsgfLocation(),
+                    showMessage
+            );
+
         }
         if (enableMsAmandaJCheckBox.isSelected()) {
-            msAmandaValid = validateSearchEngineInstallation(Advocate.msAmanda, searchHandler.getMsAmandaLocation(), showMessage);
+
+            msAmandaValid = validateSearchEngineInstallation(
+                    Advocate.msAmanda,
+                    searchHandler.getMsAmandaLocation(),
+                    showMessage
+            );
+
         }
         if (enableMyriMatchJCheckBox.isSelected()) {
-            myriMatchValid = validateSearchEngineInstallation(Advocate.myriMatch, searchHandler.getMyriMatchLocation(), showMessage);
+
+            myriMatchValid = validateSearchEngineInstallation(
+                    Advocate.myriMatch,
+                    searchHandler.getMyriMatchLocation(),
+                    showMessage
+            );
+
         }
         if (enableCometJCheckBox.isSelected()) {
-            cometValid = validateSearchEngineInstallation(Advocate.comet, searchHandler.getCometLocation(), showMessage);
+
+            cometValid = validateSearchEngineInstallation(
+                    Advocate.comet,
+                    searchHandler.getCometLocation(),
+                    showMessage
+            );
+
         }
         if (enableTideJCheckBox.isSelected()) {
-            tideValid = validateSearchEngineInstallation(Advocate.tide, searchHandler.getTideLocation(), showMessage);
+
+            tideValid = validateSearchEngineInstallation(
+                    Advocate.tide,
+                    searchHandler.getTideLocation(),
+                    showMessage
+            );
+
         }
         if (enableAndromedaJCheckBox.isSelected()) {
-            andromedaValid = validateSearchEngineInstallation(Advocate.andromeda, searchHandler.getAndromedaLocation(), showMessage);
+
+            andromedaValid = validateSearchEngineInstallation(
+                    Advocate.andromeda,
+                    searchHandler.getAndromedaLocation(),
+                    showMessage
+            );
+
         }
         if (enableNovorJCheckBox.isSelected()) {
-            novorValid = validateSearchEngineInstallation(Advocate.novor, searchHandler.getNovorLocation(), showMessage);
+
+            novorValid = validateSearchEngineInstallation(
+                    Advocate.novor,
+                    searchHandler.getNovorLocation(),
+                    showMessage
+            );
+
         }
         if (enableDirecTagJCheckBox.isSelected()) {
-            direcTagValid = validateSearchEngineInstallation(Advocate.direcTag, searchHandler.getDirecTagLocation(), showMessage);
+
+            direcTagValid = validateSearchEngineInstallation(
+                    Advocate.direcTag,
+                    searchHandler.getDirecTagLocation(),
+                    showMessage
+            );
+
         }
 
         if (!omssaValid || !xtandemValid || !msgfValid || !msAmandaValid || !myriMatchValid
                 || !cometValid || !tideValid || !andromedaValid || !novorValid || !direcTagValid) {
+
             new SoftwareLocationDialog(this, true);
+
         }
 
         return omssaValid && xtandemValid && msgfValid && msAmandaValid && myriMatchValid
@@ -5435,44 +6392,82 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 && !enableAndromedaJCheckBox.isSelected()
                 && !enableNovorJCheckBox.isSelected()
                 && !enableDirecTagJCheckBox.isSelected()) {
+
             if (showMessage && valid) {
-                JOptionPane.showMessageDialog(this, "You need to select at least one search engine or de novo algorithm.", "Input Error", JOptionPane.WARNING_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "You need to select at least one search engine or de novo algorithm.",
+                        "Input Error",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
             }
+
             valid = false;
+
         }
 
-        if (mgfFiles.isEmpty() && rawFiles.isEmpty()) {
+        if (spectrumFiles.isEmpty() && rawFiles.isEmpty()) {
+
             if (showMessage && valid) {
-                JOptionPane.showMessageDialog(this, "You need to select at least one spectrum file.", "Spectra Files Not Found", JOptionPane.WARNING_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "You need to select at least one spectrum file.",
+                        "Spectra Files Not Found",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
             }
-            spectraFilesLabel.setForeground(Color.RED);
-            spectraFilesLabel.setToolTipText("Please select at least one spectrum file");
-            spectraFilesTxt.setToolTipText(null);
+
+            spectrumFilesLabel.setForeground(Color.RED);
+            spectrumFilesLabel.setToolTipText("Please select at least one spectrum file");
+            spectrumFilesTxt.setToolTipText(null);
             valid = false;
-            spectraFilesTxt.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            spectrumFilesTxt.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
         } else {
-            spectraFilesLabel.setToolTipText(null);
-            spectraFilesTxt.setToolTipText("Click to see the selected files");
-            spectraFilesTxt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-            spectraFilesLabel.setForeground(Color.BLACK);
+
+            spectrumFilesLabel.setToolTipText(null);
+            spectrumFilesTxt.setToolTipText("Click to see the selected files");
+            spectrumFilesTxt.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            spectrumFilesLabel.setForeground(Color.BLACK);
+
         }
 
         if (databaseFileTxt.getText() == null || databaseFileTxt.getText().trim().equals("")) {
+
             if (showMessage && valid) {
-                JOptionPane.showMessageDialog(this, "You need to specify a search database.", "Search Database Not Found", JOptionPane.WARNING_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "You need to specify a search database.",
+                        "Search Database Not Found",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
             }
+
             databaseSettingsLbl.setForeground(Color.RED);
             databaseSettingsLbl.setToolTipText("Please select a valid '.fasta' or '.fas' database file");
             databaseFileTxt.setToolTipText(null);
             valid = false;
+
         } else {
+
             File test = new File(databaseFileTxt.getText().trim());
 
             if (!test.exists()) {
 
                 if (showMessage && valid) {
 
-                    JOptionPane.showMessageDialog(this, "The database file could not be found.", "Search Database Not Found", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "The database file could not be found.",
+                            "Search Database Not Found",
+                            JOptionPane.WARNING_MESSAGE
+                    );
 
                 }
 
@@ -5490,33 +6485,62 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // validate the output folder
         if (outputFolderTxt.getText() == null || outputFolderTxt.getText().trim().equals("")) {
+
             if (showMessage && valid) {
-                JOptionPane.showMessageDialog(this, "You need to specify an output folder.", "Output Folder Not Found", JOptionPane.WARNING_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "You need to specify an output folder.",
+                        "Output Folder Not Found",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
             }
+
             resultFolderLbl.setForeground(Color.RED);
             resultFolderLbl.setToolTipText("Please select an output folder");
             valid = false;
+
         } else if (!new File(outputFolderTxt.getText()).exists()) {
-            int value = JOptionPane.showConfirmDialog(this, "The selected output folder does not exist. Do you want to create it?", "Folder Not Found", JOptionPane.YES_NO_OPTION);
+
+            int value = JOptionPane.showConfirmDialog(
+                    this,
+                    "The selected output folder does not exist. Do you want to create it?",
+                    "Folder Not Found",
+                    JOptionPane.YES_NO_OPTION
+            );
 
             if (value == JOptionPane.YES_OPTION) {
+
                 boolean success = new File(outputFolderTxt.getText()).mkdir();
 
                 if (!success) {
-                    JOptionPane.showMessageDialog(this, "Failed to create the output folder. Please create it manually and re-select it.", "File Error", JOptionPane.ERROR_MESSAGE);
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Failed to create the output folder. Please create it manually and re-select it.",
+                            "File Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                     valid = false;
+
                 } else {
+
                     resultFolderLbl.setForeground(Color.BLACK);
                     resultFolderLbl.setToolTipText(null);
+
                 }
             }
         } else {
+
             resultFolderLbl.setForeground(Color.BLACK);
             resultFolderLbl.setToolTipText(null);
+
         }
 
         searchButton.setEnabled(valid);
         return valid;
+
     }
 
     /**
@@ -5532,36 +6556,58 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         if (settingsComboBox.getSelectedIndex() == 0) {
+
             searchSettingsLbl.setForeground(Color.RED);
             searchSettingsLbl.setToolTipText("Please check the search settings");
             return false;
+
         } else {
+
             String parametersName = identificationParameters.getName();
+
             if (parametersName == null) {
-                parametersName = Util.removeExtension(identificationParametersFile.getName());
+
+                parametersName = IoUtil.removeExtension(identificationParametersFile.getName());
+
             }
+
             SearchParameters searchParameters = identificationParameters.getSearchParameters();
-            SearchParametersDialog settingsDialog = new SearchParametersDialog(this, searchParameters,
+            SearchParametersDialog settingsDialog = new SearchParametersDialog(
+                    this,
+                    searchParameters,
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                    false, true, lastSelectedFolder, parametersName, true);
+                    false,
+                    true,
+                    lastSelectedFolder,
+                    parametersName,
+                    true
+            );
             boolean valid = settingsDialog.validateParametersInput(false);
 
             if (!valid) {
+
                 if (showMessage) {
+
                     settingsDialog.validateParametersInput(true);
                     editIdentificationParameters();
+
                 } else {
+
                     searchSettingsLbl.setForeground(Color.RED);
                     searchSettingsLbl.setToolTipText("Please check the search settings");
+
                 }
             } else {
+
                 searchParameters.setRefMass(utilitiesUserParameters.getRefMass());
                 searchSettingsLbl.setToolTipText(null);
                 searchSettingsLbl.setForeground(Color.BLACK);
+
             }
 
             return valid;
+
         }
     }
 
@@ -5572,393 +6618,35 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @return true if all mgf files have different names, false otherwise
      */
     public boolean verifyMgfFilesNames() {
-        for (File file1 : mgfFiles) {
-            for (File file2 : mgfFiles) {
+
+        for (File file1 : spectrumFiles) {
+
+            for (File file2 : spectrumFiles) {
+
                 if (file1 != file2 && file1.getName().equals(file2.getName())) {
 
                     this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
-                    JOptionPane.showMessageDialog(this,
+                    JOptionPane.showMessageDialog(
+                            this,
                             "The following files have the same name: \n"
                             + file1.getAbsolutePath() + "\n"
                             + file2.getAbsolutePath() + "\n\n"
                             + "Please select files with unique file names.",
                             "Identical File Names!",
-                            JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.WARNING_MESSAGE
+                    );
 
                     this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
 
                     return false;
+
                 }
             }
         }
+
         return true;
-    }
 
-    /**
-     * Validates an MGF file.
-     *
-     * @param currentSpectrumFile the MGF file to validate
-     * @param waitingHandler the waiting handler
-     * @return true, if the file is validated, false if canceled by the user
-     */
-    private boolean validateMgfFile(File currentSpectrumFile, WaitingHandler waitingHandler) {
-
-        boolean canceled = false;
-
-        try {
-            // index the file, if needed
-            spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-
-            if (waitingHandler.isRunCanceled()) {
-                return false;
-            }
-
-            // @TODO: merge with code from the cli (and make it gui independent!)
-            File indexFile = new File(currentSpectrumFile.getParent(), currentSpectrumFile.getName() + ".cui");
-
-            // check for missing spectrum titles
-            if (spectrumFactory.getIndex(indexFile).getSpectrumTitles().size() < spectrumFactory.getIndex(indexFile).getNSpectra()) {
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
-
-                String errorText;
-
-                if (spectrumFactory.getIndex(indexFile).getSpectrumTitles().isEmpty()) {
-                    errorText = "No spectrum titles found in file: ";
-                } else {
-                    errorText = "Spectrum titles missing in file: ";
-                }
-
-                Object[] options = {"Yes", "No", "Cancel"};
-                int result = JOptionPane.showOptionDialog(this,
-                        errorText + " \'" + currentSpectrumFile.getName() + "\'.\n"
-                        + "Spectrum titles are mandatory in SearchGUI and PeptideShaker.\n"
-                        + "Add the missing spectrum titles?",
-                        "Spectrum Titles?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-                if (result == JOptionPane.YES_OPTION) {
-                    // add missing titles
-                    this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                    progressDialog.setTitle("Adding Missing Spectrum Titles. Please Wait...");
-                    spectrumFactory.closeFiles();
-                    MgfReader.addMissingSpectrumTitles(currentSpectrumFile, waitingHandler);
-                    progressDialog.setTitle("Indexing File. Please Wait...");
-                    spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-                } else {
-                    // don't use the file
-                    this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                    return false;
-                }
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-            }
-
-            // check for lack of peak picking
-            if (utilitiesUserParameters.checkPeakPicking() && !spectrumFactory.getIndex(indexFile).isPeakPicked()) {
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
-
-                int result = JOptionPane.showConfirmDialog(this,
-                        JOptionEditorPane.getJOptionEditorPane(
-                                "The file \'" + currentSpectrumFile.getName() + "\' contains zero intensity peaks.<br><br>"
-                                + "Please make sure that the file is peak picked.<br>"
-                                + "See <a href=\"https://compomics.com/bioinformatics-for-proteomics\">Bioinformatics for Proteomics - Chapter 1.2</a> for more help.<br><br>"
-                                + "Do you want to continue with this mgf file anyway?"),
-                        "Remove zero intensities?", JOptionPane.YES_NO_CANCEL_OPTION);
-
-                if (result == JOptionPane.YES_OPTION) {
-                    // remove zero intensities
-                    this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                    progressDialog.setTitle("Removing Zero Intensities. Please Wait...");
-                    spectrumFactory.closeFiles();
-                    MgfReader.removeZeroes(currentSpectrumFile, waitingHandler);
-                    progressDialog.setTitle("Indexing File. Please Wait...");
-                    spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-                } else {
-                    // don't use the file
-                    this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                    return false;
-                }
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-            }
-
-            if (canceled) {
-                return false;
-            }
-
-            // check for ms2 spectra
-            if (spectrumFactory.getIndex(indexFile).getMaxPeakCount() == 0) {
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
-                JOptionPane.showMessageDialog(this, "No MS2 spectra found in file: " + currentSpectrumFile.getName() + "!"
-                        + "\nFile will be ignored.", "No MS2 Spectra", JOptionPane.WARNING_MESSAGE);
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                return false;
-            }
-
-            // check for duplicate titles
-            HashMap<String, Integer> duplicatedSpectrumTitles = spectrumFactory.getIndex(indexFile).getDuplicatedSpectrumTitles();
-
-            if (utilitiesUserParameters.checkDuplicateTitles() && duplicatedSpectrumTitles != null && duplicatedSpectrumTitles.size() > 0) {
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
-
-                Object[] options = {"Rename", "Delete", "Ignore"};
-                int result = JOptionPane.showOptionDialog(this,
-                        "The file \'" + currentSpectrumFile.getAbsolutePath() + "\' contains duplicate spectrum titles!\n"
-                        + "Example: \'" + duplicatedSpectrumTitles.keySet().iterator().next() + "\'.\n"
-                        + "For the complete list see the SearchGUI log file.\n\n"
-                        + "We strongly recommend having unique spectrum titles. Fix duplicated titles?",
-                        "Duplicated Spectrum Titles", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-
-                switch (result) {
-                    case JOptionPane.YES_OPTION:
-                        // rename duplicated titles
-                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                        progressDialog.setTitle("Renaming Duplicated Spectrum Titles. Please Wait...");
-                        spectrumFactory.closeFiles();
-                        MgfReader.renameDuplicateSpectrumTitles(currentSpectrumFile, waitingHandler);
-                        progressDialog.setTitle("Indexing File. Please Wait...");
-                        spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-                        break;
-                    case JOptionPane.NO_OPTION:
-                        // delete duplicated titles
-                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                        progressDialog.setTitle("Deleting Duplicated Spectrum Titles. Please Wait...");
-                        spectrumFactory.closeFiles();
-                        MgfReader.removeDuplicateSpectrumTitles(currentSpectrumFile, waitingHandler);
-                        progressDialog.setTitle("Indexing File. Please Wait...");
-                        spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-                        break;
-                    default:
-                        // do nothing with the titles
-                        break;
-                }
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-            }
-
-            // check for missing precursor charges
-            if (utilitiesUserParameters.isCheckSpectrumCharges() && spectrumFactory.getIndex(indexFile).isPrecursorChargesMissing()) {
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
-
-                int value = JOptionPane.showConfirmDialog(this,
-                        "The file \'" + currentSpectrumFile.getName() + "\' contains spectra without precursor charges.\n"
-                        + "Some search engines will ignore such spectra. Do you want to add a default range of charges?\n",
-                        "Missing Precursor Charges", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-                switch (value) {
-                    case JOptionPane.YES_OPTION:
-                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                        progressDialog.setTitle("Replacing Missing Charges. Please Wait...");
-                        spectrumFactory.closeFiles();
-                        MgfReader.addMissingPrecursorCharges(currentSpectrumFile, waitingHandler);
-                        progressDialog.setTitle("Indexing File. Please Wait...");
-                        spectrumFactory.addSpectra(currentSpectrumFile, waitingHandler);
-                        break;
-                    case JOptionPane.NO_OPTION:
-                        // do nothing, already added
-                        break;
-                    default:
-                        // cancel
-                        // don't use the file
-                        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-                        return false;
-                }
-
-                this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")));
-            }
-        } catch (FileNotFoundException e) {
-            canceled = true;
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Mgf File Error", JOptionPane.WARNING_MESSAGE);
-        } catch (IOException e) {
-            canceled = true;
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Mgf File Error", JOptionPane.WARNING_MESSAGE);
-        } catch (ClassNotFoundException e) {
-            canceled = true;
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "An error occurred while validating the mgf file: " + e.getMessage(), "Mgf Validation Error", JOptionPane.WARNING_MESSAGE);
-        } catch (Exception e) {
-            canceled = true;
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "An error occurred while validating the mgf file: " + e.getMessage(), "Mgf Validation Error", JOptionPane.WARNING_MESSAGE);
-        }
-
-        return !canceled;
-    }
-
-    /**
-     * Verifies whether MGF files are below the given maximal size and splits
-     * the large ones if needed.
-     */
-    private void verifyMgfFilesSize() {
-        ArrayList<File> fatFiles = new ArrayList<>();
-        for (File file : mgfFiles) {
-            if (file.length() > (((long) utilitiesUserParameters.getMgfMaxSize()) * 1048576)) {
-                fatFiles.add(file);
-            }
-        }
-        if (!fatFiles.isEmpty()) {
-            String message = "";
-            if (fatFiles.size() == 1) {
-                message += "The file " + fatFiles.get(0).getName() + "\nis rather large and can thus impair the search and parsing of the result files."
-                        + "\nSplit into smaller files?";
-            } else if (fatFiles.size() <= 6) {
-                message += "The files\n";
-
-                for (File file : fatFiles) {
-                    message += file.getName() + "\n";
-                }
-
-                message += " are rather large and can thus impair the search and parsing of the result files."
-                        + "\nSplit into smaller files?";
-            } else {
-                message += "Some files are rather large and can thus impair the search and parsing of the result files."
-                        + "\nSplit into smaller files?";
-            }
-            int outcome = JOptionPane.showConfirmDialog(this,
-                    message, "Large MGF Files",
-                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-            if (outcome == JOptionPane.YES_OPTION) {
-                for (File file : fatFiles) {
-                    String splittedName = file.getName().substring(0, file.getName().lastIndexOf("."));
-                    String currentName = splittedName + "_" + 1 + ".mgf";
-                    File testFile = new File(file.getParent(), currentName);
-                    if (testFile.exists()) {
-                        outcome = JOptionPane.showConfirmDialog(this,
-                                "Split files seem to alredy exist. Overwrite existing mgf files?", "Existing MGF Files",
-                                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                        if (outcome != JOptionPane.YES_OPTION) {
-                            return;
-                        }
-                        break;
-                    }
-                }
-                splitFiles(fatFiles);
-            }
-        }
-    }
-
-    /**
-     * Splits the given MGF files.
-     *
-     * @param files the files to split
-     */
-    public void splitFiles(ArrayList<File> files) {
-
-        progressDialog = new ProgressDialogX(this,
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
-                true);
-        progressDialog.setPrimaryProgressCounterIndeterminate(true);
-        progressDialog.setTitle("Splitting MGF File(s). Please Wait...");
-
-        final SearchGUI finalRef = this;
-
-        final ArrayList<File> originalMgfFiles = new ArrayList<>(files);
-
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    progressDialog.setVisible(true);
-                } catch (IndexOutOfBoundsException e) {
-                    // ignore
-                }
-            }
-        }, "ProgressDialog").start();
-
-        new Thread("SplitThread") {
-            @Override
-            public void run() {
-                for (File originalFile : originalMgfFiles) {
-
-                    if (progressDialog.isRunCanceled()) {
-                        break;
-                    }
-
-                    ArrayList<MgfIndex> indexes;
-                    progressDialog.setTitle("Splitting " + originalFile.getName() + ". Please Wait...");
-                    progressDialog.setPrimaryProgressCounterIndeterminate(false);
-
-                    try {
-                        indexes = mgfReader.splitFile(originalFile, utilitiesUserParameters.getMgfNSpectra(), progressDialog);
-                    } catch (FileNotFoundException e) {
-                        progressDialog.setRunFinished();
-                        JOptionPane.showMessageDialog(finalRef,
-                                new String[]{"Mgf Splitting Error.", "File " + originalFile.getName() + " not found."},
-                                "Mgf Splitting Error", JOptionPane.WARNING_MESSAGE);
-                        e.printStackTrace();
-                        return;
-                    } catch (IOException e) {
-                        progressDialog.setRunFinished();
-                        JOptionPane.showMessageDialog(finalRef,
-                                new String[]{"Mgf Splitting Error.", "An error occurred while reading/writing the mgf file."},
-                                "Mgf Splitting Error", JOptionPane.WARNING_MESSAGE);
-                        e.printStackTrace();
-                        return;
-                    } catch (OutOfMemoryError error) {
-                        Runtime.getRuntime().gc();
-                        progressDialog.setRunFinished();
-                        JOptionPane.showMessageDialog(finalRef,
-                                "SearchGUI used up all the available memory and had to be stopped.\n"
-                                + "Memory boundaries are set in the Edit menu (Edit > Java Options).",
-                                "Out Of Memory Error",
-                                JOptionPane.ERROR_MESSAGE);
-                        System.out.println("Ran out of memory!");
-                        error.printStackTrace();
-                        return;
-                    }
-
-                    if (progressDialog.isRunCanceled()) {
-                        progressDialog.setRunFinished();
-                        return;
-                    }
-
-                    try {
-                        if (indexes != null && !indexes.isEmpty()) {
-                            progressDialog.setPrimaryProgressCounterIndeterminate(false);
-                            progressDialog.setMaxPrimaryProgressCounter(indexes.size());
-                            progressDialog.setTitle("Writing Indexes. Please Wait...");
-                            for (int i = 0; i < indexes.size() && !progressDialog.isRunCanceled(); i++) {
-                                spectrumFactory.writeIndex(indexes.get(i), originalFile.getParentFile());
-                                progressDialog.setValue(i);
-                            }
-                        }
-                    } catch (IOException e) {
-                        progressDialog.setRunFinished();
-                        JOptionPane.showMessageDialog(finalRef,
-                                new String[]{"MGF Splitting Error.", "An error occurred while writing an mgf index."},
-                                "MGF Splitting Error", JOptionPane.WARNING_MESSAGE);
-                        e.printStackTrace();
-                        return;
-                    }
-
-                    if (progressDialog.isRunCanceled()) {
-                        progressDialog.setRunFinished();
-                        return;
-                    }
-
-                    mgfFiles.remove(originalFile);
-
-                    for (int i = 0; i < indexes.size() && !progressDialog.isRunCanceled(); i++) {
-                        File newFile = new File(originalFile.getParent(), indexes.get(i).getFileName());
-                        mgfFiles.add(newFile);
-                    }
-                }
-
-                if (progressDialog.isRunCanceled()) {
-                    progressDialog.setRunFinished();
-                } else {
-                    progressDialog.setRunFinished();
-                    spectraFilesTxt.setText(mgfFiles.size() + " file(s) selected");
-                    JOptionPane.showMessageDialog(finalRef, "MGF file(s) split and selected.", "Files Split", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        }.start();
     }
 
     /**
@@ -5990,20 +6678,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         // set the look and feel
         boolean numbusLookAndFeelSet = false;
         try {
+
             numbusLookAndFeelSet = UtilitiesGUIDefaults.setLookAndFeel();
 
             // fix for the scroll bar thumb disappearing...
             LookAndFeel lookAndFeel = UIManager.getLookAndFeel();
             UIDefaults defaults = lookAndFeel.getDefaults();
             defaults.put("ScrollBar.minimumThumbSize", new Dimension(30, 30));
+
         } catch (Exception e) {
         }
 
         if (!numbusLookAndFeelSet) {
-            JOptionPane.showMessageDialog(null,
+
+            JOptionPane.showMessageDialog(
+                    null,
                     "Failed to set the default look and feel. Using backup look and feel.\n"
                     + "SearchGUI will work but not look as good as it should...", "Look and Feel",
-                    JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE
+            );
         }
 
         // need to add some padding to the text in the titled borders on Java 1.7 
@@ -6020,51 +6713,94 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean spectrum = false, fasta = false, raw = false, parameters = false, output = false, species = false, speciesType = false, projectName = false;
 
         for (String arg : args) {
+
             if (spectrum) {
+
                 try {
+
                     ArrayList<String> extensions = new ArrayList<>();
                     extensions.add(".mgf");
                     spectrumFiles = CommandLineUtils.getFiles(arg, extensions);
+
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,
-                            "Failed importing spectrum files from command line option " + arg + ".", "Spectrum Files",
-                            JOptionPane.WARNING_MESSAGE);
+
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Failed importing spectrum files from command line option " + arg + ".",
+                            "Spectrum Files",
+                            JOptionPane.WARNING_MESSAGE
+                    );
                     e.printStackTrace();
+
                 }
+
                 spectrum = false;
+
             }
+
             if (fasta) {
+
                 fastaFile = new File(arg);
                 fasta = false;
+
             }
+
             if (raw) {
+
                 try {
+
                     ArrayList<String> extensions = new ArrayList<>();
+
                     for (ProteoWizardMsFormat format : ProteoWizardMsFormat.values()) {
+
                         if (format != ProteoWizardMsFormat.mgf) {
+
                             extensions.add(format.fileNameEnding);
+
                         }
                     }
+
                     rawFiles = CommandLineUtils.getFiles(arg, extensions);
+
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,
-                            "Failed importing raw files from command line option " + arg + ".", "Raw Files",
-                            JOptionPane.WARNING_MESSAGE);
+
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Failed importing raw files from command line option " + arg + ".",
+                            "Raw Files",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+
                     e.printStackTrace();
+
                 }
+
                 raw = false;
             }
+
             if (parameters) {
+
                 searchParametersFile = new File(arg);
+
                 try {
+
                     IdentificationParameters.getIdentificationParameters(searchParametersFile);
+
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,
-                            "Failed to import search parameters from: " + searchParametersFile.getAbsolutePath() + ".", "Search Parameters",
-                            JOptionPane.WARNING_MESSAGE);
+
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Failed to import search parameters from: " + searchParametersFile.getAbsolutePath() + ".",
+                            "Search Parameters",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+
                     e.printStackTrace();
+
                 }
+
                 parameters = false;
+
             }
             if (output) {
                 outputFolder = new File(arg);
@@ -6105,7 +6841,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         }
 
-        new SearchGUI(spectrumFiles, fastaFile, rawFiles, searchParametersFile, outputFolder, currentSpecies, currentSpeciesType, currentProjectName);
+        new SearchGUI(
+                spectrumFiles,
+                fastaFile,
+                rawFiles,
+                searchParametersFile,
+                outputFolder,
+                currentSpecies,
+                currentSpeciesType,
+                currentProjectName
+        );
     }
 
     /**
@@ -6114,11 +6859,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @return the last selected folder
      */
     public LastSelectedFolder getLastSelectedFolder() {
+
         if (lastSelectedFolder == null) {
+
             lastSelectedFolder = new LastSelectedFolder();
             utilitiesUserParameters.setLastSelectedFolder(lastSelectedFolder);
+
         }
+
         return lastSelectedFolder;
+
     }
 
     /**
@@ -6179,20 +6929,33 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     boolean fileCreated = file.createNewFile();
 
                     if (fileCreated) {
+
                         FileWriter w = new FileWriter(file);
                         BufferedWriter bw = new BufferedWriter(w);
                         bw.close();
                         w.close();
+
                     } else {
-                        JOptionPane.showMessageDialog(this, "Failed to create the file log file.\n"
-                                + "Please contact the developers.", "File Error", JOptionPane.OK_OPTION);
+
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Failed to create the file log file.\nPlease contact the developers.",
+                                "File Error",
+                                JOptionPane.OK_OPTION
+                        );
                     }
                 }
             } catch (Exception e) {
+
                 JOptionPane.showMessageDialog(
-                        null, "An error occurred when trying to create the SearchGUI log file.",
-                        "Error Creating Log File", JOptionPane.ERROR_MESSAGE);
+                        null,
+                        "An error occurred when trying to create the SearchGUI log file.",
+                        "Error Creating Log File",
+                        JOptionPane.ERROR_MESSAGE
+                );
+
                 e.printStackTrace();
+
             }
         }
     }
@@ -6205,14 +6968,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         if (validateInput(true)) {
 
-            waitingDialog = new WaitingDialog(this,
+            waitingDialog = new WaitingDialog(
+                    this,
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), false,
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
+                    false,
                     getTips(),
                     "Search",
                     "SearchGUI",
                     new eu.isas.searchgui.utilities.Properties().getVersion(),
-                    true);
+                    true
+            );
 
             waitingDialog.addWaitingActionListener(new WaitingActionListener() {
                 @Override
@@ -6252,12 +7018,23 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         File folder = new File(getJarFilePath() + File.separator + "resources" + File.separator + "conf" + File.separator);
 
         if (!folder.exists()) {
-            JOptionPane.showMessageDialog(this, new String[]{"Unable to find folder: '" + folder.getAbsolutePath() + "'!",
-                "Could not save search engine locations."}, "Folder Not Found", JOptionPane.WARNING_MESSAGE);
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    new String[]{
+                        "Unable to find folder: '" + folder.getAbsolutePath() + "'!",
+                        "Could not save search engine locations."
+                    },
+                    "Folder Not Found",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
         } else {
+
             File output = new File(folder, SearchHandler.SEARCHGUI_CONFIGURATION_FILE);
-            try {
-                BufferedWriter bw = new BufferedWriter(new FileWriter(output));
+
+            try ( BufferedWriter bw = new BufferedWriter(new FileWriter(output))) {
+
                 bw.write("OMSSA Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getOmssaLocation() + System.getProperty("line.separator") + searchHandler.isOmssaEnabled() + System.getProperty("line.separator"));
                 bw.write("X!Tandem Location:" + System.getProperty("line.separator"));
@@ -6282,12 +7059,19 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 bw.write(searchHandler.getMakeblastdbLocation() + System.getProperty("line.separator") + System.getProperty("line.separator"));
                 bw.write("Modification use:" + System.getProperty("line.separator"));
                 bw.write(getModificationUseAsString() + System.getProperty("line.separator"));
-                bw.flush();
-                bw.close();
+
             } catch (IOException ioe) {
+
                 ioe.printStackTrace();
-                JOptionPane.showMessageDialog(this, new String[]{"Unable to write file: '" + ioe.getMessage() + "'!",
-                    "Could not save search engine locations."}, "Search Engine Location Error", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        this,
+                        new String[]{
+                            "Unable to write file: '" + ioe.getMessage() + "'!",
+                            "Could not save search engine locations."
+                        },
+                        "Search Engine Location Error",
+                        JOptionPane.WARNING_MESSAGE
+                );
             }
         }
     }
@@ -6315,9 +7099,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param enableNovor enable Novor
      * @param enableDirecTag enable DirecTag
      */
-    public void enableSearchEngines(boolean enableOmssa, boolean enbleXTandem, boolean enableMsgf, boolean enableMsAmanda,
-            boolean enableMyriMatch, boolean enableComet, boolean enableTide, boolean enableAndromeda,
-            boolean enableNovor, boolean enableDirecTag) {
+    public void enableSearchEngines(
+            boolean enableOmssa,
+            boolean enbleXTandem,
+            boolean enableMsgf,
+            boolean enableMsAmanda,
+            boolean enableMyriMatch,
+            boolean enableComet,
+            boolean enableTide,
+            boolean enableAndromeda,
+            boolean enableNovor,
+            boolean enableDirecTag
+    ) {
 
         enableOmssaJCheckBox.setSelected(enableOmssa);
         enableXTandemJCheckBox.setSelected(enbleXTandem);
@@ -6342,6 +7135,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setDirecTagEnabled(enableDirecTag);
 
         validateInput(false);
+
     }
 
     /**
@@ -6358,7 +7152,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param identificationParameters the identification parameters
      */
-    public void setIdentificationParameters(IdentificationParameters identificationParameters) {
+    public void setIdentificationParameters(
+            IdentificationParameters identificationParameters
+    ) {
+
         this.identificationParameters = identificationParameters;
 
         Vector parameterList = new Vector();
@@ -6372,6 +7169,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         settingsComboBox.setSelectedItem(identificationParameters.getName());
 
         validateInput(false);
+
     }
 
     /**
@@ -6390,9 +7188,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * while reading or writing the paths configuration file
      */
     public void setPathConfiguration() throws IOException {
+
         File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+
         if (pathConfigurationFile.exists()) {
+
             SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
+
         }
     }
 
@@ -6439,47 +7241,173 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * installed
      * @param feedBackInDialog shows feedback in dialog, otherwise the
      * feedbackDialog will be used
+     *
      * @return true if the search engine seems to be correctly installed, false
      * otherwise
      */
-    public static boolean validateSearchEngineInstallation(Advocate advocate, File searchEngineLocation, boolean feedBackInDialog) {
+    public static boolean validateSearchEngineInstallation(
+            Advocate advocate,
+            File searchEngineLocation,
+            boolean feedBackInDialog
+    ) {
 
         if (advocate == Advocate.omssa) {
-            return validateSearchEngineInstallation(Advocate.omssa, OmssaclProcessBuilder.EXECUTABLE_FILE_NAME, "-ml", null, searchEngineLocation, null, false, feedBackInDialog);
+
+            return validateSearchEngineInstallation(
+                    Advocate.omssa,
+                    OmssaclProcessBuilder.EXECUTABLE_FILE_NAME,
+                    "-ml",
+                    null,
+                    searchEngineLocation,
+                    null,
+                    false,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.xtandem) {
-            return validateSearchEngineInstallation(Advocate.xtandem, TandemProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, false, feedBackInDialog);
+
+            return validateSearchEngineInstallation(
+                    Advocate.xtandem,
+                    TandemProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    null,
+                    false,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.msgf) {
-            return validateSearchEngineInstallation(Advocate.msgf, MsgfProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, true, feedBackInDialog);
+
+            return validateSearchEngineInstallation(
+                    Advocate.msgf,
+                    MsgfProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    null,
+                    true,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.msAmanda) {
+
             String operatingSystem = System.getProperty("os.name").toLowerCase();
             String mono = null;
+
             if (!operatingSystem.contains("windows")) {
+
                 mono = "mono";
+
                 // modern mac os x versions need a specific mono path
                 if (operatingSystem.contains("mac os x")) {
+
                     StringTokenizer versionTokens = new StringTokenizer(System.getProperty("os.version"), ".");
+
                     if (versionTokens.countTokens() > 1) {
+
                         int mainVersion = new Integer(versionTokens.nextToken());
                         int subversion = new Integer(versionTokens.nextToken());
+
                         if (mainVersion >= 10 && subversion >= 11) {
+
                             mono = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
+
                         }
                     }
                 }
             }
-            return validateSearchEngineInstallation(Advocate.msAmanda, MsAmandaProcessBuilder.EXECUTABLE_FILE_NAME, null, mono, searchEngineLocation, null, false, feedBackInDialog, msAmandaErrorMessage);
+
+            return validateSearchEngineInstallation(
+                    Advocate.msAmanda,
+                    MsAmandaProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    mono,
+                    searchEngineLocation,
+                    null,
+                    false,
+                    feedBackInDialog,
+                    msAmandaErrorMessage
+            );
+
         } else if (advocate == Advocate.myriMatch) {
-            return validateSearchEngineInstallation(Advocate.myriMatch, MyriMatchProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"myrimatch\"", false, feedBackInDialog); // @TODO: the usage part seems to not be picked up?
+
+            return validateSearchEngineInstallation(
+                    Advocate.myriMatch,
+                    MyriMatchProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    "Usage: \"myrimatch\"",
+                    false,
+                    feedBackInDialog
+            ); // @TODO: the usage part seems to not be picked up?
+
         } else if (advocate == Advocate.comet) {
-            return validateSearchEngineInstallation(Advocate.comet, CometProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, false, feedBackInDialog);
+
+            return validateSearchEngineInstallation(
+                    Advocate.comet,
+                    CometProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    null,
+                    false,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.tide) {
-            return validateSearchEngineInstallation(Advocate.tide, TideSearchProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, false, feedBackInDialog);
+
+            return validateSearchEngineInstallation(
+                    Advocate.tide,
+                    TideSearchProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    null,
+                    false,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.andromeda) {
-            return validateSearchEngineInstallation(Advocate.andromeda, AndromedaProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, false, feedBackInDialog);
+
+            return validateSearchEngineInstallation(
+                    Advocate.andromeda,
+                    AndromedaProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    null,
+                    false,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.novor) {
-            return validateSearchEngineInstallation(Advocate.novor, NovorProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, null, true, feedBackInDialog);
+
+            return validateSearchEngineInstallation(
+                    Advocate.novor,
+                    NovorProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    null,
+                    true,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.direcTag) {
-            return validateSearchEngineInstallation(Advocate.direcTag, DirecTagProcessBuilder.EXECUTABLE_FILE_NAME, null, null, searchEngineLocation, "Usage: \"directag\"", false, feedBackInDialog);  // @TODO: the usage part seems to not be picked up? // @TODO: why the \" ???
+
+            return validateSearchEngineInstallation(
+                    Advocate.direcTag,
+                    DirecTagProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    null,
+                    searchEngineLocation,
+                    "Usage: \"directag\"",
+                    false,
+                    feedBackInDialog
+            );  // @TODO: the usage part seems to not be picked up? // @TODO: why the \" ???
+
         }
 
         return false;
@@ -6506,9 +7434,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @return true if the search engine seems to be correctly installed, false
      * otherwise
      */
-    private static boolean validateSearchEngineInstallation(Advocate advocate, String executable, String executableOption,
-            String executableWrapper, File searchEngineLocation, String ignorableOutput, boolean isJava, boolean feedBackInDialog) {
-        return validateSearchEngineInstallation(advocate, executable, executableOption, executableWrapper, searchEngineLocation, ignorableOutput, isJava, feedBackInDialog, null);
+    private static boolean validateSearchEngineInstallation(
+            Advocate advocate,
+            String executable,
+            String executableOption,
+            String executableWrapper,
+            File searchEngineLocation,
+            String ignorableOutput,
+            boolean isJava,
+            boolean feedBackInDialog
+    ) {
+        return validateSearchEngineInstallation(
+                advocate,
+                executable,
+                executableOption,
+                executableWrapper,
+                searchEngineLocation,
+                ignorableOutput,
+                isJava,
+                feedBackInDialog,
+                null
+        );
     }
 
     /**
@@ -6534,38 +7480,61 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @return true if the search engine seems to be correctly installed, false
      * otherwise
      */
-    private static boolean validateSearchEngineInstallation(Advocate advocate, String executable, String executableOption,
-            String executableWrapper, File searchEngineLocation, String ignorableOutput, boolean isJava, boolean feedBackInDialog, String customErrorMessage) {
+    private static boolean validateSearchEngineInstallation(
+            Advocate advocate,
+            String executable,
+            String executableOption,
+            String executableWrapper,
+            File searchEngineLocation,
+            String ignorableOutput,
+            boolean isJava,
+            boolean feedBackInDialog,
+            String customErrorMessage
+    ) {
 
         boolean error = false;
 
         if (searchEngineLocation != null) {
 
             try {
+
                 ArrayList process_name_array = new ArrayList();
 
                 // add java home
                 if (isJava) {
+
                     UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
                     CompomicsWrapper wrapper = new CompomicsWrapper();
+
                     if (utilitiesUserParameters.getSearchGuiPath() != null) {
+
                         ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getSearchGuiPath());
                         process_name_array.add(javaHomeAndOptions.get(0)); // set java home
+
                     } else {
+
                         process_name_array.add("java");
+
                     }
+
                     process_name_array.add("-jar");
+
                 }
 
                 // add executable wrapper, like mono
                 if (executableWrapper != null) {
+
                     process_name_array.add(executableWrapper);
+
                 }
 
                 // add the path to the executable
                 process_name_array.add(searchEngineLocation + File.separator + executable);
+
                 if (executableOption != null) {
+
                     process_name_array.add(executableOption);
+
                 }
 
                 // set up and run the process
@@ -6584,10 +7553,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     String line = br.readLine();
 
                     while (line != null) {
+
                         System.out.println(line);
                         errorMessage += line + "\n";
                         line = br.readLine();
                         error = true;
+
                     }
                 }
 
@@ -6596,24 +7567,42 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 stderr.close();
 
                 if (ignorableOutput != null && errorMessage.contains(ignorableOutput)) {
+
                     error = false;
+
                 }
 
                 if (error) {
+
                     System.out.println(advocate + " startup error: " + errorMessage);
 
                     if (feedBackInDialog) {
+
                         if (customErrorMessage != null) {
-                            JOptionPane.showMessageDialog(null, JOptionEditorPane.getJOptionEditorPane(customErrorMessage),
-                                    advocate + " - Startup Failed", JOptionPane.INFORMATION_MESSAGE);
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    JOptionEditorPane.getJOptionEditorPane(customErrorMessage),
+                                    advocate + " - Startup Failed",
+                                    JOptionPane.INFORMATION_MESSAGE
+                            );
+
                         } else {
-                            JOptionPane.showMessageDialog(null, JOptionEditorPane.getJOptionEditorPane(
-                                    getDefaultSearchEngineStartupErrorMessage(advocate.getName())),
-                                    advocate + " - Startup Failed", JOptionPane.INFORMATION_MESSAGE);
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    JOptionEditorPane.getJOptionEditorPane(
+                                            getDefaultSearchEngineStartupErrorMessage(advocate.getName())
+                                    ),
+                                    advocate + " - Startup Failed",
+                                    JOptionPane.INFORMATION_MESSAGE
+                            );
                         }
                     }
                 } else {
+                    
                     p.destroy();
+                
                 }
 
             } catch (IOException e) {
@@ -6622,13 +7611,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 error = true;
 
                 if (feedBackInDialog) {
+                
                     if (customErrorMessage != null) {
-                        JOptionPane.showMessageDialog(null, JOptionEditorPane.getJOptionEditorPane(customErrorMessage),
-                                advocate + " - Startup Failed", JOptionPane.INFORMATION_MESSAGE);
+                    
+                        JOptionPane.showMessageDialog(
+                                null, 
+                                JOptionEditorPane.getJOptionEditorPane(customErrorMessage),
+                                advocate + " - Startup Failed", 
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                    
                     } else {
-                        JOptionPane.showMessageDialog(null, JOptionEditorPane.getJOptionEditorPane(
-                                getDefaultSearchEngineStartupErrorMessage(advocate.getName())),
-                                advocate + " - Startup Failed", JOptionPane.INFORMATION_MESSAGE);
+                    
+                        JOptionPane.showMessageDialog(
+                                null, 
+                                JOptionEditorPane.getJOptionEditorPane(
+                                getDefaultSearchEngineStartupErrorMessage(advocate.getName())
+                                ),
+                                advocate + " - Startup Failed", 
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
                     }
                 }
             } catch (Throwable t) {
@@ -6646,8 +7648,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param searchEngineName the name of the search engine
      * @return the default search engine startup error message
      */
-    private static String getDefaultSearchEngineStartupErrorMessage(String searchEngineName) {
-        return "Make sure that " + searchEngineName + " is installed correctly and that you have selected<br>"
+    private static String getDefaultSearchEngineStartupErrorMessage(
+            String searchEngineName
+    ) {
+        return "Please make sure that " + searchEngineName + " is installed correctly and that you have selected<br>"
                 + "the correct version of " + searchEngineName + " for your system. See the <a href=\"https://compomics.github.io/projects/searchgui.html#troubleshooting\">TroubleShooting</a><br>"
                 + "section at the SearchGUI web page for help, and the SearchGUI<br>"
                 + "log for details about the error.";
@@ -6663,6 +7667,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         ArrayList<String> tips;
 
         try {
+            
             InputStream stream = getClass().getResource("/tips.txt").openStream();
             InputStreamReader streamReader = new InputStreamReader(stream);
             BufferedReader b = new BufferedReader(streamReader);
@@ -6670,14 +7675,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             String line;
 
             while ((line = b.readLine()) != null) {
+
                 tips.add(line);
+
             }
 
             b.close();
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "An error occurred when reading the tip of the day.", "File Error", JOptionPane.ERROR_MESSAGE);
+
+            JOptionPane.showMessageDialog(
+                    null, 
+                    "An error occurred when reading the tip of the day.", 
+                    "File Error", 
+                    JOptionPane.ERROR_MESSAGE
+            );
             e.printStackTrace();
             tips = new ArrayList<>();
+
         }
 
         return tips;
@@ -6689,13 +7704,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @return true if a new version is to be downloaded
      */
     public boolean checkForNewVersion() {
+
         try {
+
             File jarFile = new File(SearchGUI.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
             MavenJarFile oldMavenJarFile = new MavenJarFile(jarFile.toURI());
             URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
-            return CompomicsWrapper.checkForNewDeployedVersion("SearchGUI", oldMavenJarFile, jarRepository, "searchgui.ico",
-                    false, true, true, Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), true);
+
+            return CompomicsWrapper.checkForNewDeployedVersion(
+                    "SearchGUI", 
+                    oldMavenJarFile, 
+                    jarRepository, 
+                    "searchgui.ico",
+                    false, 
+                    true, 
+                    true, 
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), 
+                    true
+            );
+            
         } catch (UnknownHostException ex) {
             // no internet connection
             System.out.println("Checking for new version failed. No internet connection.");
@@ -6721,24 +7749,36 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean checkPeptideShaker = true;
 
         if (peptideShakerCheckBox.isSelected()) {
+            
             OmssaParameters omssaParameters = (OmssaParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
+            
             if (enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
-                JOptionPane.showMessageDialog(this, JOptionEditorPane.getJOptionEditorPane(
+            
+                JOptionPane.showMessageDialog(
+                        this, 
+                        JOptionEditorPane.getJOptionEditorPane(
                         "The selected OMSSA output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
-                        + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."),
-                        "Format Warning", JOptionPane.ERROR_MESSAGE);
+                        + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."
+                        ),
+                        "Format Warning", 
+                        JOptionPane.ERROR_MESSAGE
+                );
                 peptideShakerCheckBox.setSelected(false);
                 checkPeptideShaker = false;
+                
             }
         }
 
         if (peptideShakerCheckBox.isSelected() && checkPeptideShaker || openAlways) {
             new Thread(new Runnable() {
                 public void run() {
+                    
                     // check if peptideshaker is installed
                     if (utilitiesUserParameters.getPeptideShakerPath() == null
                             || !(new File(utilitiesUserParameters.getPeptideShakerPath()).exists())) {
+                    
                         try {
+                        
                             PeptideShakerSetupDialog peptideShakerSetupDialog = new PeptideShakerSetupDialog(SearchGUI.this, true);
                             boolean canceled = peptideShakerSetupDialog.isDialogCanceled();
 
@@ -6746,15 +7786,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                                 // reload the user preferences as these may have been changed by other tools
                                 try {
+                            
                                     utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+                                
                                 } catch (Exception e) {
-                                    JOptionPane.showMessageDialog(null, "An error occurred when reading the user preferences.", "File Error", JOptionPane.ERROR_MESSAGE);
+                                
+                                    JOptionPane.showMessageDialog(
+                                            null, 
+                                            "An error occurred when reading the user preferences.", 
+                                            "File Error", 
+                                            JOptionPane.ERROR_MESSAGE
+                                    );
                                     e.printStackTrace();
+                                
                                 }
 
                                 editPeptideShakerParameters();
+                                
                             } else {
+                                
                                 peptideShakerCheckBox.setSelected(false);
+                            
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -6778,6 +7830,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean canceled = false;
 
         try {
+            
             ProteoWizardSetupDialog proteoWizardSetupDialog = new ProteoWizardSetupDialog(this, true);
             canceled = proteoWizardSetupDialog.isDialogCanceled();
 
@@ -6785,13 +7838,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // reload the user preferences as these may have been changed by other tools
                 try {
+            
                     utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+                
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "An error occurred when reading the user preferences.", "File Error", JOptionPane.ERROR_MESSAGE);
+                
+                    JOptionPane.showMessageDialog(
+                            null, 
+                            "An error occurred when reading the user preferences.", 
+                            "File Error", 
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                    
                     e.printStackTrace();
+                
                 }
             } else {
+                
                 msconvertCheckBox.setSelected(false);
+            
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -6804,15 +7869,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Check that the ProteoWizard folder is set.
      */
     private boolean checkProteoWizard() {
+        
         if (!rawFiles.isEmpty() && utilitiesUserParameters.getProteoWizardPath() == null) {
+        
             boolean folderSet = editProteoWizardInstallation();
+            
             if (!folderSet) {
-                JOptionPane.showMessageDialog(this, "ProteoWizard folder not set. Raw file(s) not selected.", "Raw File Error", JOptionPane.WARNING_MESSAGE);
+            
+                JOptionPane.showMessageDialog(
+                        this, 
+                        "ProteoWizard folder not set. Raw file(s) not selected.", 
+                        "Raw File Error", 
+                        JOptionPane.WARNING_MESSAGE
+                );
                 rawFiles.clear();
                 return false;
+            
             }
         }
+        
         return true;
+    
     }
 
     /**
@@ -6843,8 +7920,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private void enableSearchSettingsDependentFeatures(boolean enable) {
 
         // spectrum files, database and outputfolder
-        spectraFilesLabel.setEnabled(enable);
-        spectraFilesTxt.setEnabled(enable);
+        spectrumFilesLabel.setEnabled(enable);
+        spectrumFilesTxt.setEnabled(enable);
         addSpectraButton.setEnabled(enable);
         clearSpectraButton.setEnabled(enable);
         databaseSettingsLbl.setEnabled(enable);

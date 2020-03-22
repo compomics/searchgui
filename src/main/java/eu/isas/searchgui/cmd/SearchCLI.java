@@ -128,23 +128,7 @@ public class SearchCLI implements Callable {
 
         try {
             
-// @TODO: not sure if this is the best place to perform the mgf validation and splitting??
             WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
-
-            // @TODO: merge with code from the gui (and make it gui independent!)
-            // validate that all the spectra has unique spectrum titles
-            for (File spectrumFile : searchCLIInputBean.getSpectrumFiles()) {
-                
-                waitingHandlerCLIImpl.appendReport(
-                        "Validating MGF file: " + spectrumFile.getAbsolutePath(), 
-                        true, 
-                        true
-                );
-
-                // index the spectrum file
-                msFileHandler.register(spectrumFile);
-                
-            }
 
             // get the spectrum files
             ArrayList<File> spectrumFiles = searchCLIInputBean.getSpectrumFiles();

@@ -755,7 +755,7 @@ public class SearchHandler {
             UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
 
         }
-        
+
         this.msFileHandler = new MsFileHandler();
 
         searchDuration = new Duration();
@@ -1813,7 +1813,7 @@ public class SearchHandler {
      *
      * @return the mgf files
      */
-    public ArrayList<File> getMgfFiles() {
+    public ArrayList<File> getSpectrumFiles() {
         return msFiles;
     }
 
@@ -2020,7 +2020,7 @@ public class SearchHandler {
                 }
 
                 int nRawFiles = getRawFiles().size();
-                int nFilesToSearch = nRawFiles + getMgfFiles().size();
+                int nFilesToSearch = nRawFiles + getSpectrumFiles().size();
                 int nProgress = 3 + nRawFiles;
                 if (enableOmssa) {
                     nProgress += nFilesToSearch;
@@ -2338,8 +2338,10 @@ public class SearchHandler {
 
                     for (File msFile : msFiles) {
 
-                        msFileHandler.register(msFile);
-
+                        msFileHandler.register(
+                                msFile,
+                                waitingHandler
+                        );
                     }
 
                     // indexing the spectrum files
@@ -2359,31 +2361,44 @@ public class SearchHandler {
 
                 }
 
-                // keep track of the identification files created in a map: spectrum file name -> algorithm index -> identification file
+                // keep track of the identification files created in a map: spectrum file name -> software index -> identification file
                 HashMap<String, HashMap<Integer, File>> identificationFiles = new HashMap<>(msFiles.size());
 
                 // keep track of the spectrum files used to generate the id files
                 idFileToSpectrumFileMap = new HashMap<>();
 
-                for (int i = 0; i < getMgfFiles().size() && !waitingHandler.isRunCanceled(); i++) {
+                for (int i = 0; i < getSpectrumFiles().size() && !waitingHandler.isRunCanceled(); i++) {
 
-                    File spectrumFile = getMgfFiles().get(i);
+                    File spectrumFile = getSpectrumFiles().get(i);
 
                     String spectrumFileName = spectrumFile.getName();
-                    
+
                     if (useCommandLine) {
 
-                        System.out.println(
-                                System.getProperty("line.separator") + System.getProperty("line.separator")
-                                + "Processing: " + spectrumFileName + " (" + (i + 1) + "/" + getMgfFiles().size() + ")"
+                        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator")
+                                + "Processing: " + spectrumFileName + " (" + (i + 1) + "/" + getSpectrumFiles().size() + ")"
                         );
 
                     } else {
 
-                        waitingHandler.setWaitingText("Processing: " + spectrumFileName + " (" + (i + 1) + "/" + getMgfFiles().size() + ")");
+                        waitingHandler.setWaitingText("Processing: " + spectrumFileName + " (" + (i + 1) + "/" + getSpectrumFiles().size() + ")");
 
                     }
 
+                    // Write mgf file
+                    File mgfFile = null;
+                    if (enableXtandem || enableMyriMatch || enableMsAmanda || enableMsgf || enableOmssa || enableComet || enableNovor || enableDirecTag) {
+
+                        mgfFile = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".mgf");
+
+                        MsFileExporter.writeMgfFile(
+                                msFileHandler, 
+                                spectrumFileName, 
+                                mgfFile
+                        );
+                    }
+
+                    // Run X!Tandem
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
 
                         File xTandemOutputFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
@@ -2467,9 +2482,11 @@ public class SearchHandler {
                             }
 
                             waitingHandler.increasePrimaryProgressCounter();
+                            
                         }
                     }
 
+                    // Run Myrimatch
                     if (enableMyriMatch && !waitingHandler.isRunCanceled()) {
 
                         File myriMatchOutputFile = new File(outputTempFolder, getMyriMatchFileName(spectrumFileName));
@@ -2524,6 +2541,7 @@ public class SearchHandler {
                         }
                     }
 
+                    // Run MS Amanda
                     if (enableMsAmanda && !waitingHandler.isRunCanceled()) {
 
                         File msAmandaOutputFile = new File(outputTempFolder, getMsAmandaFileName(spectrumFileName));
@@ -2576,6 +2594,7 @@ public class SearchHandler {
                         }
                     }
 
+                    // Run ms-gf+
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
 
                         File msgfOutputFile = new File(outputTempFolder, getMsgfFileName(spectrumFileName));
@@ -2630,6 +2649,7 @@ public class SearchHandler {
                         }
                     }
 
+                    // Run OMSSA
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
 
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
@@ -2684,6 +2704,7 @@ public class SearchHandler {
                         }
                     }
 
+                    // Run Comet
                     if (enableComet && !waitingHandler.isRunCanceled()) {
 
                         File cometOutputFile = new File(outputTempFolder, getCometFileName(spectrumFileName));
@@ -2742,13 +2763,16 @@ public class SearchHandler {
                             }
 
                             waitingHandler.increasePrimaryProgressCounter();
+                            
                         }
                     }
 
+                    // run Tide
                     File ms2File = null;
 
                     if (enableTide && !waitingHandler.isRunCanceled()) {
 
+                        // Make ms2 file
                         waitingHandler.appendReport(
                                 "Converting spectrum file " + spectrumFileName + " for Tide.",
                                 true,
@@ -2757,7 +2781,11 @@ public class SearchHandler {
 
                         ms2File = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".ms2");
 
-                        MsFileExporter.writeMs2File(msFileHandler, spectrumFileName, fastaFile);
+                        MsFileExporter.writeMs2File(
+                                msFileHandler, 
+                                spectrumFileName, 
+                                ms2File
+                        );
 
                         File tideOutputFile = new File(outputTempFolder, getTideFileName(spectrumFileName));
 
@@ -2819,103 +2847,103 @@ public class SearchHandler {
                         }
                     }
 
+                    // Run Andromeda
                     File aplFile = null;
 
                     if (enableAndromeda && !waitingHandler.isRunCanceled()) {
 
+                        // Make apl file
                         waitingHandler.appendReport(
                                 "Converting spectrum file " + spectrumFileName + " for Andromeda.",
                                 true,
                                 true
                         );
-                        
-                        aplFile = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".apl");
-                        MsFileExporter.writeAplFile(msFileHandler, spectrumFileName, aplFile, searchParameters);
 
+                        aplFile = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".apl");
+
+                        MsFileExporter.writeAplFile(
+                                msFileHandler,
+                                spectrumFileName,
+                                aplFile,
+                                searchParameters
+                        );
                     }
 
-                    if (enableAndromeda && !waitingHandler.isRunCanceled()) {
+                    File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
 
-                        File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
+                    andromedaProcessBuilder = new AndromedaProcessBuilder(
+                            andromedaLocation,
+                            searchParameters,
+                            identificationParametersFile,
+                            aplFile,
+                            fastaFile,
+                            waitingHandler,
+                            exceptionHandler,
+                            processingParameters.getnThreads()
+                    );
+                    waitingHandler.appendReport(
+                            "Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".",
+                            true,
+                            true
+                    );
+                    waitingHandler.appendReportEndLine();
+                    andromedaProcessBuilder.startProcess();
 
-                        andromedaProcessBuilder = new AndromedaProcessBuilder(
-                                andromedaLocation,
-                                searchParameters,
-                                identificationParametersFile,
-                                aplFile,
-                                fastaFile,
-                                waitingHandler,
-                                exceptionHandler,
-                                processingParameters.getnThreads()
-                        );
-                        waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".",
-                                true,
-                                true
-                        );
-                        waitingHandler.appendReportEndLine();
-                        andromedaProcessBuilder.startProcess();
+                    if (!waitingHandler.isRunCanceled()) {
 
-                        if (!waitingHandler.isRunCanceled()) {
-
-                            File tempResultFile = new File(aplFile.getParent(), getAndromedaFileName(spectrumFileName));
-                            if (tempResultFile.exists()) {
-                                IoUtil.copyFile(tempResultFile, andromedaOutputFile);
-                                try {
-                                    tempResultFile.delete();
-                                } catch (Exception e) {
-                                    waitingHandler.appendReport(
-                                            "An error occurred when attempting to delete " + tempResultFile.getName() + ".",
-                                            true,
-                                            true
-                                    );
-                                }
-
-                                HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
-
-                                if (runIdentificationFiles == null) {
-
-                                    runIdentificationFiles = new HashMap<>();
-                                    identificationFiles.put(spectrumFileName, runIdentificationFiles);
-
-                                }
-
-                                if (andromedaOutputFile.exists()) {
-
-                                    runIdentificationFiles.put(Advocate.andromeda.getIndex(), andromedaOutputFile);
-                                    idFileToSpectrumFileMap.put(andromedaOutputFile.getName(), spectrumFile);
-
-                                } else {
-
-                                    waitingHandler.appendReport(
-                                            "Could not find " + Advocate.andromeda.getName() + " result file for " + spectrumFileName + ".",
-                                            true,
-                                            true
-                                    );
-
-                                }
-                            } else {
-
+                        File tempResultFile = new File(aplFile.getParent(), getAndromedaFileName(spectrumFileName));
+                        
+                        if (tempResultFile.exists()) {
+                        
+                            IoUtil.copyFile(tempResultFile, andromedaOutputFile);
+                            
+                            try {
+                                tempResultFile.delete();
+                            } catch (Exception e) {
                                 waitingHandler.appendReport(
-                                        "Could not find " + Advocate.andromeda.getName() + " .res file for " + spectrumFileName + ".",
+                                        "An error occurred when attempting to delete " + tempResultFile.getName() + ".",
                                         true,
                                         true
                                 );
                             }
 
-                            waitingHandler.increasePrimaryProgressCounter();
+                            HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
 
+                            if (runIdentificationFiles == null) {
+
+                                runIdentificationFiles = new HashMap<>();
+                                identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
+                            }
+
+                            if (andromedaOutputFile.exists()) {
+
+                                runIdentificationFiles.put(Advocate.andromeda.getIndex(), andromedaOutputFile);
+                                idFileToSpectrumFileMap.put(andromedaOutputFile.getName(), spectrumFile);
+
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.andromeda.getName() + " result file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
+
+                            }
+                        } else {
+
+                            waitingHandler.appendReport(
+                                    "Could not find " + Advocate.andromeda.getName() + " .res file for " + spectrumFileName + ".",
+                                    true,
+                                    true
+                            );
                         }
+
+                        waitingHandler.increasePrimaryProgressCounter();
+
                     }
 
-                    // delete the temp apl and ms2 files
-                    if (aplFile != null) {
-                        aplFile.delete();
-                    }
-                    if (ms2File != null) {
-                        ms2File.delete();
-                    }
-
+                    // Run Novor
                     if (enableNovor && !waitingHandler.isRunCanceled()) {
 
                         File novorOutputFile = new File(outputTempFolder, getNovorFileName(spectrumFileName));
@@ -2967,6 +2995,7 @@ public class SearchHandler {
                         }
                     }
 
+                    // Run DirecTag
                     if (enableDirecTag && !waitingHandler.isRunCanceled()) {
 
                         File direcTagOutputFile = new File(outputTempFolder, getDirecTagFileName(spectrumFileName));
@@ -3014,6 +3043,17 @@ public class SearchHandler {
                             waitingHandler.increasePrimaryProgressCounter();
 
                         }
+                    }
+
+                    // Delete the temp spectrum files
+                    if (mgfFile != null) {
+                        mgfFile.delete();
+                    }
+                    if (aplFile != null) {
+                        aplFile.delete();
+                    }
+                    if (ms2File != null) {
+                        ms2File.delete();
                     }
                 }
 
@@ -3475,52 +3515,19 @@ public class SearchHandler {
     public void saveInputFile(File folder) {
 
         File outputFile = getInputFile(folder);
-        ArrayList<File> tempMgfFiles = new ArrayList<>(this.msFiles);
 
-        // @TODO: don't see why the below code is needed..?
-//        ArrayList<String> names = new ArrayList<>();
-//        for (File file : tempMgfFiles) {
-//            names.add(file.getName());
-//        }
-//        if (outputFile.exists()) {
-//            try {
-//                BufferedReader br = new BufferedReader(new FileReader(outputFile));
-//                String line;
-//                while ((line = br.readLine()) != null) {
-//                    // Skip empty lines.
-//                    line = line.trim();
-//                    if (!line.equals("")) {
-//                        try {
-//                            File newFile = new File(line);
-//                            if (!names.contains(newFile.getName())) {
-//                                names.add(newFile.getName());
-//                                tempMgfFiles.add(newFile);
-//                            }
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//                br.close();
-//            } catch (IOException ioe) {
-//                ioe.printStackTrace();
-//                // ignore error
-//                tempMgfFiles = new ArrayList<>(this.mgfFiles);
-//            }
-//        }
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
             bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
 
-            // add the mgf files
-            for (File mgfFile : tempMgfFiles) {
+            // add the ms files
+            for (File mgfFile : msFiles) {
+                
                 bw.write(mgfFile.getAbsolutePath() + System.getProperty("line.separator"));
+            
             }
 
-            bw.flush();
-            bw.close();
         } catch (Exception e) {
             e.printStackTrace();
             // ignore error
@@ -3987,7 +3994,7 @@ public class SearchHandler {
 
                     IoUtil.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
 
-                    for (File spectrumFile : getMgfFiles()) {
+                    for (File spectrumFile : getSpectrumFiles()) {
                         IoUtil.copyFile(spectrumFile, new File(dataFolder, spectrumFile.getName()));
                     }
                 }
@@ -4005,8 +4012,16 @@ public class SearchHandler {
      *
      * @throws IOException
      */
-    private void addDataToZip(ZipOutputStream out, long totalUncompressedSize) throws IOException {
-        addDataToZip(out, totalUncompressedSize, null);
+    private void addDataToZip(
+            ZipOutputStream out, 
+            long totalUncompressedSize
+    ) throws IOException {
+    
+        addDataToZip(
+                out, 
+                totalUncompressedSize, 
+                null
+        );
     }
 
     /**
@@ -4024,20 +4039,38 @@ public class SearchHandler {
     ) throws IOException {
 
         // create the data folder in the zip file
-        ZipUtils.addFolderToZip(DEFAULT_DATA_FOLDER, out);
+        ZipUtils.addFolderToZip(
+                DEFAULT_DATA_FOLDER, 
+                out
+        );
 
-        ZipUtils.addFileToZip(DEFAULT_DATA_FOLDER, fastaFile, out, waitingHandler, totalUncompressedSize);
+        ZipUtils.addFileToZip(
+                DEFAULT_DATA_FOLDER, 
+                fastaFile, 
+                out, 
+                waitingHandler, 
+                totalUncompressedSize
+        );
 
-        for (File spectrumFile : getMgfFiles()) {
+        for (File spectrumFile : getSpectrumFiles()) {
 
             boolean addFile = true;
 
             if (mgfFileName != null) {
+                
                 addFile = spectrumFile.getName().equals(mgfFileName);
+            
             }
 
             if (addFile) {
-                ZipUtils.addFileToZip(DEFAULT_DATA_FOLDER, spectrumFile, out, waitingHandler, totalUncompressedSize);
+                
+                ZipUtils.addFileToZip(
+                        DEFAULT_DATA_FOLDER, 
+                        spectrumFile, 
+                        out, 
+                        waitingHandler, 
+                        totalUncompressedSize
+                );
             }
         }
     }
@@ -4071,12 +4104,17 @@ public class SearchHandler {
         }
 
         if (enableMsAmanda) {
+            
             // ms amanda settings file
             for (File spectrumFile : msFiles) {
+
                 String newName = IoUtil.removeExtension(spectrumFile.getName()) + "_settings.xml";
                 File settingsFile = new File(outputFolder, newName);
+
                 if (settingsFile.exists()) {
+
                     totalUncompressedSize += settingsFile.length();
+
                 }
             }
         }
@@ -4238,7 +4276,7 @@ public class SearchHandler {
         if (mgfFile != null) {
             totalUncompressedSize += mgfFile.length();
         } else {
-            for (File spectrumFile : getMgfFiles()) {
+            for (File spectrumFile : getSpectrumFiles()) {
                 totalUncompressedSize += spectrumFile.length();
             }
         }
