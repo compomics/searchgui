@@ -44,7 +44,14 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    public ThermoRawFileParserProcessBuilder(File thermoRawFileParserFolder, File rawFile, File destinationFolder, ThermoRawFileParserParameters thermoRawFileParserParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler)
+    public ThermoRawFileParserProcessBuilder(
+            File thermoRawFileParserFolder, 
+            File rawFile, 
+            File destinationFolder, 
+            ThermoRawFileParserParameters thermoRawFileParserParameters, 
+            WaitingHandler waitingHandler, 
+            ExceptionHandler exceptionHandler
+    )
             throws IOException, ClassNotFoundException {
 
         this.rawFile = rawFile;
