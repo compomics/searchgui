@@ -2400,7 +2400,8 @@ public class SearchHandler {
                         MsFileExporter.writeMgfFile(
                                 msFileHandler,
                                 spectrumFileName,
-                                mgfFile
+                                mgfFile,
+                                waitingHandler
                         );
                     }
 
@@ -2790,7 +2791,8 @@ public class SearchHandler {
                         MsFileExporter.writeMs2File(
                                 msFileHandler,
                                 spectrumFileName,
-                                ms2File
+                                ms2File,
+                                waitingHandler
                         );
 
                         File tideOutputFile = new File(outputTempFolder, getTideFileName(spectrumFileName));
@@ -2871,7 +2873,8 @@ public class SearchHandler {
                                 msFileHandler,
                                 spectrumFileName,
                                 aplFile,
-                                searchParameters
+                                searchParameters,
+                                waitingHandler
                         );
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
