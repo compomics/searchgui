@@ -24,7 +24,6 @@ import com.compomics.util.experiment.identification.identification_parameters.Id
 import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
 import com.compomics.util.experiment.io.mass_spectrometry.MsFileIterator;
-import com.compomics.util.experiment.io.mass_spectrometry.mgf.MgfIndex;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardFilter;
@@ -52,6 +51,7 @@ import com.compomics.util.gui.parameters.identification.IdentificationParameters
 import com.compomics.util.gui.parameters.identification.algorithm.AndromedaParametersDialog;
 import com.compomics.util.gui.parameters.identification.algorithm.CometParametersDialog;
 import com.compomics.util.gui.parameters.identification.algorithm.DirecTagParametersDialog;
+import com.compomics.util.gui.parameters.identification.algorithm.MetaMorpheusParametersDialog;
 import com.compomics.util.gui.parameters.identification.algorithm.MsAmandaParametersDialog;
 import com.compomics.util.gui.parameters.identification.algorithm.MsgfParametersDialog;
 import com.compomics.util.gui.parameters.identification.algorithm.MyriMatchParametersDialog;
@@ -64,7 +64,6 @@ import com.compomics.util.gui.parameters.identification.search.SequenceDbDetails
 import com.compomics.util.gui.parameters.proteowizard.MsConvertParametersDialog;
 import com.compomics.util.gui.parameters.tools.ProcessingParametersDialog;
 import com.compomics.util.waiting.WaitingActionListener;
-import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.io.IoUtil;
 import com.compomics.util.io.file.LastSelectedFolder;
@@ -83,12 +82,14 @@ import com.compomics.util.parameters.identification.tool_specific.XtandemParamet
 import com.compomics.util.parameters.tools.ProcessingParameters;
 import com.compomics.util.parameters.searchgui.OutputParameters;
 import com.compomics.util.parameters.UtilitiesUserParameters;
+import com.compomics.util.parameters.identification.tool_specific.MetaMorpheusParameters;
 import com.google.common.collect.Sets;
 import eu.isas.searchgui.SearchGUIWrapper;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
 import eu.isas.searchgui.processbuilders.CometProcessBuilder;
 import eu.isas.searchgui.processbuilders.DirecTagProcessBuilder;
+import eu.isas.searchgui.processbuilders.MetaMorpheusProcessBuilder;
 import eu.isas.searchgui.processbuilders.MsAmandaProcessBuilder;
 import eu.isas.searchgui.processbuilders.MsgfProcessBuilder;
 import eu.isas.searchgui.processbuilders.MyriMatchProcessBuilder;
@@ -100,8 +101,6 @@ import java.awt.Dimension;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.jimmc.jshortcut.JShellLink;
 
 /**
@@ -364,6 +363,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             enableCometJCheckBox.setSelected(searchHandler.isCometEnabled());
             enableTideJCheckBox.setSelected(searchHandler.isTideEnabled());
             enableAndromedaJCheckBox.setSelected(searchHandler.isAndromedaEnabled());
+            enableMetaMorpheusJCheckBox.setSelected(searchHandler.isMetaMorpheusEnabled());
             enableNovorJCheckBox.setSelected(searchHandler.isNovorEnabled());
             enableDirecTagJCheckBox.setSelected(searchHandler.isDirecTagEnabled());
 
@@ -684,6 +684,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         direcTagLinkLabel = new javax.swing.JLabel();
         novorSettingsButton = new javax.swing.JButton();
         direcTagSettingsButton = new javax.swing.JButton();
+        enableMetaMorpheusJCheckBox = new javax.swing.JCheckBox();
+        metaMorpheusButton = new javax.swing.JButton();
+        metaMorpheusSupportButton = new javax.swing.JButton();
+        metaMorpheusLinkLabel = new javax.swing.JLabel();
+        metaMorpheusSettingsButton = new javax.swing.JButton();
         inputFilesPanel = new javax.swing.JPanel();
         spectrumFilesLabel = new javax.swing.JLabel();
         clearSpectraButton = new javax.swing.JButton();
@@ -1555,6 +1560,77 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
+        enableMetaMorpheusJCheckBox.setToolTipText("Enable MetaMorpheus");
+        enableMetaMorpheusJCheckBox.setEnabled(false);
+        enableMetaMorpheusJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableMetaMorpheusJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        metaMorpheusButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        metaMorpheusButton.setText("MetaMorpheus");
+        metaMorpheusButton.setToolTipText("Enable MetaMorpheus");
+        metaMorpheusButton.setBorder(null);
+        metaMorpheusButton.setBorderPainted(false);
+        metaMorpheusButton.setContentAreaFilled(false);
+        metaMorpheusButton.setEnabled(false);
+        metaMorpheusButton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        metaMorpheusButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                metaMorpheusButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                metaMorpheusButtonMouseExited(evt);
+            }
+        });
+        metaMorpheusButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                metaMorpheusButtonActionPerformed(evt);
+            }
+        });
+
+        metaMorpheusSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        metaMorpheusSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
+        metaMorpheusSupportButton.setBorderPainted(false);
+        metaMorpheusSupportButton.setContentAreaFilled(false);
+
+        metaMorpheusLinkLabel.setText("<html><a style=\"text-decoration: none\" href=https://github.com/smith-chem-wisc/MetaMorpheus\">MetaMorpheus search algorithm</a></html> ");
+        metaMorpheusLinkLabel.setToolTipText("Open the MetaMorpheus web page");
+        metaMorpheusLinkLabel.setEnabled(false);
+        metaMorpheusLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                metaMorpheusLinkLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                metaMorpheusLinkLabelMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                metaMorpheusLinkLabelMouseExited(evt);
+            }
+        });
+
+        metaMorpheusSettingsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        metaMorpheusSettingsButton.setToolTipText("Edit Tide Advanced Settings");
+        metaMorpheusSettingsButton.setBorder(null);
+        metaMorpheusSettingsButton.setBorderPainted(false);
+        metaMorpheusSettingsButton.setContentAreaFilled(false);
+        metaMorpheusSettingsButton.setEnabled(false);
+        metaMorpheusSettingsButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        metaMorpheusSettingsButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                metaMorpheusSettingsButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                metaMorpheusSettingsButtonMouseExited(evt);
+            }
+        });
+        metaMorpheusSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                metaMorpheusSettingsButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout searchEnginesPanelLayout = new javax.swing.GroupLayout(searchEnginesPanel);
         searchEnginesPanel.setLayout(searchEnginesPanelLayout);
         searchEnginesPanelLayout.setHorizontalGroup(
@@ -1562,6 +1638,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(searchEnginesPanelLayout.createSequentialGroup()
+                        .addComponent(enableMetaMorpheusJCheckBox)
+                        .addGap(61, 61, 61)
+                        .addComponent(metaMorpheusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(metaMorpheusSupportButton)
+                        .addGap(34, 34, 34)
+                        .addComponent(metaMorpheusLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(searchEnginesPanelLayout.createSequentialGroup()
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(enableXTandemJCheckBox)
@@ -1602,7 +1687,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             .addComponent(cometLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(tideLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(andromedaLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 179, Short.MAX_VALUE)
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(msAmandaSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(myriMatchSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1613,7 +1698,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             .addComponent(tideSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(andromedaSettingsButton)
                             .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(metaMorpheusSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesPanelLayout.createSequentialGroup()
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -1634,9 +1720,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaButton, cometButton, direcTagButton, msAmandaButton, msgfButton, myriMatchButton, novorButton, omssaButton, tideButton, xtandemButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaButton, cometButton, direcTagButton, metaMorpheusButton, msAmandaButton, msgfButton, myriMatchButton, novorButton, omssaButton, tideButton, xtandemButton});
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, metaMorpheusSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
 
         searchEnginesPanelLayout.setVerticalGroup(
             searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1699,6 +1785,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(andromedaSettingsButton))
                 .addGap(0, 0, 0)
                 .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableMetaMorpheusJCheckBox)
+                    .addComponent(metaMorpheusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(metaMorpheusLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(metaMorpheusSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(metaMorpheusSupportButton))
+                .addGap(0, 0, 0)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(enableNovorJCheckBox)
                     .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1714,9 +1807,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 .addGap(0, 0, 0))
         );
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaButton, cometButton, msAmandaButton, msgfButton, myriMatchButton, omssaButton, tideButton, xtandemButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaButton, cometButton, metaMorpheusButton, msAmandaButton, msgfButton, myriMatchButton, omssaButton, tideButton, xtandemButton});
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, metaMorpheusSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
 
         searchEnginesScrollPane.setViewportView(searchEnginesPanel);
 
@@ -2492,43 +2585,43 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     ArrayList<File> tempSpectrumFiles = new ArrayList<>();
                     ArrayList<File> tempRawFiles = new ArrayList<>();
 
-                HashSet<String> supportedMsFormats = Sets.newHashSet(MsFileIterator.getSupportedExtensions());
+                    HashSet<String> supportedMsFormats = Sets.newHashSet(MsFileIterator.getSupportedExtensions());
 
                     // get the spectrum files
                     for (File newFile : finalJFileChooser.getSelectedFiles()) {
-                       
+
                         if (newFile.isDirectory()) {
-                        
+
                             File[] tempFiles = newFile.listFiles();
-                            
+
                             for (File file : tempFiles) {
-                            
+
                                 String extension = IoUtil.getExtension(file).toLowerCase();
-                                
+
                                 if (supportedMsFormats.contains(extension)) {
-                                    
+
                                     tempSpectrumFiles.add(file);
-                                
+
                                 } else {
-                                
+
                                     for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
-                                    
+
                                         if (extension.equals(tempFormat.fileNameEnding.toLowerCase())) {
-                                        
+
                                             tempRawFiles.add(file);
-                                        
+
                                         }
                                     }
                                 }
                             }
-                            
+
                             lastSelectedFolder.setLastSelectedFolder(newFile.getAbsolutePath());
 
                         } else {
 
-                            String lowercaseName = newFile.getName().toLowerCase();
+                            String extension = IoUtil.getExtension(newFile).toLowerCase();
 
-                            if (lowercaseName.endsWith(ProteoWizardMsFormat.mgf.fileNameEnding)) {
+                            if (supportedMsFormats.contains(extension)) {
 
                                 tempSpectrumFiles.add(newFile);
 
@@ -2536,7 +2629,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                                 for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
 
-                                    if (lowercaseName.endsWith(tempFormat.fileNameEnding)) {
+                                    if (extension.equals(tempFormat.fileNameEnding.toLowerCase())) {
 
                                         tempRawFiles.add(newFile);
 
@@ -2561,31 +2654,31 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 JOptionPane.showMessageDialog(
                                         finalRef,
                                         "Could not find the related .wiff.scan file for " + tempRawfile.getName() + "."
-                                        + "\nPlease put it in the same folder as the wiff file.", 
-                                        "Missing Scan File", 
+                                        + "\nPlease put it in the same folder as the wiff file.",
+                                        "Missing Scan File",
                                         JOptionPane.INFORMATION_MESSAGE
                                 );
-                            
+
                             } else {
-                            
+
                                 rawFiles.add(tempRawfile);
-                            
+
                             }
-                        
+
                         } else {
-                        
+
                             rawFiles.add(tempRawfile);
-                        
+
                         }
                     }
 
                     // check whether non-thermo raw files are selected
                     for (File tempRawfile : rawFiles) {
-         
+
                         if (!tempRawfile.getName().toLowerCase().endsWith(ProteoWizardMsFormat.raw.fileNameEnding)) {
-                        
+
                             nonThermoRawFilesSelected = true;
-                        
+
                         }
                     }
 
@@ -2594,7 +2687,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     for (File mgfFile : tempSpectrumFiles) {
 
                         progressDialog.setTitle("Validating Spectrum Files. Please Wait... (" + ++fileCounter + "/" + tempSpectrumFiles.size() + ")");
-                        
+
                         if (validSpectrumTitles) {
                             spectrumFiles.add(mgfFile);
                             lastSelectedFolder.setLastSelectedFolder(mgfFile.getAbsolutePath());
@@ -2626,36 +2719,36 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     // check if we found any valid mgf files
                     if (spectrumFiles.isEmpty() && rawFiles.isEmpty()) {
-                        
+
                         JOptionPane.showMessageDialog(
-                                finalRef, 
-                                "The selection contained no valid spectrum files.", 
-                                "No Spectrum Files", 
+                                finalRef,
+                                "The selection contained no valid spectrum files.",
+                                "No Spectrum Files",
                                 JOptionPane.INFORMATION_MESSAGE
                         );
                         return;
-                    
+
                     }
 
                     // check if proteowizard is installed in case none-thermo raw files were selected
                     if (nonThermoRawFilesSelected) {
-                        
+
                         boolean pwCheck = checkProteoWizard();
                         msconvertCheckBox.setSelected(pwCheck);
                         enableMsConvert(pwCheck);
-                    
+
                     } else {
-                    
+
                         thermoRawFileParserCheckBox.setSelected(!rawFiles.isEmpty());
                         enableThermoRawFileParser(!rawFiles.isEmpty());
-                    
+
                     }
 
                     int nFiles = spectrumFiles.size() + rawFiles.size();
                     spectrumFilesTxt.setText(nFiles + " file(s) selected");
 
                     validateInput(false);
-                
+
                 }
             }.start();
         }
@@ -3073,6 +3166,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     File andromedaOutputFile = new File(outputFolder, SearchHandler.getAndromedaFileName(spectrumFileName));
 
                     if (andromedaOutputFile.exists()) {
+
+                        fileFound = true;
+                        break;
+
+                    }
+                }
+
+                if (searchHandler.isMetaMorpheusEnabled()) {
+
+                    File metaMorpheusOutputFile = new File(outputFolder, SearchHandler.getMetaMorpheusFileName(spectrumFileName));
+
+                    if (metaMorpheusOutputFile.exists()) {
 
                         fileFound = true;
                         break;
@@ -5873,7 +5978,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt
      */
-
     private void thermoRawFileParserLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserLabelMouseClicked
 
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
@@ -5887,7 +5991,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the mouse event
      */
-
     private void thermoRawFileParserLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserLabelMouseEntered
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }//GEN-LAST:event_thermoRawFileParserLabelMouseEntered
@@ -5897,7 +6000,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the mouse event
      */
-
     private void thermoRawFileParserLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserLabelMouseExited
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_thermoRawFileParserLabelMouseExited
@@ -5907,7 +6009,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the mouse event
      */
-
     private void thermoRawFileParserSettingsButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonMouseEntered
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
     }//GEN-LAST:event_thermoRawFileParserSettingsButtonMouseEntered
@@ -5917,7 +6018,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      *
      * @param evt the mouse event
      */
-
     private void thermoRawFileParserSettingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_thermoRawFileParserSettingsButtonMouseExited
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_thermoRawFileParserSettingsButtonMouseExited
@@ -5937,6 +6037,193 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         }
     }//GEN-LAST:event_thermoRawFileParserSettingsButtonActionPerformed
+
+    /**
+     * Set MetaMorpheus enabled.
+     *
+     * @param evt the action event
+     */
+    private void enableMetaMorpheusJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableMetaMorpheusJCheckBoxActionPerformed
+
+        searchHandler.setMetaMorpheusEnabled(enableMetaMorpheusJCheckBox.isSelected());
+
+        if (enableMetaMorpheusJCheckBox.isSelected()) {
+
+            boolean valid = validateSearchEngineInstallation(
+                    Advocate.metaMorpheus,
+                    searchHandler.getMetaMorpheusLocation(),
+                    true
+            );
+
+            if (!valid) {
+
+                new SoftwareLocationDialog(this, true);
+
+            }
+        }
+
+        validateInput(false);
+
+    }//GEN-LAST:event_enableMetaMorpheusJCheckBoxActionPerformed
+
+    /**
+     * Change the cursor to a hand cursor.
+     *
+     * @param evt the mouse event
+     */
+    private void metaMorpheusButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_metaMorpheusButtonMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_metaMorpheusButtonMouseEntered
+
+    /**
+     * Change the cursor back to the default cursor.
+     *
+     * @param evt the mouse event
+     */
+    private void metaMorpheusButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_metaMorpheusButtonMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_metaMorpheusButtonMouseExited
+
+    /**
+     * Enable/disable MetaMorpheus.
+     *
+     * @param evt the action event
+     */
+    private void metaMorpheusButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_metaMorpheusButtonActionPerformed
+        enableMetaMorpheusJCheckBox.setSelected(!enableMetaMorpheusJCheckBox.isSelected());
+        enableMetaMorpheusJCheckBoxActionPerformed(null);
+    }//GEN-LAST:event_metaMorpheusButtonActionPerformed
+
+    /**
+     * Open the MetaMorpheus web page.
+     *
+     * @param evt
+     */
+    private void metaMorpheusLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_metaMorpheusLinkLabelMouseClicked
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        BareBonesBrowserLaunch.openURL("https://github.com/smith-chem-wisc/MetaMorpheus");
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_metaMorpheusLinkLabelMouseClicked
+
+    /**
+     * Change the cursor to a hand cursor.
+     *
+     * @param evt the mouse event
+     */
+    private void metaMorpheusLinkLabelMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_metaMorpheusLinkLabelMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_metaMorpheusLinkLabelMouseEntered
+
+    /**
+     * Change the cursor back to the default cursor.
+     *
+     * @param evt the mouse event
+     */
+    private void metaMorpheusLinkLabelMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_metaMorpheusLinkLabelMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_metaMorpheusLinkLabelMouseExited
+
+    /**
+     * Change the cursor to a hand cursor.
+     *
+     * @param evt the mouse event
+     */
+    private void metaMorpheusSettingsButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_metaMorpheusSettingsButtonMouseEntered
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+    }//GEN-LAST:event_metaMorpheusSettingsButtonMouseEntered
+
+    /**
+     * Change the cursor back to the default cursor.
+     *
+     * @param evt the mouse event
+     */
+    private void metaMorpheusSettingsButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_metaMorpheusSettingsButtonMouseExited
+        this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    }//GEN-LAST:event_metaMorpheusSettingsButtonMouseExited
+
+    /**
+     * Edit the MetaMorpheus settings.
+     *
+     * @param evt the mouse event
+     */
+    private void metaMorpheusSettingsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_metaMorpheusSettingsButtonActionPerformed
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        MetaMorpheusParameters oldMetaMorpheusParameters = (MetaMorpheusParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.metaMorpheus.getIndex());
+        MetaMorpheusParametersDialog metaMorpheusParametersDialog = new MetaMorpheusParametersDialog(this, oldMetaMorpheusParameters, true);
+
+        boolean metaMorpheusParametersSet = false;
+
+        while (!metaMorpheusParametersSet) {
+
+            if (!metaMorpheusParametersDialog.isCancelled()) {
+
+                MetaMorpheusParameters newMetaMorpheusParameters = metaMorpheusParametersDialog.getInput();
+
+                // see if there are changes to the parameters and ask the user if these are to be saved
+                if (oldMetaMorpheusParameters == null || !oldMetaMorpheusParameters.equals(newMetaMorpheusParameters)) {
+
+                    int value = JOptionPane.showConfirmDialog(
+                            this,
+                            "The search parameters have changed.\nDo you want to save the changes?",
+                            "Save Changes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
+
+                    switch (value) {
+
+                        case JOptionPane.YES_OPTION:
+
+                            try {
+
+                            searchParameters.setIdentificationAlgorithmParameter(Advocate.metaMorpheus.getIndex(), newMetaMorpheusParameters);
+                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                            metaMorpheusParametersSet = true;
+
+                        } catch (Exception e) {
+
+                            e.printStackTrace();
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                    "File Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                        }
+                        break;
+
+                        case JOptionPane.CANCEL_OPTION:
+
+                            metaMorpheusParametersDialog = new MetaMorpheusParametersDialog(
+                                    this,
+                                    newMetaMorpheusParameters,
+                                    true
+                            );
+                            break;
+
+                        case JOptionPane.NO_OPTION:
+
+                            metaMorpheusParametersSet = true;
+                            break;
+
+                        default:
+                            break;
+
+                    }
+                } else {
+
+                    metaMorpheusParametersSet = true;
+
+                }
+            } else {
+
+                metaMorpheusParametersSet = true;
+
+            }
+        }
+
+    }//GEN-LAST:event_metaMorpheusSettingsButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
@@ -5971,6 +6258,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JCheckBox enableAndromedaJCheckBox;
     private javax.swing.JCheckBox enableCometJCheckBox;
     private javax.swing.JCheckBox enableDirecTagJCheckBox;
+    private javax.swing.JCheckBox enableMetaMorpheusJCheckBox;
     private javax.swing.JCheckBox enableMsAmandaJCheckBox;
     private javax.swing.JCheckBox enableMsgfJCheckBox;
     private javax.swing.JCheckBox enableMyriMatchJCheckBox;
@@ -5991,6 +6279,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JMenuItem javaSettingsJMenuItem;
     private javax.swing.JMenuItem logReportMenu;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JButton metaMorpheusButton;
+    private javax.swing.JLabel metaMorpheusLinkLabel;
+    private javax.swing.JButton metaMorpheusSettingsButton;
+    private javax.swing.JButton metaMorpheusSupportButton;
     private javax.swing.JPopupMenu modificationOptionsPopupMenu;
     private javax.swing.JButton msAmandaButton;
     private javax.swing.JLabel msAmandaLinkLabel;
@@ -6268,6 +6560,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean cometValid = true;
         boolean tideValid = true;
         boolean andromedaValid = true;
+        boolean metaMorpheusValid = true;
         boolean novorValid = true;
         boolean direcTagValid = true;
 
@@ -6343,6 +6636,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             );
 
         }
+        if (enableMetaMorpheusJCheckBox.isSelected()) {
+
+            metaMorpheusValid = validateSearchEngineInstallation(
+                    Advocate.metaMorpheus,
+                    searchHandler.getMetaMorpheusLocation(),
+                    showMessage
+            );
+
+        }
         if (enableNovorJCheckBox.isSelected()) {
 
             novorValid = validateSearchEngineInstallation(
@@ -6363,14 +6665,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         if (!omssaValid || !xtandemValid || !msgfValid || !msAmandaValid || !myriMatchValid
-                || !cometValid || !tideValid || !andromedaValid || !novorValid || !direcTagValid) {
+                || !cometValid || !tideValid || !andromedaValid || !metaMorpheusValid || !novorValid || !direcTagValid) {
 
             new SoftwareLocationDialog(this, true);
 
         }
 
         return omssaValid && xtandemValid && msgfValid && msAmandaValid && myriMatchValid
-                && cometValid && tideValid && andromedaValid && novorValid && direcTagValid;
+                && cometValid && tideValid && andromedaValid && metaMorpheusValid && novorValid && direcTagValid;
     }
 
     /**
@@ -6390,6 +6692,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 && !enableCometJCheckBox.isSelected()
                 && !enableTideJCheckBox.isSelected()
                 && !enableAndromedaJCheckBox.isSelected()
+                && !enableMetaMorpheusJCheckBox.isSelected()
                 && !enableNovorJCheckBox.isSelected()
                 && !enableDirecTagJCheckBox.isSelected()) {
 
@@ -7033,7 +7336,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             File output = new File(folder, SearchHandler.SEARCHGUI_CONFIGURATION_FILE);
 
-            try ( BufferedWriter bw = new BufferedWriter(new FileWriter(output))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(output))) {
 
                 bw.write("OMSSA Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getOmssaLocation() + System.getProperty("line.separator") + searchHandler.isOmssaEnabled() + System.getProperty("line.separator"));
@@ -7051,6 +7354,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 bw.write(searchHandler.getTideLocation() + System.getProperty("line.separator") + searchHandler.isTideEnabled() + System.getProperty("line.separator"));
                 bw.write("Andromeda Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getAndromedaLocation() + System.getProperty("line.separator") + searchHandler.isAndromedaEnabled() + System.getProperty("line.separator"));
+                bw.write("MetaMorpheus Location:" + System.getProperty("line.separator"));
+                bw.write(searchHandler.getMetaMorpheusLocation() + System.getProperty("line.separator") + searchHandler.isMetaMorpheusEnabled() + System.getProperty("line.separator"));
                 bw.write("Novor Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getNovorLocation() + System.getProperty("line.separator") + searchHandler.isNovorEnabled() + System.getProperty("line.separator"));
                 bw.write("DirecTag Location:" + System.getProperty("line.separator"));
@@ -7096,6 +7401,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param enableComet enable Comet
      * @param enableTide enable Tide
      * @param enableAndromeda enable Andromeda
+     * @param enableMetaMorpheus enable MetaMorpheus
      * @param enableNovor enable Novor
      * @param enableDirecTag enable DirecTag
      */
@@ -7108,6 +7414,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             boolean enableComet,
             boolean enableTide,
             boolean enableAndromeda,
+            boolean enableMetaMorpheus,
             boolean enableNovor,
             boolean enableDirecTag
     ) {
@@ -7120,6 +7427,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         enableCometJCheckBox.setSelected(enableComet);
         enableTideJCheckBox.setSelected(enableTide);
         enableAndromedaJCheckBox.setSelected(enableAndromeda);
+        enableMetaMorpheusJCheckBox.setSelected(enableMetaMorpheus);
         enableNovorJCheckBox.setSelected(enableNovor);
         enableDirecTagJCheckBox.setSelected(enableDirecTag);
 
@@ -7131,6 +7439,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setCometEnabled(enableComet);
         searchHandler.setTideEnabled(enableTide);
         searchHandler.setAndromedaEnabled(enableAndromeda);
+        searchHandler.setMetaMorpheusEnabled(enableMetaMorpheus);
         searchHandler.setNovorEnabled(enableNovor);
         searchHandler.setDirecTagEnabled(enableDirecTag);
 
@@ -7382,6 +7691,26 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     feedBackInDialog
             );
 
+        } else if (advocate == Advocate.metaMorpheus) {
+            
+            String operatingSystem = System.getProperty("os.name").toLowerCase();
+            String dontNet = null;
+
+            if (!operatingSystem.contains("windows")) {
+                dontNet = "dontNet";
+            }
+
+            return validateSearchEngineInstallation(
+                    Advocate.metaMorpheus,
+                    MetaMorpheusProcessBuilder.EXECUTABLE_FILE_NAME,
+                    null,
+                    dontNet,
+                    searchEngineLocation,
+                    null,
+                    false,
+                    feedBackInDialog
+            );
+
         } else if (advocate == Advocate.novor) {
 
             return validateSearchEngineInstallation(
@@ -7600,9 +7929,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                     }
                 } else {
-                    
+
                     p.destroy();
-                
+
                 }
 
             } catch (IOException e) {
@@ -7611,24 +7940,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 error = true;
 
                 if (feedBackInDialog) {
-                
+
                     if (customErrorMessage != null) {
-                    
+
                         JOptionPane.showMessageDialog(
-                                null, 
+                                null,
                                 JOptionEditorPane.getJOptionEditorPane(customErrorMessage),
-                                advocate + " - Startup Failed", 
+                                advocate + " - Startup Failed",
                                 JOptionPane.INFORMATION_MESSAGE
                         );
-                    
+
                     } else {
-                    
+
                         JOptionPane.showMessageDialog(
-                                null, 
+                                null,
                                 JOptionEditorPane.getJOptionEditorPane(
-                                getDefaultSearchEngineStartupErrorMessage(advocate.getName())
+                                        getDefaultSearchEngineStartupErrorMessage(advocate.getName())
                                 ),
-                                advocate + " - Startup Failed", 
+                                advocate + " - Startup Failed",
                                 JOptionPane.INFORMATION_MESSAGE
                         );
                     }
@@ -7667,7 +7996,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         ArrayList<String> tips;
 
         try {
-            
+
             InputStream stream = getClass().getResource("/tips.txt").openStream();
             InputStreamReader streamReader = new InputStreamReader(stream);
             BufferedReader b = new BufferedReader(streamReader);
@@ -7685,9 +8014,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         } catch (Exception e) {
 
             JOptionPane.showMessageDialog(
-                    null, 
-                    "An error occurred when reading the tip of the day.", 
-                    "File Error", 
+                    null,
+                    "An error occurred when reading the tip of the day.",
+                    "File Error",
                     JOptionPane.ERROR_MESSAGE
             );
             e.printStackTrace();
@@ -7712,18 +8041,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
 
             return CompomicsWrapper.checkForNewDeployedVersion(
-                    "SearchGUI", 
-                    oldMavenJarFile, 
-                    jarRepository, 
+                    "SearchGUI",
+                    oldMavenJarFile,
+                    jarRepository,
                     "searchgui.ico",
-                    false, 
-                    true, 
-                    true, 
+                    false,
+                    true,
+                    true,
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
-                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")), 
+                    Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
                     true
             );
-            
+
         } catch (UnknownHostException ex) {
             // no internet connection
             System.out.println("Checking for new version failed. No internet connection.");
@@ -7749,36 +8078,36 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean checkPeptideShaker = true;
 
         if (peptideShakerCheckBox.isSelected()) {
-            
+
             OmssaParameters omssaParameters = (OmssaParameters) identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
-            
+
             if (enableOmssaJCheckBox.isSelected() && !omssaParameters.getSelectedOutput().equals("OMX")) {
-            
+
                 JOptionPane.showMessageDialog(
-                        this, 
+                        this,
                         JOptionEditorPane.getJOptionEditorPane(
-                        "The selected OMSSA output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
-                        + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."
+                                "The selected OMSSA output format is not compatible with <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>. Please change to the<br>"
+                                + "OMSSA OMX format in the Advanced Parameters, or disable OMSSA or <a href=\"https://compomics.github.io/projects/peptide-shaker.html\">PeptideShaker</a>."
                         ),
-                        "Format Warning", 
+                        "Format Warning",
                         JOptionPane.ERROR_MESSAGE
                 );
                 peptideShakerCheckBox.setSelected(false);
                 checkPeptideShaker = false;
-                
+
             }
         }
 
         if (peptideShakerCheckBox.isSelected() && checkPeptideShaker || openAlways) {
             new Thread(new Runnable() {
                 public void run() {
-                    
+
                     // check if peptideshaker is installed
                     if (utilitiesUserParameters.getPeptideShakerPath() == null
                             || !(new File(utilitiesUserParameters.getPeptideShakerPath()).exists())) {
-                    
+
                         try {
-                        
+
                             PeptideShakerSetupDialog peptideShakerSetupDialog = new PeptideShakerSetupDialog(SearchGUI.this, true);
                             boolean canceled = peptideShakerSetupDialog.isDialogCanceled();
 
@@ -7786,27 +8115,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                                 // reload the user preferences as these may have been changed by other tools
                                 try {
-                            
+
                                     utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
-                                
+
                                 } catch (Exception e) {
-                                
+
                                     JOptionPane.showMessageDialog(
-                                            null, 
-                                            "An error occurred when reading the user preferences.", 
-                                            "File Error", 
+                                            null,
+                                            "An error occurred when reading the user preferences.",
+                                            "File Error",
                                             JOptionPane.ERROR_MESSAGE
                                     );
                                     e.printStackTrace();
-                                
+
                                 }
 
                                 editPeptideShakerParameters();
-                                
+
                             } else {
-                                
+
                                 peptideShakerCheckBox.setSelected(false);
-                            
+
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -7830,7 +8159,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean canceled = false;
 
         try {
-            
+
             ProteoWizardSetupDialog proteoWizardSetupDialog = new ProteoWizardSetupDialog(this, true);
             canceled = proteoWizardSetupDialog.isDialogCanceled();
 
@@ -7838,25 +8167,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                 // reload the user preferences as these may have been changed by other tools
                 try {
-            
+
                     utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
-                
+
                 } catch (Exception e) {
-                
+
                     JOptionPane.showMessageDialog(
-                            null, 
-                            "An error occurred when reading the user preferences.", 
-                            "File Error", 
+                            null,
+                            "An error occurred when reading the user preferences.",
+                            "File Error",
                             JOptionPane.ERROR_MESSAGE
                     );
-                    
+
                     e.printStackTrace();
-                
+
                 }
             } else {
-                
+
                 msconvertCheckBox.setSelected(false);
-            
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -7869,27 +8198,27 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Check that the ProteoWizard folder is set.
      */
     private boolean checkProteoWizard() {
-        
+
         if (!rawFiles.isEmpty() && utilitiesUserParameters.getProteoWizardPath() == null) {
-        
+
             boolean folderSet = editProteoWizardInstallation();
-            
+
             if (!folderSet) {
-            
+
                 JOptionPane.showMessageDialog(
-                        this, 
-                        "ProteoWizard folder not set. Raw file(s) not selected.", 
-                        "Raw File Error", 
+                        this,
+                        "ProteoWizard folder not set. Raw file(s) not selected.",
+                        "Raw File Error",
                         JOptionPane.WARNING_MESSAGE
                 );
                 rawFiles.clear();
                 return false;
-            
+
             }
         }
-        
+
         return true;
-    
+
     }
 
     /**
@@ -7937,24 +8266,28 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         msgfSettingsButton.setEnabled(enable);
         omssaSettingsButton.setEnabled(enable);
         tideSettingsButton.setEnabled(enable);
+        metaMorpheusSettingsButton.setEnabled(enable);
 
         enableXTandemJCheckBox.setEnabled(enable);
         enableMsAmandaJCheckBox.setEnabled(enable);
         enableMsgfJCheckBox.setEnabled(enable);
         enableOmssaJCheckBox.setEnabled(enable);
         enableTideJCheckBox.setEnabled(enable);
+        enableMetaMorpheusJCheckBox.setEnabled(enable);
 
         xtandemButton.setEnabled(enable);
         msAmandaButton.setEnabled(enable);
         msgfButton.setEnabled(enable);
         omssaButton.setEnabled(enable);
         tideButton.setEnabled(enable);
+        metaMorpheusButton.setEnabled(enable);
 
         xtandemLinkLabel.setEnabled(enable);
         msAmandaLinkLabel.setEnabled(enable);
         msgfLinkLabel.setEnabled(enable);
         omssaLinkLabel.setEnabled(enable);
         tideLinkLabel.setEnabled(enable);
+        metaMorpheusLinkLabel.setEnabled(enable);
 
         // de novo
         novorSettingsButton.setEnabled(enable);

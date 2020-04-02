@@ -150,7 +150,7 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                     scanner.useDelimiter("\\s|\\n");
 
                     waitingHandler.setSecondaryProgressCounterIndeterminate(false);
-                    
+
                     // get input from scanner, send to std out and text box
                     while (scanner.hasNext() && !waitingHandler.isRunCanceled()) {
                         String temp = scanner.next();
@@ -162,9 +162,57 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                             } else {
                                 waitingHandler.appendReport(temp + " ", false, temp.endsWith("scans"));
                             }
-                            
+
                         } else {
                             waitingHandler.appendReportEndLine();
+                        }
+                    }
+
+                    scanner.close();
+
+                } else if (getType().equalsIgnoreCase("MetaMorpheus")) {
+
+                    Scanner scanner = new Scanner(inputStream);
+                    scanner.useDelimiter("\\s|\\n");
+
+                    waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                    waitingHandler.setMaxSecondaryProgressCounter(100);
+
+                    int numberOfEmptyLines = 0;
+                    boolean ignoreOutput = false;
+
+                    // get input from scanner, send to std out and text box
+                    while (scanner.hasNext() && !waitingHandler.isRunCanceled()) {
+
+                        String temp = scanner.next();
+                        
+                        if (!ignoreOutput) { // @TODO: improve the parsing of the remaining content
+
+                            if (!temp.isEmpty()) {
+
+                                if (temp.matches("[1-9]?\\d") || temp.equalsIgnoreCase("100")) {
+                                    waitingHandler.increaseSecondaryProgressCounter(1);
+
+                                    if (Integer.parseInt(temp) == 99 || Integer.parseInt(temp) == 100) {
+                                        waitingHandler.setSecondaryProgressCounterIndeterminate(true);
+                                        waitingHandler.appendReport("Writing MetaMorpheus output.", false, true);
+                                        ignoreOutput = true;
+                                    }
+
+                                } else {
+                                    waitingHandler.appendReport(temp + " ", false, false);
+                                }
+
+                                numberOfEmptyLines = 0;
+
+                            } else {
+
+                                numberOfEmptyLines++;
+
+                                if (numberOfEmptyLines < 3) {
+                                    waitingHandler.appendReportEndLine();
+                                }
+                            }
                         }
                     }
 

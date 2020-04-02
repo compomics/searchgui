@@ -126,6 +126,10 @@ public class SearchHandler {
      */
     private boolean enableAndromeda = false;
     /**
+     * If true, MetaMorpheus will be used.
+     */
+    private boolean enableMetaMorpheus = false;
+    /**
      * If true, Novor will be used.
      */
     private boolean enableNovor = false;
@@ -193,6 +197,10 @@ public class SearchHandler {
      * The Andromeda location.
      */
     private File andromedaLocation = null;
+    /**
+     * The MetaMorpheus location.
+     */
+    private File metaMorpheusLocation = null;
     /**
      * The Novor location.
      */
@@ -265,6 +273,10 @@ public class SearchHandler {
      * The Andromeda process.
      */
     private AndromedaProcessBuilder andromedaProcessBuilder = null;
+    /**
+     * The MetaMorpheus process.
+     */
+    private MetaMorpheusProcessBuilder metaMorpheusProcessBuilder = null;
     /**
      * The Novor process.
      */
@@ -448,6 +460,16 @@ public class SearchHandler {
                 false,
                 false
         );
+        enableMetaMorpheus = loadSearchEngineLocation(
+                Advocate.metaMorpheus,
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+        );
         enableNovor = loadSearchEngineLocation(
                 Advocate.novor,
                 true,
@@ -478,7 +500,7 @@ public class SearchHandler {
     }
 
     /**
-     * Constructor for the SearchGUI command line interface. If the search
+     * Constructor for the SearchGUI command line interface.If the search
      * engines folders are set to null the default search engine locations are
      * used.
      *
@@ -489,16 +511,17 @@ public class SearchHandler {
      * @param fastaFile the FASTA file
      * @param rawFiles list of raw files
      * @param identificationParametersFile the search parameters file
-     * @param runOmssa if true the OMSSA search is enabled
-     * @param runXTandem if true the XTandem search is enabled
-     * @param runMsgf if true the MS-GF+ search is enabled
-     * @param runMsAmanda if true the MS Amanda search is enabled
-     * @param runMyriMatch if true the MyriMatch search is enabled
-     * @param runComet if true the Comet search is enabled
-     * @param runTide if true the Tide search is enabled
-     * @param runAndromeda if true the Andromeda search is enabled
-     * @param runNovor if true the Novor search is enabled
-     * @param runDirecTag if true the DirecTag search is enabled
+     * @param runOmssa if true, the OMSSA search is enabled
+     * @param runXTandem if true, the XTandem search is enabled
+     * @param runMsgf if true, the MS-GF+ search is enabled
+     * @param runMsAmanda if true, the MS Amanda search is enabled
+     * @param runMyriMatch if true, the MyriMatch search is enabled
+     * @param runComet if true, the Comet search is enabled
+     * @param runTide if true, the Tide search is enabled
+     * @param runAndromeda if true, the Andromeda search is enabled
+     * @param runMetaMorpheus if true, the MetaMorpheus search is enabled
+     * @param runNovor if true, the Novor search is enabled
+     * @param runDirecTag if true, the DirecTag search is enabled
      * @param omssaFolder the folder where OMSSA is installed, if null the
      * default location is used
      * @param xTandemFolder the folder where X!Tandem is installed, if null the
@@ -515,6 +538,8 @@ public class SearchHandler {
      * location is used
      * @param andromedaFolder the folder where Andromeda is installed, if null
      * the default location is used
+     * @param metaMorpheusFolder the folder where MetaMorpheus is installed, if
+     * null the default location is used
      * @param novorFolder the folder where Novor is installed, if null the
      * default location is used
      * @param direcTagFolder the folder where DirecTag is installed, if null the
@@ -539,6 +564,7 @@ public class SearchHandler {
             boolean runComet,
             boolean runTide,
             boolean runAndromeda,
+            boolean runMetaMorpheus,
             boolean runNovor,
             boolean runDirecTag,
             File omssaFolder,
@@ -549,6 +575,7 @@ public class SearchHandler {
             File cometFolder,
             File tideFolder,
             File andromedaFolder,
+            File metaMorpheusFolder,
             File novorFolder,
             File direcTagFolder,
             File makeblastdbFolder,
@@ -570,6 +597,7 @@ public class SearchHandler {
         this.enableComet = runComet;
         this.enableTide = runTide;
         this.enableAndromeda = runAndromeda;
+        this.enableMetaMorpheus = runMetaMorpheus;
         this.enableNovor = runNovor;
         this.enableDirecTag = runDirecTag;
 
@@ -691,6 +719,21 @@ public class SearchHandler {
                     true,
                     false,
                     false,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
+        }
+
+        if (metaMorpheusFolder != null) {
+            this.metaMorpheusLocation = metaMorpheusFolder;
+        } else {
+            loadSearchEngineLocation(
+                    Advocate.metaMorpheus,
+                    true,
+                    true,
+                    true,
+                    true,
                     false,
                     false,
                     false
@@ -1141,6 +1184,8 @@ public class SearchHandler {
                 tideLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.andromeda) {
                 andromedaLocation = searchEngineLoation;
+            } else if (searchEngineAdvocate == Advocate.metaMorpheus) {
+                metaMorpheusLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.novor) {
                 novorLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.direcTag) {
@@ -1246,6 +1291,17 @@ public class SearchHandler {
      */
     public static String getAndromedaFileName(String spectrumFileName) {
         return IoUtil.removeExtension(spectrumFileName) + ".res";
+    }
+
+    /**
+     * Returns the name of the MetaMorpheus result file.
+     *
+     * @param spectrumFileName the name of the spectrum file searched
+     *
+     * @return the name of the MetaMorpheus result file
+     */
+    public static String getMetaMorpheusFileName(String spectrumFileName) {
+        return IoUtil.removeExtension(spectrumFileName) + ".mzID";
     }
 
     /**
@@ -1526,6 +1582,24 @@ public class SearchHandler {
     }
 
     /**
+     * Returns the MetaMorpheus location.
+     *
+     * @return the MetaMorpheus location
+     */
+    public File getMetaMorpheusLocation() {
+        return metaMorpheusLocation;
+    }
+
+    /**
+     * Set the MetaMorpheus location.
+     *
+     * @param metaMorpheusLocation the MetaMorpheus location to set
+     */
+    public void setMetaMorpheusLocation(File metaMorpheusLocation) {
+        this.metaMorpheusLocation = metaMorpheusLocation;
+    }
+
+    /**
      * Returns the Novor location.
      *
      * @return the Novor location
@@ -1688,6 +1762,15 @@ public class SearchHandler {
     }
 
     /**
+     * Returns true if MetaMorpheus is to be used.
+     *
+     * @return if MetaMorpheus is to be used
+     */
+    public boolean isMetaMorpheusEnabled() {
+        return enableMetaMorpheus;
+    }
+
+    /**
      * Returns true if Novor is to be used.
      *
      * @return if Novor is to be used
@@ -1766,6 +1849,15 @@ public class SearchHandler {
      */
     public void setAndromedaEnabled(boolean runAndromeda) {
         this.enableAndromeda = runAndromeda;
+    }
+
+    /**
+     * Set if MetaMorpheus is to be used.
+     *
+     * @param runMetaMorpheus run MetaMorpheus?
+     */
+    public void setMetaMorpheusEnabled(boolean runMetaMorpheus) {
+        this.enableMetaMorpheus = runMetaMorpheus;
     }
 
     /**
@@ -1979,6 +2071,9 @@ public class SearchHandler {
             if (andromedaProcessBuilder != null) {
                 andromedaProcessBuilder.endProcess();
             }
+            if (metaMorpheusProcessBuilder != null) {
+                metaMorpheusProcessBuilder.endProcess();
+            }
             if (novorProcessBuilder != null) {
                 novorProcessBuilder.endProcess();
             }
@@ -2044,6 +2139,9 @@ public class SearchHandler {
                 if (enableAndromeda) {
                     nProgress += nFilesToSearch;
                     nProgress++; // the adromeda indexing
+                }
+                if (enableMetaMorpheus) {
+                    nProgress += nFilesToSearch;
                 }
                 if (enableNovor) {
                     nProgress += nFilesToSearch;
@@ -2383,9 +2481,11 @@ public class SearchHandler {
 
                     // Write mgf file
                     File mgfFile = null;
-                    if (enableXtandem || enableMyriMatch || enableMsAmanda || enableMsgf || enableOmssa || enableComet || enableNovor || enableDirecTag) {
+                    if (enableXtandem || enableMyriMatch || enableMsAmanda
+                            || enableMsgf || enableOmssa || enableComet
+                            || enableNovor || enableDirecTag) {
 
-                        // Make ms2 file
+                        // Make mgf file
                         waitingHandler.appendReport(
                                 "Converting spectrum file " + spectrumFileName + " to peak list.",
                                 true,
@@ -2401,6 +2501,8 @@ public class SearchHandler {
                                 waitingHandler
                         );
                     }
+
+                    waitingHandler.appendReportEndLine();
 
                     // Run X!Tandem
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
@@ -2949,6 +3051,86 @@ public class SearchHandler {
                         }
                     }
 
+                    // Run MetaMorpheus
+                    if (enableMetaMorpheus && !waitingHandler.isRunCanceled()) {
+
+                        File metaMorpheusOutputFile = new File(outputTempFolder, getMetaMorpheusFileName(spectrumFileName));
+
+                        metaMorpheusProcessBuilder = new MetaMorpheusProcessBuilder(
+                                metaMorpheusLocation,
+                                searchParameters,
+                                spectrumFile, // @TODO: should complain if not mzml!
+                                fastaFile,
+                                metaMorpheusOutputFile,
+                                waitingHandler,
+                                exceptionHandler
+                        );
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.metaMorpheus.getName() + ".",
+                                true,
+                                true
+                        );
+                        waitingHandler.appendReportEndLine();
+                        metaMorpheusProcessBuilder.startProcess();
+
+                        if (!waitingHandler.isRunCanceled()) {
+
+                            File tempResultFile = new File(
+                                    MetaMorpheusProcessBuilder.getTempFolderPath(metaMorpheusLocation)
+                                    + File.separator + "Task1SearchTask"
+                                    + File.separator + "Individual File Results",
+                                    getMetaMorpheusFileName(spectrumFileName));
+
+                            if (tempResultFile.exists()) {
+
+                                IoUtil.copyFile(tempResultFile, metaMorpheusOutputFile);
+
+                                try {
+                                    tempResultFile.delete();
+                                } catch (Exception e) {
+                                    waitingHandler.appendReport(
+                                            "An error occurred when attempting to delete " + tempResultFile.getName() + ".",
+                                            true,
+                                            true
+                                    );
+                                }
+
+                                HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
+                                if (runIdentificationFiles == null) {
+
+                                    runIdentificationFiles = new HashMap<>();
+                                    identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
+                                }
+
+                                if (metaMorpheusOutputFile.exists()) {
+
+                                    runIdentificationFiles.put(Advocate.metaMorpheus.getIndex(), metaMorpheusOutputFile);
+                                    idFileToSpectrumFileMap.put(metaMorpheusOutputFile.getName(), spectrumFile);
+
+                                } else {
+
+                                    waitingHandler.appendReport(
+                                            "Could not find " + Advocate.metaMorpheus.getName() + " result file for " + spectrumFileName + ".",
+                                            true,
+                                            true
+                                    );
+
+                                }
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.metaMorpheus.getName() + " .mzID file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
+                            }
+
+                        }
+
+                    }
+
                     // Run Novor
                     if (enableNovor && !waitingHandler.isRunCanceled()) {
 
@@ -3306,11 +3488,11 @@ public class SearchHandler {
                                 );
                             }
                         }
-                        if (enableNovor) {
+                        if (enableAndromeda) {
 
                             File outputFile = getDefaultOutputFile(
                                     outputFolder,
-                                    Advocate.novor.getName(),
+                                    Advocate.andromeda.getName(),
                                     utilitiesUserParameters.isIncludeDateInOutputName()
                             );
 
@@ -3321,7 +3503,28 @@ public class SearchHandler {
                             } else {
 
                                 waitingHandler.appendReport(
-                                        "Could not find " + Advocate.novor.getName() + " results.",
+                                        "Could not find " + Advocate.andromeda.getName() + " results.",
+                                        true,
+                                        true
+                                );
+                            }
+                        }
+                        if (enableMetaMorpheus) {
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.metaMorpheus.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
+                            if (outputFile.exists()) {
+
+                                identificationFilesList.add(outputFile);
+
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.metaMorpheus.getName() + " results.",
                                         true,
                                         true
                                 );
@@ -3523,7 +3726,7 @@ public class SearchHandler {
 
         File outputFile = getInputFile(folder);
 
-        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
             bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
@@ -3794,7 +3997,7 @@ public class SearchHandler {
                     zipFile.delete();
                 }
 
-                try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                     // find the uncompressed size of all the files to add to the zip
                     long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFiles);
@@ -3877,7 +4080,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -3952,7 +4155,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
 

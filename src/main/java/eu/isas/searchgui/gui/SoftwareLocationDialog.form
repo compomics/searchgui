@@ -135,6 +135,13 @@
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="102" attributes="0">
+                                      <Component id="metaMorpheusLocationLabel" min="-2" pref="91" max="-2" attributes="1"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="metaMorpheusLocationTxt" max="32767" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="metaMorpheusBrowse" min="-2" pref="80" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
                                       <Component id="direcTagLocationLabel" min="-2" pref="91" max="-2" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="direcTagLocationTxt" max="32767" attributes="0"/>
@@ -190,6 +197,7 @@
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="enableMetaMorpheusCombo" max="32767" attributes="1"/>
                           <Component id="enableDirecTagCombo" max="32767" attributes="1"/>
                           <Component id="enableAndromedaCombo" max="32767" attributes="1"/>
                           <Component id="enableTideCombo" max="32767" attributes="1"/>
@@ -266,6 +274,13 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="enableMetaMorpheusCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="metaMorpheusBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="metaMorpheusLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="metaMorpheusLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="novorLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="novorLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="novorBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -311,7 +326,7 @@
             <Component class="javax.swing.JComboBox" name="enableXTandemCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -339,7 +354,7 @@
             <Component class="javax.swing.JComboBox" name="enableOmssaCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -367,7 +382,7 @@
             <Component class="javax.swing.JComboBox" name="enableMsgfCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -395,7 +410,7 @@
             <Component class="javax.swing.JComboBox" name="enableMsAmandaCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -443,7 +458,7 @@
             <Component class="javax.swing.JComboBox" name="enableMyriMatchCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -471,7 +486,7 @@
             <Component class="javax.swing.JComboBox" name="enableCometCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -499,7 +514,7 @@
             <Component class="javax.swing.JComboBox" name="enableTideCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -527,7 +542,7 @@
             <Component class="javax.swing.JComboBox" name="enableAndromedaCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -555,7 +570,7 @@
             <Component class="javax.swing.JComboBox" name="enableNovorCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
@@ -583,11 +598,39 @@
             <Component class="javax.swing.JComboBox" name="enableDirecTagCombo">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new DefaultComboBoxModel(enableDisable)" type="code"/>
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
                 </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableDirecTagComboActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="metaMorpheusLocationLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="MetaMorpheus"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="metaMorpheusLocationTxt">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="metaMorpheusBrowse">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Browse"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="metaMorpheusBrowseActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="enableMetaMorpheusCombo">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableMetaMorpheusComboActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

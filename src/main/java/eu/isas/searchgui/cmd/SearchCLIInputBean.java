@@ -73,6 +73,10 @@ public class SearchCLIInputBean {
      */
     private boolean andromedaEnabled = false;
     /**
+     * If true, MetaMorpheus is enabled.
+     */
+    private boolean metaMorpheusEnabled = false;
+    /**
      * If true, Novor is enabled.
      */
     private boolean novorEnabled = false;
@@ -112,6 +116,10 @@ public class SearchCLIInputBean {
      * The folder where Andromeda is installed.
      */
     private File andromedaLocation = null;
+    /**
+     * The folder where MetaMopheus is installed.
+     */
+    private File metaMorpheusLocation = null;
     /**
      * The folder where Novor is installed.
      */
@@ -261,6 +269,10 @@ public class SearchCLIInputBean {
             String andromedaOption = aLine.getOptionValue(SearchCLIParams.ANDROMEDA.id);
             andromedaEnabled = andromedaOption.trim().equals("1");
         }
+        if (aLine.hasOption(SearchCLIParams.META_MORPHEUS.id)) {
+            String metaMorpheusOption = aLine.getOptionValue(SearchCLIParams.META_MORPHEUS.id);
+            metaMorpheusEnabled = metaMorpheusOption.trim().equals("1");
+        }
         if (aLine.hasOption(SearchCLIParams.NOVOR.id)) {
             String novorOption = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
             novorEnabled = novorOption.trim().equals("1");
@@ -303,13 +315,17 @@ public class SearchCLIInputBean {
             String andromedaFolder = aLine.getOptionValue(SearchCLIParams.ANDROMEDA_LOCATION.id);
             andromedaLocation = new File(andromedaFolder);
         }
+        if (aLine.hasOption(SearchCLIParams.META_MORPHEUS_LOCATION.id)) {
+            String metaMorpheusFolder = aLine.getOptionValue(SearchCLIParams.META_MORPHEUS_LOCATION.id);
+            metaMorpheusLocation = new File(metaMorpheusFolder);
+        }
         if (aLine.hasOption(SearchCLIParams.NOVOR_LOCATION.id)) {
-            String andromedaFolder = aLine.getOptionValue(SearchCLIParams.NOVOR_LOCATION.id);
-            novorLocation = new File(andromedaFolder);
+            String novorFolder = aLine.getOptionValue(SearchCLIParams.NOVOR_LOCATION.id);
+            novorLocation = new File(novorFolder);
         }
         if (aLine.hasOption(SearchCLIParams.DIRECTAG_LOCATION.id)) {
-            String andromedaFolder = aLine.getOptionValue(SearchCLIParams.DIRECTAG_LOCATION.id);
-            direcTagLocation = new File(andromedaFolder);
+            String direcTagFolder = aLine.getOptionValue(SearchCLIParams.DIRECTAG_LOCATION.id);
+            direcTagLocation = new File(direcTagFolder);
         }
 
         // makeblastdb folder
@@ -527,6 +543,15 @@ public class SearchCLIInputBean {
     public boolean isAndromedaEnabled() {
         return andromedaEnabled;
     }
+    
+    /**
+     * Returns true if MetaMorpheus is to be used.
+     *
+     * @return if MetaMorpheus is to be used
+     */
+    public boolean isMetaMorpheusEnabled() {
+        return metaMorpheusEnabled;
+    }
 
     /**
      * Returns true if Novor is to be used.
@@ -616,6 +641,15 @@ public class SearchCLIInputBean {
      */
     public File getAndromedaLocation() {
         return andromedaLocation;
+    }
+    
+    /**
+     * Returns the MetaMorpheus location.
+     *
+     * @return the MetaMorpheus location
+     */
+    public File getMetaMorpheusLocation() {
+        return metaMorpheusLocation;
     }
 
     /**
@@ -880,6 +914,12 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
+        if (aLine.hasOption(SearchCLIParams.META_MORPHEUS.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.META_MORPHEUS.id);
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.META_MORPHEUS.id, input)) {
+                return false;
+            }
+        }
         if (aLine.hasOption(SearchCLIParams.NOVOR.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
             if (!CommandParameter.isBooleanInput(SearchCLIParams.NOVOR.id, input)) {
@@ -963,6 +1003,14 @@ public class SearchCLIInputBean {
             File file = new File(input);
             if (!file.exists()) {
                 System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.ANDROMEDA_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.META_MORPHEUS_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.META_MORPHEUS_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.META_MORPHEUS_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
                 return false;
             }
         }

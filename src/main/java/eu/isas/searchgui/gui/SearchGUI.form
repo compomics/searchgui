@@ -398,9 +398,19 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="14" pref="14" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="enableMetaMorpheusJCheckBox" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
+                                      <Component id="metaMorpheusButton" linkSize="6" min="-2" pref="180" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="metaMorpheusSupportButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                                      <Component id="metaMorpheusLinkLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                  </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="1" attributes="0">
                                           <Component id="enableXTandemJCheckBox" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -445,7 +455,7 @@
                                           <Component id="tideLinkLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="andromedaLinkLabel" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace pref="166" max="32767" attributes="0"/>
+                                      <EmptySpace pref="179" max="32767" attributes="0"/>
                                       <Group type="103" groupAlignment="2" attributes="0">
                                           <Component id="msAmandaSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
                                           <Component id="myriMatchSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
@@ -457,6 +467,7 @@
                                           <Component id="andromedaSettingsButton" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
                                           <Component id="novorSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
                                           <Component id="direcTagSettingsButton" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
+                                          <Component id="metaMorpheusSettingsButton" linkSize="8" alignment="2" min="-2" pref="22" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                                   </Group>
@@ -552,6 +563,14 @@
                                   <Component id="andromedaSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="andromedaLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="andromedaSettingsButton" linkSize="9" alignment="2" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="enableMetaMorpheusJCheckBox" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="metaMorpheusButton" linkSize="7" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Component id="metaMorpheusLinkLabel" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="metaMorpheusSettingsButton" linkSize="9" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Component id="metaMorpheusSupportButton" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
@@ -1313,6 +1332,80 @@
                         <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagSettingsButtonMouseEntered"/>
                         <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="direcTagSettingsButtonMouseExited"/>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="direcTagSettingsButtonActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JCheckBox" name="enableMetaMorpheusJCheckBox">
+                      <Properties>
+                        <Property name="toolTipText" type="java.lang.String" value="Enable MetaMorpheus"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableMetaMorpheusJCheckBoxActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="metaMorpheusButton">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="15" style="1"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" value="MetaMorpheus"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Enable MetaMorpheus"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="null"/>
+                        </Property>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="horizontalAlignment" type="int" value="2"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaMorpheusButtonMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaMorpheusButtonMouseExited"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="metaMorpheusButtonActionPerformed"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="metaMorpheusSupportButton">
+                      <Properties>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/all_platforms_gray.png"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Supported on Windows, Mac and Linux"/>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="metaMorpheusLinkLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=https://github.com/smith-chem-wisc/MetaMorpheus&quot;&gt;MetaMorpheus search algorithm&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="toolTipText" type="java.lang.String" value="Open the MetaMorpheus web page"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaMorpheusLinkLabelMouseClicked"/>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaMorpheusLinkLabelMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaMorpheusLinkLabelMouseExited"/>
+                      </Events>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="metaMorpheusSettingsButton">
+                      <Properties>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/edit_gray.png"/>
+                        </Property>
+                        <Property name="toolTipText" type="java.lang.String" value="Edit Tide Advanced Settings"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="null"/>
+                        </Property>
+                        <Property name="borderPainted" type="boolean" value="false"/>
+                        <Property name="contentAreaFilled" type="boolean" value="false"/>
+                        <Property name="enabled" type="boolean" value="false"/>
+                        <Property name="rolloverIcon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/icons/edit.png"/>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaMorpheusSettingsButtonMouseEntered"/>
+                        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="metaMorpheusSettingsButtonMouseExited"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="metaMorpheusSettingsButtonActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

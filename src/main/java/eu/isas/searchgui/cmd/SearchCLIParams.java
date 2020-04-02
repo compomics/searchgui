@@ -30,6 +30,7 @@ public enum SearchCLIParams {
     COMET("comet", "Turn the Comet search on or off (0: off, 1: on, default is '0').", false),
     TIDE("tide", "Turn the Tide search on or off (0: off, 1: on, default is '0').", false),
     ANDROMEDA("andromeda", "Turn the Andromeda search on or off (0: off, 1: on, default is '0').", false),
+    META_MORPHEUS("meta_morpheus", "Turn the MetaMorpheus search on or off (0: off, 1: on, default is '0').", false),
     NOVOR("novor", "Turn the Novor sequencing on or off (0: off, 1: on, default is '0').", false),
     DIRECTAG("directag", "Turn the DirecTag sequencing on or off (0: off, 1: on, default is '0').", false),
     
@@ -42,6 +43,7 @@ public enum SearchCLIParams {
     COMET_LOCATION("comet_folder", "The folder where Comet is installed, defaults to the included version.", false),
     TIDE_LOCATION("tide_folder", "The folder where Tide is installed, defaults to the included version.", false),
     ANDROMEDA_LOCATION("andromeda_folder", "The folder where Andromeda is installed, defaults to the included version.", false),
+    META_MORPHEUS_LOCATION("meta_morpheus_folder", "The folder where MetaMorpheus is installed, defaults to the included version.", false),
     NOVOR_LOCATION("novor_folder", "The folder where Novor is installed, defaults to the included version.", false),
     DIRECTAG_LOCATION("directag_folder", "The folder where DirecTag is installed, defaults to the included version.", false),
     
@@ -132,6 +134,7 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, COMET.id) + " " + COMET.description + "\n";
         output += "-" + String.format(formatter, TIDE.id) + " " + TIDE.description + "\n";
         output += "-" + String.format(formatter, ANDROMEDA.id) + " " + ANDROMEDA.description + "\n";
+        output += "-" + String.format(formatter, META_MORPHEUS.id) + " " + META_MORPHEUS.description + "\n";
         output += "-" + String.format(formatter, NOVOR.id) + " " + NOVOR.description + "\n";
         output += "-" + String.format(formatter, DIRECTAG.id) + " " + DIRECTAG.description + "\n";
 
@@ -144,6 +147,7 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, COMET_LOCATION.id) + " " + COMET_LOCATION.description + "\n";
         output += "-" + String.format(formatter, TIDE_LOCATION.id) + " " + TIDE_LOCATION.description + "\n";
         output += "-" + String.format(formatter, ANDROMEDA_LOCATION.id) + " " + ANDROMEDA_LOCATION.description + "\n";
+        output += "-" + String.format(formatter, META_MORPHEUS_LOCATION.id) + " " + META_MORPHEUS_LOCATION.description + "\n";
         output += "-" + String.format(formatter, NOVOR_LOCATION.id) + " " + NOVOR_LOCATION.description + "\n";
         output += "-" + String.format(formatter, DIRECTAG_LOCATION.id) + " " + DIRECTAG_LOCATION.description + "\n";
         output += "-" + String.format(formatter, MAKEBLASTDB_LOCATION.id) + " " + MAKEBLASTDB_LOCATION.description + "\n";

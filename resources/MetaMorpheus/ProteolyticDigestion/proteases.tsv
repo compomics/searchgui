@@ -1,0 +1,3 @@
+Name	Sequences Inducing Cleavage	Sequences Preventing Cleavage	Cleavage Terminus	Cleavage Specificity	PSI-MS Accession Number	PSI-MS Name	Site Regular Expression	Notes
+trypsin	K|,R|			full	MS:1001313	Trypsin/P	(?<=[KR])
+Trypsin	R|[P],K|[P]			full	MS:1001251	Trypsin			

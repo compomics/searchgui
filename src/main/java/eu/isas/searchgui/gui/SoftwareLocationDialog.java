@@ -5,6 +5,7 @@ import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
 import eu.isas.searchgui.processbuilders.CometProcessBuilder;
 import eu.isas.searchgui.processbuilders.DirecTagProcessBuilder;
 import eu.isas.searchgui.processbuilders.MakeblastdbProcessBuilder;
+import eu.isas.searchgui.processbuilders.MetaMorpheusProcessBuilder;
 import eu.isas.searchgui.processbuilders.MsAmandaProcessBuilder;
 import eu.isas.searchgui.processbuilders.MsgfProcessBuilder;
 import eu.isas.searchgui.processbuilders.MyriMatchProcessBuilder;
@@ -30,7 +31,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     /**
      * Convenience Array for the search engines combo boxes.
      */
-    private static final String[] enableDisable = {"Enabled", "Disabled"};
+    private static final String[] ENABLED_DISABLED = {"Enabled", "Disabled"};
     /**
      * The SearchGUI main frame.
      */
@@ -71,6 +72,10 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * True if the Andromeda installation is valid.
      */
     private boolean andromedaValid = true;
+    /**
+     * True if the MetaMorpheus installation is valid.
+     */
+    private boolean metaMorpheusValid = true;
     /**
      * True if the Novor installation is valid.
      */
@@ -198,6 +203,18 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             enableAndromedaCombo.setSelectedItem("Disabled");
         }
 
+        if (searchGUIMainFrame.getSearchHandler().getMetaMorpheusLocation() != null) {
+            metaMorpheusLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getMetaMorpheusLocation().getAbsolutePath());
+            if (searchGUIMainFrame.getSearchHandler().isMetaMorpheusEnabled()) {
+                enableMetaMorpheusCombo.setSelectedItem("Enabled");
+            } else {
+                enableMetaMorpheusCombo.setSelectedItem("Disabled");
+            }
+        } else {
+            metaMorpheusLocationTxt.setText("");
+            enableMetaMorpheusCombo.setSelectedItem("Disabled");
+        }
+
         if (searchGUIMainFrame.getSearchHandler().getNovorLocation() != null) {
             novorLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getNovorLocation().getAbsolutePath());
             if (searchGUIMainFrame.getSearchHandler().isNovorEnabled()) {
@@ -302,6 +319,10 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         direcTagLocationTxt = new javax.swing.JTextField();
         direcTagBrowse = new javax.swing.JButton();
         enableDirecTagCombo = new javax.swing.JComboBox();
+        metaMorpheusLocationLabel = new javax.swing.JLabel();
+        metaMorpheusLocationTxt = new javax.swing.JTextField();
+        metaMorpheusBrowse = new javax.swing.JButton();
+        enableMetaMorpheusCombo = new javax.swing.JComboBox();
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -330,7 +351,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableXTandemCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableXTandemCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableXTandemCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableXTandemComboActionPerformed(evt);
@@ -348,7 +369,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableOmssaCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableOmssaCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableOmssaCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableOmssaComboActionPerformed(evt);
@@ -366,7 +387,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableMsgfCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableMsgfCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableMsgfCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableMsgfComboActionPerformed(evt);
@@ -384,7 +405,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableMsAmandaCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableMsAmandaCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableMsAmandaCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableMsAmandaComboActionPerformed(evt);
@@ -415,7 +436,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableMyriMatchCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableMyriMatchCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableMyriMatchCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableMyriMatchComboActionPerformed(evt);
@@ -433,7 +454,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableCometCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableCometCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableCometCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableCometComboActionPerformed(evt);
@@ -451,7 +472,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableTideCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableTideCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableTideCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableTideComboActionPerformed(evt);
@@ -469,7 +490,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableAndromedaCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableAndromedaCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableAndromedaCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableAndromedaComboActionPerformed(evt);
@@ -487,7 +508,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableNovorCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableNovorCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableNovorCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableNovorComboActionPerformed(evt);
@@ -505,10 +526,28 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
-        enableDirecTagCombo.setModel(new DefaultComboBoxModel(enableDisable));
+        enableDirecTagCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
         enableDirecTagCombo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enableDirecTagComboActionPerformed(evt);
+            }
+        });
+
+        metaMorpheusLocationLabel.setText("MetaMorpheus");
+
+        metaMorpheusLocationTxt.setEditable(false);
+
+        metaMorpheusBrowse.setText("Browse");
+        metaMorpheusBrowse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                metaMorpheusBrowseActionPerformed(evt);
+            }
+        });
+
+        enableMetaMorpheusCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
+        enableMetaMorpheusCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableMetaMorpheusComboActionPerformed(evt);
             }
         });
 
@@ -548,6 +587,12 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesLocationPanelLayout.createSequentialGroup()
                         .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                                .addComponent(metaMorpheusLocationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(metaMorpheusLocationTxt)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(metaMorpheusBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
                                 .addComponent(direcTagLocationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -592,6 +637,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                                     .addComponent(makeblastdbBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(6, 6, 6)))
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(enableMetaMorpheusCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(enableDirecTagCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(enableAndromedaCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(enableTideCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -655,6 +701,12 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                     .addComponent(andromedaBrowse)
                     .addComponent(andromedaLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaLocationLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(enableMetaMorpheusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(metaMorpheusBrowse)
+                    .addComponent(metaMorpheusLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(metaMorpheusLocationLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(novorLocationLabel)
@@ -764,6 +816,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             searchGUIMainFrame.getSearchHandler().setCometLocation(getCometLocation());
             searchGUIMainFrame.getSearchHandler().setTideLocation(getTideLocation());
             searchGUIMainFrame.getSearchHandler().setAndromedaLocation(getAndromedaLocation());
+            searchGUIMainFrame.getSearchHandler().setMetaMorpheusLocation(getMetaMorpheusLocation());
             searchGUIMainFrame.getSearchHandler().setNovorLocation(getNovorLocation());
             searchGUIMainFrame.getSearchHandler().setDirecTagLocation(getDirecTagLocation());
             searchGUIMainFrame.getSearchHandler().setMakeblastdbLocation(getMakeblastdbLocation());
@@ -775,6 +828,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                     enableCometCombo.getSelectedIndex() == 0,
                     enableTideCombo.getSelectedIndex() == 0,
                     enableAndromedaCombo.getSelectedIndex() == 0,
+                    enableMetaMorpheusCombo.getSelectedIndex() == 0,
                     enableNovorCombo.getSelectedIndex() == 0,
                     enableDirecTagCombo.getSelectedIndex() == 0);
             dispose();
@@ -796,6 +850,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                 enableCometCombo.getSelectedIndex() == 0 && cometValid,
                 enableTideCombo.getSelectedIndex() == 0 && tideValid,
                 enableAndromedaCombo.getSelectedIndex() == 0 && andromedaValid,
+                enableMetaMorpheusCombo.getSelectedIndex() == 0 && metaMorpheusValid,
                 enableNovorCombo.getSelectedIndex() == 0 && novorValid,
                 enableDirecTagCombo.getSelectedIndex() == 0 && direcTagValid);
         dispose();
@@ -1024,6 +1079,27 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_enableDirecTagComboActionPerformed
 
+    /**
+     * This method should be called whenever 'browse' has been pressed for the
+     * MetaMorpheus location. It auto-validates the MetaMorpheus location.
+     *
+     * @param evt
+     */
+    private void metaMorpheusBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_metaMorpheusBrowseActionPerformed
+        browseMetaMorpheusLocationPressed();
+    }//GEN-LAST:event_metaMorpheusBrowseActionPerformed
+
+    /**
+     * Validate the search engine input.
+     *
+     * @param evt
+     */
+    private void enableMetaMorpheusComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableMetaMorpheusComboActionPerformed
+        if (guiLoaded) {
+            validateInput(true);
+        }
+    }//GEN-LAST:event_enableMetaMorpheusComboActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton andromedaBrowse;
     private javax.swing.JLabel andromedaLocationLabel;
@@ -1039,6 +1115,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox enableAndromedaCombo;
     private javax.swing.JComboBox enableCometCombo;
     private javax.swing.JComboBox enableDirecTagCombo;
+    private javax.swing.JComboBox enableMetaMorpheusCombo;
     private javax.swing.JComboBox enableMsAmandaCombo;
     private javax.swing.JComboBox enableMsgfCombo;
     private javax.swing.JComboBox enableMyriMatchCombo;
@@ -1049,6 +1126,9 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     private javax.swing.JButton makeblastdbBrowse;
     private javax.swing.JLabel makeblastdbLocationLabel;
     private javax.swing.JTextField makeblastdbLocationTxt;
+    private javax.swing.JButton metaMorpheusBrowse;
+    private javax.swing.JLabel metaMorpheusLocationLabel;
+    private javax.swing.JTextField metaMorpheusLocationTxt;
     private javax.swing.JButton msAmandaBrowse;
     private javax.swing.JLabel msAmandaLocationLabel;
     private javax.swing.JTextField msAmandaLocationTxt;
@@ -1140,6 +1220,14 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
 
     /**
      * This method should be called whenever 'browse' has been pressed for the
+     * MetaMorpheus location. It auto-validates the MetaMorpheus location.
+     */
+    public void browseMetaMorpheusLocationPressed() {
+        browseSearchEngineLocationPressed(Advocate.metaMorpheus, MetaMorpheusProcessBuilder.EXECUTABLE_FILE_NAME, metaMorpheusLocationTxt);
+    }
+
+    /**
+     * This method should be called whenever 'browse' has been pressed for the
      * Novor location. It auto-validates the Novor location.
      */
     public void browseNovorLocationPressed() {
@@ -1218,7 +1306,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     }
 
     /**
-     * This method validates whether the specified folder is the root folder if
+     * This method validates whether the specified folder is the root folder of
      * the given search engine.
      *
      * @param aFile file with the search engine root folder
@@ -1273,9 +1361,10 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         cometLocationTxt.setForeground(Color.BLACK);
         tideLocationTxt.setForeground(Color.BLACK);
         andromedaLocationTxt.setForeground(Color.BLACK);
+        metaMorpheusLocationTxt.setForeground(Color.BLACK);
         novorLocationTxt.setForeground(Color.BLACK);
         direcTagLocationTxt.setForeground(Color.BLACK);
-        
+
         omssaLocationLabel.setToolTipText(null);
         xTandemLocationLabel.setToolTipText(null);
         msgfLocationLabel.setToolTipText(null);
@@ -1284,9 +1373,10 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         cometLocationLabel.setToolTipText(null);
         tideLocationLabel.setToolTipText(null);
         andromedaLocationLabel.setToolTipText(null);
+        metaMorpheusLocationLabel.setToolTipText(null);
         novorLocationLabel.setToolTipText(null);
         direcTagLocationLabel.setToolTipText(null);
-        
+
         omssaValid = true;
         tandemValid = true;
         msgfValid = true;
@@ -1295,6 +1385,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         cometValid = true;
         tideValid = true;
         andromedaValid = true;
+        metaMorpheusValid = true;
         novorValid = true;
         direcTagValid = true;
 
@@ -1328,7 +1419,11 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         }
         if (isAndromedaEnabled()) {
             andromedaValid = validateSearchEngineInstallation(Advocate.andromeda, getAndromedaLocation(), valid, andromedaLocationLabel, showMessage);
-            valid = novorValid && valid;
+            valid = andromedaValid && valid;
+        }
+        if (isMetaMorpheusEnabled()) {
+            metaMorpheusValid = validateSearchEngineInstallation(Advocate.metaMorpheus, getMetaMorpheusLocation(), valid, metaMorpheusLocationLabel, showMessage);
+            valid = metaMorpheusValid && valid;
         }
         if (isNovorEnabled()) {
             novorValid = validateSearchEngineInstallation(Advocate.novor, getNovorLocation(), valid, novorLocationLabel, showMessage);
@@ -1337,14 +1432,6 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         if (isDirecTagEnabled()) {
             direcTagValid = validateSearchEngineInstallation(Advocate.direcTag, getDirecTagLocation(), valid, direcTagLocationLabel, showMessage);
             valid = direcTagValid && valid;
-        }
-
-        if (!isOmssaEnabled() && !isXtandemEnabled() && !isMsgfEnabled() && !isMsAmandaEnabled() && !isMyriMatchEnabled()
-                && !isCometEnabled() && !isTideEnabled() && !isAndromedaEnabled() && !isNovorEnabled() && !isDirecTagEnabled()) {
-            if (showMessage && valid) {
-                JOptionPane.showMessageDialog(this, "You need to select at least one search engine.", "No Search Engines Selected", JOptionPane.WARNING_MESSAGE);
-            }
-            valid = false;
         }
 
         okButton.setEnabled(valid);
@@ -1401,6 +1488,8 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                 installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.omssa, getOmssaLocation(), showMessage);
             } else if (advocate == Advocate.andromeda) {
                 installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.andromeda, getAndromedaLocation(), showMessage);
+            } else if (advocate == Advocate.metaMorpheus) {
+                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.metaMorpheus, getMetaMorpheusLocation(), showMessage);
             } else if (advocate == Advocate.novor) {
                 installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.novor, getNovorLocation(), showMessage);
             } else if (advocate == Advocate.direcTag) {
@@ -1426,7 +1515,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if OMSSA is enabled
      */
     public boolean isOmssaEnabled() {
-        return ((String) enableOmssaCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableOmssaCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1435,7 +1524,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if X!Tandem is enabled
      */
     public boolean isXtandemEnabled() {
-        return ((String) enableXTandemCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableXTandemCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1444,7 +1533,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if MS-GF+ is enabled
      */
     public boolean isMsgfEnabled() {
-        return ((String) enableMsgfCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableMsgfCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1453,7 +1542,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if MS Amanda is enabled
      */
     public boolean isMsAmandaEnabled() {
-        return ((String) enableMsAmandaCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableMsAmandaCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1462,7 +1551,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if MyriMatch is enabled
      */
     public boolean isMyriMatchEnabled() {
-        return ((String) enableMyriMatchCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableMyriMatchCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1471,7 +1560,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if Comet is enabled
      */
     public boolean isCometEnabled() {
-        return ((String) enableCometCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableCometCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1480,7 +1569,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if Tide is enabled
      */
     public boolean isTideEnabled() {
-        return ((String) enableTideCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableTideCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1489,7 +1578,16 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if Andromeda is enabled
      */
     public boolean isAndromedaEnabled() {
-        return ((String) enableAndromedaCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableAndromedaCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
+    }
+
+    /**
+     * Returns whether MetaMorpheus is enabled.
+     *
+     * @return a boolean indicating if MetaMorpheus is enabled
+     */
+    public boolean isMetaMorpheusEnabled() {
+        return ((String) enableMetaMorpheusCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1498,7 +1596,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if Novor is enabled
      */
     public boolean isNovorEnabled() {
-        return ((String) enableNovorCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableNovorCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1507,7 +1605,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return a boolean indicating if DirecTag is enabled
      */
     public boolean isDirecTagEnabled() {
-        return ((String) enableDirecTagCombo.getSelectedItem()).equals(enableDisable[0]);
+        return ((String) enableDirecTagCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
     }
 
     /**
@@ -1609,6 +1707,19 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     public File getAndromedaLocation() {
         if (andromedaLocationTxt.getText() != null) {
             return new File(andromedaLocationTxt.getText());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the MetaMorpheus location.
+     *
+     * @return the MetaMorpheus location
+     */
+    public File getMetaMorpheusLocation() {
+        if (metaMorpheusLocationTxt.getText() != null) {
+            return new File(metaMorpheusLocationTxt.getText());
         } else {
             return null;
         }
