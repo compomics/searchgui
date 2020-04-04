@@ -1223,7 +1223,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * MetaMorpheus location. It auto-validates the MetaMorpheus location.
      */
     public void browseMetaMorpheusLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.metaMorpheus, MetaMorpheusProcessBuilder.EXECUTABLE_FILE_NAME, metaMorpheusLocationTxt);
+        browseSearchEngineLocationPressed(Advocate.metaMorpheus, MetaMorpheusProcessBuilder.getExecutableFileName(), metaMorpheusLocationTxt);
     }
 
     /**

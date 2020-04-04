@@ -47,10 +47,6 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File fastaFile;
     /**
-     * The name of the MetaMorpheus executable.
-     */
-    public static final String EXECUTABLE_FILE_NAME = "CMD.exe";
-    /**
      * The search parameters.
      */
     private SearchParameters searchParameters;
@@ -112,7 +108,13 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // make sure that the MetaMorpheus file is executable
-        File metaMorpheus = new File(metaMorpheusFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
+        File metaMorpheus;
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+        if (operatingSystem.contains("windows")) {
+            metaMorpheus = new File(metaMorpheusFolder.getAbsolutePath() + File.separator + getExecutableFileName());
+        } else {
+            metaMorpheus = new File(metaMorpheusFolder.getAbsolutePath() + File.separator + getExecutableFileName());
+        }
         metaMorpheus.setExecutable(true);
 
         // create the modification lists
@@ -127,10 +129,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         File metaMorpheusParametersFile = createParametersFile(searchParameters);
 
         // add dotnet if not on windows
-        String operatingSystem = System.getProperty("os.name").toLowerCase();
         if (!operatingSystem.contains("windows")) {
             String dotNetPath = "dotnet";
-            process_name_array.add(dotNetPath); // @TODO: yet to be tested! maybe it has to be "dotnet CMD.dll"?
+            process_name_array.add(dotNetPath);
         }
 
         // full path to executable
@@ -169,6 +170,22 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
         // set error out and std out to same stream
         pb.redirectErrorStream(true);
+    }
+
+    /**
+     * Returns the name of the MetaMorpheus executable.
+     * 
+     * @return the name of the MetaMorpheus executable
+     */
+    public static String getExecutableFileName() {
+
+        String operatingSystem = System.getProperty("os.name").toLowerCase();
+
+        if (operatingSystem.contains("windows")) {
+            return "CMD.exe";
+        } else {
+            return "CMD.dll";
+        }
     }
 
     /**
@@ -265,30 +282,62 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("MaxThreadsToUsePerFile = 3" + System.getProperty("line.separator"));
 
             // fixed modifications
-            bw.write("ListOfModsFixed = \"Common Fixed\tCarbamidomethyl on C\t\tCommon Fixed\tCarbamidomethyl on U\"" + System.getProperty("line.separator"));
-            bw.write("ListOfModsVariable = \"Common Variable\tOxidation on M\"" + System.getProperty("line.separator"));
+            bw.write("ListOfModsFixed = \""); // @TODO: merge the fixed and variable writing code!
 
-            // @TODO: add the real modifications
-//            bw.write("ListOfModsFixed = \"");
-//            ArrayList<String> fixedModifications = searchParameters.getModificationParameters().getFixedModifications();
-//            for (int i = 0; i < fixedModifications.size(); i++) {
-//                if (i > 0) {
-//                    bw.write("\t\t");
-//                }
-//                bw.write("SearchGUI\t" + fixedModifications.get(i));
-//            }
-//            bw.write("\"" + System.getProperty("line.separator"));
-//
-//            // variable modifications
-//            bw.write("ListOfModsVariable = \"");
-//            ArrayList<String> variableModifications = searchParameters.getModificationParameters().getVariableModifications();
-//            for (int i = 0; i < variableModifications.size(); i++) {
-//                if (i > 0) {
-//                    bw.write("\t\t");
-//                }
-//                bw.write("SearchGUI\t" + variableModifications.get(i));
-//            }
-//            bw.write("\"" + System.getProperty("line.separator"));
+            ArrayList<String> fixedModifications = searchParameters.getModificationParameters().getFixedModifications();
+
+            for (int i = 0; i < fixedModifications.size(); i++) {
+
+                if (i > 0) {
+                    bw.write("\t\t");
+                }
+
+                String modName = fixedModifications.get(i);
+                String tempModName = modName.replaceAll(" of ", " off "); // temporary fix given that MetaMorpheus kicks out ptms with " of " in the name...
+
+                AminoAcidPattern aminoAcidPattern = modificationFactory.getModification(modName).getPattern();
+
+                if (!aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
+                    for (Character residue : aminoAcidPattern.getAminoAcidsAtTarget()) {
+                        bw.write("SearchGUI\t" + tempModName + " on " + residue);
+                    }
+                } else {
+                    bw.write("SearchGUI\t" + tempModName + " on X");
+                }
+            }
+
+            bw.write("\"" + System.getProperty("line.separator"));
+
+            // variable modifications
+            bw.write("ListOfModsVariable = \"");
+
+            ArrayList<String> variableModifications = searchParameters.getModificationParameters().getVariableModifications();
+
+            for (int i = 0; i < variableModifications.size(); i++) {
+
+                if (i > 0) {
+                    bw.write("\t\t");
+                }
+
+                String modName = variableModifications.get(i);
+                String tempModName = modName.replaceAll(" of ", " off "); // temporary fix given that MetaMorpheus kicks out ptms with " of " in the name...
+
+                AminoAcidPattern aminoAcidPattern = modificationFactory.getModification(modName).getPattern();
+
+                if (aminoAcidPattern != null) {
+
+                    if (!aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
+                        for (Character residue : aminoAcidPattern.getAminoAcidsAtTarget()) {
+                            bw.write("SearchGUI\t" + tempModName + " on " + residue);
+                        }
+                    } else {
+                        bw.write("SearchGUI\t" + tempModName + " on X");
+                    }
+
+                }
+            }
+
+            bw.write("\"" + System.getProperty("line.separator"));
             bw.write("DoPrecursorDeconvolution = true" + System.getProperty("line.separator"));
             bw.write("UseProvidedPrecursorInfo = true" + System.getProperty("line.separator"));
             bw.write("DeconvolutionIntensityRatio = 3.0" + System.getProperty("line.separator"));
@@ -567,7 +616,8 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         //  DR   Unimod; 21.
         //  //
         // the id
-        String modificationAsString = "ID   " + modification.getName() + "\n";
+        String tempModName = modification.getName().replaceAll(" of ", " off "); // temporary fix given that MetaMorpheus kicks out ptms with " of " in the name...
+        String modificationAsString = "ID   " + tempModName + "\n";
 
         // the targeted amino acids
         modificationAsString += "TG   ";
