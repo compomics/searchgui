@@ -7694,17 +7694,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         } else if (advocate == Advocate.metaMorpheus) {
             
             String operatingSystem = System.getProperty("os.name").toLowerCase();
-            String dontNet = null;
+            String dotNet = null;
 
             if (!operatingSystem.contains("windows")) {
-                dontNet = "dontNet";
+                dotNet = "dotnet";
             }
 
-            return validateSearchEngineInstallation(
-                    Advocate.metaMorpheus,
+            return validateSearchEngineInstallation(Advocate.metaMorpheus,
                     MetaMorpheusProcessBuilder.getExecutableFileName(),
                     null,
-                    dontNet,
+                    dotNet,
                     searchEngineLocation,
                     null,
                     false,
