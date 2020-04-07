@@ -174,7 +174,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Returns the name of the MetaMorpheus executable.
-     * 
+     *
      * @return the name of the MetaMorpheus executable
      */
     public static String getExecutableFileName() {
@@ -282,62 +282,15 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("MaxThreadsToUsePerFile = 3" + System.getProperty("line.separator"));
 
             // fixed modifications
-            bw.write("ListOfModsFixed = \""); // @TODO: merge the fixed and variable writing code!
-
-            ArrayList<String> fixedModifications = searchParameters.getModificationParameters().getFixedModifications();
-
-            for (int i = 0; i < fixedModifications.size(); i++) {
-
-                if (i > 0) {
-                    bw.write("\t\t");
-                }
-
-                String modName = fixedModifications.get(i);
-                String tempModName = modName.replaceAll(" of ", " off "); // temporary fix given that MetaMorpheus kicks out ptms with " of " in the name...
-
-                AminoAcidPattern aminoAcidPattern = modificationFactory.getModification(modName).getPattern();
-
-                if (!aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
-                    for (Character residue : aminoAcidPattern.getAminoAcidsAtTarget()) {
-                        bw.write("SearchGUI\t" + tempModName + " on " + residue);
-                    }
-                } else {
-                    bw.write("SearchGUI\t" + tempModName + " on X");
-                }
-            }
-
+            bw.write("ListOfModsFixed = \"");
+            writeModifications(searchParameters.getModificationParameters().getFixedModifications(), bw);
             bw.write("\"" + System.getProperty("line.separator"));
 
             // variable modifications
             bw.write("ListOfModsVariable = \"");
-
-            ArrayList<String> variableModifications = searchParameters.getModificationParameters().getVariableModifications();
-
-            for (int i = 0; i < variableModifications.size(); i++) {
-
-                if (i > 0) {
-                    bw.write("\t\t");
-                }
-
-                String modName = variableModifications.get(i);
-                String tempModName = modName.replaceAll(" of ", " off "); // temporary fix given that MetaMorpheus kicks out ptms with " of " in the name...
-
-                AminoAcidPattern aminoAcidPattern = modificationFactory.getModification(modName).getPattern();
-
-                if (aminoAcidPattern != null) {
-
-                    if (!aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
-                        for (Character residue : aminoAcidPattern.getAminoAcidsAtTarget()) {
-                            bw.write("SearchGUI\t" + tempModName + " on " + residue);
-                        }
-                    } else {
-                        bw.write("SearchGUI\t" + tempModName + " on X");
-                    }
-
-                }
-            }
-
+            writeModifications(searchParameters.getModificationParameters().getVariableModifications(), bw);
             bw.write("\"" + System.getProperty("line.separator"));
+
             bw.write("DoPrecursorDeconvolution = true" + System.getProperty("line.separator"));
             bw.write("UseProvidedPrecursorInfo = true" + System.getProperty("line.separator"));
             bw.write("DeconvolutionIntensityRatio = 3.0" + System.getProperty("line.separator"));
@@ -696,5 +649,39 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         modificationAsString += "//\n";
 
         return modificationAsString;
+    }
+
+    /**
+     * Write the list of modifications to the toml file.
+     * 
+     * @param modifications the list of modification names
+     * @param bw the buffered writer
+     * @throws IOException thrown if an IO exception occurs
+     */
+    private void writeModifications(ArrayList<String> modifications, BufferedWriter bw) throws IOException {
+
+        for (int i = 0; i < modifications.size(); i++) {
+
+            if (i > 0) {
+                bw.write("\t\t");
+            }
+
+            String modName = modifications.get(i);
+            String tempModName = modName.replaceAll(" of ", " off "); // temporary fix given that MetaMorpheus kicks out ptms with " of " in the name...
+
+            AminoAcidPattern aminoAcidPattern = modificationFactory.getModification(modName).getPattern();
+
+            if (aminoAcidPattern != null) {
+
+                if (!aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
+                    for (Character residue : aminoAcidPattern.getAminoAcidsAtTarget()) {
+                        bw.write("SearchGUI\t" + tempModName + " on " + residue);
+                    }
+                } else {
+                    bw.write("SearchGUI\t" + tempModName + " on X");
+                }
+
+            }
+        } 
     }
 }
