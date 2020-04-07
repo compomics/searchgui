@@ -1,8 +1,20 @@
-2020/01/15
+2020/04/06
 
-Comet version "2019.01 rev. 4".
+Comet version "2019.01 rev. 5".
 This is a minor maintenance release.
 http://comet-ms.sourceforge.net
+
+comet.VERSION.win32.exe:  Windows 32-bit binary compiled with VS2017
+comet.VERSION.win64.exe:  Windows 64-bit binary compiled with VS2017
+comet.VERSION.linux.exe:  Linux binary compiled on Centos 6.9 (glibc 2.12)
+comet.VERSION.debian.exe: Linux binary compiled on Debian 10.0 (glibc 2.28)
+
+release 2019.01 rev. 5 (2019.01.5), release date 2020/04/06
+- Bug fix: a bug in the code could randomly set the "minimum_peaks"
+  parameter value to a random large number, causing no peaks to be read
+  in, resulting in blank search results reported. Thanks to C. Bielow
+  for not only reporting the bug but also debugging the code and
+  implementing the fix.
 
 release 2019.01 rev. 4 (2019.01.4), release date 2020/01/15
 - Add support for searching mzML and mzXML files that do not contain the
@@ -105,9 +117,9 @@ sequence database in FASTA format.  The syntax of a search:
    comet.exe input.mzXML
    comet.exe input.ms2
 
-Search parameters, such as which sequence database to query, 
-modifications to consider, mass tolerances, output format, etc. are 
-defined in the comet.params file.
+Search parameters, such as which sequence database to query, modifications
+to consider, mass tolerances, output format, etc. are defined in the
+comet.params file.
 
 One can generate a parameters file with the command
 
@@ -115,5 +127,21 @@ One can generate a parameters file with the command
 
 Rename the created file "comet.params.new" to "comet.params".
 
-Windows and linux command line binaries are included with this
-release.
+Windows and linux command line binaries are included with this release.
+
+
+To compile under linux, just type "make"; this should work on the vast
+majority of systems. The resulting binary is "comet.exe" in the root
+directory.
+
+To compile with Windows Visual Studio 2017, load the Comet.sln file, set the
+target as "Release" and "x64" (or "Win32"), and build "Comet".  Building the
+entire solution may work but I've seen build issues with CometUI which is not
+necessary.  For Windows, an additional dependency is Thermo's MSFileReader
+library to read RAW files directly.  MSFileReader can be downloaded under
+"Other Software Releases" at
+   https://thermo.flexnetoperations.com/control/thmo/login
+Or simply skip MSFileReader and the ability to read RAW files directly by
+addding "# define _NO_THERMO_RAW" at the head of these files
+   MSToolkit/include/MSReader.h
+   MSToolkit/src/RAWReader.cpp
