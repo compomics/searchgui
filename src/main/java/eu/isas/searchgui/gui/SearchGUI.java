@@ -44,7 +44,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.file_handling.FileDisplayDialog;
-import com.compomics.util.gui.file_handling.TempFilesManager;
+import com.compomics.util.experiment.io.temp.TempFilesManager;
 import com.compomics.util.gui.modification.ModificationsDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersEditionDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersOverviewDialog;

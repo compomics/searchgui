@@ -5,7 +5,7 @@ import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
 import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
-import com.compomics.util.gui.file_handling.TempFilesManager;
+import com.compomics.util.experiment.io.temp.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.parameters.identification.IdentificationParameters;

@@ -8,10 +8,11 @@ import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.experiment.identification.identification_parameters.IdentificationParametersFactory;
 import com.compomics.util.experiment.io.mass_spectrometry.MsFileExporter;
 import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
+import com.compomics.util.experiment.io.mass_spectrometry.cms.CmsFolder;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
 import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserParameters;
-import com.compomics.util.gui.file_handling.TempFilesManager;
+import com.compomics.util.experiment.io.temp.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
@@ -2431,10 +2432,13 @@ public class SearchHandler {
                     Duration spectrumFilesImportDuration = new Duration();
                     spectrumFilesImportDuration.start();
 
-                    for (File msFile : msFiles) {
+                    for (File spectrumFile : msFiles) {
+
+                        File folder = CmsFolder.getParentFolder() == null ? spectrumFile.getParentFile() : new File(CmsFolder.getParentFolder());
 
                         msFileHandler.register(
-                                msFile,
+                                spectrumFile,
+                                folder,
                                 waitingHandler
                         );
                     }
@@ -3727,7 +3731,7 @@ public class SearchHandler {
 
         File outputFile = getInputFile(folder);
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
             bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
@@ -3998,7 +4002,7 @@ public class SearchHandler {
                     zipFile.delete();
                 }
 
-                try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                     // find the uncompressed size of all the files to add to the zip
                     long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFiles);
@@ -4081,7 +4085,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -4156,7 +4160,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
 
