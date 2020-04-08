@@ -3060,6 +3060,7 @@ public class SearchHandler {
                                 metaMorpheusLocation,
                                 searchParameters,
                                 spectrumFile, // @TODO: should complain if not mzml!
+                                processingParameters.getnThreads(),
                                 fastaFile,
                                 metaMorpheusOutputFile,
                                 waitingHandler,

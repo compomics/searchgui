@@ -129,7 +129,7 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_NEUTRAL_LOSSES_MODIFICATIONS.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_NEUTRAL_LOSSES_MODIFICATIONS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MIN_PEPTIDE_LENGTH.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MIN_PEPTIDE_LENGTH.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_MAX_PEPTIDE_LENGTH.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_MAX_PEPTIDE_LENGTH.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_LOADED_PROTEINS.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_LOADED_PROTEINS   .description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_LOADED_PROTEINS.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_LOADED_PROTEINS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_LOADED_SPECTRA.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_LOADED_SPECTRA.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.MS_AMANDA_OUTPUT_FORMAT.id) + " " + IdentificationParametersCLIParams.MS_AMANDA_OUTPUT_FORMAT.description + "\n";
 
@@ -264,11 +264,42 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANDROMEDA_EQUAL_IL.id) + " " + IdentificationParametersCLIParams.ANDROMEDA_EQUAL_IL.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANDROMEDA_MAX_PSMS.id) + " " + IdentificationParametersCLIParams.ANDROMEDA_MAX_PSMS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANDROMEDA_DECOY_MODE.id) + " " + IdentificationParametersCLIParams.ANDROMEDA_DECOY_MODE.description + "\n";
-   
+
         output += "\n\nMetaMorpheus advanced parameters:\n\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.METAMORPHEUS_MIN_PEP_LENGTH.id) + " " + IdentificationParametersCLIParams.METAMORPHEUS_MIN_PEP_LENGTH.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.METAMORPHEUS_MAX_PEP_LENGTH.id) + " " + IdentificationParametersCLIParams.METAMORPHEUS_MAX_PEP_LENGTH.description + "\n";
-        
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MIN_PEP_LENGTH.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MIN_PEP_LENGTH.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MAX_PEP_LENGTH.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MAX_PEP_LENGTH.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_SEARCH_TYPE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_SEARCH_TYPE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_NUM_PARTITIONS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_NUM_PARTITIONS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_DISSOCIATION_TYPE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_DISSOCIATION_TYPE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MAX_MODS_FOR_PEPTIDE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MAX_MODS_FOR_PEPTIDE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_INITIATOR_METHIONINE_BEHAVIOR.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_INITIATOR_METHIONINE_BEHAVIOR.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_SCORE_CUTOFF.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_SCORE_CUTOFF.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_USE_DELTA_SCORE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_USE_DELTA_SCORE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_FRAGMENTATION_TERMINUS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_FRAGMENTATION_TERMINUS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MAX_FRAGMENTATION_SIZE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MAX_FRAGMENTATION_SIZE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MASS_DIFF_ACCEPTOR_TYPE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MASS_DIFF_ACCEPTOR_TYPE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_WRITE_MZID.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_WRITE_MZID.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_WRITE_PEPXML.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_WRITE_PEPXML.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_USE_PROVIDED_PRECURSOR.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_USE_PROVIDED_PRECURSOR.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_DO_PREC_DECONVOLUTION.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_DO_PREC_DECONVOLUTION.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_DECONVOLUTION_INT_RATIO.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_DECONVOLUTION_INT_RATIO.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_DECONVOLUTION_MASS_TOL.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_DECONVOLUTION_MASS_TOL.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_DECONVOLUTION_MASS_TOL_TYPE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_DECONVOLUTION_MASS_TOL_TYPE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_TRIM_MS1_PEAKS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_TRIM_MS1_PEAKS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_TRIM_MSMS_PEAKS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_TRIM_MSMS_PEAKS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_NUM_PEAKS_PER_WINDOWS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_NUM_PEAKS_PER_WINDOWS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MIN_ALLOWED_INT_RATIO_TO_BASE_PEAK.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MIN_ALLOWED_INT_RATIO_TO_BASE_PEAK.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_WINDOW_WITH_THOMPSON.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_WINDOW_WITH_THOMPSON.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_NUM_WINDOWS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_NUM_WINDOWS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_NORMALIZE_PEAKS_ACROSS_ALL_WINDOWS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_NORMALIZE_PEAKS_ACROSS_ALL_WINDOWS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MOD_PEPTIDES_ARE_DIFFERENT.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MOD_PEPTIDES_ARE_DIFFERENT.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_NO_ONE_HIT_WONDERS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_NO_ONE_HIT_WONDERS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_SEARCH_TARGET.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_SEARCH_TARGET.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_DECOY_TYPE.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_DECOY_TYPE.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MAX_MOD_ISOFORMS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MAX_MOD_ISOFORMS.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MIN_VARIANT_DEPTH.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MIN_VARIANT_DEPTH.description + "\n";
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.META_MORPHEUS_MAX_HETROZYGOUS_VARIANTS.id) + " " + IdentificationParametersCLIParams.META_MORPHEUS_MAX_HETROZYGOUS_VARIANTS.description + "\n";
+
         output += "\n\nNovor:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.NOVOR_FRAGMENTATION.id) + " " + IdentificationParametersCLIParams.NOVOR_FRAGMENTATION.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.NOVOR_MASS_ANALYZER.id) + " " + IdentificationParametersCLIParams.NOVOR_MASS_ANALYZER.description + "\n";
@@ -284,8 +315,8 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PEPNOVO_ESTIMATE_CHARGE.id) + " " + IdentificationParametersCLIParams.PEPNOVO_ESTIMATE_CHARGE.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PEPNOVO_CORRECT_PREC_MASS.id) + " " + IdentificationParametersCLIParams.PEPNOVO_CORRECT_PREC_MASS.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PEPNOVO_DISCARD_SPECTRA.id) + " " + IdentificationParametersCLIParams.PEPNOVO_DISCARD_SPECTRA.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.PEPNOVO_GENERATE_BLAST.id) + " " + IdentificationParametersCLIParams.PEPNOVO_GENERATE_BLAST.description + "\n";               
-      
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.PEPNOVO_GENERATE_BLAST.id) + " " + IdentificationParametersCLIParams.PEPNOVO_GENERATE_BLAST.description + "\n";
+
         output += "\n\nDirectTag advanced parameters:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.DIRECTAG_TAG_LENGTH.id) + " " + IdentificationParametersCLIParams.DIRECTAG_TAG_LENGTH.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.DIRECTAG_MAX_DYNAMIC_MODS.id) + " " + IdentificationParametersCLIParams.DIRECTAG_MAX_DYNAMIC_MODS.description + "\n";
@@ -306,8 +337,8 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.DIRECTAG_MZ_FIDELITY_SCORE_WEIGHT.id) + " " + IdentificationParametersCLIParams.DIRECTAG_MZ_FIDELITY_SCORE_WEIGHT.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.DIRECTAG_COMPLEMENT_SCORE_WEIGHT.id) + " " + IdentificationParametersCLIParams.DIRECTAG_COMPLEMENT_SCORE_WEIGHT.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.DIRECTAG_ADJUST_PRECURSOR_MASS.id) + " " + IdentificationParametersCLIParams.DIRECTAG_ADJUST_PRECURSOR_MASS.description + "\n";
-        output += "-" + String.format(formatter, IdentificationParametersCLIParams.DIRECTAG_USE_CHARGE_STATE_FROM_MS.id) + " " + IdentificationParametersCLIParams.DIRECTAG_USE_CHARGE_STATE_FROM_MS.description + "\n";        
-        
+        output += "-" + String.format(formatter, IdentificationParametersCLIParams.DIRECTAG_USE_CHARGE_STATE_FROM_MS.id) + " " + IdentificationParametersCLIParams.DIRECTAG_USE_CHARGE_STATE_FROM_MS.description + "\n";
+
         output += "\n\nSpectrum Annotation:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_LEVEL.id) + " " + IdentificationParametersCLIParams.ANNOTATION_LEVEL.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.ANNOTATION_LEVEL_TYPE.id) + " " + IdentificationParametersCLIParams.ANNOTATION_LEVEL_TYPE.description + "\n";
@@ -346,7 +377,7 @@ public class SearchCLIdentificationParametersCLIParams {
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_CONFIDENCE_THRESHOLD.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_CONFIDENCE_THRESHOLD.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.SIMPLIFY_GOUPS_VARIANT.id) + " " + IdentificationParametersCLIParams.SIMPLIFY_GOUPS_VARIANT.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PROTEIN_INFERENCE_MODIFICATIONS.id) + " " + IdentificationParametersCLIParams.PROTEIN_INFERENCE_MODIFICATIONS.description + "\n";
-       
+
         output += "\n\nValidation Levels:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PSM_FDR.id) + " " + IdentificationParametersCLIParams.PSM_FDR.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PEPTIDE_FDR.id) + " " + IdentificationParametersCLIParams.PEPTIDE_FDR.description + "\n";
@@ -354,7 +385,7 @@ public class SearchCLIdentificationParametersCLIParams {
 
         output += "\n\nFraction Analysis:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.PROTEIN_FRACTION_MW_CONFIDENCE.id) + " " + IdentificationParametersCLIParams.PROTEIN_FRACTION_MW_CONFIDENCE.description + "\n";
-        
+
         output += "\n\nDatabase Processing:\n\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.FASTA_TARGET_DECOY.id) + " " + IdentificationParametersCLIParams.FASTA_TARGET_DECOY.description + "\n";
         output += "-" + String.format(formatter, IdentificationParametersCLIParams.FASTA_DECOY_TAG.id) + " " + IdentificationParametersCLIParams.FASTA_DECOY_TAG.description + "\n";

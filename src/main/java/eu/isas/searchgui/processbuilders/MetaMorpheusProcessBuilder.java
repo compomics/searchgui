@@ -10,6 +10,7 @@ import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
+import com.compomics.util.parameters.identification.search.SearchParameters.MassAccuracyType;
 import com.compomics.util.parameters.identification.tool_specific.MetaMorpheusParameters;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
@@ -59,13 +60,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
-     * Minimum peptide length.
+     * The number of threads to use.
      */
-    private Integer minPeptideLength = 6;
-    /**
-     * Maximum peptide length.
-     */
-    private Integer maxPeptideLength = 30;
+    private int numberOfThreads;
 
     /**
      * Constructor.
@@ -73,6 +70,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      * @param metaMorpheusFolder the MetaMorpheus folder
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
+     * @param threads the number of threads to use
      * @param outputFile the output file
      * @param fastaFile the FASTA file
      * @param waitingHandler the waiting handler
@@ -85,6 +83,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             File metaMorpheusFolder,
             SearchParameters searchParameters,
             File spectrumFile,
+            int threads,
             File fastaFile,
             File outputFile,
             WaitingHandler waitingHandler,
@@ -97,6 +96,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         this.searchParameters = searchParameters;
         metaMorpheusParameters = (MetaMorpheusParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.metaMorpheus.getIndex());
         this.spectrumFile = spectrumFile;
+        this.numberOfThreads = threads;
         this.fastaFile = fastaFile;
 
         metaMorpheusTempFolderPath = getTempFolderPath(metaMorpheusFolder);
@@ -223,9 +223,6 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                 missedCleavages = digestionParameters.getnMissedCleavages(enzymeName);
             }
 
-            minPeptideLength = metaMorpheusParameters.getMinPeptideLength();
-            maxPeptideLength = metaMorpheusParameters.getMaxPeptideLength();
-
             // task type
             bw.write("TaskType = \"Search\"" + System.getProperty("line.separator"));
             bw.newLine();
@@ -234,28 +231,28 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             // search parameters
             //////////////////////////
             bw.write("[SearchParameters]" + System.getProperty("line.separator"));
-            bw.write("DisposeOfFileWhenDone = true" + System.getProperty("line.separator"));
+            bw.write("DisposeOfFileWhenDone = false" + System.getProperty("line.separator"));
             bw.write("DoParsimony = true" + System.getProperty("line.separator")); // NOTE: if false, the mzid file is not created!
-            bw.write("ModPeptidesAreDifferent = false" + System.getProperty("line.separator"));
-            bw.write("NoOneHitWonders = false" + System.getProperty("line.separator"));
+            bw.write("ModPeptidesAreDifferent = " + metaMorpheusParameters.getModPeptidesAreDifferent() + System.getProperty("line.separator"));
+            bw.write("NoOneHitWonders = " + metaMorpheusParameters.getNoOneHitWonders() + System.getProperty("line.separator"));
             bw.write("MatchBetweenRuns = false" + System.getProperty("line.separator"));
             bw.write("Normalize = false" + System.getProperty("line.separator"));
             bw.write("QuantifyPpmTol = 5.0" + System.getProperty("line.separator"));
             bw.write("DoHistogramAnalysis = false" + System.getProperty("line.separator"));
-            bw.write("SearchTarget = true" + System.getProperty("line.separator"));
-            bw.write("DecoyType = \"None\"" + System.getProperty("line.separator"));
-            bw.write("MassDiffAcceptorType = \"OneMM\"" + System.getProperty("line.separator"));
+            bw.write("SearchTarget = " + metaMorpheusParameters.getSearchTarget() + System.getProperty("line.separator"));
+            bw.write("DecoyType = \"" + metaMorpheusParameters.getDecoyType() + "\"" + System.getProperty("line.separator"));
+            bw.write("MassDiffAcceptorType = \"" + metaMorpheusParameters.getMassDiffAcceptorType() + "\"" + System.getProperty("line.separator"));
             bw.write("WritePrunedDatabase = false" + System.getProperty("line.separator"));
             bw.write("KeepAllUniprotMods = true" + System.getProperty("line.separator"));
             bw.write("DoLocalizationAnalysis = true" + System.getProperty("line.separator"));
             bw.write("DoQuantification = false" + System.getProperty("line.separator"));
-            bw.write("SearchType = \"Classic\"" + System.getProperty("line.separator"));
+            bw.write("SearchType = \"" + metaMorpheusParameters.getSearchType() + "\"" + System.getProperty("line.separator"));
             bw.write("LocalFdrCategories = [\"FullySpecific\"]" + System.getProperty("line.separator"));
-            bw.write("MaxFragmentSize = 30000.0" + System.getProperty("line.separator"));
+            bw.write("MaxFragmentSize = " + metaMorpheusParameters.getMaxFragmentSize() + System.getProperty("line.separator"));
             bw.write("HistogramBinTolInDaltons = 0.003" + System.getProperty("line.separator"));
             bw.write("MaximumMassThatFragmentIonScoreIsDoubled = 0.0" + System.getProperty("line.separator"));
-            bw.write("WriteMzId = true" + System.getProperty("line.separator"));
-            bw.write("WritePepXml = false" + System.getProperty("line.separator"));
+            bw.write("WriteMzId = " + metaMorpheusParameters.getWriteMzId() + System.getProperty("line.separator"));
+            bw.write("WritePepXml = " + metaMorpheusParameters.getWritePepXml() + System.getProperty("line.separator"));
             bw.write("WriteDecoys = true" + System.getProperty("line.separator"));
             bw.write("WriteContaminants = true" + System.getProperty("line.separator"));
             bw.newLine();
@@ -279,7 +276,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             // common parameters
             //////////////////////////
             bw.write("[CommonParameters]" + System.getProperty("line.separator"));
-            bw.write("MaxThreadsToUsePerFile = 3" + System.getProperty("line.separator"));
+            bw.write("MaxThreadsToUsePerFile = " + numberOfThreads + System.getProperty("line.separator"));
 
             // fixed modifications
             bw.write("ListOfModsFixed = \"");
@@ -291,42 +288,51 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             writeModifications(searchParameters.getModificationParameters().getVariableModifications(), bw);
             bw.write("\"" + System.getProperty("line.separator"));
 
-            bw.write("DoPrecursorDeconvolution = true" + System.getProperty("line.separator"));
-            bw.write("UseProvidedPrecursorInfo = true" + System.getProperty("line.separator"));
-            bw.write("DeconvolutionIntensityRatio = 3.0" + System.getProperty("line.separator"));
-            bw.write("DeconvolutionMaxAssumedChargeState = 12" + System.getProperty("line.separator"));
-            bw.write("DeconvolutionMassTolerance = \"Â±4.0000 PPM\"" + System.getProperty("line.separator"));
+            bw.write("DoPrecursorDeconvolution = " + metaMorpheusParameters.getDoPrecursorDeconvolution() + System.getProperty("line.separator"));
+            bw.write("UseProvidedPrecursorInfo = " + metaMorpheusParameters.getUseProvidedPrecursorInfo() + System.getProperty("line.separator"));
+            bw.write("DeconvolutionIntensityRatio = " + metaMorpheusParameters.getDeconvolutionIntensityRatio() + System.getProperty("line.separator"));
+            bw.write("DeconvolutionMaxAssumedChargeState = " + searchParameters.getMaxChargeSearched() + System.getProperty("line.separator"));
+            bw.write("DeconvolutionMassTolerance = \"Â±" + metaMorpheusParameters.getDeconvolutionMassTolerance()
+                    + metaMorpheusParameters.getDeconvolutionMassToleranceType() + " \"" + System.getProperty("line.separator"));
             bw.write("TotalPartitions = 1" + System.getProperty("line.separator"));
 
             // fragment and precursor tolerances
             bw.write("ProductMassTolerance = \"Â±" + searchParameters.getFragmentIonAccuracy());
-            if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
+            if (searchParameters.getFragmentAccuracyType() == MassAccuracyType.PPM) {
                 bw.write(" PPM\"" + System.getProperty("line.separator"));
             } else {
                 bw.write(" Absolute\"" + System.getProperty("line.separator"));
             }
             bw.write("PrecursorMassTolerance = \"Â±" + searchParameters.getPrecursorAccuracy());
-            if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
+            if (searchParameters.getPrecursorAccuracyType() == MassAccuracyType.PPM) {
                 bw.write(" PPM\"" + System.getProperty("line.separator"));
             } else {
                 bw.write(" Absolute\"" + System.getProperty("line.separator"));
             }
 
             bw.write("AddCompIons = false" + System.getProperty("line.separator"));
-            bw.write("ScoreCutoff = 5.0" + System.getProperty("line.separator"));
+            bw.write("ScoreCutoff = " + metaMorpheusParameters.getScoreCutoff() + System.getProperty("line.separator"));
             bw.write("ReportAllAmbiguity = true" + System.getProperty("line.separator"));
-            bw.write("NumberOfPeaksToKeepPerWindow = 200" + System.getProperty("line.separator"));
-            bw.write("MinimumAllowedIntensityRatioToBasePeak = 0.01" + System.getProperty("line.separator"));
-            bw.write("NormalizePeaksAccrossAllWindows = false" + System.getProperty("line.separator"));
-            bw.write("TrimMs1Peaks = false" + System.getProperty("line.separator"));
-            bw.write("TrimMsMsPeaks = true" + System.getProperty("line.separator"));
-            bw.write("UseDeltaScore = false" + System.getProperty("line.separator"));
+            bw.write("NumberOfPeaksToKeepPerWindow = " + metaMorpheusParameters.getNumberOfPeaksToKeepPerWindow() + System.getProperty("line.separator"));
+            bw.write("MinimumAllowedIntensityRatioToBasePeak = " + metaMorpheusParameters.getMinAllowedIntensityRatioToBasePeak() + System.getProperty("line.separator"));
+
+            if (metaMorpheusParameters.getWindowWidthThomsons() != null) {
+                bw.write("WindowWidthThomsons = " + metaMorpheusParameters.getWindowWidthThomsons() + System.getProperty("line.separator"));
+            }
+            if (metaMorpheusParameters.getNumberOfWindows() != null) {
+                bw.write("NumberOfWindows = " + metaMorpheusParameters.getNumberOfWindows() + System.getProperty("line.separator"));
+            }
+
+            bw.write("NormalizePeaksAccrossAllWindows = " + metaMorpheusParameters.getNormalizePeaksAcrossAllWindows() + System.getProperty("line.separator"));
+            bw.write("TrimMs1Peaks = " + metaMorpheusParameters.getTrimMs1Peaks() + System.getProperty("line.separator"));
+            bw.write("TrimMsMsPeaks = " + metaMorpheusParameters.getTrimMsMsPeaks() + System.getProperty("line.separator"));
+            bw.write("UseDeltaScore = " + metaMorpheusParameters.getUseDeltaScore() + System.getProperty("line.separator"));
             bw.write("QValueOutputFilter = 1.0" + System.getProperty("line.separator"));
             bw.write("CustomIons = []" + System.getProperty("line.separator"));
             bw.write("AssumeOrphanPeaksAreZ1Fragments = true" + System.getProperty("line.separator"));
-            bw.write("MaxHeterozygousVariants = 4" + System.getProperty("line.separator"));
-            bw.write("MinVariantDepth = 1" + System.getProperty("line.separator"));
-            bw.write("DissociationType = \"HCD\"" + System.getProperty("line.separator"));
+            bw.write("MaxHeterozygousVariants = " + metaMorpheusParameters.getMaxHeterozygousVariants() + System.getProperty("line.separator"));
+            bw.write("MinVariantDepth = " + metaMorpheusParameters.getMinVariantDepth() + System.getProperty("line.separator"));
+            bw.write("DissociationType = \"" + metaMorpheusParameters.getDissociationType() + "\"" + System.getProperty("line.separator"));
             bw.write("ChildScanDissociationType = \"Unknown\"" + System.getProperty("line.separator"));
             bw.newLine();
 
@@ -336,15 +342,15 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("[CommonParameters.DigestionParams]" + System.getProperty("line.separator"));
             bw.write("MaxMissedCleavages = " + missedCleavages + System.getProperty("line.separator"));
             bw.write("InitiatorMethionineBehavior = \"Variable\"" + System.getProperty("line.separator"));
-            bw.write("MinPeptideLength = " + minPeptideLength + System.getProperty("line.separator"));
-            bw.write("MaxPeptideLength = " + maxPeptideLength + System.getProperty("line.separator"));
-            bw.write("MaxModificationIsoforms = 1024" + System.getProperty("line.separator"));
-            bw.write("MaxModsForPeptide = 2" + System.getProperty("line.separator"));
+            bw.write("MinPeptideLength = " + metaMorpheusParameters.getMinPeptideLength() + System.getProperty("line.separator"));
+            bw.write("MaxPeptideLength = " + metaMorpheusParameters.getMaxPeptideLength() + System.getProperty("line.separator"));
+            bw.write("MaxModificationIsoforms = " + metaMorpheusParameters.getMaxModificationIsoforms() + System.getProperty("line.separator"));
+            bw.write("MaxModsForPeptide = " + metaMorpheusParameters.getMaxModsForPeptide() + System.getProperty("line.separator"));
             bw.write("Protease = \"" + enzymeName + "\"" + System.getProperty("line.separator"));
             bw.write("SearchModeType = \"Full\"" + System.getProperty("line.separator"));
-            bw.write("FragmentationTerminus = \"Both\"" + System.getProperty("line.separator")); // Both, N, C
+            bw.write("FragmentationTerminus = \"" + metaMorpheusParameters.getFragmentationTerminus() + "\"" + System.getProperty("line.separator"));
             bw.write("SpecificProtease = \"" + enzymeName + "\"" + System.getProperty("line.separator"));
-            bw.write("GeneratehUnlabeledProteinsForSilac = true" + System.getProperty("line.separator"));
+            bw.write("GeneratehUnlabeledProteinsForSilac = false" + System.getProperty("line.separator"));
 
         } finally {
             bw.close();
@@ -629,7 +635,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // the modification type
-        modificationAsString += "MT   SearchGUI\n"; // @TODO: make us of the type?
+        modificationAsString += "MT   SearchGUI\n"; // @TODO: make use of the type?
 
         // chemical formula
         modificationAsString += "CF   " + modification.getAtomChainAdded().getStringValue(true, false, true, true, true) + "\n";
@@ -653,7 +659,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Write the list of modifications to the toml file.
-     * 
+     *
      * @param modifications the list of modification names
      * @param bw the buffered writer
      * @throws IOException thrown if an IO exception occurs
@@ -682,6 +688,6 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                 }
 
             }
-        } 
+        }
     }
 }
