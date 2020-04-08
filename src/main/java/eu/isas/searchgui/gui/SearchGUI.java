@@ -7698,6 +7698,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             if (!operatingSystem.contains("windows")) {
                 dotNet = "dotnet";
+                if (operatingSystem.contains("mac os x")) {
+                    dotNet = "/usr/local/share/dotnet/dotnet";
+                }
             }
 
             return validateSearchEngineInstallation(Advocate.metaMorpheus,

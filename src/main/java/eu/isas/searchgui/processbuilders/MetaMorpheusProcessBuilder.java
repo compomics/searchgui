@@ -131,6 +131,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         // add dotnet if not on windows
         if (!operatingSystem.contains("windows")) {
             String dotNetPath = "dotnet";
+            if (operatingSystem.contains("mac os x")) {
+                dotNetPath = "/usr/local/share/dotnet/dotnet";
+            }
             process_name_array.add(dotNetPath);
         }
 
