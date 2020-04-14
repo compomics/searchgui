@@ -500,7 +500,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
                 searchHandler.setExperimentLabel(experimentLabel);
-                searchHandler.setPeptideShakerFile(new File(tempFiles.get(0).getParentFile(), experimentLabel + ".cpsx"));
+                searchHandler.setPeptideShakerFile(new File(tempFiles.get(0).getParentFile(), experimentLabel + ".psdb"));
                 peptideShakerCheckBox.setSelected(true);
 
             }
@@ -2830,7 +2830,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // set the peptideshaker output file
-            searchHandler.setPeptideShakerFile(new File(outputFolder, "PeptideShaker_output.cpsx"));
+            searchHandler.setPeptideShakerFile(new File(outputFolder, "PeptideShaker_output.psdb"));
 
             lastSelectedFolder.setLastSelectedFolder(outputFolder.getAbsolutePath());
             validateInput(false);
@@ -3346,7 +3346,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setIdentificationParameters(identificationParameters);
         searchHandler.setIdentificationParametersFile(identificationParametersFile);
         searchHandler.setProcessingParameters(processingParameters);
-        searchHandler.setMgfFiles(spectrumFiles);
+        searchHandler.setSpectrumFiles(spectrumFiles);
+        searchHandler.setCmsFiles(new ArrayList<>());
         searchHandler.setFastaFile(fastaFile);
         searchHandler.setRawFiles(rawFiles);
         searchHandler.setResultsFolder(outputFolder);
@@ -7121,25 +7122,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 currentProjectName = arg;
                 projectName = false;
             }
-            if (arg.equals(ToolFactory.searchGuiSpectrumFileOption)) {
+            if (arg.equals(ToolFactory.SEARCHGUI_SPECTRUM_FILE_OPTION)) {
                 spectrum = true;
             }
-            if (arg.equals(ToolFactory.searchGuiRawFileOption)) {
+            if (arg.equals(ToolFactory.SEARCHGUI_RAW_FILE_OPTION)) {
                 raw = true;
             }
-            if (arg.equals(ToolFactory.searchGuiParametersFileOption)) {
+            if (arg.equals(ToolFactory.SEARCHGUI_PARAMETERS_FILE_OPTION)) {
                 parameters = true;
             }
-            if (arg.equals(ToolFactory.outputFolderOption)) {
+            if (arg.equals(ToolFactory.OUTPUT_FOLDER_OPTION)) {
                 output = true;
             }
-            if (arg.equals(ToolFactory.speciesOption)) {
+            if (arg.equals(ToolFactory.SPECIES_OPTION)) {
                 species = true;
             }
-            if (arg.equals(ToolFactory.speciesTypeOption)) {
+            if (arg.equals(ToolFactory.SPECIES_TYPE_OPTION)) {
                 speciesType = true;
             }
-            if (arg.equals(ToolFactory.projectNameOption)) {
+            if (arg.equals(ToolFactory.PROJEC_NAME_OPTION)) {
                 projectName = true;
             }
         }

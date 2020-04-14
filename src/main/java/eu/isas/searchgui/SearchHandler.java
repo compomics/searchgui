@@ -163,6 +163,10 @@ public class SearchHandler {
      */
     private ArrayList<File> msFiles;
     /**
+     * The cms files.
+     */
+    private ArrayList<File> cmsFiles;
+    /**
      * The FASTA file.
      */
     private File fastaFile;
@@ -219,7 +223,7 @@ public class SearchHandler {
      */
     private String experimentLabel;
     /**
-     * The PeptideShaker CPS file.
+     * The PeptideShaker psdb file.
      */
     private File peptideShakerFile = null;
     /**
@@ -311,7 +315,7 @@ public class SearchHandler {
      */
     public final static String DEFAULT_OUTPUT_FILE_NAME_ENDING = ".zip";
     /**
-     * The name of the folder where to save the mgf and FASTA file.
+     * The name of the folder where to save the spectrum and FASTA files.
      */
     public final static String DEFAULT_DATA_FOLDER = "data";
     /**
@@ -355,7 +359,7 @@ public class SearchHandler {
      *
      * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
-     * @param mgfFiles list of peak list files in the mgf format
+     * @param msFiles list of mass spectrometry files
      * @param fastaFile the FASTA file
      * @param rawFiles list of raw files
      * @param identificationParametersFile the identification parameters file
@@ -366,7 +370,7 @@ public class SearchHandler {
     public SearchHandler(
             IdentificationParameters identificationParameters,
             File resultsFolder,
-            ArrayList<File> mgfFiles,
+            ArrayList<File> msFiles,
             File fastaFile,
             ArrayList<File> rawFiles,
             File identificationParametersFile,
@@ -376,7 +380,8 @@ public class SearchHandler {
     ) {
 
         this.resultsFolder = resultsFolder;
-        this.msFiles = mgfFiles;
+        this.msFiles = msFiles;
+        this.cmsFiles = new ArrayList<File>();
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
@@ -501,13 +506,13 @@ public class SearchHandler {
     }
 
     /**
-     * Constructor for the SearchGUI command line interface.If the search
+     * Constructor for the SearchGUI command line interface. If the search
      * engines folders are set to null the default search engine locations are
      * used.
      *
      * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
-     * @param mgfFiles list of peak list files in the mgf format
+     * @param msFiles list of mass spectrometry files
      * @param defaultOutputFileName the default output file name
      * @param fastaFile the FASTA file
      * @param rawFiles list of raw files
@@ -553,7 +558,7 @@ public class SearchHandler {
             IdentificationParameters identificationParameters,
             File resultsFolder,
             String defaultOutputFileName,
-            ArrayList<File> mgfFiles,
+            ArrayList<File> msFiles,
             File fastaFile,
             ArrayList<File> rawFiles,
             File identificationParametersFile,
@@ -587,7 +592,8 @@ public class SearchHandler {
         if (defaultOutputFileName != null) {
             this.defaultOutputFileName = defaultOutputFileName;
         }
-        this.msFiles = mgfFiles;
+        this.msFiles = msFiles;
+        this.cmsFiles = new ArrayList<File>();
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.enableOmssa = runOmssa;
@@ -899,12 +905,21 @@ public class SearchHandler {
 
             // open project in PeptideShaker?
             if (enablePeptideShaker) {
-                if (peptideShakerFile.exists()) {
-                    try {
-                        UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
 
+                UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
+
+                File tempPeptideShakerFile = peptideShakerFile;
+
+                if (utilitiesUserParameters.outputData()) {
+                    tempPeptideShakerFile = new File(peptideShakerFile.getParentFile(),
+                            IoUtil.removeExtension(peptideShakerFile.getName()) + ".zip");
+                }
+
+                if (tempPeptideShakerFile.exists()) {
+                    try {
                         CompomicsWrapper wrapper = new CompomicsWrapper();
-                        ArrayList<String> javaHomeAndOptions = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getPeptideShakerPath());
+                        ArrayList<String> javaHomeAndOptions = 
+                                wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getPeptideShakerPath());
 
                         ArrayList process_name_array = new ArrayList();
                         process_name_array.add(javaHomeAndOptions.get(0)); // set java home
@@ -916,13 +931,14 @@ public class SearchHandler {
 
                         process_name_array.add("-jar");
                         process_name_array.add(new File(utilitiesUserParameters.getPeptideShakerPath()).getName());
-                        process_name_array.add("-cps");
-                        process_name_array.add(CommandLineUtils.getCommandLineArgument(peptideShakerFile));
+                        process_name_array.add("-psdb");
+                        process_name_array.add(CommandLineUtils.getCommandLineArgument(tempPeptideShakerFile));
 
                         ProcessBuilder openPeptideShakerProcess = new ProcessBuilder(process_name_array);
 
                         // print the command to the log file
-                        System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "PeptideShaker command: ");
+                        System.out.println(System.getProperty("line.separator")
+                                + System.getProperty("line.separator") + "PeptideShaker command: ");
 
                         for (Object currentElement : process_name_array) {
                             System.out.print(currentElement + " ");
@@ -944,7 +960,7 @@ public class SearchHandler {
                 } else if (waitingHandler != null) {
 
                     waitingHandler.appendReport(
-                            "PeptideShaker file (" + peptideShakerFile.getAbsolutePath() + ") not found!",
+                            "PeptideShaker file (" + tempPeptideShakerFile.getAbsolutePath() + ") not found!",
                             true,
                             true
                     );
@@ -1225,7 +1241,7 @@ public class SearchHandler {
     /**
      * Returns the name of the Comet result file.
      *
-     * @param spectrumFileName the mgf file name
+     * @param spectrumFileName the spectrum file name
      * @param cometParameters the Comet parameters
      *
      * @return the name of the Comet result file
@@ -1264,7 +1280,7 @@ public class SearchHandler {
     /**
      * Returns the name of the Tide result file.
      *
-     * @param spectrumFileName the mgf file name
+     * @param spectrumFileName the spectrum file name
      * @param tideParameters the Tide parameters
      *
      * @return the name of the Tide result file
@@ -1341,7 +1357,7 @@ public class SearchHandler {
     /**
      * Returns the name of the OMSSA result file.
      *
-     * @param spectrumFileName the mgf file name
+     * @param spectrumFileName the spectrum file name
      * @param omssaParameters the OMSSA parameters
      *
      * @return the name of the OMSSA result file
@@ -1353,7 +1369,7 @@ public class SearchHandler {
     /**
      * Returns the name of the MS-GF+ result file.
      *
-     * @param spectrumFileName the mgf file name
+     * @param spectrumFileName the spectrum file name
      *
      * @return the name of the MS-GF+ result file
      */
@@ -1364,7 +1380,7 @@ public class SearchHandler {
     /**
      * Returns the name of the MS Amanda result file.
      *
-     * @param spectrumFileName the mgf file name
+     * @param spectrumFileName the spectrum file name
      *
      * @return the name of the MS Amanda result file
      */
@@ -1376,7 +1392,7 @@ public class SearchHandler {
     /**
      * Returns the name of the MS Amanda result file.
      *
-     * @param spectrumFileName the mgf file name
+     * @param spectrumFileName the spectrum file name
      * @param msAmandaParameters the MS Amanda parameters
      *
      * @return the name of the MS Amanda result file
@@ -1403,7 +1419,7 @@ public class SearchHandler {
     /**
      * Returns the name of the MyriMatch result file.
      *
-     * @param spectrumFileName the mgf file name
+     * @param spectrumFileName the spectrum file name
      * @param myriMatchParameters the MyriMatch parameters
      *
      * @return the name of the MyriMatch result file
@@ -1898,21 +1914,73 @@ public class SearchHandler {
     }
 
     /**
-     * Returns the list of mgf files.
+     * Returns the list of mass spectrometry files.
      *
-     * @return the mgf files
+     * @return the mass spectrometry files
      */
     public ArrayList<File> getSpectrumFiles() {
         return msFiles;
     }
 
     /**
-     * Sets the list of mgf files.
+     * Sets the list of mass spectrometry files.
      *
-     * @param mgfFiles the mgf files
+     * @param msFiles the mass spectrometry files
      */
-    public void setMgfFiles(ArrayList<File> mgfFiles) {
-        this.msFiles = mgfFiles;
+    public void setSpectrumFiles(ArrayList<File> msFiles) {
+        this.msFiles = msFiles;
+    }
+
+    /**
+     * Returns the spectrum file with the given name. Null if not found.
+     *
+     * @param fileName the file name of the spectrum file
+     * @return the spectrum file with the given name
+     */
+    public File getSpectrumFile(String fileName) {
+
+        for (File tempFile : msFiles) {
+            if (tempFile.getName().equalsIgnoreCase(fileName)) {
+                return tempFile;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the list of cms files.
+     *
+     * @return the cms files
+     */
+    public ArrayList<File> getCmsFiles() {
+        return cmsFiles;
+    }
+
+    /**
+     * Sets the list of cms files.
+     *
+     * @param cmsFiles the cms files
+     */
+    public void setCmsFiles(ArrayList<File> cmsFiles) {
+        this.cmsFiles = cmsFiles;
+    }
+
+    /**
+     * Returns the cms file with the given name. Null if not found.
+     *
+     * @param fileName the file name of the cms file
+     * @return the spectrum file with the given name
+     */
+    public File getCmsFile(String fileName) {
+
+        for (File tempFile : cmsFiles) {
+            if (tempFile.getName().equalsIgnoreCase(fileName)) {
+                return tempFile;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -2169,7 +2237,6 @@ public class SearchHandler {
 
                     if (makeblastdbProcessBuilder.needsFormatting()) {
 
-                        // @TODO: should the MS-GF+ database formatting be done here as well..?
                         if (waitingHandler != null) {
                             if (!useCommandLine) {
                                 waitingHandler.setWaitingText(
@@ -2231,21 +2298,24 @@ public class SearchHandler {
                     );
                     waitingHandler.appendReportEndLine();
 
-                    // Create generic database
+                    // create generic database
                     AndromedaProcessBuilder.createGenericFastaFile(
                             andromedaLocation,
                             fastaFile,
                             waitingHandler
                     );
+
                     // write Andromeda database configuration file
                     AndromedaProcessBuilder.createDatabaseFile(
                             andromedaLocation,
                             fastaFile
                     );
+
                     // write Andromeda enzyme configuration file
                     AndromedaProcessBuilder.createEnzymesFile(
                             andromedaLocation
                     );
+
                     // write Andromeda PTM configuration file and save PTM indexes in the search parameters
                     AndromedaProcessBuilder.createPtmFile(
                             andromedaLocation,
@@ -2441,6 +2511,11 @@ public class SearchHandler {
                                 folder,
                                 waitingHandler
                         );
+
+                        File cmsFile = new File(MsFileHandler.getCmsFilePath(spectrumFile, folder));
+
+                        // add the cms file
+                        cmsFiles.add(cmsFile);
                     }
 
                     spectrumFilesImportDuration.end();
@@ -2468,6 +2543,7 @@ public class SearchHandler {
                 for (int i = 0; i < getSpectrumFiles().size() && !waitingHandler.isRunCanceled(); i++) {
 
                     File spectrumFile = getSpectrumFiles().get(i);
+                    File cmsFile = getCmsFiles().get(i);
 
                     String spectrumFileName = spectrumFile.getName();
 
@@ -2525,7 +2601,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.xtandem.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.xtandem.getName() + ".",
                                 true,
                                 true
                         );
@@ -2613,7 +2689,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.myriMatch.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.myriMatch.getName() + ".",
                                 true,
                                 true
                         );
@@ -2669,7 +2745,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.msAmanda.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.msAmanda.getName() + ".",
                                 true,
                                 true
                         );
@@ -2722,7 +2798,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.msgf.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.msgf.getName() + ".",
                                 true,
                                 true
                         );
@@ -2777,7 +2853,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.omssa.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.omssa.getName() + ".",
                                 true,
                                 true
                         );
@@ -2835,7 +2911,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.comet.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.comet.getName() + ".",
                                 true,
                                 true
                         );
@@ -2846,7 +2922,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
 
                             // move the comet result file to the results folder
-                            File tempCometOutputFile = new File(spectrumFile.getParent(), getCometFileName(spectrumFileName));
+                            File tempCometOutputFile = new File(mgfFile.getParent(), getCometFileName(spectrumFileName));
                             FileUtils.moveFile(tempCometOutputFile, cometOutputFile);
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
@@ -2913,7 +2989,7 @@ public class SearchHandler {
                             );
 
                             waitingHandler.appendReport(
-                                    "Processing " + spectrumFileName + " with " + Advocate.tide.getName() + ".",
+                                    "Processing " + ms2File.getName() + " with " + Advocate.tide.getName() + ".",
                                     true,
                                     true
                             );
@@ -2993,7 +3069,7 @@ public class SearchHandler {
                                 processingParameters.getnThreads()
                         );
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.andromeda.getName() + ".",
+                                "Processing " + aplFile.getName() + " with " + Advocate.andromeda.getName() + ".",
                                 true,
                                 true
                         );
@@ -3151,7 +3227,7 @@ public class SearchHandler {
                                 exceptionHandler
                         );
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.novor.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.novor.getName() + ".",
                                 true,
                                 true
                         );
@@ -3203,7 +3279,7 @@ public class SearchHandler {
                                 exceptionHandler
                         );
                         waitingHandler.appendReport(
-                                "Processing " + spectrumFileName + " with " + Advocate.direcTag.getName() + ".",
+                                "Processing " + mgfFile.getName() + " with " + Advocate.direcTag.getName() + ".",
                                 true,
                                 true
                         );
@@ -3600,11 +3676,15 @@ public class SearchHandler {
 
                     } else if (!identificationFiles.isEmpty()) {
 
+                        ArrayList<File> cmsAndMsFiles = new ArrayList<>(cmsFiles.size() + msFiles.size());
+                        cmsAndMsFiles.addAll(cmsFiles);
+                        cmsAndMsFiles.addAll(msFiles);
+
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                 waitingHandler,
                                 exceptionHandler,
                                 experimentLabel,
-                                msFiles,
+                                cmsAndMsFiles,
                                 fastaFile,
                                 identificationFilesList,
                                 identificationParametersFile,
@@ -3731,15 +3811,15 @@ public class SearchHandler {
 
         File outputFile = getInputFile(folder);
 
-        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
             bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
 
             // add the ms files
-            for (File mgfFile : msFiles) {
+            for (File spectrumFile : msFiles) {
 
-                bw.write(mgfFile.getAbsolutePath() + System.getProperty("line.separator"));
+                bw.write(spectrumFile.getAbsolutePath() + System.getProperty("line.separator"));
 
             }
 
@@ -3938,7 +4018,7 @@ public class SearchHandler {
      * @param outputFolder the output folder
      * @param tempOutputFolder the folder where the raw SearchGUI output is
      * stored
-     * @param identificationFiles the identification files
+     * @param identificationFilesMap the identification files map
      * @param parametersFile the parameters file
      * @param includeDate if true the date will be included in the output file
      * name
@@ -3948,7 +4028,7 @@ public class SearchHandler {
     public void organizeOutput(
             File outputFolder,
             File tempOutputFolder,
-            HashMap<String, HashMap<Integer, File>> identificationFiles,
+            HashMap<String, HashMap<Integer, File>> identificationFilesMap,
             File parametersFile,
             boolean includeDate
     ) throws IOException {
@@ -3957,7 +4037,7 @@ public class SearchHandler {
 
         if (utilitiesUserParameters.isGzip()) {
 
-            identificationFiles.values().stream()
+            identificationFilesMap.values().stream()
                     .flatMap(
                             map -> map.values().stream()
                     )
@@ -3969,9 +4049,9 @@ public class SearchHandler {
                             )
                     );
 
-            HashMap<String, HashMap<Integer, File>> compressedIdentificationFiles = new HashMap<>(identificationFiles.size());
+            HashMap<String, HashMap<Integer, File>> compressedIdentificationFiles = new HashMap<>(identificationFilesMap.size());
 
-            for (Entry<String, HashMap<Integer, File>> entry1 : identificationFiles.entrySet()) {
+            for (Entry<String, HashMap<Integer, File>> entry1 : identificationFilesMap.entrySet()) {
 
                 HashMap<Integer, File> map = entry1.getValue();
                 HashMap<Integer, File> newMap = new HashMap<>(map.size());
@@ -3987,7 +4067,7 @@ public class SearchHandler {
                 }
             }
 
-            identificationFiles = compressedIdentificationFiles;
+            identificationFilesMap = compressedIdentificationFiles;
 
         }
 
@@ -3995,17 +4075,18 @@ public class SearchHandler {
 
             case grouped:
 
-                // put everything in a single zip file and delete old zip files
+                // put everything in a single zip file
                 File zipFile = getDefaultOutputFile(outputFolder, includeDate);
 
+                // delete old zip file
                 if (zipFile.exists()) {
                     zipFile.delete();
                 }
 
-                try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                     // find the uncompressed size of all the files to add to the zip
-                    long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFiles);
+                    long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFilesMap);
                     waitingHandler.setSecondaryProgressCounterIndeterminate(false);
                     waitingHandler.setSecondaryProgressCounter(0);
                     waitingHandler.setMaxSecondaryProgressCounter(100);
@@ -4037,12 +4118,14 @@ public class SearchHandler {
                         }
                     }
 
-                    for (HashMap<Integer, File> fileMap : identificationFiles.values()) {
+                    // add the identification files
+                    for (HashMap<Integer, File> fileMap : identificationFilesMap.values()) {
                         for (File identificationFile : fileMap.values()) {
                             ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
                         }
                     }
 
+                    // add the data files
                     if (utilitiesUserParameters.outputData()) {
                         addDataToZip(out, totalUncompressedSize);
                     }
@@ -4054,13 +4137,18 @@ public class SearchHandler {
 
                 // group files according to the search engine used
                 HashMap<Integer, ArrayList<File>> algorithmToFileMap = new HashMap<>();
-                for (HashMap<Integer, File> fileMap : identificationFiles.values()) {
+
+                for (HashMap<Integer, File> fileMap : identificationFilesMap.values()) {
+
                     for (Integer algorithm : fileMap.keySet()) {
+
                         ArrayList<File> files = algorithmToFileMap.get(algorithm);
+
                         if (files == null) {
                             files = new ArrayList<>();
                             algorithmToFileMap.put(algorithm, files);
                         }
+
                         files.add(fileMap.get(algorithm));
                     }
                 }
@@ -4069,9 +4157,13 @@ public class SearchHandler {
 
                 // find the uncompressed size of all the files to add to the zip
                 long totalUncompressedSize = 0;
+
                 for (Integer algorithm : algorithmToFileMap.keySet()) {
-                    totalUncompressedSize += getTotalUncompressedSizeAlgorithm(inputFile, tempOutputFolder, algorithm, parametersFile, algorithmToFileMap.get(algorithm));
+                    totalUncompressedSize += getTotalUncompressedSizeAlgorithm(
+                            inputFile, tempOutputFolder, algorithm,
+                            parametersFile, algorithmToFileMap.get(algorithm));
                 }
+
                 waitingHandler.setSecondaryProgressCounterIndeterminate(false);
                 waitingHandler.setSecondaryProgressCounter(0);
                 waitingHandler.setMaxSecondaryProgressCounter(100);
@@ -4085,7 +4177,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -4094,12 +4186,14 @@ public class SearchHandler {
                         ZipUtils.addFileToZip(parametersFile, out, waitingHandler, totalUncompressedSize);
 
                         if (algorithm == Advocate.omssa.getIndex()) {
+                            // add OMSSA settings files
                             File modificationsFile = new File(tempOutputFolder, "omssa_mods.xml");
                             ZipUtils.addFileToZip(modificationsFile, out, waitingHandler, totalUncompressedSize);
 
                             File userModificationsFile = new File(tempOutputFolder, "omssa_usermods.xml");
                             ZipUtils.addFileToZip(userModificationsFile, out, waitingHandler, totalUncompressedSize);
                         }
+
                         if (algorithm == Advocate.msAmanda.getIndex()) {
                             // add MS Amanda settings file
                             for (File spectrumFile : msFiles) {
@@ -4126,24 +4220,25 @@ public class SearchHandler {
 
             case run:
 
-                // group files according to the mgf files
+                // group files according to the spectrum files
                 inputFile = getInputFile(tempOutputFolder);
 
                 // find the uncompressed size of all the files to add to the zip
                 totalUncompressedSize = 0;
 
-                for (String mgfFileName : identificationFiles.keySet()) {
+                for (String spectrumFileName : identificationFilesMap.keySet()) {
 
-                    String mgfFileNameWithoutExtension = IoUtil.removeExtension(mgfFileName);
-                    File mgfFile = idFileToSpectrumFileMap.get(mgfFileName);
+                    String spectrumFileNameWithoutExtension = IoUtil.removeExtension(spectrumFileName);
+
                     totalUncompressedSize += getTotalUncompressedSizeRun(
                             inputFile,
                             tempOutputFolder,
-                            mgfFileNameWithoutExtension,
-                            mgfFileName,
+                            spectrumFileNameWithoutExtension,
+                            spectrumFileName,
                             parametersFile,
-                            identificationFiles,
-                            mgfFile
+                            identificationFilesMap,
+                            getSpectrumFile(spectrumFileName),
+                            getCmsFile(IoUtil.removeExtension(spectrumFileName) + ".cms")
                     );
                 }
 
@@ -4151,16 +4246,17 @@ public class SearchHandler {
                 waitingHandler.setSecondaryProgressCounter(0);
                 waitingHandler.setMaxSecondaryProgressCounter(100);
 
-                for (String mgfFileName : identificationFiles.keySet()) {
+                for (String spectrumFileName : identificationFilesMap.keySet()) {
 
-                    String mgfFileNameWithoutExtension = IoUtil.removeExtension(mgfFileName);
-                    zipFile = getDefaultOutputFile(outputFolder, mgfFileNameWithoutExtension, includeDate);
+                    String spectrumFileNameWithoutExtension = IoUtil.removeExtension(spectrumFileName);
+                    zipFile = getDefaultOutputFile(outputFolder, spectrumFileNameWithoutExtension, includeDate);
 
                     if (zipFile.exists()) {
                         zipFile.delete();
                     }
 
-                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
 
@@ -4178,20 +4274,23 @@ public class SearchHandler {
 
                         if (enableMsAmanda) {
                             // add ms amanda settings file
-                            String newName = mgfFileNameWithoutExtension + "_settings.xml";
+                            String newName = spectrumFileNameWithoutExtension + "_settings.xml";
                             File settingsFile = new File(tempOutputFolder, newName);
                             if (settingsFile.exists()) {
                                 ZipUtils.addFileToZip(settingsFile, out, waitingHandler, totalUncompressedSize);
                             }
                         }
 
-                        HashMap<Integer, File> fileMap = identificationFiles.get(mgfFileName);
+                        // add the identification files
+                        HashMap<Integer, File> fileMap = identificationFilesMap.get(spectrumFileName);
                         for (File identificationFile : fileMap.values()) {
                             ZipUtils.addFileToZip(identificationFile, out, waitingHandler, totalUncompressedSize);
                         }
 
+                        // add the data files
                         if (utilitiesUserParameters.outputData()) {
-                            addDataToZip(out, totalUncompressedSize, mgfFileName);
+                            String cmsFileName = IoUtil.removeExtension(spectrumFileName) + ".cms";
+                            addDataToZip(out, totalUncompressedSize, spectrumFileName, cmsFileName);
                         }
 
                     }
@@ -4203,14 +4302,22 @@ public class SearchHandler {
 
                 // add data files if needed
                 if (utilitiesUserParameters.outputData()) {
+
                     // create the data folder
                     File dataFolder = new File(outputFolder, DEFAULT_DATA_FOLDER);
                     dataFolder.mkdir();
 
+                    // copy fasta file
                     IoUtil.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
 
+                    // copy the spectrum files
                     for (File spectrumFile : getSpectrumFiles()) {
                         IoUtil.copyFile(spectrumFile, new File(dataFolder, spectrumFile.getName()));
+                    }
+
+                    // copy the cms files
+                    for (File cmsFile : getCmsFiles()) {
+                        IoUtil.copyFile(cmsFile, new File(dataFolder, cmsFile.getName()));
                     }
                 }
         }
@@ -4221,7 +4328,7 @@ public class SearchHandler {
     }
 
     /**
-     * Adds the mgf and FASTA files to the zip file.
+     * Adds the spectrum and FASTA files to the zip file.
      *
      * @param out the zip stream
      *
@@ -4235,22 +4342,27 @@ public class SearchHandler {
         addDataToZip(
                 out,
                 totalUncompressedSize,
+                null,
                 null
         );
     }
 
     /**
-     * Adds the mgf and FASTA files to the zip file.
+     * Adds the spectrum and FASTA files to the zip file.
      *
      * @param out the zip stream
-     * @param mgfFileName only add the given mgf file, null means add all mgfs
+     * @param spectrumFileName only add the given spectrum file, null means add
+     * all spectrum files
+     * @param cmsFileName only add the given cms file, null means add all cms
+     * files
      *
      * @throws IOException
      */
     private void addDataToZip(
             ZipOutputStream out,
             long totalUncompressedSize,
-            String mgfFileName
+            String spectrumFileName,
+            String cmsFileName
     ) throws IOException {
 
         // create the data folder in the zip file
@@ -4259,6 +4371,7 @@ public class SearchHandler {
                 out
         );
 
+        // add the fasta file
         ZipUtils.addFileToZip(
                 DEFAULT_DATA_FOLDER,
                 fastaFile,
@@ -4267,13 +4380,14 @@ public class SearchHandler {
                 totalUncompressedSize
         );
 
+        // add the spectrum files
         for (File spectrumFile : getSpectrumFiles()) {
 
             boolean addFile = true;
 
-            if (mgfFileName != null) {
+            if (spectrumFileName != null) {
 
-                addFile = spectrumFile.getName().equals(mgfFileName);
+                addFile = spectrumFile.getName().equals(spectrumFileName);
 
             }
 
@@ -4282,6 +4396,28 @@ public class SearchHandler {
                 ZipUtils.addFileToZip(
                         DEFAULT_DATA_FOLDER,
                         spectrumFile,
+                        out,
+                        waitingHandler,
+                        totalUncompressedSize
+                );
+            }
+        }
+
+        // add the cms files
+        for (File cmsFile : getCmsFiles()) {
+
+            boolean addFile = true;
+
+            if (cmsFileName != null) {
+
+                addFile = cmsFile.getName().equals(cmsFileName);
+
+            }
+
+            if (addFile) {
+                ZipUtils.addFileToZip(
+                        DEFAULT_DATA_FOLDER,
+                        cmsFile,
                         out,
                         waitingHandler,
                         totalUncompressedSize
@@ -4415,10 +4551,11 @@ public class SearchHandler {
      * @param inputFile the input file
      * @param outputFolder the output folder
      * @param runName the name of the run of interest
-     * @param run the mgf file of interest
+     * @param run the spectrum file of interest
      * @param parametersFile the parameters file
      * @param identificationFiles the identification files
-     * @param mgfFile only add given mgfFile, null means add all
+     * @param spectrumFile only add given spectrum file, null means add all
+     * @param cmsFile the cms file
      *
      * @return the total uncompressed size of the files for the given run
      */
@@ -4429,7 +4566,8 @@ public class SearchHandler {
             String run,
             File parametersFile,
             HashMap<String, HashMap<Integer, File>> identificationFiles,
-            File mgfFile
+            File spectrumFile,
+            File cmsFile
     ) {
 
         long totalUncompressedSize = 0;
@@ -4460,7 +4598,7 @@ public class SearchHandler {
 
         // output data
         if (utilitiesUserParameters.outputData()) {
-            totalUncompressedSize += getTotalUncompressedSizeOfData(mgfFile);
+            totalUncompressedSize += getTotalUncompressedSizeOfData(spectrumFile, cmsFile);
         }
 
         return totalUncompressedSize;
@@ -4472,27 +4610,34 @@ public class SearchHandler {
      * @return the total uncompressed size of the FASTA and spectrum files
      */
     private long getTotalUncompressedSizeOfData() {
-        return getTotalUncompressedSizeOfData(null);
+        return getTotalUncompressedSizeOfData(null, null);
     }
 
     /**
      * Get the total uncompressed size of the FASTA and spectrum files.
      *
-     * @param only add given mgfFile, null means add all
+     * @param spectrumFile only add given spectrumFile, null means add all
+     * @param cmsFile only add the given cms file, null means add all
      *
      * @return the total uncompressed size of the FASTA and spectrum files
      */
-    private long getTotalUncompressedSizeOfData(
-            File mgfFile
-    ) {
+    private long getTotalUncompressedSizeOfData(File spectrumFile, File cmsFile) {
 
         long totalUncompressedSize = fastaFile.length();
 
-        if (mgfFile != null) {
-            totalUncompressedSize += mgfFile.length();
+        if (spectrumFile != null) {
+            totalUncompressedSize += spectrumFile.length();
         } else {
-            for (File spectrumFile : getSpectrumFiles()) {
-                totalUncompressedSize += spectrumFile.length();
+            for (File tempSpectrumFile : getSpectrumFiles()) {
+                totalUncompressedSize += tempSpectrumFile.length();
+            }
+        }
+
+        if (cmsFile != null) {
+            totalUncompressedSize += cmsFile.length();
+        } else {
+            for (File tempCmsFile : getCmsFiles()) {
+                totalUncompressedSize += tempCmsFile.length();
             }
         }
 

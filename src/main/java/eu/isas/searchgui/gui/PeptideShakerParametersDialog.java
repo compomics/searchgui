@@ -6,7 +6,6 @@ import com.compomics.software.autoupdater.MavenJarFile;
 import com.compomics.software.autoupdater.WebDAO;
 import com.compomics.software.dialogs.JavaParametersDialog;
 import com.compomics.software.dialogs.PeptideShakerSetupDialog;
-import com.compomics.util.Util;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import java.awt.Color;
@@ -335,7 +334,6 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         projectSettingsTxt.setEditable(false);
         projectSettingsTxt.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         projectSettingsTxt.setText("Default");
-        projectSettingsTxt.setToolTipText("Minimum Peptide Length");
 
         editProjectSettingsButton.setText("Edit");
         editProjectSettingsButton.setEnabled(false);
@@ -517,22 +515,23 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
     private void editOutputButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editOutputButtonActionPerformed
 
         if (new File(outputFileTextField.getText()).getParentFile() != null) {
-            searchGUI.getLastSelectedFolder().setLastSelectedFolder(new File(outputFileTextField.getText()).getParentFile().getAbsolutePath());
+            searchGUI.getLastSelectedFolder().setLastSelectedFolder(
+                    new File(outputFileTextField.getText()).getParentFile().getAbsolutePath());
         }
 
         File selectedFile = FileChooserUtil.getUserSelectedFile(
                 this, 
-                ".cpsx", 
-                "Compomics Peptide Shaker format (*.cpsx)", 
+                ".psdb", 
+                "Compomics Peptide Shaker format (*.psdb)", 
                 "Select PeptideShaker Output",
                 searchGUI.getLastSelectedFolder().getLastSelectedFolder(), 
-                "PeptideShaker_output.cpsx", 
+                "PeptideShaker_output.psdb", 
                 false
         );
 
         if (selectedFile != null) {
-            if (!selectedFile.getName().endsWith(".cpsx")) {
-                selectedFile = new File(selectedFile.getAbsolutePath() + ".cpsx");
+            if (!selectedFile.getName().endsWith(".psdb")) {
+                selectedFile = new File(selectedFile.getAbsolutePath() + ".psdb");
             }
 
             outputFileTextField.setText(selectedFile.getAbsolutePath());

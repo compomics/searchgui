@@ -40,17 +40,17 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      */
     private final File identificationParametersFile;
     /**
-     * The cpsx file.
+     * The psdb file.
      */
-    private final File cpsFile;
+    private final File psdbFile;
     /**
      * Boolean indicating whether the results shall be displayed in
      * PeptideShaker.
      */
     private final boolean showGuiProgress;
     /**
-     * Indicates whether the mgf and FASTA file should be included in the
-     * output.
+     * Indicates whether the mass spectrum and FASTA file should be included in
+     * the output.
      */
     private final boolean includeData;
 
@@ -60,23 +60,24 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param reference the name of the experiment
      * @param spectrumFiles the spectrum files
-     * @param cpsFile the cpsx file
      * @param fastaFile the FASTA file
      * @param identificationFiles the search engines result files
+     * @param psdbFile the psdb file
      * @param showGuiProgress a boolean indicating whether the progress shall be
      * displayed in a GUI
      * @param processingParameters the processing parameters
-     * @param includeData Indicates whether the mgf and FASTA file should be
-     * included in the output
+     * @param includeData Indicates whether the mass spectrum and FASTA file
+     * should be included in the output
      * @param exceptionHandler the handler of exceptions
-     * @param identificationParametersFile the file where to save the search parameters
+     * @param identificationParametersFile the file where to save the search
+     * parameters
      *
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, String reference,
-            ArrayList<File> spectrumFiles, File fastaFile, ArrayList<File> identificationFiles, File identificationParametersFile, 
-            File cpsFile, boolean showGuiProgress,
+    public PeptideShakerProcessBuilder(WaitingHandler waitingHandler, ExceptionHandler exceptionHandler,
+            String reference, ArrayList<File> spectrumFiles, File fastaFile, ArrayList<File> identificationFiles, 
+            File identificationParametersFile, File psdbFile, boolean showGuiProgress, 
             ProcessingParameters processingParameters, boolean includeData)
             throws IOException, ClassNotFoundException {
 
@@ -87,7 +88,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
         this.fastaFile = fastaFile;
         this.identificationParametersFile = identificationParametersFile;
         this.identificationFiles = identificationFiles;
-        this.cpsFile = cpsFile;
+        this.psdbFile = psdbFile;
         this.showGuiProgress = showGuiProgress;
         this.includeData = includeData;
 
@@ -103,7 +104,7 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
     private void setUpProcessBuilder() throws IOException, ClassNotFoundException {
 
         try {
-            
+
             UtilitiesUserParameters utilitiesUserParameters = UtilitiesUserParameters.loadUserParameters();
             CompomicsWrapper wrapper = new CompomicsWrapper();
 
@@ -131,9 +132,9 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-id_params");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationParametersFile));
             process_name_array.add("-out");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(cpsFile));
+            process_name_array.add(CommandLineUtils.getCommandLineArgument(psdbFile));
             if (includeData) {
-                File zipFile = new File(cpsFile.getParentFile(), IoUtil.removeExtension(cpsFile.getName()) + ".zip");
+                File zipFile = new File(psdbFile.getParentFile(), IoUtil.removeExtension(psdbFile.getName()) + ".zip");
                 process_name_array.add("-zip");
                 process_name_array.add(CommandLineUtils.getCommandLineArgument(zipFile));
             }
@@ -147,7 +148,8 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.trimToSize();
 
             // print the command to the log file
-            System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "PeptideShaker command: ");
+            System.out.println(System.getProperty("line.separator") 
+                    + System.getProperty("line.separator") + "PeptideShaker command: ");
 
             for (Object current_entry : process_name_array) {
                 System.out.print(current_entry + " ");
