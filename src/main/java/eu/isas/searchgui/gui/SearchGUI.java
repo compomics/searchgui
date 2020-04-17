@@ -45,6 +45,7 @@ import javax.swing.filechooser.FileFilter;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.file_handling.FileDisplayDialog;
 import com.compomics.util.experiment.io.temp.TempFilesManager;
+import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserOutputFormat;
 import com.compomics.util.gui.modification.ModificationsDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersEditionDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersOverviewDialog;
@@ -2682,15 +2683,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         }
                     }
 
-                    // iterate the mgf files and validate them
+                    // iterate and validate the spectrum files
                     int fileCounter = 0;
-                    for (File mgfFile : tempSpectrumFiles) {
+                    for (File spectrumFile : tempSpectrumFiles) {
 
-                        progressDialog.setTitle("Validating Spectrum Files. Please Wait... (" + ++fileCounter + "/" + tempSpectrumFiles.size() + ")");
+                        progressDialog.setTitle("Validating Spectrum Files. Please Wait... ("
+                                + ++fileCounter + "/" + tempSpectrumFiles.size() + ")");
 
                         if (validSpectrumTitles) {
-                            spectrumFiles.add(mgfFile);
-                            lastSelectedFolder.setLastSelectedFolder(mgfFile.getAbsolutePath());
+                            spectrumFiles.add(spectrumFile);
+                            lastSelectedFolder.setLastSelectedFolder(spectrumFile.getAbsolutePath());
                         }
 
                         if (progressDialog.isRunCanceled()) {
@@ -2702,13 +2704,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     if (!validSpectrumTitles) {
                         spectrumFiles.clear();
+                        spectrumFilesTxt.setText("");
                         progressDialog.setRunFinished();
                         return;
                     }
 
-                    // check for duplicate mgf file names
-                    if (!verifyMgfFilesNames()) {
+                    // check for duplicate spectrum file names
+                    if (!verifySpectrumFileNames()) {
                         spectrumFiles.clear();
+                        rawFiles.clear();
+                        nonThermoRawFilesSelected = false;
                         spectrumFilesTxt.setText("");
                         validateInput(false);
                         progressDialog.setRunFinished();
@@ -2717,7 +2722,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     progressDialog.setRunFinished();
 
-                    // check if we found any valid mgf files
+                    // check if we found any valid spectrum files
                     if (spectrumFiles.isEmpty() && rawFiles.isEmpty()) {
 
                         JOptionPane.showMessageDialog(
@@ -2850,11 +2855,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         }
 
         // validate the msconvert output format
-        if (nonThermoRawFilesSelected && msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mgf) { // @TODO: also need to do the same test for ThermoRawFileParser
+        if (nonThermoRawFilesSelected
+                && (msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mgf
+                || msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mzML)) {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Mgf is the only spectrum format compatible with SearchGUI.\n\n"
+                    "Mgf and mzML are the only spectrum formats compatible with SearchGUI.\n\n"
                     + "Please change the output format for msconvert.",
                     "Output Format Error",
                     JOptionPane.WARNING_MESSAGE
@@ -2862,6 +2869,45 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             return;
 
+        }
+
+        // check that mgf files are not given to MetaMorpheus
+        if (enableMetaMorpheusJCheckBox.isSelected()) {
+            for (File tempSpectrumFile : spectrumFiles) {
+                if (tempSpectrumFile.getName().toLowerCase().endsWith(".mgf")) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "MetaMorpheus only supports mzML files as spectrum input.\n\n"
+                            + "Please change the spectrum input to mzML or provide the raw file.",
+                            "MetaMorpheus Spectrum Format Error",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    return;
+                }
+            }
+
+            if (nonThermoRawFilesSelected) {
+                if (msConvertParameters.getMsFormat() == ProteoWizardMsFormat.mgf) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "MetaMorpheus only supports mzML files as spectrum input.\n\n"
+                            + "Please change the output format for msconvert.",
+                            "MetaMorpheus Spectrum Format Error",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                    return;
+                }
+            } else if (!rawFiles.isEmpty()
+                    && thermoRawFileParserParameters.getOutputFormat() == ThermoRawFileParserOutputFormat.mgf) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "MetaMorpheus only supports mzML files as spectrum input.\n\n"
+                        + "Please change the output format for ThermoRawFileParser.",
+                        "MetaMorpheus Spectrum Format Error",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                return;
+            }
         }
 
         SearchParameters searchParameters = identificationParameters.getSearchParameters();
@@ -6916,18 +6962,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Verifies that all mgf files have different names and displays a warning
-     * with the first conflict encountered.
+     * Verifies that all spectrum files have different names and displays a
+     * warning with the first conflict encountered.
      *
-     * @return true if all mgf files have different names, false otherwise
+     * @return true if all spectrum files have different names, false otherwise
      */
-    public boolean verifyMgfFilesNames() {
+    public boolean verifySpectrumFileNames() {
 
-        for (File file1 : spectrumFiles) {
+        ArrayList<File> allSpectrumAndRawFile = new ArrayList<>();
+        allSpectrumAndRawFile.addAll(spectrumFiles);
+        allSpectrumAndRawFile.addAll(rawFiles);
+        
+        for (File file1 : allSpectrumAndRawFile) {
 
-            for (File file2 : spectrumFiles) {
+            for (File file2 : allSpectrumAndRawFile) {
 
-                if (file1 != file2 && file1.getName().equals(file2.getName())) {
+                if (file1 != file2 &&
+                        IoUtil.removeExtension(file1.getName().toLowerCase()).equals(
+                        IoUtil.removeExtension(file2.getName().toLowerCase()))) {
 
                     this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
@@ -6937,7 +6989,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             + file1.getAbsolutePath() + "\n"
                             + file2.getAbsolutePath() + "\n\n"
                             + "Please select files with unique file names.",
-                            "Identical File Names!",
+                            "Identical File Names Error",
                             JOptionPane.WARNING_MESSAGE
                     );
 
@@ -7693,7 +7745,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             );
 
         } else if (advocate == Advocate.metaMorpheus) {
-            
+
             String operatingSystem = System.getProperty("os.name").toLowerCase();
             String dotNet = null;
 
