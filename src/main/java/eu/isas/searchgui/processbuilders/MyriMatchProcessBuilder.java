@@ -35,7 +35,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The spectrum file to search.
      */
-    private String spectrumFile;
+    private File spectrumFile;
     /**
      * The MyriMatch parameters.
      */
@@ -53,7 +53,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param myriMatchDirectory directory location of MyriMatch executable
-     * @param mgfFile name of the file containing the spectra
+     * @param mgfFile the file containing the spectra
      * @param fastaFile the FASTA file
      * @param outputFolder folder where to output the results
      * @param searchParameters the search parameters
@@ -61,7 +61,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param nThreads the number of threads to use
      */
-    public MyriMatchProcessBuilder(File myriMatchDirectory, String mgfFile, File fastaFile, File outputFolder,
+    public MyriMatchProcessBuilder(File myriMatchDirectory, File mgfFile, File fastaFile, File outputFolder,
             SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         this.searchParameters = searchParameters;
@@ -87,7 +87,7 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(CommandLineUtils.getCommandLineArgument(fastaFile));
 
         // add the spectrum file
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFile));
 
         // set the output format to mzIdentML
         process_name_array.add("-OutputFormat");
@@ -439,22 +439,14 @@ public class MyriMatchProcessBuilder extends SearchGUIProcessBuilder {
         return variableModificationsAsString;
     }
 
-    /**
-     * Returns the type of the process.
-     *
-     * @return the type of the process
-     */
+    @Override
     public String getType() {
         return "MyriMatch";
     }
 
-    /**
-     * Returns the file name of the currently processed file.
-     *
-     * @return the file name of the currently processed file
-     */
+    @Override
     public String getCurrentlyProcessedFileName() {
-        return spectrumFile;
+        return spectrumFile.getName();
     }
 
     /**

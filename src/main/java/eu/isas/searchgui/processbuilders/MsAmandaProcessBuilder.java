@@ -68,9 +68,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File database;
     /**
-     * The path to the spectrum file to search.
+     * The spectrum file.
      */
-    private String spectrumFilePath;
+    private File spectrumFile;
     /**
      * The fragment mass tolerance.
      */
@@ -199,15 +199,15 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param msAmandaDirectory directory location of MSAmanda.exe
-     * @param mgfPath the path to file containing the spectra
-     * @param fastaFile the FASA file
+     * @param mgfFile the spectrum file
+     * @param fastaFile the FASTA file
      * @param outputPath path where to output the results
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use (note: cannot be used)
      */
-    public MsAmandaProcessBuilder(File msAmandaDirectory, String mgfPath, File fastaFile, String outputPath,
+    public MsAmandaProcessBuilder(File msAmandaDirectory, File mgfFile, File fastaFile, String outputPath,
             SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         this.waitingHandler = waitingHandler;
@@ -216,7 +216,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the paths
         msAmandaFolder = msAmandaDirectory;
-        spectrumFilePath = mgfPath;
+        spectrumFile = mgfFile;
         database = fastaFile.getAbsoluteFile();
         //msAmandTempFolder = ""; @TODO: allow the user to set the temp folder
 
@@ -319,7 +319,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the spectrum file
         process_name_array.add("-s");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(spectrumFilePath)));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFile));
 
         // add database file
         process_name_array.add("-d");
@@ -486,22 +486,14 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         }
     }
 
-    /**
-     * Returns the type of the process.
-     *
-     * @return the type of the process
-     */
+    @Override
     public String getType() {
         return "MS Amanda";
     }
 
-    /**
-     * Returns the file name of the currently processed file.
-     *
-     * @return the file name of the currently processed file
-     */
+    @Override
     public String getCurrentlyProcessedFileName() {
-        return spectrumFilePath;
+        return spectrumFile.getName();
     }
 
     /**

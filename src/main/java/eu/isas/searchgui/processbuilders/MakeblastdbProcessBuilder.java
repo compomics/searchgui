@@ -211,20 +211,12 @@ public class MakeblastdbProcessBuilder extends SearchGUIProcessBuilder {
         }
     }
 
-    /**
-     * Returns the type of the process.
-     *
-     * @return the type of the process
-     */
+    @Override
     public String getType() {
         return "Database Formating";
     }
 
-    /**
-     * Returns the file name of the currently processed file.
-     *
-     * @return the file name of the currently processed file
-     */
+    @Override
     public String getCurrentlyProcessedFileName() {
         return iDatabaseFile.getName();
     }

@@ -347,20 +347,12 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
         bufferedModsWriter.write(System.getProperty("line.separator"));
     }
 
-    /**
-     * Returns the file name of the currently processed file.
-     *
-     * @return the file name of the currently processed file
-     */
+    @Override
     public String getCurrentlyProcessedFileName() {
         return spectrumFile.getName();
     }
 
-    /**
-     * Returns the type of the process.
-     *
-     * @return the type of the process
-     */
+    @Override
     public String getType() {
         return "Novor";
     }

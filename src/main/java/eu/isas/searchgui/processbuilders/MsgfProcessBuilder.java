@@ -70,7 +70,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The spectrum file to search.
      */
-    private String spectrumFile;
+    private File spectrumFile;
     /**
      * The MS-GF+ parameters.
      */
@@ -84,7 +84,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param msgfDirectory directory location of MSGFPlus.jar
-     * @param mgfFile name of the file containing the spectra
+     * @param mgfFile the file containing the spectra
      * @param fastaFile the FASTA file
      * @param outputFile the output file
      * @param searchParameters the search parameters
@@ -98,7 +98,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
-    public MsgfProcessBuilder(File msgfDirectory, String mgfFile, File fastaFile, File outputFile, SearchParameters searchParameters,
+    public MsgfProcessBuilder(File msgfDirectory, File mgfFile, File fastaFile, File outputFile, SearchParameters searchParameters,
             WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine)
             throws IOException, ClassNotFoundException {
 
@@ -153,7 +153,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the spectrum file
         process_name_array.add("-s");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(mgfFile)));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFile));
 
         // add the database
         process_name_array.add("-d");
@@ -479,22 +479,14 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         return modification.getRoundedMass() + "," + aminoAcidsAtTarget + "," + modType + "," + position + "," + cvTermName;
     }
 
-    /**
-     * Returns the type of the process.
-     *
-     * @return the type of the process
-     */
+    @Override
     public String getType() {
         return "MS-GF+";
     }
 
-    /**
-     * Returns the file name of the currently processed file.
-     *
-     * @return the file name of the currently processed file
-     */
+    @Override
     public String getCurrentlyProcessedFileName() {
-        return spectrumFile;
+        return spectrumFile.getName();
     }
 
     /**

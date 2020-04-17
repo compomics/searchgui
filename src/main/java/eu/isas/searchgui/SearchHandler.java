@@ -2541,13 +2541,10 @@ public class SearchHandler {
                 // keep track of the spectrum files used to generate the id files
                 idFileToSpectrumFileMap = new HashMap<>();
 
-                boolean providedSpectrumFileIsMgf;
-
                 for (int i = 0; i < getSpectrumFiles().size() && !waitingHandler.isRunCanceled(); i++) {
 
                     File spectrumFile = getSpectrumFiles().get(i);
                     String spectrumFileName = spectrumFile.getName();
-                    providedSpectrumFileIsMgf = spectrumFileName.toLowerCase().endsWith(".mgf");
 
                     if (useCommandLine) {
 
@@ -2566,27 +2563,22 @@ public class SearchHandler {
                     if (enableXtandem || enableMyriMatch || enableMsAmanda
                             || enableOmssa || enableNovor || enableDirecTag) {
 
-                        if (!providedSpectrumFileIsMgf) {
+                        // Make mgf file
+                        waitingHandler.appendReport(
+                                "Converting spectrum file " + spectrumFileName + " to peak list.",
+                                true,
+                                true
+                        );
 
-                            // Make mgf file
-                            waitingHandler.appendReport(
-                                    "Converting spectrum file " + spectrumFileName + " to peak list.",
-                                    true,
-                                    true
-                            );
+                        mgfFile = new File(getPeakListFolder(getJarFilePath()),
+                                IoUtil.removeExtension(spectrumFileName) + ".mgf");
 
-                            mgfFile = new File(getPeakListFolder(getJarFilePath()),
-                                    IoUtil.removeExtension(spectrumFileName) + ".mgf");
-
-                            MsFileExporter.writeMgfFile(
-                                    msFileHandler,
-                                    spectrumFileName,
-                                    mgfFile,
-                                    waitingHandler
-                            );
-                        } else {
-                            mgfFile = spectrumFile;
-                        }
+                        MsFileExporter.writeMgfFile(
+                                msFileHandler,
+                                spectrumFileName,
+                                mgfFile,
+                                waitingHandler
+                        );
                     }
 
                     waitingHandler.appendReportEndLine();
@@ -2598,7 +2590,7 @@ public class SearchHandler {
 
                         xTandemProcessBuilder = new TandemProcessBuilder(
                                 xtandemLocation,
-                                mgfFile.getAbsolutePath(),
+                                mgfFile,
                                 fastaFile,
                                 xTandemOutputFile.getAbsolutePath(),
                                 searchParameters,
@@ -2686,7 +2678,7 @@ public class SearchHandler {
 
                         myriMatchProcessBuilder = new MyriMatchProcessBuilder(
                                 myriMatchLocation,
-                                mgfFile.getAbsolutePath(),
+                                mgfFile,
                                 fastaFile,
                                 outputTempFolder,
                                 searchParameters,
@@ -2742,7 +2734,7 @@ public class SearchHandler {
 
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(
                                 msAmandaLocation,
-                                mgfFile.getAbsolutePath(),
+                                mgfFile,
                                 fastaFile,
                                 filePath,
                                 searchParameters,
@@ -2794,7 +2786,7 @@ public class SearchHandler {
 
                         msgfProcessBuilder = new MsgfProcessBuilder(
                                 msgfLocation,
-                                spectrumFile.getAbsolutePath(),
+                                spectrumFile,
                                 fastaFile,
                                 msgfOutputFile,
                                 searchParameters,
@@ -2849,7 +2841,7 @@ public class SearchHandler {
 
                         omssaProcessBuilder = new OmssaclProcessBuilder(
                                 omssaLocation,
-                                mgfFile.getAbsolutePath(),
+                                mgfFile,
                                 fastaFile,
                                 omssaOutputFile,
                                 searchParameters,
@@ -3323,7 +3315,7 @@ public class SearchHandler {
                     }
 
                     // Delete the temp spectrum files
-                    if (mgfFile != null && !providedSpectrumFileIsMgf) {
+                    if (mgfFile != null) {
                         mgfFile.delete();
                     }
                     if (aplFile != null) {

@@ -267,20 +267,12 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
         return modificationAsString;
     }
 
-    /**
-     * Returns the file name of the currently processed file.
-     *
-     * @return the file name of the currently processed file
-     */
+    @Override
     public String getCurrentlyProcessedFileName() {
         return spectrumFile.getName();
     }
 
-    /**
-     * Returns the type of the process.
-     *
-     * @return the type of the process
-     */
+    @Override
     public String getType() {
         return "DirecTag";
     }

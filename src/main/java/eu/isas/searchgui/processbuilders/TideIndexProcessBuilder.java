@@ -7,7 +7,6 @@ import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
-import com.compomics.util.io.IoUtil;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.parameters.identification.search.SearchParameters;
@@ -31,7 +30,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The FASTA file.
      */
-    private String fastaFilePath;
+    private File fastaFile;
     /**
      * The search parameters.
      */
@@ -63,7 +62,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         this.exceptionHandler = exceptionHandler;
         this.searchParameters = searchParameters;
         tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
-        fastaFilePath = fastaFile.getAbsolutePath();
+        this.fastaFile = fastaFile;
 
         // make sure that the tide file is executable
         File tide = new File(tideFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
@@ -74,7 +73,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("tide-index");
 
         // add the fasta file
-        process_name_array.add(fastaFilePath);
+        process_name_array.add(fastaFile.getAbsolutePath());
 
         // the name of the index file
         process_name_array.add(tideParameters.getFastIndexFolderName()); // @TODO: put in the user temp folder instead?
@@ -451,6 +450,6 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getCurrentlyProcessedFileName() {
-        return IoUtil.getFileName(fastaFilePath);
+        return fastaFile.getName();
     }
 }

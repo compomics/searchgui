@@ -35,9 +35,9 @@ import java.util.HashMap;
 public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
-     * The spectra file as a string.
+     * The spectrum file.
      */
-    private String spectraFile;
+    private File spectrumFile;
     /**
      * The modification parameters of this search.
      */
@@ -51,7 +51,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param omssacl_directory directory location of omssacl.exe
-     * @param spectraFile string location of spectra file to search
+     * @param mgfFile the spectrum file
      * @param fastaFile the FASTA file
      * @param outputFile string location where to send omx/csv/pepxml formatted
      * results file
@@ -67,10 +67,10 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public OmssaclProcessBuilder(File omssacl_directory, String spectraFile, File fastaFile, File outputFile, SearchParameters searchParameters,
+    public OmssaclProcessBuilder(File omssacl_directory, File mgfFile, File fastaFile, File outputFile, SearchParameters searchParameters,
             WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, Double refMass, int nThreads) throws IOException, ClassNotFoundException {
 
-        this.spectraFile = spectraFile;
+        this.spectrumFile = mgfFile;
         this.waitingHandler = waitingHandler;
         this.modificationParameters = searchParameters.getModificationParameters();
 
@@ -266,15 +266,15 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         }
         process_name_array.add("-d");
         process_name_array.add(seqDBFile.getName());
-        if (spectraFile != null) {
-            if (spectraFile.toLowerCase().endsWith(".mgf")) {
+        if (spectrumFile != null) {
+            if (spectrumFile.getName().endsWith(".mgf")) {
                 process_name_array.add("-fm");
-            } else if (spectraFile.toLowerCase().endsWith(".pkl")) {
+            } else if (spectrumFile.getName().toLowerCase().endsWith(".pkl")) {
                 process_name_array.add("-fp");
-            } else if (spectraFile.toLowerCase().endsWith(".dta")) {
+            } else if (spectrumFile.getName().toLowerCase().endsWith(".dta")) {
                 process_name_array.add("-f");
             }
-            process_name_array.add(spectraFile);
+            process_name_array.add(spectrumFile.getAbsolutePath());
         }
         if (outputFile != null) {
             if (omssaParameters.getSelectedOutput().equals("OMX")) {
@@ -316,7 +316,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
     @Override
     public String getCurrentlyProcessedFileName() {
-        return spectraFile;
+        return spectrumFile.getName();
     }
 
     /**

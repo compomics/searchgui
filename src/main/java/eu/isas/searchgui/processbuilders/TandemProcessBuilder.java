@@ -74,7 +74,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The spectrum file to search.
      */
-    private String spectrumFile;
+    private File spectrumFile;
     /**
      * The output path.
      */
@@ -174,7 +174,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param xTandem_directory directory location of tandem.exe
-     * @param mgfFile name of the file containing the spectra
+     * @param mgfFile the spectrum file
      * @param fastaFile the FASTA file
      * @param outputPath path where to output the results
      * @param searchParameters the search parameters
@@ -182,7 +182,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
      */
-    public TandemProcessBuilder(File xTandem_directory, String mgfFile, File fastaFile, String outputPath,
+    public TandemProcessBuilder(File xTandem_directory, File mgfFile, File fastaFile, String outputPath,
             SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         xtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
@@ -425,7 +425,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<note type=\"input\" label=\"list path, default parameters\">" + PARAMETER_FILE + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"list path, taxonomy information\">" + TAXONOMY_FILE + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"protein, taxon\">all</note>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"spectrum, path\">" + spectrumFile + "</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"spectrum, path\">" + spectrumFile.getAbsolutePath() + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, path\">" + outputPath + "</note>" + System.getProperty("line.separator")
                     //+ "\t<note type=\"input\" label=\"output, mzid\">yes</note>" + System.getProperty("line.separator") // @TODO: add support for mzid? requires that "output, results" below is set to "valid"...
                     + "</bioml>" + System.getProperty("line.separator"));
@@ -1033,25 +1033,17 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         return sortedMods;
     }
 
-    /**
-     * Returns the type of the process.
-     *
-     * @return the type of the process
-     */
+    @Override
     public String getType() {
 
         return "X!Tandem";
 
     }
 
-    /**
-     * Returns the file name of the currently processed file.
-     *
-     * @return the file name of the currently processed file
-     */
+    @Override
     public String getCurrentlyProcessedFileName() {
 
-        return spectrumFile;
+        return spectrumFile.getName();
 
     }
 
