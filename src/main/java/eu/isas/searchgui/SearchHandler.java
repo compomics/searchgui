@@ -918,8 +918,8 @@ public class SearchHandler {
                 if (tempPeptideShakerFile.exists()) {
                     try {
                         CompomicsWrapper wrapper = new CompomicsWrapper();
-                        ArrayList<String> javaHomeAndOptions = 
-                                wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getPeptideShakerPath());
+                        ArrayList<String> javaHomeAndOptions
+                                = wrapper.getJavaHomeAndOptions(utilitiesUserParameters.getPeptideShakerPath());
 
                         ArrayList process_name_array = new ArrayList();
                         process_name_array.add(javaHomeAndOptions.get(0)); // set java home
@@ -2504,7 +2504,8 @@ public class SearchHandler {
 
                     for (File spectrumFile : msFiles) {
 
-                        File folder = CmsFolder.getParentFolder() == null ? spectrumFile.getParentFile() : new File(CmsFolder.getParentFolder());
+                        File folder = CmsFolder.getParentFolder() == null
+                                ? spectrumFile.getParentFile() : new File(CmsFolder.getParentFolder());
 
                         msFileHandler.register(
                                 spectrumFile,
@@ -2540,12 +2541,13 @@ public class SearchHandler {
                 // keep track of the spectrum files used to generate the id files
                 idFileToSpectrumFileMap = new HashMap<>();
 
+                boolean providedSpectrumFileIsMgf;
+
                 for (int i = 0; i < getSpectrumFiles().size() && !waitingHandler.isRunCanceled(); i++) {
 
                     File spectrumFile = getSpectrumFiles().get(i);
-                    File cmsFile = getCmsFiles().get(i);
-
                     String spectrumFileName = spectrumFile.getName();
+                    providedSpectrumFileIsMgf = spectrumFileName.toLowerCase().endsWith(".mgf");
 
                     if (useCommandLine) {
 
@@ -2562,24 +2564,29 @@ public class SearchHandler {
                     // Write mgf file
                     File mgfFile = null;
                     if (enableXtandem || enableMyriMatch || enableMsAmanda
-                            || enableMsgf || enableOmssa || enableComet
-                            || enableNovor || enableDirecTag) {
+                            || enableOmssa || enableNovor || enableDirecTag) {
 
-                        // Make mgf file
-                        waitingHandler.appendReport(
-                                "Converting spectrum file " + spectrumFileName + " to peak list.",
-                                true,
-                                true
-                        );
+                        if (!providedSpectrumFileIsMgf) {
 
-                        mgfFile = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".mgf");
+                            // Make mgf file
+                            waitingHandler.appendReport(
+                                    "Converting spectrum file " + spectrumFileName + " to peak list.",
+                                    true,
+                                    true
+                            );
 
-                        MsFileExporter.writeMgfFile(
-                                msFileHandler,
-                                spectrumFileName,
-                                mgfFile,
-                                waitingHandler
-                        );
+                            mgfFile = new File(getPeakListFolder(getJarFilePath()),
+                                    IoUtil.removeExtension(spectrumFileName) + ".mgf");
+
+                            MsFileExporter.writeMgfFile(
+                                    msFileHandler,
+                                    spectrumFileName,
+                                    mgfFile,
+                                    waitingHandler
+                            );
+                        } else {
+                            mgfFile = spectrumFile;
+                        }
                     }
 
                     waitingHandler.appendReportEndLine();
@@ -2787,7 +2794,7 @@ public class SearchHandler {
 
                         msgfProcessBuilder = new MsgfProcessBuilder(
                                 msgfLocation,
-                                mgfFile.getAbsolutePath(),
+                                spectrumFile.getAbsolutePath(),
                                 fastaFile,
                                 msgfOutputFile,
                                 searchParameters,
@@ -2798,7 +2805,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + mgfFile.getName() + " with " + Advocate.msgf.getName() + ".",
+                                "Processing " + spectrumFile.getName() + " with " + Advocate.msgf.getName() + ".",
                                 true,
                                 true
                         );
@@ -2902,7 +2909,7 @@ public class SearchHandler {
                         cometProcessBuilder = new CometProcessBuilder(
                                 cometLocation,
                                 searchParameters,
-                                mgfFile,
+                                spectrumFile,
                                 fastaFile,
                                 waitingHandler,
                                 exceptionHandler,
@@ -2911,7 +2918,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + mgfFile.getName() + " with " + Advocate.comet.getName() + ".",
+                                "Processing " + spectrumFile.getName() + " with " + Advocate.comet.getName() + ".",
                                 true,
                                 true
                         );
@@ -2922,7 +2929,7 @@ public class SearchHandler {
                         if (!waitingHandler.isRunCanceled()) {
 
                             // move the comet result file to the results folder
-                            File tempCometOutputFile = new File(mgfFile.getParent(), getCometFileName(spectrumFileName));
+                            File tempCometOutputFile = new File(spectrumFile.getParent(), getCometFileName(spectrumFileName));
                             FileUtils.moveFile(tempCometOutputFile, cometOutputFile);
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
@@ -3316,7 +3323,7 @@ public class SearchHandler {
                     }
 
                     // Delete the temp spectrum files
-                    if (mgfFile != null) {
+                    if (mgfFile != null && !providedSpectrumFileIsMgf) {
                         mgfFile.delete();
                     }
                     if (aplFile != null) {
