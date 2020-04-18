@@ -295,15 +295,15 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             } else {
                 enzymeIsSemiSpecific = "no";
             }
-            Integer missedCleavages = null;
+            Integer tempMissedCleavages = null;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
                 int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
-                if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
-                    missedCleavages = enzymeMissedCleavages;
+                if (tempMissedCleavages == null || enzymeMissedCleavages > tempMissedCleavages) {
+                    tempMissedCleavages = enzymeMissedCleavages;
                 }
             }
-            this.missedCleavages = missedCleavages;
-        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.enzyme) {
+            this.missedCleavages = tempMissedCleavages;
+        } else if (digestionPreferences.getCleavagePreference() == DigestionPreferences.CleavagePreference.unSpecific) {
             enzymeIsSemiSpecific = "no";
             this.missedCleavages = 50;
         } else { // whole protien
