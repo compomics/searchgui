@@ -362,7 +362,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                 }
             }
             this.missedCleavages = missedCleavages;
-        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             enzymeIsSemiSpecific = "no";
             this.missedCleavages = 50;
         } else { // whole protien
