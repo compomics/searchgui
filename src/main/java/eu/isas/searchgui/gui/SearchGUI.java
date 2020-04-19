@@ -205,10 +205,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public static final String MODIFICATION_USE_SEPARATOR = "_";
     /**
-     * The list of the default modifications.
-     */
-    private HashSet<String> defaultModifications = new HashSet<>();
-    /**
      * If true, then one of the currently processed spectra has duplicate
      * titles.
      */
@@ -424,8 +420,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             searchEnginesLocationPanel.repaint();
             inputFilesPanel.repaint();
-
-            defaultModifications = utilitiesUserParameters.getDefaultModifications();
 
             String operatingSystem = System.getProperty("os.name").toLowerCase();
 
@@ -7415,8 +7409,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 bw.write(searchHandler.getDirecTagLocation() + System.getProperty("line.separator") + searchHandler.isDirecTagEnabled() + System.getProperty("line.separator"));
                 bw.write("makeblastdb Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getMakeblastdbLocation() + System.getProperty("line.separator") + System.getProperty("line.separator"));
-                bw.write("Modification use:" + System.getProperty("line.separator"));
-                bw.write(getModificationUseAsString() + System.getProperty("line.separator"));
 
             } catch (IOException ioe) {
 
@@ -7570,28 +7562,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     @Override
     public UtilitiesUserParameters getUtilitiesUserParameters() {
         return utilitiesUserParameters;
-    }
-
-    /**
-     * Returns a line with the most used modifications.
-     *
-     * @return a line containing the most used modifications
-     */
-    public String getModificationUseAsString() {
-        String result = "";
-        for (String name : defaultModifications) {
-            result += name + MODIFICATION_SEPARATOR;
-        }
-        return result;
-    }
-
-    /**
-     * Returns a list with the most used modifications.
-     *
-     * @return a list with the most used modifications
-     */
-    public HashSet<String> getDefaultModifications() {
-        return defaultModifications;
     }
 
     /**
