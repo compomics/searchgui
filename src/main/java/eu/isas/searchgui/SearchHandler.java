@@ -1928,7 +1928,7 @@ public class SearchHandler {
      * @param msFiles the mass spectrometry files
      */
     public void setSpectrumFiles(ArrayList<File> msFiles) {
-        this.msFiles = msFiles;
+        this.msFiles = new ArrayList<>(msFiles);
     }
 
     /**
