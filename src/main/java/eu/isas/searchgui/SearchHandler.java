@@ -1576,7 +1576,7 @@ public class SearchHandler {
      * @param mgfFiles the mgf files
      */
     public void setMgfFiles(ArrayList<File> mgfFiles) {
-        this.mgfFiles = mgfFiles;
+        this.mgfFiles = new ArrayList<File>(mgfFiles);
     }
 
     /**
