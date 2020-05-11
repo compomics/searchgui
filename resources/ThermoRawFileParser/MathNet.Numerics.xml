@@ -1407,6 +1407,9 @@
         <member name="F:MathNet.Numerics.Constants.Sqrt2Pi">
             <summary>The number sqrt(2pi)</summary>
         </member>
+        <member name="F:MathNet.Numerics.Constants.SqrtPiOver2">
+            <summary>The number sqrt(pi/2)</summary>
+        </member>
         <member name="F:MathNet.Numerics.Constants.Sqrt2PiE">
             <summary>The number sqrt(2*pi*e)</summary>
         </member>
@@ -10502,7 +10505,7 @@
         </member>
         <member name="M:MathNet.Numerics.Distributions.Weibull.Estimate(System.Collections.Generic.IEnumerable{System.Double},System.Random)">
             <summary>
-            Implemented according to: Parameter estimation of the Weibull probability distribution, 1994, Hongzhu Qiao, Chris P. Tsokos 
+            Implemented according to: Parameter estimation of the Weibull probability distribution, 1994, Hongzhu Qiao, Chris P. Tsokos
             </summary>
             <param name="samples"></param>
             <param name="randomSource"></param>
@@ -11252,14 +11255,14 @@
         </member>
         <member name="M:MathNet.Numerics.Financial.AbsoluteRiskMeasures.GainStandardDeviation(System.Collections.Generic.IEnumerable{System.Double})">
             <summary>
-            Calculation is similar to Standard Deviation , except it calculates an average (mean) return only for periods with a gain 
+            Calculation is similar to Standard Deviation , except it calculates an average (mean) return only for periods with a gain
             and measures the variation of only the gain periods around the gain mean. Measures the volatility of upside performance.
             © Copyright 1996, 1999 Gary L.Gastineau. First Edition. © 1992 Swiss Bank Corporation.
             </summary>
         </member>
         <member name="M:MathNet.Numerics.Financial.AbsoluteRiskMeasures.LossStandardDeviation(System.Collections.Generic.IEnumerable{System.Double})">
             <summary>
-            Similar to standard deviation, except this statistic calculates an average (mean) return for only the periods with a loss and then 
+            Similar to standard deviation, except this statistic calculates an average (mean) return for only the periods with a loss and then
             measures the variation of only the losing periods around this loss mean. This statistic measures the volatility of downside performance.
             </summary>
             <remarks>http://www.offshore-library.com/kb/statistics.php</remarks>
@@ -11289,6 +11292,24 @@
             <summary>
             Find value x that minimizes the scalar function f(x), constrained within bounds, using the Golden Section algorithm.
             For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.GoldenSectionMinimizer"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfScalarFunction(System.Func{System.Double,System.Double},System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Nelder-Mead Simplex algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.NelderMeadSimplex"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunction(System.Func{System.Double,System.Double,System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Nelder-Mead Simplex algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.NelderMeadSimplex"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunction(System.Func{System.Double,System.Double,System.Double,System.Double},System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Nelder-Mead Simplex algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.NelderMeadSimplex"/> directly.
             </summary>
         </member>
         <member name="M:MathNet.Numerics.FindMinimum.OfFunction(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Int32)">
@@ -11370,6 +11391,20 @@
             Find all three complex roots of the cubic equation d + c*x + b*x^2 + a*x^3 = 0.
             Note the special coefficient order ascending by exponent (consistent with polynomials).
             </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindRoots.Polynomial(System.Double[])">
+            <summary>
+            Find all roots of a polynomial by calculating the characteristic polynomial of the companion matrix
+            </summary>
+            <param name="coefficients">The coefficients of the polynomial in ascending order, e.g. new double[] {5, 0, 2} = "5 + 0 x^1 + 2 x^2"</param>
+            <returns>The roots of the polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.FindRoots.Polynomial(MathNet.Numerics.Polynomial)">
+            <summary>
+            Find all roots of a polynomial by calculating the characteristic polynomial of the companion matrix
+            </summary>
+            <param name="polynomial">The polynomial.</param>
+            <returns>The roots of the polynomial</returns>
         </member>
         <member name="M:MathNet.Numerics.FindRoots.ChebychevPolynomialFirstKind(System.Int32,System.Double,System.Double)">
             <summary>
@@ -11459,7 +11494,7 @@
         <member name="M:MathNet.Numerics.Fit.Polynomial(System.Double[],System.Double[],System.Int32,MathNet.Numerics.LinearRegression.DirectRegressionMethod)">
             <summary>
             Least-Squares fitting the points (x,y) to a k-order polynomial y : x -> p0 + p1*x + p2*x^2 + ... + pk*x^k,
-            returning its best fitting parameters as [p0, p1, p2, ..., pk] array, compatible with Evaluate.Polynomial.
+            returning its best fitting parameters as [p0, p1, p2, ..., pk] array, compatible with Polynomial.Evaluate.
             A polynomial with order/degree k has (k+1) coefficients and thus requires at least (k+1) samples.
             </summary>
         </member>
@@ -11473,7 +11508,7 @@
         <member name="M:MathNet.Numerics.Fit.PolynomialWeighted(System.Double[],System.Double[],System.Double[],System.Int32)">
             <summary>
             Weighted Least-Squares fitting the points (x,y) and weights w to a k-order polynomial y : x -> p0 + p1*x + p2*x^2 + ... + pk*x^k,
-            returning its best fitting parameters as [p0, p1, p2, ..., pk] array, compatible with Evaluate.Polynomial.
+            returning its best fitting parameters as [p0, p1, p2, ..., pk] array, compatible with Polynomial.Evaluate.
             A polynomial with order/degree k has (k+1) coefficients and thus requires at least (k+1) samples.
             </summary>
         </member>
@@ -11567,6 +11602,42 @@
             <summary>
             Least-Squares fitting the points (T,y) = (T,y) to an arbitrary linear combination y : X -> p0*f0(T) + p1*f1(T) + ... + pk*fk(T),
             returning a function y' for the best fitting combination.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Fit.Curve(System.Double[],System.Double[],System.Func{System.Double,System.Double,System.Double},System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least-squares fitting the points (x,y) to an arbitrary function y : x -> f(p, x),
+            returning its best fitting parameter p.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Fit.Curve(System.Double[],System.Double[],System.Func{System.Double,System.Double,System.Double,System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least-squares fitting the points (x,y) to an arbitrary function y : x -> f(p0, p1, x),
+            returning its best fitting parameter p0 and p1.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Fit.Curve(System.Double[],System.Double[],System.Func{System.Double,System.Double,System.Double,System.Double,System.Double},System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least-squares fitting the points (x,y) to an arbitrary function y : x -> f(p0, p1, p2, x),
+            returning its best fitting parameter p0, p1 and p2.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Fit.CurveFunc(System.Double[],System.Double[],System.Func{System.Double,System.Double,System.Double},System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least-squares fitting the points (x,y) to an arbitrary function y : x -> f(p, x),
+            returning a function y' for the best fitting curve.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Fit.CurveFunc(System.Double[],System.Double[],System.Func{System.Double,System.Double,System.Double,System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least-squares fitting the points (x,y) to an arbitrary function y : x -> f(p0, p1, x),
+            returning a function y' for the best fitting curve.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Fit.CurveFunc(System.Double[],System.Double[],System.Func{System.Double,System.Double,System.Double,System.Double,System.Double},System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least-squares fitting the points (x,y) to an arbitrary function y : x -> f(p0, p1, p2, x),
+            returning a function y' for the best fitting curve.
             </summary>
         </member>
         <member name="M:MathNet.Numerics.Generate.Map``2(``0[],System.Func{``0,``1})">
@@ -12136,7 +12207,7 @@
             <summary>
             Packed Real-Complex forward Fast Fourier Transform (FFT) to arbitrary-length sample vectors.
             Since for real-valued time samples the complex spectrum is conjugate-even (symmetry),
-            the spectrum can be fully reconstructed form the positive frequencies only (first half).
+            the spectrum can be fully reconstructed from the positive frequencies only (first half).
             The data array needs to be N+2 (if N is even) or N+1 (if N is odd) long in order to support such a packed spectrum.
             </summary>
             <param name="data">Data array of length N+2 (if N is even) or N+1 (if N is odd).</param>
@@ -17457,6 +17528,13 @@
             <param name="other">The matrix to multiply with.</param>
             <param name="result">The result of the multiplication.</param>
         </member>
+        <member name="M:MathNet.Numerics.LinearAlgebra.Double.SparseMatrix.DoTransposeThisAndMultiply(MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Multiplies the transpose of this matrix with a vector and places the results into the result vector.
+            </summary>
+            <param name="rightSide">The vector to multiply with.</param>
+            <param name="result">The result of the multiplication.</param>
+        </member>
         <member name="M:MathNet.Numerics.LinearAlgebra.Double.SparseMatrix.DoPointwiseMultiply(MathNet.Numerics.LinearAlgebra.Matrix{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double})">
             <summary>
             Pointwise multiplies this matrix with another matrix and stores the result into the result matrix.
@@ -21764,6 +21842,13 @@
             <param name="other">The matrix to multiply with.</param>
             <param name="result">The result of the multiplication.</param>
         </member>
+        <member name="M:MathNet.Numerics.LinearAlgebra.Single.SparseMatrix.DoTransposeThisAndMultiply(MathNet.Numerics.LinearAlgebra.Vector{System.Single},MathNet.Numerics.LinearAlgebra.Vector{System.Single})">
+            <summary>
+            Multiplies the transpose of this matrix with a vector and places the results into the result vector.
+            </summary>
+            <param name="rightSide">The vector to multiply with.</param>
+            <param name="result">The result of the multiplication.</param>
+        </member>
         <member name="M:MathNet.Numerics.LinearAlgebra.Single.SparseMatrix.DoPointwiseMultiply(MathNet.Numerics.LinearAlgebra.Matrix{System.Single},MathNet.Numerics.LinearAlgebra.Matrix{System.Single})">
             <summary>
             Pointwise multiplies this matrix with another matrix and stores the result into the result matrix.
@@ -26051,6 +26136,13 @@
             <param name="other">The matrix to multiply with.</param>
             <param name="result">The result of the multiplication.</param>
         </member>
+        <member name="M:MathNet.Numerics.LinearAlgebra.Complex.SparseMatrix.DoTransposeThisAndMultiply(MathNet.Numerics.LinearAlgebra.Vector{System.Numerics.Complex},MathNet.Numerics.LinearAlgebra.Vector{System.Numerics.Complex})">
+            <summary>
+            Multiplies the transpose of this matrix with a vector and places the results into the result vector.
+            </summary>
+            <param name="rightSide">The vector to multiply with.</param>
+            <param name="result">The result of the multiplication.</param>
+        </member>
         <member name="M:MathNet.Numerics.LinearAlgebra.Complex.SparseMatrix.DoPointwiseMultiply(MathNet.Numerics.LinearAlgebra.Matrix{System.Numerics.Complex},MathNet.Numerics.LinearAlgebra.Matrix{System.Numerics.Complex})">
             <summary>
             Pointwise multiplies this matrix with another matrix and stores the result into the result matrix.
@@ -30308,6 +30400,13 @@
             Multiplies this matrix with transpose of another matrix and places the results into the result matrix.
             </summary>
             <param name="other">The matrix to multiply with.</param>
+            <param name="result">The result of the multiplication.</param>
+        </member>
+        <member name="M:MathNet.Numerics.LinearAlgebra.Complex32.SparseMatrix.DoTransposeThisAndMultiply(MathNet.Numerics.LinearAlgebra.Vector{MathNet.Numerics.Complex32},MathNet.Numerics.LinearAlgebra.Vector{MathNet.Numerics.Complex32})">
+            <summary>
+            Multiplies the transpose of this matrix with a vector and places the results into the result vector.
+            </summary>
+            <param name="rightSide">The vector to multiply with.</param>
             <param name="result">The result of the multiplication.</param>
         </member>
         <member name="M:MathNet.Numerics.LinearAlgebra.Complex32.SparseMatrix.DoPointwiseMultiply(MathNet.Numerics.LinearAlgebra.Matrix{MathNet.Numerics.Complex32},MathNet.Numerics.LinearAlgebra.Matrix{MathNet.Numerics.Complex32})">
@@ -38989,6 +39088,74 @@
         <member name="M:MathNet.Numerics.Optimization.IObjectiveFunction.Fork">
             <summary>Create a new independent copy of this objective function, evaluated at the same point.</summary>
         </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.ObservedY">
+            <summary>
+            Get the y-values of the observations.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.Weights">
+            <summary>
+            Get the values of the weights for the observations.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.ModelValues">
+            <summary>
+            Get the y-values of the fitted model that correspond to the independent values.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.Point">
+            <summary>
+            Get the values of the parameters.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.Value">
+            <summary>
+            Get the residual sum of squares.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.Gradient">
+            <summary>
+            Get the Gradient vector. G = J'(y - f(x; p))
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.Hessian">
+            <summary>
+            Get the approximated Hessian matrix. H = J'J
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.FunctionEvaluations">
+            <summary>
+            Get the number of calls to function.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.JacobianEvaluations">
+            <summary>
+            Get the number of calls to jacobian.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.IObjectiveModelEvaluation.DegreeOfFreedom">
+            <summary>
+            Get the degree of freedom.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.LevenbergMarquardtMinimizer.InitialMu">
+            <summary>
+            The scale factor for initial mu
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.LevenbergMarquardtMinimizer.Minimum(MathNet.Numerics.Optimization.IObjectiveModel,MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Collections.Generic.List{System.Boolean},System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least square fitting by the Levenberg-Marduardt algorithm.
+            </summary>
+            <param name="objective">The objective function, including model, observations, and parameter bounds.</param>
+            <param name="initialGuess">The initial guess values.</param>
+            <param name="initialMu">The initial damping parameter of mu.</param>        
+            <param name="gradientTolerance">The stopping threshold for infinity norm of the gradient vector.</param>
+            <param name="stepTolerance">The stopping threshold for L2 norm of the change of parameters.</param>
+            <param name="functionTolerance">The stopping threshold for L2 norm of the residuals.</param>
+            <param name="maximumIterations">The max iterations.</param>
+            <returns>The result of the Levenberg-Marquardt minimization</returns>
+        </member>
         <member name="T:MathNet.Numerics.Optimization.LimitedMemoryBfgsMinimizer">
             <summary>
             Limited Memory version of Broyden–Fletcher–Goldfarb–Shanno (BFGS) algorithm
@@ -39160,6 +39327,66 @@
             The value of the constant
             </summary>
         </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizationResult.MinimizingPoint">
+            <summary>
+            Returns the best fit parameters.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizationResult.StandardErrors">
+            <summary>
+            Returns the standard errors of the corresponding parameters 
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizationResult.MinimizedValues">
+            <summary>
+            Returns the y-values of the fitted model that correspond to the independent values.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizationResult.Covariance">
+            <summary>
+            Returns the covariance matrix at minimizing point.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizationResult.Correlation">
+            <summary>
+             Returns the correlation matrix at minimizing point.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizerBase.FunctionTolerance">
+            <summary>
+            The stopping threshold for the function value or L2 norm of the residuals.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizerBase.StepTolerance">
+            <summary>
+            The stopping threshold for L2 norm of the change of the parameters.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizerBase.GradientTolerance">
+            <summary>
+            The stopping threshold for infinity norm of the gradient.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizerBase.MaximumIterations">
+            <summary>
+            The maximum number of iterations.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizerBase.LowerBound">
+            <summary>
+            The lower bound of the parameters.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizerBase.UpperBound">
+            <summary>
+            The upper bound of the parameters.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NonlinearMinimizerBase.Scales">
+            <summary>
+            The scale factors for the parameters.
+            </summary>
+        </member>
         <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.Value(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double})">
             <summary>
             Objective function where neither Gradient nor Hessian is available.
@@ -39210,16 +39437,163 @@
             Objective function where the first and second derivatives are available.
             </summary>
         </member>
-        <member name="T:MathNet.Numerics.Optimization.ObjectiveFunctions.ForwardDifferenceGradientObjectiveFunction">
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.NonlinearModel(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
             <summary>
-            Adapts an objective function with only value implemented 
-            to provide a gradient as well. Gradient calculation is 
-            done using the finite difference method, specifically 
-            forward differences.
+            objective model with a user supplied jacobian for non-linear least squares regression.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.NonlinearModel(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Int32)">
+            <summary>
+            Objective model for non-linear least squares regression.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.NonlinearModel(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,MathNet.Numerics.LinearAlgebra.Vector{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Objective model with a user supplied jacobian for non-linear least squares regression.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.NonlinearModel(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Int32)">
+            <summary>
+            Objective model for non-linear least squares regression.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.NonlinearFunction(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Objective function with a user supplied jacobian for nonlinear least squares regression.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.NonlinearFunction(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Int32)">
+            <summary>
+            Objective function for nonlinear least squares regression.
+            The numerical jacobian with accuracy order is used.
+            </summary>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.ObjectiveFunctions.ForwardDifferenceGradientObjectiveFunction">
+             <summary>
+             Adapts an objective function with only value implemented
+             to provide a gradient as well. Gradient calculation is
+             done using the finite difference method, specifically
+             forward differences.
             
-            For each gradient computed, the algorithm requires an 
-            additional number of function evaluations equal to the 
-            functions's number of input parameters.
+             For each gradient computed, the algorithm requires an
+             additional number of function evaluations equal to the
+             functions's number of input parameters.
+             </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.ObservedX">
+            <summary>
+            Set or get the values of the independent variable.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.ObservedY">
+            <summary>
+            Set or get the values of the observations.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.Weights">
+            <summary>
+            Set or get the values of the weights for the observations.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.IsFixed">
+            <summary>
+            Get whether parameters are fixed or free.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.NumberOfObservations">
+            <summary>
+            Get the number of observations.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.NumberOfParameters">
+            <summary>
+            Get the number of unknown parameters.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.DegreeOfFreedom">
+            <summary>
+            Get the degree of freedom
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.FunctionEvaluations">
+            <summary>
+            Get the number of calls to function.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.JacobianEvaluations">
+            <summary>
+            Get the number of calls to jacobian.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.Point">
+            <summary>
+            Set or get the values of the parameters.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.ModelValues">
+            <summary>
+            Get the y-values of the fitted model that correspond to the independent values.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.Value">
+            <summary>
+            Get the residual sum of squares.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.Gradient">
+            <summary>
+            Get the Gradient vector of x and p.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.Hessian">
+            <summary>
+            Get the Hessian matrix of x and p, J'WJ
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.SetObserved(MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Set observed data to fit.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunctions.NonlinearObjectiveFunction.SetParameters(MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Collections.Generic.List{System.Boolean})">
+            <summary>
+            Set parameters and bounds.
+            </summary>
+            <param name="initialGuess">The initial values of parameters.</param>
+            <param name="isFixed">The list to the parameters fix or free.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.TrustRegion.TrustRegionDogLegMinimizer.#ctor(System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least square fitting by the trust region dogleg algorithm.
+            </summary>
+        </member>
+        <member name="F:MathNet.Numerics.Optimization.TrustRegion.TrustRegionMinimizerBase.Subproblem">
+            <summary>
+            The trust region subproblem.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.TrustRegion.TrustRegionMinimizerBase.RadiusTolerance">
+            <summary>
+            The stopping threshold for the trust region radius.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.TrustRegion.TrustRegionMinimizerBase.Minimum(MathNet.Numerics.Optimization.TrustRegion.ITrustRegionSubproblem,MathNet.Numerics.Optimization.IObjectiveModel,MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Collections.Generic.List{System.Boolean},System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least square fitting by the trust-region algorithm.
+            </summary>
+            <param name="objective">The objective model, including function, jacobian, observations, and parameter bounds.</param>
+            <param name="subproblem">The subproblem</param>
+            <param name="initialGuess">The initial guess values.</param>
+            <param name="functionTolerance">The stopping threshold for L2 norm of the residuals.</param>
+            <param name="gradientTolerance">The stopping threshold for infinity norm of the gradient vector.</param>
+            <param name="stepTolerance">The stopping threshold for L2 norm of the change of parameters.</param>
+            <param name="radiusTolerance">The stopping threshold for trust region radius</param>
+            <param name="maximumIterations">The max iterations.</param>
+            <returns></returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.TrustRegion.TrustRegionNewtonCGMinimizer.#ctor(System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Non-linear least square fitting by the trust region Newton-Conjugate-Gradient algorithm.
             </summary>
         </member>
         <member name="T:MathNet.Numerics.Permutation">
@@ -39285,6 +39659,355 @@
             <param name="indices">An array which represents where each integer is permuted too: indices[i] represents that integer i
             is permuted to location indices[i].</param>
             <returns>True if <paramref name="indices"/> represents a proper permutation, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="T:MathNet.Numerics.Polynomial">
+            <summary>
+            A single-variable polynomial with real-valued coefficients and non-negative exponents.
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Polynomial.Coefficients">
+            <summary>
+            The coefficients of the polynomial in a
+            </summary>
+        </member>
+        <member name="F:MathNet.Numerics.Polynomial.VariableName">
+            <summary>
+            Only needed for the ToString method
+            </summary>
+        </member>
+        <member name="P:MathNet.Numerics.Polynomial.Degree">
+            <summary>
+            Degree of the polynomial, i.e. the largest monomial exponent. For example, the degree of y=x^2+x^5 is 5, for y=3 it is 0.
+            The null-polynomial returns degree -1 because the correct degree, negative infinity, cannot be represented by integers.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.#ctor(System.Int32)">
+            <summary>
+            Create a zero-polynomial with a coefficient array of the given length.
+            An array of length N can support polynomials of a degree of at most N-1.
+            </summary>
+            <param name="n">Length of the coefficient array</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.#ctor">
+            <summary>
+            Create a zero-polynomial
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.#ctor(System.Double)">
+            <summary>
+            Create a constant polynomial.
+            Example: 3.0 -> "p : x -> 3.0"
+            </summary>
+            <param name="coefficient">The coefficient of the "x^0" monomial.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.#ctor(System.Double[])">
+            <summary>
+            Create a polynomial with the provided coefficients (in ascending order, where the index matches the exponent).
+            Example: {5, 0, 2} -> "p : x -> 5 + 0 x^1 + 2 x^2".
+            </summary>
+            <param name="coefficients">Polynomial coefficients as array</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.#ctor(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Create a polynomial with the provided coefficients (in ascending order, where the index matches the exponent).
+            Example: {5, 0, 2} -> "p : x -> 5 + 0 x^1 + 2 x^2".
+            </summary>
+            <param name="coefficients">Polynomial coefficients as enumerable</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Fit(System.Double[],System.Double[],System.Int32,MathNet.Numerics.LinearRegression.DirectRegressionMethod)">
+            <summary>
+            Least-Squares fitting the points (x,y) to a k-order polynomial y : x -> p0 + p1*x + p2*x^2 + ... + pk*x^k
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Evaluate(System.Double,System.Double[])">
+            <summary>
+            Evaluate a polynomial at point x.
+            Coefficients are ordered ascending by power with power k at index k.
+            Example: coefficients [3,-1,2] represent y=2x^2-x+3.
+            </summary>
+            <param name="z">The location where to evaluate the polynomial at.</param>
+            <param name="coefficients">The coefficients of the polynomial, coefficient for power k at index k.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Evaluate(System.Numerics.Complex,System.Double[])">
+            <summary>
+            Evaluate a polynomial at point x.
+            Coefficients are ordered ascending by power with power k at index k.
+            Example: coefficients [3,-1,2] represent y=2x^2-x+3.
+            </summary>
+            <param name="z">The location where to evaluate the polynomial at.</param>
+            <param name="coefficients">The coefficients of the polynomial, coefficient for power k at index k.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Evaluate(System.Numerics.Complex,System.Numerics.Complex[])">
+            <summary>
+            Evaluate a polynomial at point x.
+            Coefficients are ordered ascending by power with power k at index k.
+            Example: coefficients [3,-1,2] represent y=2x^2-x+3.
+            </summary>
+            <param name="z">The location where to evaluate the polynomial at.</param>
+            <param name="coefficients">The coefficients of the polynomial, coefficient for power k at index k.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Evaluate(System.Double)">
+            <summary>
+            Evaluate a polynomial at point x.
+            </summary>
+            <param name="z">The location where to evaluate the polynomial at.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Evaluate(System.Numerics.Complex)">
+            <summary>
+            Evaluate a polynomial at point x.
+            </summary>
+            <param name="z">The location where to evaluate the polynomial at.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Evaluate(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Evaluate a polynomial at points z.
+            </summary>
+            <param name="z">The locations where to evaluate the polynomial at.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Evaluate(System.Collections.Generic.IEnumerable{System.Numerics.Complex})">
+            <summary>
+            Evaluate a polynomial at points z.
+            </summary>
+            <param name="z">The locations where to evaluate the polynomial at.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Roots">
+            <summary>
+            Calculates the complex roots of the Polynomial by eigenvalue decomposition
+            </summary>
+            <returns>a vector of complex numbers with the roots</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.EigenvalueMatrix">
+            <summary>
+            Get the eigenvalue matrix A of this polynomial such that eig(A) = roots of this polynomial.
+            </summary>
+            <returns>Eigenvalue matrix A</returns>
+            <note>This matrix is similar to the companion matrix of this polynomial, in such a way, that it's transpose is the columnflip of the companion matrix</note>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Add(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Addition of two Polynomials (point-wise).
+            </summary>
+            <param name="a">Left Polynomial</param>
+            <param name="b">Right Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Add(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            Addition of a polynomial and a scalar.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Subtract(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Subtraction of two Polynomials (point-wise).
+            </summary>
+            <param name="a">Left Polynomial</param>
+            <param name="b">Right Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Subtract(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            Addition of a scalar from a polynomial.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Subtract(System.Double,MathNet.Numerics.Polynomial)">
+            <summary>
+            Addition of a polynomial from a scalar.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Negate(MathNet.Numerics.Polynomial)">
+            <summary>
+            Negation of a polynomial.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Multiply(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Multiplies a polynomial by a polynomial (convolution)
+            </summary>
+            <param name="a">Left polynomial</param>
+            <param name="b">Right polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Multiply(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            Scales a polynomial by a scalar
+            </summary>
+            <param name="a">Polynomial</param>
+            <param name="k">Scalar value</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.Divide(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            Scales a polynomial by division by a scalar
+            </summary>
+            <param name="a">Polynomial</param>
+            <param name="k">Scalar value</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.DivideRemainder(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Euclidean long division of two polynomials, returning the quotient q and remainder r of the two polynomials a and b such that a = q*b + r
+            </summary>
+            <param name="a">Left polynomial</param>
+            <param name="b">Right polynomial</param>
+            <returns>A tuple holding quotient in first and remainder in second</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.PointwiseDivide(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Point-wise division of two Polynomials
+            </summary>
+            <param name="a">Left Polynomial</param>
+            <param name="b">Right Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.PointwiseMultiply(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Point-wise multiplication of two Polynomials
+            </summary>
+            <param name="a">Left Polynomial</param>
+            <param name="b">Right Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.DivideRemainder(MathNet.Numerics.Polynomial)">
+            <summary>
+            Division of two polynomials returning the quotient-with-remainder of the two polynomials given
+            </summary>
+            <param name="b">Right polynomial</param>
+            <returns>A tuple holding quotient in first and remainder in second</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Addition(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Addition of two Polynomials (piecewise)
+            </summary>
+            <param name="a">Left polynomial</param>
+            <param name="b">Right polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Addition(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            adds a scalar to a polynomial.
+            </summary>
+            <param name="a">Polynomial</param>
+            <param name="k">Scalar value</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Addition(System.Double,MathNet.Numerics.Polynomial)">
+            <summary>
+            adds a scalar to a polynomial.
+            </summary>
+            <param name="k">Scalar value</param>
+            <param name="a">Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Subtraction(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Subtraction of two polynomial.
+            </summary>
+            <param name="a">Left polynomial</param>
+            <param name="b">Right polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Subtraction(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            Subtracts a scalar from a polynomial.
+            </summary>
+            <param name="a">Polynomial</param>
+            <param name="k">Scalar value</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Subtraction(System.Double,MathNet.Numerics.Polynomial)">
+            <summary>
+            Subtracts a polynomial from a scalar.
+            </summary>
+            <param name="k">Scalar value</param>
+            <param name="a">Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_UnaryNegation(MathNet.Numerics.Polynomial)">
+            <summary>
+            Negates a polynomial.
+            </summary>
+            <param name="a">Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Multiply(MathNet.Numerics.Polynomial,MathNet.Numerics.Polynomial)">
+            <summary>
+            Multiplies a polynomial by a polynomial (convolution).
+            </summary>
+            <param name="a">Left polynomial</param>
+            <param name="b">Right polynomial</param>
+            <returns>resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Multiply(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            Multiplies a polynomial by a scalar.
+            </summary>
+            <param name="a">Polynomial</param>
+            <param name="k">Scalar value</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Multiply(System.Double,MathNet.Numerics.Polynomial)">
+            <summary>
+            Multiplies a polynomial by a scalar.
+            </summary>
+            <param name="k">Scalar value</param>
+            <param name="a">Polynomial</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.op_Division(MathNet.Numerics.Polynomial,System.Double)">
+            <summary>
+            Divides a polynomial by scalar value.
+            </summary>
+            <param name="a">Polynomial</param>
+            <param name="k">Scalar value</param>
+            <returns>Resulting Polynomial</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToString">
+            <summary>
+            Format the polynomial in ascending order, e.g. "4.3 + 2.0x^2 - x^3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToStringDescending">
+            <summary>
+            Format the polynomial in descending order, e.g. "x^3 + 2.0x^2 - 4.3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToString(System.String)">
+            <summary>
+            Format the polynomial in ascending order, e.g. "4.3 + 2.0x^2 - x^3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToStringDescending(System.String)">
+            <summary>
+            Format the polynomial in descending order, e.g. "x^3 + 2.0x^2 - 4.3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToString(System.IFormatProvider)">
+            <summary>
+            Format the polynomial in ascending order, e.g. "4.3 + 2.0x^2 - x^3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToStringDescending(System.IFormatProvider)">
+            <summary>
+            Format the polynomial in descending order, e.g. "x^3 + 2.0x^2 - 4.3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToString(System.String,System.IFormatProvider)">
+            <summary>
+            Format the polynomial in ascending order, e.g. "4.3 + 2.0x^2 - x^3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.ToStringDescending(System.String,System.IFormatProvider)">
+            <summary>
+            Format the polynomial in descending order, e.g. "x^3 + 2.0x^2 - 4.3".
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Polynomial.System#ICloneable#Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
         </member>
         <member name="T:MathNet.Numerics.Precision">
             <summary>
@@ -39356,8 +40079,8 @@
             </summary>
             <remarks>
             <para>
-            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by 
-            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between 
+            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by
+            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between
             0.005 and 0.015, but not 0.02 and not 0.00
             </para>
             </remarks>
@@ -39373,8 +40096,8 @@
             </summary>
             <remarks>
             <para>
-            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by 
-            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between 
+            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by
+            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between
             0.005 and 0.015, but not 0.02 and not 0.00
             </para>
             </remarks>
@@ -39410,8 +40133,8 @@
             </summary>
             <remarks>
             <para>
-            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by 
-            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between 
+            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by
+            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between
             0.005 and 0.015, but not 0.02 and not 0.00
             </para>
             </remarks>
@@ -39427,8 +40150,8 @@
             </summary>
             <remarks>
             <para>
-            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by 
-            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between 
+            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by
+            two so that we have half the range on each side of the numbers, e.g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between
             0.005 and 0.015, but not 0.02 and not 0.00
             </para>
             </remarks>
@@ -39484,8 +40207,8 @@
             </summary>
             <remarks>
             <para>
-            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by 
-            two so that we have half the range on each side of th<paramref name="decimalPlaces"/>g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between 
+            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by
+            two so that we have half the range on each side of th<paramref name="decimalPlaces"/>g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between
             0.005 and 0.015, but not 0.02 and not 0.00
             </para>
             </remarks>
@@ -39501,8 +40224,8 @@
             </summary>
             <remarks>
             <para>
-            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by 
-            two so that we have half the range on each side of th<paramref name="decimalPlaces"/>g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between 
+            The values are equal if the difference between the two numbers is smaller than 10^(-numberOfDecimalPlaces). We divide by
+            two so that we have half the range on each side of th<paramref name="decimalPlaces"/>g. if <paramref name="decimalPlaces"/> == 2, then 0.01 will equal between
             0.005 and 0.015, but not 0.02 and not 0.00
             </para>
             </remarks>
@@ -49324,6 +50047,107 @@
             </summary>
             <remarks>Supports being called in parallel from multiple threads, but the result must be enumerated from a single thread each.</remarks>
         </member>
+        <member name="T:MathNet.Numerics.Random.Xoshiro256StarStar">
+             <summary>
+             Xoshiro256** pseudo random number generator.
+             A random number generator based on the <see cref="T:System.Random"/> class in the .NET library.
+             </summary>
+             <remarks>
+             This is xoshiro256** 1.0, our all-purpose, rock-solid generator. It has
+             excellent(sub-ns) speed, a state space(256 bits) that is large enough
+             for any parallel application, and it passes all tests we are aware of.
+            
+             For generating just floating-point numbers, xoshiro256+ is even faster.
+            
+             The state must be seeded so that it is not everywhere zero.If you have
+             a 64-bit seed, we suggest to seed a splitmix64 generator and use its
+             output to fill s.
+            
+             For further details see:
+             David Blackman &amp; Sebastiano Vigna (2018), "Scrambled Linear Pseudorandom Number Generators".
+             https://arxiv.org/abs/1805.01407
+             </remarks>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.#ctor">
+            <summary>
+            Construct a new random number generator with a random seed.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.#ctor(System.Boolean)">
+            <summary>
+            Construct a new random number generator with random seed.
+            </summary>
+            <param name="threadSafe">if set to <c>true</c> , the class is thread safe.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.#ctor(System.Int32)">
+            <summary>
+            Construct a new random number generator with random seed.
+            </summary>
+            <param name="seed">The seed value.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.#ctor(System.Int32,System.Boolean)">
+            <summary>
+            Construct a new random number generator with random seed.
+            </summary>
+            <param name="seed">The seed value.</param>
+            <param name="threadSafe">if set to <c>true</c> , the class is thread safe.</param>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.DoSample">
+            <summary>
+            Returns a random double-precision floating point number greater than or equal to 0.0, and less than 1.0.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.DoSampleInteger">
+            <summary>
+            Returns a random 32-bit signed integer greater than or equal to zero and less than <see cref="F:System.Int32.MaxValue"/>
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.DoSampleBytes(System.Byte[])">
+            <summary>
+            Fills the elements of a specified array of bytes with random numbers in full range, including zero and 255 (<see cref="F:System.Byte.MaxValue"/>).
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.DoSampleInt32WithNBits(System.Int32)">
+            <summary>
+            Returns a random N-bit signed integer greater than or equal to zero and less than 2^N.
+            N (bit count) is expected to be greater than zero and less than 32 (not verified).
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.DoSampleInt64WithNBits(System.Int32)">
+            <summary>
+            Returns a random N-bit signed long integer greater than or equal to zero and less than 2^N.
+            N (bit count) is expected to be greater than zero and less than 64 (not verified).
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.Doubles(System.Double[],System.Int32)">
+            <summary>
+            Fills an array with random numbers greater than or equal to 0.0 and less than 1.0.
+            </summary>
+            <remarks>Supports being called in parallel from multiple threads.</remarks>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.Doubles(System.Int32,System.Int32)">
+            <summary>
+            Returns an array of random numbers greater than or equal to 0.0 and less than 1.0.
+            </summary>
+            <remarks>Supports being called in parallel from multiple threads.</remarks>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.DoubleSequence(System.Int32)">
+            <summary>
+            Returns an infinite sequence of random numbers greater than or equal to 0.0 and less than 1.0.
+            </summary>
+            <remarks>Supports being called in parallel from multiple threads, but the result must be enumerated from a single thread each.</remarks>
+        </member>
+        <member name="M:MathNet.Numerics.Random.Xoshiro256StarStar.Splitmix64(System.UInt64@)">
+            <summary>
+            Splitmix64 RNG.
+            </summary>
+            <param name="x">RNG state. This can take any value, including zero.</param>
+            <returns>A new random UInt64.</returns>
+            <remarks>
+            Splitmix64 produces equidistributed outputs, thus if a zero is generated then the
+            next zero will be after a further 2^64 outputs.
+            </remarks>
+        </member>
         <member name="T:MathNet.Numerics.RootFinding.Bisection">
             <summary>
             Bisection root-finding algorithm.
@@ -49730,10 +50554,22 @@
         </member>
         <member name="T:MathNet.Numerics.SpecialFunctions">
             <summary>
+            This partial implementation of the SpecialFunctions class contains all methods related to the Airy functions.
+            </summary>
+            <summary>
+            This partial implementation of the SpecialFunctions class contains all methods related to the Bessel functions.
+            </summary>
+            <summary>
             This partial implementation of the SpecialFunctions class contains all methods related to the error function.
             </summary>
             <summary>
+            This partial implementation of the SpecialFunctions class contains all methods related to the Hankel function.
+            </summary>
+            <summary>
             This partial implementation of the SpecialFunctions class contains all methods related to the harmonic function.
+            </summary>
+            <summary>
+            This partial implementation of the SpecialFunctions class contains all methods related to the modified Bessel function.
             </summary>
             <summary>
             This partial implementation of the SpecialFunctions class contains all methods related to the logistic function.
@@ -49744,6 +50580,281 @@
             <summary>
             This partial implementation of the SpecialFunctions class contains all methods related to the modified Bessel function.
             </summary>
+            <summary>
+            This partial implementation of the SpecialFunctions class contains all methods related to the spherical Bessel functions.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAi(System.Numerics.Complex)">
+            <summary>
+            Returns the Airy function Ai.
+            <para>AiryAi(z) is a solution to the Airy equation, y'' - y * z = 0.</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAiScaled(System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled Airy function Ai.
+            <para>ScaledAiryAi(z) is given by Exp(zta) * AiryAi(z), where zta = (2/3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The exponentially scaled Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAi(System.Double)">
+            <summary>
+            Returns the Airy function Ai.
+            <para>AiryAi(z) is a solution to the Airy equation, y'' - y * z = 0.</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAiScaled(System.Double)">
+            <summary>
+            Returns the exponentially scaled Airy function Ai.
+            <para>ScaledAiryAi(z) is given by Exp(zta) * AiryAi(z), where zta = (2/3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The exponentially scaled Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAiPrime(System.Numerics.Complex)">
+            <summary>
+            Returns the derivative of the Airy function Ai.
+            <para>AiryAiPrime(z) is defined as d/dz AiryAi(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The derivative of the Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAiPrimeScaled(System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled derivative of Airy function Ai
+            <para>ScaledAiryAiPrime(z) is given by Exp(zta) * AiryAiPrime(z), where zta = (2/3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The exponentially scaled derivative of Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAiPrime(System.Double)">
+            <summary>
+            Returns the derivative of the Airy function Ai.
+            <para>AiryAiPrime(z) is defined as d/dz AiryAi(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The derivative of the Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryAiPrimeScaled(System.Double)">
+            <summary>
+            Returns the exponentially scaled derivative of the Airy function Ai.
+            <para>ScaledAiryAiPrime(z) is given by Exp(zta) * AiryAiPrime(z), where zta = (2/3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The exponentially scaled derivative of the Airy function Ai.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBi(System.Numerics.Complex)">
+            <summary>
+            Returns the Airy function Bi.
+            <para>AiryBi(z) is a solution to the Airy equation, y'' - y * z = 0.</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The Airy function Bi.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBiScaled(System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled Airy function Bi.
+            <para>ScaledAiryBi(z) is given by Exp(-Abs(zta.Real)) * AiryBi(z) where zta = (2 / 3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The exponentially scaled Airy function Bi(z).</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBi(System.Double)">
+            <summary>
+            Returns the Airy function Bi.
+            <para>AiryBi(z) is a solution to the Airy equation, y'' - y * z = 0.</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The Airy function Bi.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBiScaled(System.Double)">
+            <summary>
+            Returns the exponentially scaled Airy function Bi.
+            <para>ScaledAiryBi(z) is given by Exp(-Abs(zta.Real)) * AiryBi(z) where zta = (2 / 3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the Airy function of.</param>
+            <returns>The exponentially scaled Airy function Bi.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBiPrime(System.Numerics.Complex)">
+            <summary>
+            Returns the derivative of the Airy function Bi.
+            <para>AiryBiPrime(z) is defined as d/dz AiryBi(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The derivative of the Airy function Bi.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBiPrimeScaled(System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled derivative of the Airy function Bi.
+            <para>ScaledAiryBiPrime(z) is given by Exp(-Abs(zta.Real)) * AiryBiPrime(z) where zta = (2 / 3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The exponentially scaled derivative of the Airy function Bi.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBiPrime(System.Double)">
+            <summary>
+            Returns the derivative of the Airy function Bi.
+            <para>AiryBiPrime(z) is defined as d/dz AiryBi(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The derivative of the Airy function Bi.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.AiryBiPrimeScaled(System.Double)">
+            <summary>
+            Returns the exponentially scaled derivative of the Airy function Bi.
+            <para>ScaledAiryBiPrime(z) is given by Exp(-Abs(zta.Real)) * AiryBiPrime(z) where zta = (2 / 3) * z * Sqrt(z).</para>
+            </summary>
+            <param name="z">The value to compute the derivative of the Airy function of.</param>
+            <returns>The exponentially scaled derivative of the Airy function Bi.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselJ(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the Bessel function of the first kind.
+            <para>BesselJ(n, z) is a solution to the Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselJScaled(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled Bessel function of the first kind.
+            <para>ScaledBesselJ(n, z) is given by Exp(-Abs(z.Imaginary)) * BesselJ(n, z).</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The exponentially scaled Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselJ(System.Double,System.Double)">
+            <summary>
+            Returns the Bessel function of the first kind.
+            <para>BesselJ(n, z) is a solution to the Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselJScaled(System.Double,System.Double)">
+            <summary>
+            Returns the exponentially scaled Bessel function of the first kind.
+            <para>ScaledBesselJ(n, z) is given by Exp(-Abs(z.Imaginary)) * BesselJ(n, z).</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The exponentially scaled Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselY(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the Bessel function of the second kind.
+            <para>BesselY(n, z) is a solution to the Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselYScaled(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled Bessel function of the second kind.
+            <para>ScaledBesselY(n, z) is given by Exp(-Abs(z.Imaginary)) * Y(n, z).</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The exponentially scaled Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselY(System.Double,System.Double)">
+            <summary>
+            Returns the Bessel function of the second kind.
+            <para>BesselY(n, z) is a solution to the Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselYScaled(System.Double,System.Double)">
+            <summary>
+            Returns the exponentially scaled Bessel function of the second kind.
+            <para>ScaledBesselY(n, z) is given by Exp(-Abs(z.Imaginary)) * BesselY(n, z).</para>
+            </summary>
+            <param name="n">The order of the Bessel function.</param>
+            <param name="z">The value to compute the Bessel function of.</param>
+            <returns>The exponentially scaled Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselI(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the modified Bessel function of the first kind.
+            <para>BesselI(n, z) is a solution to the modified Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The modified Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselIScaled(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled modified Bessel function of the first kind.
+            <para>ScaledBesselI(n, z) is given by Exp(-Abs(z.Real)) * BesselI(n, z).</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The exponentially scaled modified Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselI(System.Double,System.Double)">
+            <summary>
+            Returns the modified Bessel function of the first kind.
+            <para>BesselI(n, z) is a solution to the modified Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The modified Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselIScaled(System.Double,System.Double)">
+            <summary>
+            Returns the exponentially scaled modified Bessel function of the first kind.
+            <para>ScaledBesselI(n, z) is given by Exp(-Abs(z.Real)) * BesselI(n, z).</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The exponentially scaled modified Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselK(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the modified Bessel function of the second kind.
+            <para>BesselK(n, z) is a solution to the modified Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The modified Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselKScaled(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled modified Bessel function of the second kind.
+            <para>ScaledBesselK(n, z) is given by Exp(z) * BesselK(n, z).</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The exponentially scaled modified Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselK(System.Double,System.Double)">
+            <summary>
+            Returns the modified Bessel function of the second kind.
+            <para>BesselK(n, z) is a solution to the modified Bessel differential equation.</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The modified Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.BesselKScaled(System.Double,System.Double)">
+            <summary>
+            Returns the exponentially scaled modified Bessel function of the second kind.
+            <para>ScaledBesselK(n, z) is given by Exp(z) * BesselK(n, z).</para>
+            </summary>
+            <param name="n">The order of the modified Bessel function.</param>
+            <param name="z">The value to compute the modified Bessel function of.</param>
+            <returns>The exponentially scaled modified Bessel function of the second kind.</returns>
         </member>
         <member name="M:MathNet.Numerics.SpecialFunctions.BetaLn(System.Double,System.Double)">
             <summary>
@@ -50090,11 +51201,6 @@
             <para>Our unit tests suggest that the accuracy of the Exponential Integral function is correct up to 13 floating point digits.</para>
             </remarks>
         </member>
-        <member name="M:MathNet.Numerics.SpecialFunctions.#cctor">
-            <summary>
-            Initializes static members of the SpecialFunctions class.
-            </summary>
-        </member>
         <member name="M:MathNet.Numerics.SpecialFunctions.Factorial(System.Int32)">
             <summary>
             Computes the factorial function x -> x! of an integer number > 0. The function can represent all number up
@@ -50258,6 +51364,42 @@
             <param name="p">The argument of the inverse digamma function.</param>
             <returns>The positive solution to the inverse DiGamma function at <paramref name="p"/>.</returns>
         </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.HankelH1(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the Hankel function of the first kind.
+            <para>HankelH1(n, z) is defined as BesselJ(n, z) + j * BesselY(n, z).</para>
+            </summary>
+            <param name="n">The order of the Hankel function.</param>
+            <param name="z">The value to compute the Hankel function of.</param>
+            <returns>The Hankel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.HankelH1Scaled(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled Hankel function of the first kind.
+            <para>ScaledHankelH1(n, z) is given by Exp(-z * j) * HankelH1(n, z) where j = Sqrt(-1).</para>
+            </summary>
+            <param name="n">The order of the Hankel function.</param>
+            <param name="z">The value to compute the Hankel function of.</param>
+            <returns>The exponentially scaled Hankel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.HankelH2(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the Hankel function of the second kind.
+            <para>HankelH2(n, z) is defined as BesselJ(n, z) - j * BesselY(n, z).</para>
+            </summary>
+            <param name="n">The order of the Hankel function.</param>
+            <param name="z">The value to compute the Hankel function of.</param>
+            <returns>The Hankel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.HankelH2Scaled(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the exponentially scaled Hankel function of the second kind.
+            <para>ScaledHankelH2(n, z) is given by Exp(z * j) * HankelH2(n, z) where j = Sqrt(-1).</para>
+            </summary>
+            <param name="n">The order of the Hankel function.</param>
+            <param name="z">The value to compute the Hankel function of.</param>
+            <returns>The exponentially scaled Hankel function of the second kind.</returns>
+        </member>
         <member name="M:MathNet.Numerics.SpecialFunctions.Harmonic(System.Int32)">
             <summary>
             Computes the <paramref name="t"/>'th Harmonic number.
@@ -50272,6 +51414,158 @@
             <param name="n">The order parameter.</param>
             <param name="m">The power parameter.</param>
             <returns>General Harmonic number.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBe(System.Double,System.Double)">
+            <summary>
+            Returns the Kelvin function of the first kind.
+            <para>KelvinBe(nu, x) is given by BesselJ(0, j * sqrt(j) * x) where j = sqrt(-1).</para>
+            <para>KelvinBer(nu, x) and KelvinBei(nu, x) are the real and imaginary parts of the KelvinBe(nu, x)</para>
+            </summary>
+            <param name="nu">the order of the the Kelvin function.</param>
+            <param name="x">The value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBer(System.Double,System.Double)">
+            <summary>
+            Returns the Kelvin function ber.
+            <para>KelvinBer(nu, x) is given by the real part of BesselJ(nu, j * sqrt(j) * x) where j = sqrt(-1).</para>
+            </summary>
+            <param name="nu">the order of the the Kelvin function.</param>
+            <param name="x">The value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function ber.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBer(System.Double)">
+            <summary>
+            Returns the Kelvin function ber.
+            <para>KelvinBer(x) is given by the real part of BesselJ(0, j * sqrt(j) * x) where j = sqrt(-1).</para>
+            <para>KelvinBer(x) is equivalent to KelvinBer(0, x).</para>
+            </summary>
+            <param name="x">The value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function ber.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBei(System.Double,System.Double)">
+            <summary>
+            Returns the Kelvin function bei.
+            <para>KelvinBei(nu, x) is given by the imaginary part of BesselJ(nu, j * sqrt(j) * x) where j = sqrt(-1).</para>
+            </summary>
+            <param name="nu">the order of the the Kelvin function.</param>
+            <param name="x">The value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function bei.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBei(System.Double)">
+            <summary>
+            Returns the Kelvin function bei.
+            <para>KelvinBei(x) is given by the imaginary part of BesselJ(0, j * sqrt(j) * x) where j = sqrt(-1).</para>
+            <para>KelvinBei(x) is equivalent to KelvinBei(0, x).</para>
+            </summary>
+            <param name="x">The value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function bei.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBerPrime(System.Double,System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function ber.
+            </summary>
+            <param name="nu">The order of the Kelvin function.</param>
+            <param name="x">The value to compute the derivative of the Kelvin function of.</param>
+            <returns>the derivative of the Kelvin function ber</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBerPrime(System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function ber.
+            </summary>
+            <param name="x">The value to compute the derivative of the Kelvin function of.</param>
+            <returns>The derivative of the Kelvin function ber.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBeiPrime(System.Double,System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function bei.
+            </summary>
+            <param name="nu">The order of the Kelvin function.</param>
+            <param name="x">The value to compute the derivative of the Kelvin function of.</param>
+            <returns>the derivative of the Kelvin function bei.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinBeiPrime(System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function bei.
+            </summary>
+            <param name="x">The value to compute the derivative of the Kelvin function of.</param>
+            <returns>The derivative of the Kelvin function bei.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKe(System.Double,System.Double)">
+            <summary>
+            Returns the Kelvin function of the second kind
+            <para>KelvinKe(nu, x) is given by Exp(-nu * pi * j / 2) * BesselK(nu, x * sqrt(j)) where j = sqrt(-1).</para>
+            <para>KelvinKer(nu, x) and KelvinKei(nu, x) are the real and imaginary parts of the KelvinBe(nu, x)</para>
+            </summary>
+            <param name="nu">The order of the Kelvin function.</param>
+            <param name="x">The value to calculate the kelvin function of,</param>
+            <returns></returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKer(System.Double,System.Double)">
+            <summary>
+            Returns the Kelvin function ker.
+            <para>KelvinKer(nu, x) is given by the real part of Exp(-nu * pi * j / 2) * BesselK(nu, sqrt(j) * x) where j = sqrt(-1).</para>
+            </summary>
+            <param name="nu">the order of the the Kelvin function.</param>
+            <param name="x">The non-negative real value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function ker.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKer(System.Double)">
+            <summary>
+            Returns the Kelvin function ker.
+            <para>KelvinKer(x) is given by the real part of Exp(-nu * pi * j / 2) * BesselK(0, sqrt(j) * x) where j = sqrt(-1).</para>
+            <para>KelvinKer(x) is equivalent to KelvinKer(0, x).</para>
+            </summary>
+            <param name="x">The non-negative real value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function ker.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKei(System.Double,System.Double)">
+            <summary>
+            Returns the Kelvin function kei.
+            <para>KelvinKei(nu, x) is given by the imaginary part of Exp(-nu * pi * j / 2) * BesselK(nu, sqrt(j) * x) where j = sqrt(-1).</para>
+            </summary>
+            <param name="nu">the order of the the Kelvin function.</param>
+            <param name="x">The non-negative real value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function kei.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKei(System.Double)">
+            <summary>
+            Returns the Kelvin function kei.
+            <para>KelvinKei(x) is given by the imaginary part of Exp(-nu * pi * j / 2) * BesselK(0, sqrt(j) * x) where j = sqrt(-1).</para>
+            <para>KelvinKei(x) is equivalent to KelvinKei(0, x).</para>
+            </summary>
+            <param name="x">The non-negative real value to compute the Kelvin function of.</param>
+            <returns>The Kelvin function kei.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKerPrime(System.Double,System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function ker.
+            </summary>
+            <param name="nu">The order of the Kelvin function.</param>
+            <param name="x">The non-negative real value to compute the derivative of the Kelvin function of.</param>
+            <returns>The derivative of the Kelvin function ker.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKerPrime(System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function ker.
+            </summary>
+            <param name="x">The value to compute the derivative of the Kelvin function of.</param>
+            <returns>The derivative of the Kelvin function ker.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKeiPrime(System.Double,System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function kei.
+            </summary>
+            <param name="nu">The order of the Kelvin function.</param>
+            <param name="x">The value to compute the derivative of the Kelvin function of.</param>
+            <returns>The derivative of the Kelvin function kei.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.KelvinKeiPrime(System.Double)">
+            <summary>
+            Returns the derivative of the Kelvin function kei.
+            </summary>
+            <param name="x">The value to compute the derivative of the Kelvin function of.</param>
+            <returns>The derivative of the Kelvin function kei.</returns>
         </member>
         <member name="M:MathNet.Numerics.SpecialFunctions.Logistic(System.Double)">
             <summary>
@@ -50289,35 +51583,35 @@
             <returns>The logarithm of <paramref name="p"/> divided by 1.0 - <paramref name="p"/>.</returns>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselI0A">
-            <summary>
-            **************************************
-            COEFFICIENTS FOR METHODS bessi0      *
-            **************************************
-            </summary>
-            <summary> Chebyshev coefficients for exp(-x) I0(x)
-            in the interval [0, 8].
+             <summary>
+             **************************************
+             COEFFICIENTS FOR METHODS bessi0      *
+             **************************************
+             </summary>
+             <summary> Chebyshev coefficients for exp(-x) I0(x)
+             in the interval [0, 8].
             
-            lim(x->0){ exp(-x) I0(x) } = 1.
-            </summary>
+             lim(x->0){ exp(-x) I0(x) } = 1.
+             </summary>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselI0B">
-            <summary> Chebyshev coefficients for exp(-x) sqrt(x) I0(x)
-            in the inverted interval [8, infinity].
+             <summary> Chebyshev coefficients for exp(-x) sqrt(x) I0(x)
+             in the inverted interval [8, infinity].
             
-            lim(x->inf){ exp(-x) sqrt(x) I0(x) } = 1/sqrt(2pi).
-            </summary>
+             lim(x->inf){ exp(-x) sqrt(x) I0(x) } = 1/sqrt(2pi).
+             </summary>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselI1A">
-            <summary>
-            **************************************
-            COEFFICIENTS FOR METHODS bessi1      *
-            **************************************
-            </summary>
-            <summary> Chebyshev coefficients for exp(-x) I1(x) / x
-            in the interval [0, 8].
+             <summary>
+             **************************************
+             COEFFICIENTS FOR METHODS bessi1      *
+             **************************************
+             </summary>
+             <summary> Chebyshev coefficients for exp(-x) I1(x) / x
+             in the interval [0, 8].
             
-            lim(x->0){ exp(-x) I1(x) / x } = 1/2.
-            </summary>
+             lim(x->0){ exp(-x) I1(x) / x } = 1/2.
+             </summary>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselI1B">
              <summary> Chebyshev coefficients for exp(-x) sqrt(x) I1(x)
@@ -50327,36 +51621,36 @@
              </summary>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselK0A">
-            <summary>
-            **************************************
-            COEFFICIENTS FOR METHODS bessk0, bessk0e *
-            **************************************
-            </summary>
-            <summary> Chebyshev coefficients for K0(x) + log(x/2) I0(x)
-            in the interval [0, 2].  The odd order coefficients are all
-            zero; only the even order coefficients are listed.
+             <summary>
+             **************************************
+             COEFFICIENTS FOR METHODS bessk0, bessk0e *
+             **************************************
+             </summary>
+             <summary> Chebyshev coefficients for K0(x) + log(x/2) I0(x)
+             in the interval [0, 2].  The odd order coefficients are all
+             zero; only the even order coefficients are listed.
             
-            lim(x->0){ K0(x) + log(x/2) I0(x) } = -EUL.
-            </summary>
+             lim(x->0){ K0(x) + log(x/2) I0(x) } = -EUL.
+             </summary>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselK0B">
-            <summary> Chebyshev coefficients for exp(x) sqrt(x) K0(x)
-            in the inverted interval [2, infinity].
+             <summary> Chebyshev coefficients for exp(x) sqrt(x) K0(x)
+             in the inverted interval [2, infinity].
             
-            lim(x->inf){ exp(x) sqrt(x) K0(x) } = sqrt(pi/2).
-            </summary>
+             lim(x->inf){ exp(x) sqrt(x) K0(x) } = sqrt(pi/2).
+             </summary>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselK1A">
-            <summary>
-            **************************************
-            COEFFICIENTS FOR METHODS bessk1, bessk1e *
-            **************************************
-            </summary>
-            <summary> Chebyshev coefficients for x(K1(x) - log(x/2) I1(x))
-            in the interval [0, 2].
+             <summary>
+             **************************************
+             COEFFICIENTS FOR METHODS bessk1, bessk1e *
+             **************************************
+             </summary>
+             <summary> Chebyshev coefficients for x(K1(x) - log(x/2) I1(x))
+             in the interval [0, 2].
             
-            lim(x->0){ x(K1(x) - log(x/2) I1(x)) } = 1.
-            </summary>
+             lim(x->0){ x(K1(x) - log(x/2) I1(x)) } = 1.
+             </summary>
         </member>
         <member name="F:MathNet.Numerics.SpecialFunctions.BesselK1B">
              <summary> Chebyshev coefficients for exp(x) sqrt(x) K1(x)
@@ -50451,6 +51745,42 @@
             Returns the difference between the Bessel I1 and Struve L1 functions.
             </summary>
             <param name="x">The value to compute the function of.</param>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.SphericalBesselJ(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the spherical Bessel function of the first kind.
+            <para>SphericalBesselJ(n, z) is given by Sqrt(pi/2) / Sqrt(z) * BesselJ(n + 1/2, z).</para>
+            </summary>
+            <param name="n">The order of the spherical Bessel function.</param>
+            <param name="z">The value to compute the spherical Bessel function of.</param>
+            <returns>The spherical Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.SphericalBesselJ(System.Double,System.Double)">
+            <summary>
+            Returns the spherical Bessel function of the first kind.
+            <para>SphericalBesselJ(n, z) is given by Sqrt(pi/2) / Sqrt(z) * BesselJ(n + 1/2, z).</para>
+            </summary>
+            <param name="n">The order of the spherical Bessel function.</param>
+            <param name="z">The value to compute the spherical Bessel function of.</param>
+            <returns>The spherical Bessel function of the first kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.SphericalBesselY(System.Double,System.Numerics.Complex)">
+            <summary>
+            Returns the spherical Bessel function of the second kind.
+            <para>SphericalBesselY(n, z) is given by Sqrt(pi/2) / Sqrt(z) * BesselY(n + 1/2, z).</para>
+            </summary>
+            <param name="n">The order of the spherical Bessel function.</param>
+            <param name="z">The value to compute the spherical Bessel function of.</param>
+            <returns>The spherical Bessel function of the second kind.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.SpecialFunctions.SphericalBesselY(System.Double,System.Double)">
+            <summary>
+            Returns the spherical Bessel function of the second kind.
+            <para>SphericalBesselY(n, z) is given by Sqrt(pi/2) / Sqrt(z) * BesselY(n + 1/2, z).</para>
+            </summary>
+            <param name="n">The order of the spherical Bessel function.</param>
+            <param name="z">The value to compute the spherical Bessel function of.</param>
+            <returns>The spherical Bessel function of the second kind.</returns>
         </member>
         <member name="M:MathNet.Numerics.SpecialFunctions.ExponentialMinusOne(System.Double)">
             <summary>
@@ -51273,6 +52603,39 @@
             <summary>
             A class with correlation measures between two datasets.
             </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Statistics.Correlation.Auto(System.Double[])">
+            <summary>
+            Auto-correlation function (ACF) based on FFT for all possible lags k.
+            </summary>
+            <param name="x">Data array to calculate auto correlation for.</param>
+            <returns>An array with the ACF as a function of the lags k.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Statistics.Correlation.Auto(System.Double[],System.Int32,System.Int32)">
+            <summary>
+            Auto-correlation function (ACF) based on FFT for lags between kMin and kMax.
+            </summary>
+            <param name="x">The data array to calculate auto correlation for.</param>
+            <param name="kMax">Max lag to calculate ACF for must be positive and smaller than x.Length.</param>
+            <param name="kMin">Min lag to calculate ACF for (0 = no shift with acf=1) must be zero or positive and smaller than x.Length.</param>
+            <returns>An array with the ACF as a function of the lags k.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Statistics.Correlation.Auto(System.Double[],System.Int32[])">
+            <summary>
+            Auto-correlation function based on FFT for lags k.
+            </summary>
+            <param name="x">The data array to calculate auto correlation for.</param>
+            <param name="k">Array with lags to calculate ACF for.</param>
+            <returns>An array with the ACF as a function of the lags k.</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Statistics.Correlation.AutoCorrelationFft(System.Double[],System.Int32,System.Int32)">
+            <summary>
+            The internal method for calculating the auto-correlation.
+            </summary>
+            <param name="x">The data array to calculate auto-correlation for</param>
+            <param name="kLow">Min lag to calculate ACF for (0 = no shift with acf=1) must be zero or positive and smaller than x.Length</param>
+            <param name="kHigh">Max lag (EXCLUSIVE) to calculate ACF for must be positive and smaller than x.Length</param>
+            <returns>An array with the ACF as a function of the lags k.</returns>
         </member>
         <member name="M:MathNet.Numerics.Statistics.Correlation.Pearson(System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double})">
             <summary>
@@ -54807,6 +56170,14 @@
             <summary>
             Triangular window.
             </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Window.Tukey(System.Int32,System.Double)">
+            <summary>
+            Tukey tapering window. A rectangular window bounded
+            by half a cosine window on each side.
+            </summary>
+            <param name="width">Width of the window</param>
+            <param name="r">Fraction of the window occupied by the cosine parts</param>
         </member>
     </members>
 </doc>

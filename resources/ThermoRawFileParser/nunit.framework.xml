@@ -52,9 +52,9 @@
         </member>
         <member name="M:NUnit.Framework.Api.DefaultTestAssemblyBuilder.Build(System.String,System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
-            Build a suite of tests given the filename of an assembly
+            Build a suite of tests given the name or the location of an assembly
             </summary>
-            <param name="assemblyName">The filename of the assembly from which tests are to be built</param>
+            <param name="assemblyNameOrPath">The name or the location of the assembly.</param>
             <param name="options">A dictionary of options to use in building the suite</param>
             <returns>
             A TestSuite containing the tests found in the assembly
@@ -469,9 +469,9 @@
             <summary>
             Loads the tests found in an Assembly
             </summary>
-            <param name="assemblyName">File name of the assembly to load</param>
+            <param name="assemblyNameOrPath">File name or path of the assembly to load</param>
             <param name="settings">Dictionary of option settings for loading the assembly</param>
-            <returns>True if the load was successful</returns>
+            <returns>A Test Assembly containing all loaded tests</returns>
         </member>
         <member name="M:NUnit.Framework.Api.NUnitTestAssemblyRunner.Load(System.Reflection.Assembly,System.Collections.Generic.IDictionary{System.String,System.Object})">
             <summary>
@@ -479,7 +479,7 @@
             </summary>
             <param name="assembly">The assembly to load</param>
             <param name="settings">Dictionary of option settings for loading the assembly</param>
-            <returns>True if the load was successful</returns>
+            <returns>A Test Assembly containing all loaded tests</returns>
         </member>
         <member name="M:NUnit.Framework.Api.NUnitTestAssemblyRunner.CountTestCases(NUnit.Framework.Interfaces.ITestFilter)">
             <summary>
@@ -502,7 +502,7 @@
             </summary>
             <param name="listener">Interface to receive EventListener notifications.</param>
             <param name="filter">A test filter used to select tests to be run</param>
-            <returns></returns>
+            <returns>The test results from the run</returns>
         </member>
         <member name="M:NUnit.Framework.Api.NUnitTestAssemblyRunner.RunAsync(NUnit.Framework.Interfaces.ITestListener,NUnit.Framework.Interfaces.ITestFilter)">
             <summary>
@@ -542,6 +542,14 @@
         <member name="M:NUnit.Framework.Api.NUnitTestAssemblyRunner.OnRunCompleted(System.Object,System.EventArgs)">
             <summary>
             Handle the Completed event for the top level work item
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Api.NUnitTestAssemblyRunner.WrapInNUnitCallContext(System.Action)">
+            <summary>
+            Executes the action within an <see cref="T:NUnit.Framework.Internal.NUnitCallContext" />
+            which ensures the <see cref="T:System.Runtime.Remoting.Messaging.CallContext"/> is cleaned up
+            suitably at the end of the test run. This method only has an effect running
+            the full .NET Framework.
             </summary>
         </member>
         <member name="T:NUnit.Framework.Assert">
@@ -1878,13 +1886,6 @@
             <param name="message">The message to display in case of failure</param>
             <param name="args">Array of objects to be used in formatting the message</param>
         </member>
-        <member name="M:NUnit.Framework.Assert.#ctor">
-            <summary>
-            We don't actually want any instances of this object, but some people
-            like to inherit from it to add other static methods. Hence, the
-            protected constructor disallows any instances of this object.
-            </summary>
-        </member>
         <member name="M:NUnit.Framework.Assert.Equals(System.Object,System.Object)">
             <summary>
             DO NOT USE! Use Assert.AreEqual(...) instead.
@@ -2487,7 +2488,7 @@
             that satisfies the constraint provided.
             </summary>
             <param name="code">A TestDelegate to be executed</param>
-            <param name="constraint">A ThrowsConstraint used in the test</param>
+            <param name="constraint">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.Assert.That(NUnit.Framework.TestDelegate,NUnit.Framework.Constraints.IResolveConstraint,System.String,System.Object[])">
             <summary>
@@ -2495,7 +2496,7 @@
             that satisfies the constraint provided.
             </summary>
             <param name="code">A TestDelegate to be executed</param>
-            <param name="constraint">A ThrowsConstraint used in the test</param>
+            <param name="constraint">A Constraint expression to be applied</param>
             <param name="message">The message that will be displayed on failure</param>
             <param name="args">Arguments to be used in formatting the message</param>
         </member>
@@ -2505,7 +2506,7 @@
             that satisfies the constraint provided.
             </summary>
             <param name="code">A TestDelegate to be executed</param>
-            <param name="constraint">A ThrowsConstraint used in the test</param>
+            <param name="constraint">A Constraint expression to be applied</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
         <member name="M:NUnit.Framework.Assert.That``1(``0,NUnit.Framework.Constraints.IResolveConstraint)">
@@ -2515,7 +2516,7 @@
             </summary>
             <typeparam name="TActual">The Type being compared.</typeparam>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.Assert.That``1(``0,NUnit.Framework.Constraints.IResolveConstraint,System.String,System.Object[])">
             <summary>
@@ -2546,7 +2547,7 @@
             causes a Visual Basic compilation error.
             </summary>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.Assert.ByVal(System.Object,NUnit.Framework.Constraints.IResolveConstraint,System.String,System.Object[])">
             <summary>
@@ -2751,14 +2752,14 @@
             that satisfies the constraint provided.
             </summary>
             <param name="code">A TestDelegate to be executed</param>
-            <param name="constraint">A ThrowsConstraint used in the test</param>
+            <param name="constraint">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.AssertionHelper.Expect``1(``0,NUnit.Framework.Constraints.IResolveConstraint)">
             <summary>
             Apply a constraint to an actual value, succeeding if the constraint
             is satisfied and throwing an assertion exception on failure.
             </summary>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
             <param name="actual">The actual value to test</param>
         </member>
         <member name="M:NUnit.Framework.AssertionHelper.Expect``1(``0,NUnit.Framework.Constraints.IResolveConstraint,System.String,System.Object[])">
@@ -3043,18 +3044,27 @@
         </member>
         <member name="M:NUnit.Framework.AssertionHelper.Contains(System.Object)">
             <summary>
+            <para>
             Returns a new <see cref="T:NUnit.Framework.Constraints.SomeItemsConstraint"/> checking for the
             presence of a particular object in the collection.
+            </para>
+            <para>
+            To search for a substring instead of a collection element, use the
+            <see cref="M:NUnit.Framework.AssertionHelper.Contains(System.String)"/> overload.
+            </para>
             </summary>
         </member>
         <member name="M:NUnit.Framework.AssertionHelper.Contains(System.String)">
             <summary>
+            <para>
             Returns a new ContainsConstraint. This constraint
             will, in turn, make use of the appropriate second-level
             constraint, depending on the type of the actual argument.
-            This overload is only used if the item sought is a string,
-            since any other type implies that we are looking for a
-            collection member.
+            </para>
+            <para>
+            To search for a collection element instead of a substring, use the
+            <see cref="M:NUnit.Framework.AssertionHelper.Contains(System.Object)"/> overload.
+            </para>
             </summary>
         </member>
         <member name="M:NUnit.Framework.AssertionHelper.StringContaining(System.String)">
@@ -3182,7 +3192,7 @@
         <member name="M:NUnit.Framework.Assume.Equals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a">The left object.</param>
@@ -3192,7 +3202,7 @@
         <member name="M:NUnit.Framework.Assume.ReferenceEquals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The ReferenceEquals method throws an InvalidOperationException. This is done 
+            The ReferenceEquals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a">The left object.</param>
@@ -3232,14 +3242,14 @@
             <summary>
             Asserts that a condition is true. If the condition is false the method throws
             an <see cref="T:NUnit.Framework.InconclusiveException"/>.
-            </summary> 
+            </summary>
             <param name="condition">The evaluated condition</param>
             <param name="message">The message to display if the condition is false</param>
             <param name="args">Arguments to be used in formatting the message</param>
         </member>
         <member name="M:NUnit.Framework.Assume.That(System.Boolean)">
             <summary>
-            Asserts that a condition is true. If the condition is false the 
+            Asserts that a condition is true. If the condition is false the
             method throws an <see cref="T:NUnit.Framework.InconclusiveException"/>.
             </summary>
             <param name="condition">The evaluated condition</param>
@@ -3248,7 +3258,7 @@
             <summary>
             Asserts that a condition is true. If the condition is false the method throws
             an <see cref="T:NUnit.Framework.InconclusiveException"/>.
-            </summary> 
+            </summary>
             <param name="condition">The evaluated condition</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
@@ -3256,7 +3266,7 @@
             <summary>
             Asserts that a condition is true. If the condition is false the method throws
             an <see cref="T:NUnit.Framework.InconclusiveException"/>.
-            </summary> 
+            </summary>
             <param name="condition">A lambda that returns a Boolean</param>
             <param name="message">The message to display if the condition is false</param>
             <param name="args">Arguments to be used in formatting the message</param>
@@ -3272,7 +3282,7 @@
             <summary>
             Asserts that a condition is true. If the condition is false the method throws
             an <see cref="T:NUnit.Framework.InconclusiveException"/>.
-            </summary> 
+            </summary>
             <param name="condition">A lambda that returns a Boolean</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
@@ -3291,7 +3301,7 @@
             </summary>
             <typeparam name="TActual">The Type being compared.</typeparam>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.Assume.That``1(``0,NUnit.Framework.Constraints.IResolveConstraint,System.String,System.Object[])">
             <summary>
@@ -3311,12 +3321,12 @@
             </summary>
             <typeparam name="TActual">The Type being compared.</typeparam>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
         <member name="T:NUnit.Framework.ApartmentAttribute">
             <summary>
-            Marks a test that must run in a particular threading apartment state, causing it
+            Marks a test as needing to be run in a particular threading apartment state. This will cause it
             to run in a separate thread if necessary.
             </summary>
         </member>
@@ -3328,7 +3338,7 @@
         </member>
         <member name="T:NUnit.Framework.AuthorAttribute">
             <summary>
-            Provides the Author of a test or test fixture. 
+            Provides the author of a test or test fixture. 
             </summary>
         </member>
         <member name="M:NUnit.Framework.AuthorAttribute.#ctor(System.String)">
@@ -3346,7 +3356,7 @@
         </member>
         <member name="T:NUnit.Framework.CategoryAttribute">
             <summary>
-            Attribute used to apply a category to a test
+            Applies a category to a test
             </summary>
         </member>
         <member name="F:NUnit.Framework.CategoryAttribute.categoryName">
@@ -3386,9 +3396,8 @@
         </member>
         <member name="T:NUnit.Framework.CombinatorialAttribute">
             <summary>
-            Marks a test to use a combinatorial join of any argument 
-            data provided. Since this is the default, the attribute is
-            optional.
+            Marks a test to use a combinatorial join of any argument data provided. 
+            Since this is the default, the attribute is optional.
             </summary>
         </member>
         <member name="M:NUnit.Framework.CombinatorialAttribute.#ctor">
@@ -3398,9 +3407,8 @@
         </member>
         <member name="T:NUnit.Framework.CombiningStrategyAttribute">
             <summary>
-            Marks a test to use a particular CombiningStrategy to join
-            any parameter data provided. Since this is the default, the
-            attribute is optional.
+            Marks a test as using a particular CombiningStrategy to join any supplied parameter data.
+            Since this is the default, the attribute is optional.
             </summary>
         </member>
         <member name="M:NUnit.Framework.CombiningStrategyAttribute.#ctor(NUnit.Framework.Interfaces.ICombiningStrategy,NUnit.Framework.Interfaces.IParameterDataProvider)">
@@ -3422,12 +3430,10 @@
         </member>
         <member name="M:NUnit.Framework.CombiningStrategyAttribute.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Construct one or more TestMethods from a given MethodInfo,
-            using available parameter data.
+            Builds any number of tests from the specified method and context.
             </summary>
             <param name="method">The MethodInfo for which tests are to be constructed.</param>
             <param name="suite">The suite to which the tests will be added.</param>
-            <returns>One or more TestMethods</returns>
         </member>
         <member name="M:NUnit.Framework.CombiningStrategyAttribute.ApplyToTest(NUnit.Framework.Internal.Test)">
             <summary>
@@ -3438,8 +3444,7 @@
         </member>
         <member name="T:NUnit.Framework.CultureAttribute">
             <summary>
-            CultureAttribute is used to mark a test fixture or an
-            individual method as applying to a particular Culture only.
+            Marks an assembly, test fixture or test method as applying to a specific Culture.
             </summary>
         </member>
         <member name="M:NUnit.Framework.CultureAttribute.#ctor">
@@ -3485,9 +3490,8 @@
         </member>
         <member name="T:NUnit.Framework.DataAttribute">
             <summary>
-            The abstract base class for all data-providing attributes 
-            defined by NUnit. Used to select all data sources for a 
-            method, class or parameter.
+            Abstract base class for all data-providing attributes defined by NUnit.
+            Used to select all data sources for a method, class or parameter.
             </summary>
         </member>
         <member name="M:NUnit.Framework.DataAttribute.#ctor">
@@ -3497,32 +3501,30 @@
         </member>
         <member name="T:NUnit.Framework.DatapointAttribute">
             <summary>
-            Used to mark a field for use as a datapoint when executing a theory
-            within the same fixture that requires an argument of the field's Type.
+            Marks a field for use as a datapoint when executing a theory within 
+            the same fixture that requires an argument of the field's Type.
             </summary>
         </member>
         <member name="T:NUnit.Framework.DatapointsAttribute">
             <summary>
-            Used to mark a field, property or method providing a set of datapoints to 
-            be used in executing any theories within the same fixture that require an 
-            argument of the Type provided. The data source may provide an array of
-            the required Type or an <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
-            Synonymous with DatapointSourceAttribute.
+            Marks a field, property or method as providing a set of datapoints for use
+            in executing any theories within the same fixture that require an argument of 
+            the provided Type. The data source may provide an array of the required Type 
+            or an <see cref="T:System.Collections.Generic.IEnumerable`1"/>. Synonymous with <see cref="T:NUnit.Framework.DatapointSourceAttribute"/>.
             </summary>
         </member>
         <member name="T:NUnit.Framework.DatapointSourceAttribute">
             <summary>
-            Used to mark a field, property or method providing a set of datapoints to 
-            be used in executing any theories within the same fixture that require an 
-            argument of the Type provided. The data source may provide an array of
-            the required Type or an <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
-            Synonymous with DatapointsAttribute.
+            Marks a field, property or method as providing a set of datapoints for use 
+            in executing any theories within the same fixture that require an argument 
+            of the provided type. The data source may provide an array of the required 
+            Type or an <see cref="T:System.Collections.Generic.IEnumerable`1"/>. Synonymous with <see cref="T:NUnit.Framework.DatapointsAttribute"/>.
             </summary>
         </member>
         <member name="T:NUnit.Framework.DefaultFloatingPointToleranceAttribute">
             <summary>
-            DefaultFloatingPointToleranceAttribute sets the tolerance used
-            by default when checking the equality of floating point values.
+            Sets the tolerance used by default when checking the equality of floating point values
+            within the test assembly, fixture or method.
             </summary>
         </member>
         <member name="M:NUnit.Framework.DefaultFloatingPointToleranceAttribute.#ctor(System.Double)">
@@ -3539,8 +3541,7 @@
         </member>
         <member name="T:NUnit.Framework.DescriptionAttribute">
             <summary>
-            Attribute used to provide descriptive text about a 
-            test case or fixture.
+            Provides the descriptive text relating to the assembly, test fixture or test method.
             </summary>
         </member>
         <member name="M:NUnit.Framework.DescriptionAttribute.#ctor(System.String)">
@@ -3551,10 +3552,9 @@
         </member>
         <member name="T:NUnit.Framework.ExplicitAttribute">
             <summary>
-            ExplicitAttribute marks a test or test fixture so that it will
-            only be run if explicitly executed from the GUI or command line
-            or if it is included by use of a filter. The test will not be
-            run simply because an enclosing suite is run.
+            Marks an assembly, test fixture or test method such that it will only run if explicitly 
+            executed from the GUI, command line or included within a test filter. 
+            The test will not be run simply because an enclosing suite is run.
             </summary>
         </member>
         <member name="M:NUnit.Framework.ExplicitAttribute.#ctor">
@@ -3576,9 +3576,7 @@
         </member>
         <member name="T:NUnit.Framework.IgnoreAttribute">
             <summary>
-            Attribute used to mark a test that is to be ignored.
-            Ignored tests result in a warning message when the
-            tests are run.
+            Marks an assembly, test fixture or test method as being ignored. Ignored tests result in a warning message when the tests are run.
             </summary>
         </member>
         <member name="M:NUnit.Framework.IgnoreAttribute.#ctor(System.String)">
@@ -3608,8 +3606,8 @@
         </member>
         <member name="T:NUnit.Framework.IncludeExcludeAttribute">
             <summary>
-            Abstract base for Attributes that are used to include tests
-            in the test run based on environmental settings.
+            Abstract base for attributes that are used to include tests in 
+            the test run based on environmental settings.
             </summary>
         </member>
         <member name="M:NUnit.Framework.IncludeExcludeAttribute.#ctor">
@@ -3644,8 +3642,8 @@
         </member>
         <member name="T:NUnit.Framework.LevelOfParallelismAttribute">
             <summary>
-            LevelOfParallelismAttribute is used to set the number of worker threads
-            that may be allocated by the framework for running tests.
+            Sets the number of worker threads that may be allocated by the framework 
+            for running tests.
             </summary>
         </member>
         <member name="M:NUnit.Framework.LevelOfParallelismAttribute.#ctor(System.Int32)">
@@ -3667,7 +3665,7 @@
         </member>
         <member name="T:NUnit.Framework.NonParallelizableAttribute">
             <summary>
-            NonParallelizableAttribute is used to mark tests that should NOT be run in parallel.
+            Marks tests that should NOT be run in parallel.
             </summary>
         </member>
         <member name="M:NUnit.Framework.NonParallelizableAttribute.#ctor">
@@ -3677,17 +3675,16 @@
         </member>
         <member name="T:NUnit.Framework.NonTestAssemblyAttribute">
             <summary>
-            The NonTestAssemblyAttribute may be used by third-party frameworks
-            or other software that references the NUnit framework but does not
-            contain tests. Applying the attribute indicates that the assembly
-            is not a test assembly and may prevent errors if certain runners
-            attempt to load the assembly. Note that recognition of the attribute
-            depends on each individual runner.
+            Used by third-party frameworks, or other software, that reference 
+            the NUnit framework but do not contain any tests. Applying the 
+            attribute indicates that the assembly is not a test assembly and 
+            may prevent errors if certain runners attempt to load the assembly. 
+            Note that recognition of the attribute depends on each individual runner.
             </summary>
         </member>
         <member name="T:NUnit.Framework.NUnitAttribute">
             <summary>
-            The abstract base class for all custom attributes defined by NUnit.
+            Abstract base class for all custom attributes defined by NUnit.
             </summary>
         </member>
         <member name="M:NUnit.Framework.NUnitAttribute.#ctor">
@@ -3697,15 +3694,13 @@
         </member>
         <member name="T:NUnit.Framework.OneTimeSetUpAttribute">
             <summary>
-            Attribute used to identify a method that is called once
-            to perform setup before any child tests are run.
+            Identifies a method that is called once to perform setup before any child tests are run.
             </summary>
         </member>
         <member name="T:NUnit.Framework.OneTimeTearDownAttribute">
             <summary>
-            Attribute used to identify a method that is called once
-            after all the child tests have run. The method is 
-            guaranteed to be called, even if an exception is thrown.
+            Identifies a method to be called once after all the child tests have run. 
+            The method is guaranteed to be called, even if an exception is thrown.
             </summary>
         </member>
         <member name="T:NUnit.Framework.OrderAttribute">
@@ -3732,9 +3727,8 @@
         </member>
         <member name="T:NUnit.Framework.PairwiseAttribute">
             <summary>
-            Marks a test to use a pairwise join of any argument 
-            data provided. Arguments will be combined in such a
-            way that all possible pairs of arguments are used.
+            Marks a test as using a pairwise join of any supplied argument data. Arguments will be 
+            combined in such a way that all possible pairs of arguments are used.
             </summary>
         </member>
         <member name="M:NUnit.Framework.PairwiseAttribute.#ctor">
@@ -3744,7 +3738,7 @@
         </member>
         <member name="T:NUnit.Framework.ParallelizableAttribute">
             <summary>
-            ParallelizableAttribute is used to mark tests that may be run in parallel.
+            Marks a test assembly, fixture or method that may be run in parallel.
             </summary>
         </member>
         <member name="M:NUnit.Framework.ParallelizableAttribute.#ctor">
@@ -3777,8 +3771,8 @@
         </member>
         <member name="T:NUnit.Framework.ParallelScope">
             <summary>
-            The ParallelScope enumeration permits specifying the degree to
-            which a test and its descendants may be run in parallel.
+            Specifies the degree to which a test, and its descendants, 
+            may be run in parallel.
             </summary>
         </member>
         <member name="F:NUnit.Framework.ParallelScope.Default">
@@ -3789,7 +3783,7 @@
         <member name="F:NUnit.Framework.ParallelScope.Self">
             <summary>
             The test may be run in parallel with others at the same level.
-            Valid on classes and methods but not assemblies.
+            Valid on classes and methods but has no effect on assemblies.
             </summary>
         </member>
         <member name="F:NUnit.Framework.ParallelScope.None">
@@ -3807,7 +3801,7 @@
         <member name="F:NUnit.Framework.ParallelScope.Children">
             <summary>
             Descendants of the test may be run in parallel with one another.
-            Valid on assemblies and classes but not on methods.
+            Valid on assemblies and classes but not on non-parameterized methods.
             </summary>
         </member>
         <member name="F:NUnit.Framework.ParallelScope.Fixtures">
@@ -3826,13 +3820,14 @@
         <member name="F:NUnit.Framework.ParallelScope.All">
             <summary>
             The test and its descendants may be run in parallel with others at
-            the same level. Valid on classes and methods but not assemblies.
+            the same level. Valid on classes and parameterized methods.
+            For assemblies it is recommended to use <see cref="F:NUnit.Framework.ParallelScope.Children"/>
+            instead, as <see cref="F:NUnit.Framework.ParallelScope.Self"/> has no effect on assemblies.
             </summary>
         </member>
         <member name="T:NUnit.Framework.PlatformAttribute">
             <summary>
-            PlatformAttribute is used to mark a test fixture or an
-            individual method as applying to a particular platform only.
+            Marks an assembly, test fixture or test method as applying to a specific platform.
             </summary>
         </member>
         <member name="M:NUnit.Framework.PlatformAttribute.#ctor">
@@ -3855,7 +3850,7 @@
         </member>
         <member name="T:NUnit.Framework.PropertyAttribute">
             <summary>
-            PropertyAttribute is used to attach information to a test as a name/value pair..
+            Attaches information to a test assembly, fixture or method as a name/value pair.
             </summary>
         </member>
         <member name="M:NUnit.Framework.PropertyAttribute.#ctor(System.String,System.String)">
@@ -3908,8 +3903,7 @@
         </member>
         <member name="T:NUnit.Framework.RandomAttribute">
             <summary>
-            RandomAttribute is used to supply a set of random values
-            to a single parameter of a parameterized test.
+            Supplies a set of random values to a single parameter of a parameterized test.
             </summary>
         </member>
         <member name="P:NUnit.Framework.RandomAttribute.Distinct">
@@ -3919,7 +3913,7 @@
         </member>
         <member name="M:NUnit.Framework.RandomAttribute.#ctor(System.Int32)">
             <summary>
-            Construct a random set of values appropriate for the Type of the 
+            Construct a random set of values appropriate for the Type of the
             parameter on which the attribute appears, specifying only the count.
             </summary>
             <param name="count"></param>
@@ -3976,100 +3970,77 @@
         </member>
         <member name="M:NUnit.Framework.RandomAttribute.GetData(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Get the collection of values to be used as arguments.
+            Retrieves a list of arguments which can be passed to the specified parameter.
             </summary>
+            <param name="parameter">The parameter of a parameterized test.</param>
         </member>
         <member name="T:NUnit.Framework.RangeAttribute">
             <summary>
-            RangeAttribute is used to supply a range of values to an
-            individual parameter of a parameterized test.
+            Supplies a range of values to an individual parameter of a parameterized test.
             </summary>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.Int32,System.Int32)">
             <summary>
             Construct a range of ints using default step of 1
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.Int32,System.Int32,System.Int32)">
             <summary>
-            Construct a range of ints specifying the step size 
+            Construct a range of ints specifying the step size
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
-            <param name="step"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.UInt32,System.UInt32)">
             <summary>
             Construct a range of unsigned ints using default step of 1
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.UInt32,System.UInt32,System.UInt32)">
             <summary>
-            Construct a range of unsigned ints specifying the step size 
+            Construct a range of unsigned ints specifying the step size
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
-            <param name="step"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.Int64,System.Int64)">
             <summary>
             Construct a range of longs using a default step of 1
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.Int64,System.Int64,System.Int64)">
             <summary>
             Construct a range of longs
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
-            <param name="step"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.UInt64,System.UInt64)">
             <summary>
             Construct a range of unsigned longs using default step of 1
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.UInt64,System.UInt64,System.UInt64)">
             <summary>
-            Construct a range of unsigned longs specifying the step size 
+            Construct a range of unsigned longs specifying the step size
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
-            <param name="step"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.Double,System.Double,System.Double)">
             <summary>
             Construct a range of doubles
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
-            <param name="step"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.#ctor(System.Single,System.Single,System.Single)">
             <summary>
             Construct a range of floats
             </summary>
-            <param name="from"></param>
-            <param name="to"></param>
-            <param name="step"></param>
         </member>
         <member name="M:NUnit.Framework.RangeAttribute.GetData(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Get the range of values to be used as arguments
+            Retrieves a list of arguments which can be passed to the specified parameter.
             </summary>
+            <param name="parameter">The parameter of a parameterized test.</param>
+        </member>
+        <member name="M:NUnit.Framework.RangeAttribute.ToString">
+            <summary>Returns a string that represents the current object.</summary>
         </member>
         <member name="T:NUnit.Framework.RepeatAttribute">
             <summary>
-            RepeatAttribute may be applied to test case in order
-            to run it multiple times.
+            Specifies that a test should be run multiple times.
             </summary>
         </member>
         <member name="M:NUnit.Framework.RepeatAttribute.#ctor(System.Int32)">
@@ -4121,8 +4092,8 @@
         </member>
         <member name="T:NUnit.Framework.RetryAttribute">
             <summary>
-            <see cref="T:NUnit.Framework.RetryAttribute" /> is used on a test method to specify that it should
-            be rerun if it fails, up to a maximum number of times.
+            Specifies that a test method should be rerun on failure up to the specified 
+            maximum number of times.
             </summary>
         </member>
         <member name="M:NUnit.Framework.RetryAttribute.#ctor(System.Int32)">
@@ -4159,9 +4130,9 @@
         </member>
         <member name="T:NUnit.Framework.SequentialAttribute">
             <summary>
-            Marks a test to use a Sequential join of any argument 
-            data provided. Arguments will be combined into test cases,
-            taking the next value of each argument until all are used.
+            Marks a test to use a sequential join of any provided argument data. 
+            Arguments will be combined into test cases, taking the next value of 
+            each argument until all are used.
             </summary>
         </member>
         <member name="M:NUnit.Framework.SequentialAttribute.#ctor">
@@ -4171,11 +4142,9 @@
         </member>
         <member name="T:NUnit.Framework.SetCultureAttribute">
             <summary>
-            Sets the current Culture for the duration of a test.
-            <para>
-            It may be specified at the level of a test or a fixture.
-            The culture remains set until the test or fixture completes and is then reset to its original value.
-            </para>
+            Sets the current Culture on an assembly, test fixture or test method for 
+            the duration of a test. The culture remains set until the test or fixture
+            completes and is then reset to its original value.    
             </summary>
             <seealso cref="T:NUnit.Framework.SetUICultureAttribute"/>
         </member>
@@ -4187,11 +4156,9 @@
         </member>
         <member name="T:NUnit.Framework.SetUICultureAttribute">
             <summary>
-            Sets the current UI Culture for the duration of a test.
-            <para>
-            It may be specified at the level of a test or a fixture.
-            The UI culture remains set until the test or fixture completes and is then reset to its original value.
-            </para>
+            Sets the current UI Culture on an assembly, test fixture or test method 
+            for the duration of a test. The UI culture remains set until the test or
+            fixture completes and is then reset to its original value.    
             </summary>
             <seealso cref="T:NUnit.Framework.SetCultureAttribute"/>
         </member>
@@ -4203,32 +4170,29 @@
         </member>
         <member name="T:NUnit.Framework.SetUpAttribute">
             <summary>
-            Attribute used to identify a method that is called 
-            immediately before each test is run.
+            Identifies a method to be called immediately before each test is run.
             </summary>
         </member>
         <member name="T:NUnit.Framework.SetUpFixtureAttribute">
             <summary>
-            Attribute used to identify a class that contains
-            <see cref="T:NUnit.Framework.OneTimeSetUpAttribute" /> or <see cref="T:NUnit.Framework.OneTimeTearDownAttribute" />
-            methods for all the test fixtures under a given namespace.
+            Identifies a class as containing <see cref="T:NUnit.Framework.OneTimeSetUpAttribute" /> or
+            <see cref="T:NUnit.Framework.OneTimeTearDownAttribute" /> methods for all the test fixtures
+            under a given namespace.
             </summary>
         </member>
         <member name="M:NUnit.Framework.SetUpFixtureAttribute.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-            Build a SetUpFixture from type provided. Normally called for a Type
-            on which the attribute has been placed.
+            Builds a <see cref="T:NUnit.Framework.Internal.SetUpFixture"/> from the specified type.
             </summary>
             <param name="typeInfo">The type info of the fixture to be used.</param>
-            <returns>A SetUpFixture object as a TestSuite.</returns>
         </member>
         <member name="T:NUnit.Framework.SingleThreadedAttribute">
             <summary>
-            SingleThreadedAttribute applies to a test fixture and indicates
-            that all the child tests must be run on the same thread as the
-            OneTimeSetUp and OneTimeTearDown. It sets a flag in the
-            TestExecutionContext and forces all tests to be run sequentially
-            on the current thread. Any ParallelScope setting is ignored.
+            Marks a test fixture as requiring all child tests to be run on the 
+            same thread as the OneTimeSetUp and OneTimeTearDown. A flag in the
+            <see cref="T:NUnit.Framework.Internal.TestExecutionContext"/> is set forcing all child tests 
+            to be run sequentially on the current thread. 
+            Any <see cref="T:NUnit.Framework.ParallelScope"/> setting is ignored.
             </summary>
         </member>
         <member name="M:NUnit.Framework.SingleThreadedAttribute.ApplyToContext(NUnit.Framework.Internal.TestExecutionContext)">
@@ -4239,14 +4203,13 @@
         </member>
         <member name="T:NUnit.Framework.TearDownAttribute">
             <summary>
-            Attribute used to identify a method that is called 
-            immediately after each test is run. The method is 
-            guaranteed to be called, even if an exception is thrown.
+            Identifies a method to be called immediately after each test is run. 
+            The method is guaranteed to be called, even if an exception is thrown.
             </summary>
         </member>
         <member name="T:NUnit.Framework.TestActionAttribute">
             <summary>
-            Provide actions to execute before and after tests.
+            Abstract attribute providing actions to execute before and after tests.
             </summary>
         </member>
         <member name="M:NUnit.Framework.TestActionAttribute.BeforeTest(NUnit.Framework.Interfaces.ITest)">
@@ -4268,30 +4231,30 @@
         </member>
         <member name="T:NUnit.Framework.TestAssemblyDirectoryResolveAttribute">
             <summary>
-            TestAssemblyDirectoryResolveAttribute is used to mark a test assembly as needing a
-            special assembly resolution hook that will explicitly search the test assembly's
-            directory for dependent assemblies. This works around a conflict between mixed-mode
-            assembly initialization and tests running in their own AppDomain in some cases.
+            Marks a test assembly as needing a special assembly resolution hook that will 
+            explicitly search the test assembly's directory for dependent assemblies. 
+            This works around a conflict between mixed-mode assembly initialization and 
+            tests running in their own AppDomain in some cases.
             </summary>
         </member>
         <member name="T:NUnit.Framework.TestAttribute">
-            <summary>
-            Adding this attribute to a method makes the method callable from the NUnit test runner.
-            </summary>
+             <summary>
+             Marks the method as callable from the NUnit test runner.
+             </summary>
             
-            <example>
-            [TestFixture]
-            public class Fixture
-            {
-              [Test]
-              public void MethodToTest()
-              {}
-              
-              [Test(Description = "more detailed description")]
-              public void TestDescriptionMethod()
-              {}
-            }
-            </example>
+             <example>
+             [TestFixture]
+             public class Fixture
+             {
+               [Test]
+               public void MethodToTest()
+               {}
+            
+               [Test(Description = "more detailed description")]
+               public void TestDescriptionMethod()
+               {}
+             }
+             </example>
             
         </member>
         <member name="P:NUnit.Framework.TestAttribute.Description">
@@ -4324,16 +4287,14 @@
         </member>
         <member name="M:NUnit.Framework.TestAttribute.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Construct a TestMethod from a given method.
+            Builds a single test from the specified method and context.
             </summary>
             <param name="method">The method for which a test is to be constructed.</param>
             <param name="suite">The suite to which the test will be added.</param>
-            <returns>A TestMethod</returns>
         </member>
         <member name="T:NUnit.Framework.TestCaseAttribute">
             <summary>
-            TestCaseAttribute is used to mark parameterized test cases
-            and provide them with their arguments.
+            Marks a method as a parameterized test suite and provides arguments for each test case.
             </summary>
         </member>
         <member name="M:NUnit.Framework.TestCaseAttribute.#ctor(System.Object[])">
@@ -4463,33 +4424,16 @@
             <param name="arglist">The arguments to be converted</param>
             <param name="parameters">The ParameterInfo array for the method</param>
         </member>
-        <member name="M:NUnit.Framework.TestCaseAttribute.PerformSpecialConversion(System.Object,System.Type,System.Object@)">
-            <summary>
-            Performs several special conversions allowed by NUnit in order to
-            permit arguments with types that cannot be used in the constructor
-            of an Attribute such as TestCaseAttribute or to simplify their use.
-            </summary>
-            <param name="arg">The argument to be converted</param>
-            <param name="targetType">The target <see cref="T:System.Type"/> in which the <paramref name="arg"/> should be converted</param>
-            <param name="argAsTargetType">If conversion was successfully applied, the <paramref name="arg"/> converted into <paramref name="targetType"/></param>
-            <returns>
-            <c>true</c> if <paramref name="arg"/> was converted and <paramref name="argAsTargetType"/> should be used;
-            <c>false</c> is no conversion was applied and <paramref name="argAsTargetType"/> should be ignored
-            </returns>
-        </member>
         <member name="M:NUnit.Framework.TestCaseAttribute.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Construct one or more TestMethods from a given MethodInfo,
-            using available parameter data.
+            Builds a single test from the specified method and context.
             </summary>
             <param name="method">The MethodInfo for which tests are to be constructed.</param>
             <param name="suite">The suite to which the tests will be added.</param>
-            <returns>One or more TestMethods</returns>
         </member>
         <member name="T:NUnit.Framework.TestCaseSourceAttribute">
             <summary>
-            TestCaseSourceAttribute indicates the source to be used to
-            provide test cases for a test method.
+            Indicates the source to be used to provide test fixture instances for a test class.
             </summary>
         </member>
         <member name="M:NUnit.Framework.TestCaseSourceAttribute.#ctor(System.String)">
@@ -4504,7 +4448,7 @@
             </summary>
             <param name="sourceType">The Type that will provide data</param>
             <param name="sourceName">The name of a static method, property or field that will provide data.</param>
-            <param name="methodParams">A set of parameters passed to the method, works only if the Source Name is a method. 
+            <param name="methodParams">A set of parameters passed to the method, works only if the Source Name is a method.
                                 If the source name is a field or property has no effect.</param>
         </member>
         <member name="M:NUnit.Framework.TestCaseSourceAttribute.#ctor(System.Type,System.String)">
@@ -4519,7 +4463,7 @@
             Construct with a name
             </summary>
             <param name="sourceName">The name of a static method, property or field that will provide data.</param>
-            <param name="methodParams">A set of parameters passed to the method, works only if the Source Name is a method. 
+            <param name="methodParams">A set of parameters passed to the method, works only if the Source Name is a method.
                                 If the source name is a field or property has no effect.</param>
         </member>
         <member name="M:NUnit.Framework.TestCaseSourceAttribute.#ctor(System.Type)">
@@ -4530,7 +4474,7 @@
         </member>
         <member name="P:NUnit.Framework.TestCaseSourceAttribute.MethodParams">
             <summary>
-            A set of parameters passed to the method, works only if the Source Name is a method. 
+            A set of parameters passed to the method, works only if the Source Name is a method.
             If the source name is a field or property has no effect.
             </summary>
         </member>
@@ -4552,24 +4496,14 @@
         </member>
         <member name="M:NUnit.Framework.TestCaseSourceAttribute.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Construct one or more TestMethods from a given MethodInfo,
-            using available parameter data.
+            Builds any number of tests from the specified method and context.
             </summary>
             <param name="method">The IMethod for which tests are to be constructed.</param>
             <param name="suite">The suite to which the tests will be added.</param>
-            <returns>One or more TestMethods</returns>
-        </member>
-        <member name="M:NUnit.Framework.TestCaseSourceAttribute.GetTestCasesFor(NUnit.Framework.Interfaces.IMethodInfo)">
-            <summary>
-            Returns a set of ITestCaseDataItems for use as arguments
-            to a parameterized test method.
-            </summary>
-            <param name="method">The method for which data is needed.</param>
-            <returns></returns>
         </member>
         <member name="T:NUnit.Framework.TestFixtureAttribute">
             <summary>
-            TestFixtureAttribute is used to mark a class that represents a TestFixture.
+            Marks the class as a TestFixture.
             </summary>
         </member>
         <member name="M:NUnit.Framework.TestFixtureAttribute.#ctor">
@@ -4579,9 +4513,8 @@
         </member>
         <member name="M:NUnit.Framework.TestFixtureAttribute.#ctor(System.Object[])">
             <summary>
-            Construct with a object[] representing a set of arguments. 
-            In .NET 2.0, the arguments may later be separated into
-            type arguments and constructor arguments.
+            Construct with a object[] representing a set of arguments.
+            The arguments may later be separated into type arguments and constructor arguments.
             </summary>
             <param name="arguments"></param>
         </member>
@@ -4663,16 +4596,19 @@
         </member>
         <member name="M:NUnit.Framework.TestFixtureAttribute.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-            Build a fixture from type provided. Normally called for a Type
-            on which the attribute has been placed.
+            Builds a single test fixture from the specified type.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.TestFixtureAttribute.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.IPreFilter)">
+            <summary>
+            Builds a single test fixture from the specified type.
             </summary>
             <param name="typeInfo">The type info of the fixture to be used.</param>
-            <returns>A an IEnumerable holding one TestFixture object.</returns>
+            <param name="filter">Filter used to select methods as tests.</param>
         </member>
         <member name="T:NUnit.Framework.TestFixtureSourceAttribute">
             <summary>
-            TestCaseSourceAttribute indicates the source to be used to
-            provide test fixture instances for a test class.
+            Identifies the source used to provide test fixture instances for a test class.
             </summary>
         </member>
         <member name="F:NUnit.Framework.TestFixtureSourceAttribute.MUST_BE_STATIC">
@@ -4711,17 +4647,22 @@
         </member>
         <member name="P:NUnit.Framework.TestFixtureSourceAttribute.Category">
             <summary>
-            Gets or sets the category associated with every fixture created from 
+            Gets or sets the category associated with every fixture created from
             this attribute. May be a single category or a comma-separated list.
             </summary>
         </member>
         <member name="M:NUnit.Framework.TestFixtureSourceAttribute.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-            Construct one or more TestFixtures from a given Type,
-            using available parameter data.
+            Builds any number of test fixtures from the specified type.
             </summary>
             <param name="typeInfo">The TypeInfo for which fixtures are to be constructed.</param>
-            <returns>One or more TestFixtures as TestSuite</returns>
+        </member>
+        <member name="M:NUnit.Framework.TestFixtureSourceAttribute.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.IPreFilter)">
+            <summary>
+            Builds any number of test fixtures from the specified type.
+            </summary>
+            <param name="typeInfo">The TypeInfo for which fixtures are to be constructed.</param>
+            <param name="filter">PreFilter used to select methods as tests.</param>
         </member>
         <member name="M:NUnit.Framework.TestFixtureSourceAttribute.GetParametersFor(System.Type)">
             <summary>
@@ -4733,7 +4674,7 @@
         </member>
         <member name="T:NUnit.Framework.TestOfAttribute">
             <summary>
-            Indicates which class the test or test fixture is testing
+            Indicates the method or class the assembly, test fixture or test method is testing.
             </summary>
         </member>
         <member name="M:NUnit.Framework.TestOfAttribute.#ctor(System.Type)">
@@ -4778,10 +4719,9 @@
         </member>
         <member name="T:NUnit.Framework.TimeoutAttribute">
             <summary>
-            Used on a method, marks the test with a timeout value in milliseconds. 
-            The test will be run in a separate thread and is cancelled if the timeout 
-            is exceeded. Used on a class or assembly, sets the default timeout 
-            for all contained test methods.
+            Applies a timeout in milliseconds to a test. 
+            When applied to a method, the test is cancelled if the timeout is exceeded. 
+            When applied to a class or assembly, the default timeout is set for all contained test methods.
             </summary>
         </member>
         <member name="M:NUnit.Framework.TimeoutAttribute.#ctor(System.Int32)">
@@ -4792,8 +4732,7 @@
         </member>
         <member name="T:NUnit.Framework.ValuesAttribute">
             <summary>
-            ValuesAttribute is used to provide literal arguments for
-            an individual parameter of a test.
+            Provides literal arguments for an individual parameter of a test.
             </summary>
         </member>
         <member name="F:NUnit.Framework.ValuesAttribute.data">
@@ -4840,13 +4779,23 @@
         </member>
         <member name="M:NUnit.Framework.ValuesAttribute.GetData(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Get the collection of values to be used as arguments
+            Retrieves a list of arguments which can be passed to the specified parameter.
+            </summary>
+            <param name="parameter">The parameter of a parameterized test.</param>
+        </member>
+        <member name="M:NUnit.Framework.ValuesAttribute.GenerateData(System.Type)">
+            <summary>
+            To generate data for Values attribute, in case no data is provided.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.ValuesAttribute.IsNullableEnum(System.Type)">
+            <summary>
+            To Check if type is nullable enum.
             </summary>
         </member>
         <member name="T:NUnit.Framework.ValueSourceAttribute">
             <summary>
-            ValueSourceAttribute indicates the source to be used to
-            provide data for one parameter of a test method.
+            Indicates the source used to provide data for one parameter of a test method.
             </summary>
         </member>
         <member name="M:NUnit.Framework.ValueSourceAttribute.#ctor(System.String)">
@@ -4876,13 +4825,9 @@
         </member>
         <member name="M:NUnit.Framework.ValueSourceAttribute.GetData(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Gets an enumeration of data items for use as arguments
-            for a test method parameter.
+            Retrieves a list of arguments which can be passed to the specified parameter.
             </summary>
-            <param name="parameter">The parameter for which data is needed</param>
-            <returns>
-            An enumeration containing individual data items
-            </returns>
+            <param name="parameter">The parameter of a parameterized test.</param>
         </member>
         <member name="T:NUnit.Framework.CollectionAssert">
             <summary>
@@ -4892,7 +4837,7 @@
         <member name="M:NUnit.Framework.CollectionAssert.Equals(System.Object,System.Object)">
             <summary>
             DO NOT USE! Use CollectionAssert.AreEqual(...) instead.
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -4901,7 +4846,7 @@
         <member name="M:NUnit.Framework.CollectionAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The ReferenceEquals method throws an InvalidOperationException. This is done 
+            The ReferenceEquals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -4955,7 +4900,7 @@
         </member>
         <member name="M:NUnit.Framework.CollectionAssert.AreEqual(System.Collections.IEnumerable,System.Collections.IEnumerable)">
             <summary>
-            Asserts that expected and actual are exactly equal.  The collections must have the same count, 
+            Asserts that expected and actual are exactly equal.  The collections must have the same count,
             and contain the exact same objects in the same order.
             </summary>
             <param name="expected">The first IEnumerable of objects to be considered</param>
@@ -4963,7 +4908,7 @@
         </member>
         <member name="M:NUnit.Framework.CollectionAssert.AreEqual(System.Collections.IEnumerable,System.Collections.IEnumerable,System.Collections.IComparer)">
             <summary>
-            Asserts that expected and actual are exactly equal.  The collections must have the same count, 
+            Asserts that expected and actual are exactly equal.  The collections must have the same count,
             and contain the exact same objects in the same order.
             If comparer is not null then it will be used to compare the objects.
             </summary>
@@ -4973,7 +4918,7 @@
         </member>
         <member name="M:NUnit.Framework.CollectionAssert.AreEqual(System.Collections.IEnumerable,System.Collections.IEnumerable,System.String,System.Object[])">
             <summary>
-            Asserts that expected and actual are exactly equal.  The collections must have the same count, 
+            Asserts that expected and actual are exactly equal.  The collections must have the same count,
             and contain the exact same objects in the same order.
             </summary>
             <param name="expected">The first IEnumerable of objects to be considered</param>
@@ -4983,7 +4928,7 @@
         </member>
         <member name="M:NUnit.Framework.CollectionAssert.AreEqual(System.Collections.IEnumerable,System.Collections.IEnumerable,System.Collections.IComparer,System.String,System.Object[])">
             <summary>
-            Asserts that expected and actual are exactly equal.  The collections must have the same count, 
+            Asserts that expected and actual are exactly equal.  The collections must have the same count,
             and contain the exact same objects in the same order.
             If comparer is not null then it will be used to compare the objects.
             </summary>
@@ -5532,7 +5477,7 @@
             <param name="expected"></param>
         </member>
         <member name="P:NUnit.Framework.Constraints.CollectionContainsConstraint.DisplayName">
-            <summary> 
+            <summary>
             The display name of this Constraint for use by ToString().
             The default value is the name of the constraint with
             trailing "Constraint" removed. Derived classes may set
@@ -5638,8 +5583,8 @@
             <param name="actual">Actual collection to compare.</param>
             <param name="isSuccess">Whether or not the <see cref="T:NUnit.Framework.Constraints.CollectionEquivalentConstraint"/> succeeded.</param>
         </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionEquivalentConstraintResult.WriteMessageTo(NUnit.Framework.Constraints.MessageWriter)">
-            <summary>Write the custom failure message for this object's <see cref="T:NUnit.Framework.Constraints.CollectionEquivalentConstraint"/>.</summary>
+        <member name="M:NUnit.Framework.Constraints.CollectionEquivalentConstraintResult.WriteAdditionalLinesTo(NUnit.Framework.Constraints.MessageWriter)">
+            <summary>Write any additional lines (following <c>Expected:</c> and <c>But was:</c>) for a failing constraint.</summary>
             <param name="writer">The <see cref="T:NUnit.Framework.Constraints.MessageWriter"/> to write the failure message to.</param>
         </member>
         <member name="T:NUnit.Framework.Constraints.CollectionItemsEqualConstraint">
@@ -5685,35 +5630,30 @@
             Flag the constraint to use the supplied IComparer object.
             </summary>
             <param name="comparer">The IComparer object to use.</param>
-            <returns>Self.</returns>
         </member>
         <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.Using``1(System.Collections.Generic.IComparer{``0})">
             <summary>
             Flag the constraint to use the supplied IComparer object.
             </summary>
             <param name="comparer">The IComparer object to use.</param>
-            <returns>Self.</returns>
         </member>
         <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.Using``1(System.Comparison{``0})">
             <summary>
             Flag the constraint to use the supplied Comparison object.
             </summary>
-            <param name="comparer">The IComparer object to use.</param>
-            <returns>Self.</returns>
+            <param name="comparison">The Comparison object to use.</param>
         </member>
         <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.Using(System.Collections.IEqualityComparer)">
             <summary>
             Flag the constraint to use the supplied IEqualityComparer object.
             </summary>
             <param name="comparer">The IComparer object to use.</param>
-            <returns>Self.</returns>
         </member>
         <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.Using``1(System.Collections.Generic.IEqualityComparer{``0})">
             <summary>
             Flag the constraint to use the supplied IEqualityComparer object.
             </summary>
             <param name="comparer">The IComparer object to use.</param>
-            <returns>Self.</returns>
         </member>
         <member name="M:NUnit.Framework.Constraints.CollectionItemsEqualConstraint.Using``1(System.Func{``0,``0,System.Boolean})">
             <summary>
@@ -5792,12 +5732,17 @@
             use in messages and in the ConstraintResult.
             </summary>
         </member>
+        <member name="M:NUnit.Framework.Constraints.CollectionOrderedConstraint.ApplyTo``1(``0)">
+            <summary>
+            Test whether the constraint is satisfied by a given value
+            </summary>
+            <param name="actual">The value to be tested</param>
+            <returns>True for success, false for failure</returns>
+        </member>
         <member name="M:NUnit.Framework.Constraints.CollectionOrderedConstraint.Matches(System.Collections.IEnumerable)">
             <summary>
             Test whether the collection is ordered
             </summary>
-            <param name="actual"></param>
-            <returns></returns>
         </member>
         <member name="M:NUnit.Framework.Constraints.CollectionOrderedConstraint.GetStringRepresentation">
             <summary>
@@ -5809,6 +5754,22 @@
             <summary>
             An OrderingStep represents one stage of the sort
             </summary>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.CollectionOrderedConstraint.CollectionOrderedConstraintResult.#ctor(NUnit.Framework.Constraints.IConstraint,System.Collections.IEnumerable)">
+            <summary>
+            Constructor for success result.
+            </summary>
+            <param name="constraint">The Constraint to which this result applies.</param>
+            <param name="actualValue">The actual value to which the Constraint was applied.</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.CollectionOrderedConstraint.CollectionOrderedConstraintResult.#ctor(NUnit.Framework.Constraints.IConstraint,System.Collections.IEnumerable,System.Int32,System.Object)">
+            <summary>
+            Constructor for failure result.
+            </summary>
+            <param name="constraint">The Constraint to which this result applies.</param>
+            <param name="actualValue">The actual value to which the Constraint was applied.</param>
+            <param name="breakingIndex">Index at which collection order breaks.</param>
+            <param name="breakingValue">Value at which collection order breaks.</param>
         </member>
         <member name="T:NUnit.Framework.Constraints.CollectionSubsetConstraint">
             <summary>
@@ -5905,8 +5866,8 @@
         <member name="P:NUnit.Framework.Constraints.CollectionTally.CollectionTallyResult.MissingItems">
             <summary>Items that were not accounted for in the expected collection.</summary>
         </member>
-        <member name="M:NUnit.Framework.Constraints.CollectionTally.CollectionTallyResult.#ctor">
-            <summary>Constructs an empty <see cref="T:NUnit.Framework.Constraints.CollectionTally.CollectionTallyResult"/>.</summary>
+        <member name="M:NUnit.Framework.Constraints.CollectionTally.CollectionTallyResult.#ctor(System.Collections.Generic.List{System.Object},System.Collections.Generic.List{System.Object})">
+            <summary>Initializes a new instance of the <see cref="T:NUnit.Framework.Constraints.CollectionTally.CollectionTallyResult"/> class with the given fields.</summary>
         </member>
         <member name="P:NUnit.Framework.Constraints.CollectionTally.Result">
             <summary>The result of the comparison between the two collections.</summary>
@@ -6175,6 +6136,15 @@
             </summary>
             <returns>Self</returns>
         </member>
+        <member name="M:NUnit.Framework.Constraints.ComparisonConstraint.DefaultDescription(System.String)">
+            <summary>
+            Provides standard description of what the constraint tests
+            based on comparison text.
+            </summary>
+            <param name="comparisonText">Describes the comparison being tested, throws <see cref="T:System.ArgumentNullException"/>
+            if null</param>
+            <exception cref="T:System.ArgumentNullException">Is thrown when null passed to a method</exception>
+        </member>
         <member name="T:NUnit.Framework.Constraints.ActualValueDelegate`1">
             <summary>
             Delegate used to delay evaluation of the actual value
@@ -6328,7 +6298,7 @@
             ConstraintBuilder maintains the stacks that are used in
             processing a ConstraintExpression. An OperatorStack
             is used to hold operators that are waiting for their
-            operands to be reorganized. a ConstraintStack holds 
+            operands to be reorganized. a ConstraintStack holds
             input constraints as well as the results of each
             operator applied.
             </summary>
@@ -6387,7 +6357,7 @@
         <member name="M:NUnit.Framework.Constraints.ConstraintBuilder.ConstraintStack.Push(NUnit.Framework.Constraints.IConstraint)">
             <summary>
             Pushes the specified constraint. As a side effect,
-            the constraint's Builder field is set to the 
+            the constraint's Builder field is set to the
             ConstraintBuilder owning this stack.
             </summary>
             <param name="constraint">The constraint to put onto the stack</param>
@@ -6800,18 +6770,27 @@
         </member>
         <member name="M:NUnit.Framework.Constraints.ConstraintExpression.Contains(System.Object)">
             <summary>
+            <para>
             Returns a new <see cref="T:NUnit.Framework.Constraints.SomeItemsConstraint"/> checking for the
             presence of a particular object in the collection.
+            </para>
+            <para>
+            To search for a substring instead of a collection element, use the
+            <see cref="M:NUnit.Framework.Constraints.ConstraintExpression.Contains(System.String)"/> overload.
+            </para>
             </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.ConstraintExpression.Contains(System.String)">
             <summary>
+            <para>
             Returns a new ContainsConstraint. This constraint
             will, in turn, make use of the appropriate second-level
             constraint, depending on the type of the actual argument.
-            This overload is only used if the item sought is a string,
-            since any other type implies that we are looking for a
-            collection member.
+            </para>
+            <para>
+            To search for a collection element instead of a substring, use the
+            <see cref="M:NUnit.Framework.Constraints.ConstraintExpression.Contains(System.Object)"/> overload.
+            </para>
             </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.ConstraintExpression.Contain(System.Object)">
@@ -6976,7 +6955,7 @@
         </member>
         <member name="T:NUnit.Framework.Constraints.ConstraintResult">
             <summary>
-            Contain the result of matching a <see cref="T:NUnit.Framework.Constraints.Constraint"/> against an actual value.
+            Contains the result of matching a <see cref="T:NUnit.Framework.Constraints.Constraint"/> against an actual value.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.ConstraintResult.#ctor(NUnit.Framework.Constraints.IConstraint,System.Object)">
@@ -7029,14 +7008,20 @@
             </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.ConstraintResult.WriteMessageTo(NUnit.Framework.Constraints.MessageWriter)">
-            <summary>
-            Write the failure message to the MessageWriter provided
-            as an argument. The default implementation simply passes
-            the result and the actual value to the writer, which
-            then displays the constraint description and the value.
+             <summary>
+             Write the failure message to the MessageWriter provided
+             as an argument. The default implementation simply passes
+             the result and the actual value to the writer, which
+             then displays the constraint description and the value.
             
-            Constraints that need to provide additional details,
-            such as where the error occurred, can override this.
+             Constraints that need to provide additional details,
+             such as where the error occurred, can override this.
+             </summary>
+             <param name="writer">The MessageWriter on which to display the message</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.ConstraintResult.WriteAdditionalLinesTo(NUnit.Framework.Constraints.MessageWriter)">
+            <summary>
+            Write some additional failure message.
             </summary>
             <param name="writer">The MessageWriter on which to display the message</param>
         </member>
@@ -7253,7 +7238,7 @@
             <param name="expected"></param>
         </member>
         <member name="P:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.DisplayName">
-            <summary> 
+            <summary>
             The display name of this Constraint for use by ToString().
             The default value is the name of the constraint with
             trailing "Constraint" removed. Derived classes may set
@@ -7271,6 +7256,17 @@
             Gets the expected object
             </summary>
         </member>
+        <member name="P:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.IgnoreCase">
+            <summary>
+            Flag the constraint to ignore case and return self.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.ApplyTo``1(``0)">
+            <summary>
+            Test whether the constraint is satisfied by a given value
+            </summary>
+            <param name="actual">The value to be tested</param>
+        </member>
         <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.Matches(System.Collections.IEnumerable)">
             <summary>
             Test whether the expected key is contained in the dictionary
@@ -7281,7 +7277,42 @@
             Flag the constraint to use the supplied predicate function
             </summary>
             <param name="comparison">The comparison function to use.</param>
-            <returns>Self.</returns>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.Using``1(System.Comparison{``0})">
+            <summary>
+            Flag the constraint to use the supplied Comparison object.
+            </summary>
+            <param name="comparison">The Comparison object to use.</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.Using(System.Collections.IComparer)">
+            <summary>
+            Flag the constraint to use the supplied IComparer object.
+            </summary>
+            <param name="comparer">The IComparer object to use.</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.Using``1(System.Collections.Generic.IComparer{``0})">
+            <summary>
+            Flag the constraint to use the supplied IComparer object.
+            </summary>
+            <param name="comparer">The IComparer object to use.</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.Using(System.Collections.IEqualityComparer)">
+            <summary>
+            Flag the constraint to use the supplied IEqualityComparer object.
+            </summary>
+            <param name="comparer">The IComparer object to use.</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.Using``1(System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Flag the constraint to use the supplied IEqualityComparer object.
+            </summary>
+            <param name="comparer">The IComparer object to use.</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.DictionaryContainsKeyConstraint.Using``1(System.Func{``0,``0,System.Boolean})">
+            <summary>
+            Flag the constraint to use the supplied boolean-returning delegate.
+            </summary>
+            <param name="comparer">The supplied boolean-returning delegate to use.</param>
         </member>
         <member name="T:NUnit.Framework.Constraints.DictionaryContainsValueConstraint">
             <summary>
@@ -7325,6 +7356,28 @@
             </summary>
             <param name="comparison">The comparison function to use.</param>
             <returns>Self.</returns>
+        </member>
+        <member name="T:NUnit.Framework.Constraints.EachItemConstraintResult">
+            <summary>
+            Provides a <see cref="T:NUnit.Framework.Constraints.ConstraintResult"/> for the constraints 
+            that are applied to each item in the collection
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.EachItemConstraintResult.#ctor(NUnit.Framework.Constraints.IConstraint,System.Object,System.Object,System.Int32)">
+            <summary>
+            Constructs a <see cref="T:NUnit.Framework.Constraints.EachItemConstraintResult" /> for a particular <see cref="T:NUnit.Framework.Constraints.Constraint" />
+            Only used for Failure
+            </summary>
+            <param name="constraint">The Constraint to which this result applies</param>
+            <param name="actualValue">The actual value to which the Constraint was applied</param>
+            <param name="nonMatchingItem">Actual item that does not match expected condition</param>
+            <param name="nonMatchingIndex">Non matching item index</param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.EachItemConstraintResult.WriteAdditionalLinesTo(NUnit.Framework.Constraints.MessageWriter)">
+            <summary>
+            Write constraint description, actual items, and non-matching item
+            </summary>
+            <param name="writer">The MessageWriter on which to display the message</param>
         </member>
         <member name="T:NUnit.Framework.Constraints.EmptyCollectionConstraint">
             <summary>
@@ -7791,14 +7844,51 @@
             Apply the item constraint to each item in the collection,
             succeeding only if the expected number of items pass.
             </summary>
-            <param name="actual"></param>
-            <returns></returns>
+            <param name="actual">The value to be tested</param>
+            <returns>A ConstraintResult</returns>
         </member>
         <member name="P:NUnit.Framework.Constraints.ExactCountConstraint.Description">
             <summary>
             The Description of what this constraint tests, for
             use in messages and in the ConstraintResult.
             </summary>
+        </member>
+        <member name="T:NUnit.Framework.Constraints.ExactCountConstraintResult">
+            <summary>
+            Contain the result of matching a <see cref="T:NUnit.Framework.Constraints.ExactCountConstraint"/> against an actual value.
+            </summary>
+        </member>
+        <member name="F:NUnit.Framework.Constraints.ExactCountConstraintResult.MaxDisplayCount">
+            <summary>
+            The maximum count of list elements that are shown on the constraint result
+            </summary>
+        </member>
+        <member name="F:NUnit.Framework.Constraints.ExactCountConstraintResult._matchCount">
+            <summary>
+            The count of matched items of the <see cref="T:NUnit.Framework.Constraints.ExactCountConstraint"/>
+            </summary>
+        </member>
+        <member name="F:NUnit.Framework.Constraints.ExactCountConstraintResult._itemList">
+            <summary>
+            A list with maximum count (+1) of items of the <see cref="T:NUnit.Framework.Constraints.ExactCountConstraint"/>
+            (The maximum count is set in <see cref="F:NUnit.Framework.Constraints.ExactCountConstraintResult.MaxDisplayCount"/>)
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.ExactCountConstraintResult.#ctor(NUnit.Framework.Constraints.IConstraint,System.Object,System.Boolean,System.Int32,System.Collections.Generic.ICollection{System.Object})">
+            <summary>
+            Constructs a <see cref="T:NUnit.Framework.Constraints.ConstraintResult"/> for a <see cref="T:NUnit.Framework.Constraints.ExactCountConstraint"/>.
+            </summary>
+            <param name="constraint">The Constraint to which this result applies.</param>
+            <param name="actualValue">The actual value to which the Constraint was applied.</param>
+            <param name="isSuccess">If true, applies a status of Success to the result, otherwise Failure.</param>
+            <param name="matchCount">Count of matched items of the <see cref="T:NUnit.Framework.Constraints.ExactCountConstraint"/></param>
+            <param name="itemList">A list with maximum count (+1) of items of the <see cref="T:NUnit.Framework.Constraints.ExactCountConstraint"/></param>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.ExactCountConstraintResult.WriteActualValueTo(NUnit.Framework.Constraints.MessageWriter)">
+            <summary>
+            Write the actual value for a failing constraint test to a MessageWriter.
+            </summary>
+            <param name="writer">The writer on which the actual value is displayed</param>
         </member>
         <member name="T:NUnit.Framework.Constraints.ExactTypeConstraint">
             <summary>
@@ -7938,7 +8028,7 @@
             <remarks>
               <para>
                 The floating point comparison code is based on this excellent article:
-                http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
+                https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/
               </para>
               <para>
                 "ULP" means Unit in the Last Place and in the context of this library refers to
@@ -8031,50 +8121,6 @@
               </para>
             </remarks>
         </member>
-        <member name="M:NUnit.Framework.Constraints.FloatingPointNumerics.ReinterpretAsInt(System.Single)">
-            <summary>
-              Reinterprets the memory contents of a floating point value as an integer value
-            </summary>
-            <param name="value">
-              Floating point value whose memory contents to reinterpret
-            </param>
-            <returns>
-              The memory contents of the floating point value interpreted as an integer
-            </returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.FloatingPointNumerics.ReinterpretAsLong(System.Double)">
-            <summary>
-              Reinterprets the memory contents of a double precision floating point
-              value as an integer value
-            </summary>
-            <param name="value">
-              Double precision floating point value whose memory contents to reinterpret
-            </param>
-            <returns>
-              The memory contents of the double precision floating point value
-              interpreted as an integer
-            </returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.FloatingPointNumerics.ReinterpretAsFloat(System.Int32)">
-            <summary>
-              Reinterprets the memory contents of an integer as a floating point value
-            </summary>
-            <param name="value">Integer value whose memory contents to reinterpret</param>
-            <returns>
-              The memory contents of the integer value interpreted as a floating point value
-            </returns>
-        </member>
-        <member name="M:NUnit.Framework.Constraints.FloatingPointNumerics.ReinterpretAsDouble(System.Int64)">
-            <summary>
-              Reinterprets the memory contents of an integer value as a double precision
-              floating point value
-            </summary>
-            <param name="value">Integer whose memory contents to reinterpret</param>
-            <returns>
-              The memory contents of the integer interpreted as a double precision
-              floating point value
-            </returns>
-        </member>
         <member name="T:NUnit.Framework.Constraints.GreaterThanConstraint">
             <summary>
             Tests whether a value is greater than the value supplied to its constructor
@@ -8085,6 +8131,12 @@
             Initializes a new instance of the <see cref="T:NUnit.Framework.Constraints.GreaterThanConstraint"/> class.
             </summary>
             <param name="expected">The expected value.</param>
+        </member>
+        <member name="P:NUnit.Framework.Constraints.GreaterThanConstraint.Description">
+            <summary>
+            The Description of what this constraint tests, for
+            use in messages and in the ConstraintResult.
+            </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.GreaterThanConstraint.PerformComparison(NUnit.Framework.Constraints.ComparisonAdapter,System.Object,System.Object,NUnit.Framework.Constraints.Tolerance)">
             <summary>
@@ -8101,6 +8153,12 @@
             Initializes a new instance of the <see cref="T:NUnit.Framework.Constraints.GreaterThanOrEqualConstraint"/> class.
             </summary>
             <param name="expected">The expected value.</param>
+        </member>
+        <member name="P:NUnit.Framework.Constraints.GreaterThanOrEqualConstraint.Description">
+            <summary>
+            The Description of what this constraint tests, for
+            use in messages and in the ConstraintResult.
+            </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.GreaterThanOrEqualConstraint.PerformComparison(NUnit.Framework.Constraints.ComparisonAdapter,System.Object,System.Object,NUnit.Framework.Constraints.Tolerance)">
             <summary>
@@ -8296,6 +8354,12 @@
             </summary>
             <param name="expected">The expected value.</param>
         </member>
+        <member name="P:NUnit.Framework.Constraints.LessThanConstraint.Description">
+            <summary>
+            The Description of what this constraint tests, for
+            use in messages and in the ConstraintResult.
+            </summary>
+        </member>
         <member name="M:NUnit.Framework.Constraints.LessThanConstraint.PerformComparison(NUnit.Framework.Constraints.ComparisonAdapter,System.Object,System.Object,NUnit.Framework.Constraints.Tolerance)">
             <summary>
             Perform the comparison
@@ -8311,6 +8375,12 @@
             Initializes a new instance of the <see cref="T:NUnit.Framework.Constraints.LessThanOrEqualConstraint"/> class.
             </summary>
             <param name="expected">The expected value.</param>
+        </member>
+        <member name="P:NUnit.Framework.Constraints.LessThanOrEqualConstraint.Description">
+            <summary>
+            The Description of what this constraint tests, for
+            use in messages and in the ConstraintResult.
+            </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.LessThanOrEqualConstraint.PerformComparison(NUnit.Framework.Constraints.ComparisonAdapter,System.Object,System.Object,NUnit.Framework.Constraints.Tolerance)">
             <summary>
@@ -9251,6 +9321,25 @@
             Returns the string representation of the constraint.
             </summary>
         </member>
+        <member name="T:NUnit.Framework.Constraints.PropertyConstraintResult">
+            <summary>
+            Contains the result of matching a <see cref="T:NUnit.Framework.Constraints.PropertyConstraint"/> against an actual value.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Constraints.PropertyConstraintResult.#ctor(NUnit.Framework.Constraints.IConstraint,NUnit.Framework.Constraints.ConstraintResult)">
+            <summary>
+            Constructs a <see cref="T:NUnit.Framework.Constraints.PropertyConstraintResult"/> for a particular <see cref="T:NUnit.Framework.Constraints.PropertyConstraint"/>.
+            </summary>
+            <param name="constraint">The Constraint to which this result applies.</param>
+            <param name="baseResult">The base result with actual value to which the Constraint was applied.</param>       
+        </member>
+        <member name="M:NUnit.Framework.Constraints.PropertyConstraintResult.WriteAdditionalLinesTo(NUnit.Framework.Constraints.MessageWriter)">
+            <summary>
+            Write the additional failure message for a failing constraint to a
+            MessageWriter.
+            </summary>
+            <param name="writer">The writer on which the actual value is displayed</param>
+        </member>
         <member name="T:NUnit.Framework.Constraints.PropertyExistsConstraint">
             <summary>
             PropertyExistsConstraint tests that a named property
@@ -9503,7 +9592,7 @@
             <param name="itemConstraint"></param>
         </member>
         <member name="P:NUnit.Framework.Constraints.SomeItemsConstraint.DisplayName">
-            <summary> 
+            <summary>
             The display name of this Constraint for use by ToString().
             The default value is the name of the constraint with
             trailing "Constraint" removed. Derived classes may set
@@ -9917,12 +10006,12 @@
         </member>
         <member name="F:NUnit.Framework.Constraints.Tolerance.Range.UpperBound">
             <summary>
-            The Upper bound of the range
+            The upper bound of the range
             </summary>
         </member>
         <member name="M:NUnit.Framework.Constraints.Tolerance.Range.#ctor(System.Object,System.Object)">
             <summary>
-             Construct a Range
+            Constructs a range
             </summary>
         </member>
         <member name="T:NUnit.Framework.Constraints.ToleranceMode">
@@ -10090,7 +10179,7 @@
         <member name="M:NUnit.Framework.DirectoryAssert.Equals(System.Object,System.Object)">
             <summary>
             DO NOT USE! Use DirectoryAssert.AreEqual(...) instead.
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -10099,7 +10188,7 @@
         <member name="M:NUnit.Framework.DirectoryAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The ReferenceEquals method throws an InvalidOperationException. This is done 
+            The ReferenceEquals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -10438,6 +10527,11 @@
             Gets the ResultState provided by this exception
             </summary>
         </member>
+        <member name="T:NUnit.Framework.Extensions">
+            <summary>
+            Contains extension methods that do not require a special <c>using</c> directive.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.FileAssert">
             <summary>
             Asserts on Files
@@ -10446,7 +10540,7 @@
         <member name="M:NUnit.Framework.FileAssert.Equals(System.Object,System.Object)">
             <summary>
             DO NOT USE! Use FileAssert.AreEqual(...) instead.
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -10455,7 +10549,7 @@
         <member name="M:NUnit.Framework.FileAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The ReferenceEquals method throws an InvalidOperationException. This is done 
+            The ReferenceEquals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -10681,6 +10775,16 @@
             </summary>
             <param name="condition">The condition that must be met</param>
             <param name="message">The exception message to be used</param>
+        </member>
+        <member name="M:NUnit.Framework.Guard.ArgumentNotAsyncVoid(System.Delegate,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentException"/> if the specified delegate is <c>async void</c>.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Guard.ArgumentNotAsyncVoid(System.Reflection.MethodInfo,System.String)">
+            <summary>
+            Throws an <see cref="T:System.ArgumentException"/> if the specified delegate is <c>async void</c>.
+            </summary>
         </member>
         <member name="T:NUnit.Framework.Has">
             <summary>
@@ -10915,6 +11019,13 @@
             the entire test, including SetUp and TearDown.
             </summary>
         </member>
+        <member name="T:NUnit.Framework.Interfaces.IRepeatTest">
+            <summary>
+            Objects implementing this interface are used to wrap
+            tests that can repeat. The implementing command is run once,
+            invoking the chained commands any number of times.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Interfaces.IDisposableFixture">
             <summary>
             Any ITest that implements this interface is at a level that the implementing
@@ -10924,21 +11035,29 @@
         <member name="T:NUnit.Framework.Interfaces.IFixtureBuilder">
             <summary>
             The IFixtureBuilder interface is exposed by a class that knows how to
-            build a TestFixture from one or more Types. In general, it is exposed
-            by an attribute, but may be implemented in a helper class used by the
+            build test fixtures from a specified type. In general, it is exposed
+            by an attribute, but it may be implemented in a helper class used by the
             attribute in some cases.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Interfaces.IFixtureBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-            Build one or more TestFixtures from type provided. At least one
-            non-null TestSuite must always be returned, since the method is 
-            generally called because the user has marked the target class as 
-            a fixture. If something prevents the fixture from being used, it
-            will be returned nonetheless, labelled as non-runnable.
+            Builds any number of test fixtures from the specified type.
             </summary>
             <param name="typeInfo">The type info of the fixture to be used.</param>
-            <returns>A TestSuite object or one derived from TestSuite.</returns>
+        </member>
+        <member name="T:NUnit.Framework.Interfaces.IFixtureBuilder2">
+            <summary>
+            The IFixtureBuilder2 interface extends IFixtureBuilder by allowing
+            use of a PreFilter, which is used to select methods as test cases.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.IFixtureBuilder2.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.IPreFilter)">
+            <summary>
+            Builds any number of test fixtures from the specified type.
+            </summary>
+            <param name="typeInfo">The type info of the fixture to be used.</param>
+            <param name="filter">PreFilter to be used to select methods.</param>
         </member>
         <member name="T:NUnit.Framework.Interfaces.IImplyFixture">
             <summary>
@@ -11030,40 +11149,31 @@
         </member>
         <member name="T:NUnit.Framework.Interfaces.IParameterDataProvider">
             <summary>
-            The IDataPointProvider interface is used by extensions
-            that provide data for a single test parameter.
+            Provides data for a single test parameter.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Interfaces.IParameterDataProvider.HasDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Determine whether any data is available for a parameter.
+            Determines whether any data is available for a parameter.
             </summary>
-            <param name="parameter">An IParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>True if any data is available, otherwise false.</returns>
+            <param name="parameter">The parameter of a parameterized test.</param>
         </member>
         <member name="M:NUnit.Framework.Interfaces.IParameterDataProvider.GetDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Return an IEnumerable providing data for use with the
-            supplied parameter.
+            Retrieves a list of arguments which can be passed to the specified parameter.
             </summary>
-            <param name="parameter">An IParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>An IEnumerable providing the required data</returns>
+            <param name="parameter">The parameter of a parameterized test.</param>
         </member>
         <member name="T:NUnit.Framework.Interfaces.IParameterDataSource">
             <summary>
-            The IParameterDataSource interface is implemented by types
-            that can provide data for a test method parameter.
+            Provides data for a single test parameter.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Interfaces.IParameterDataSource.GetData(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Gets an enumeration of data items for use as arguments
-            for a test method parameter.
+            Retrieves a list of arguments which can be passed to the specified parameter.
             </summary>
-            <param name="parameter">The parameter for which data is needed</param>
-            <returns>An enumeration containing individual data items</returns>
+            <param name="parameter">The parameter of a parameterized test.</param>
         </member>
         <member name="T:NUnit.Framework.Interfaces.IParameterInfo">
             <summary>
@@ -11088,6 +11198,24 @@
         <member name="P:NUnit.Framework.Interfaces.IParameterInfo.ParameterType">
             <summary>
             Gets the Type of the parameter
+            </summary>
+        </member>
+        <member name="T:NUnit.Framework.Interfaces.IPreFilter">
+            <summary>
+            Implemented by filters for use in deciding which
+            Types and Methods should be used to generate tests.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.IPreFilter.IsMatch(System.Type)">
+            <summary>
+            Use the filter on a Type, returning true if the type matches the filter
+            and should therefore be included in the discovery process.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.IPreFilter.IsMatch(System.Type,System.Reflection.MethodInfo)">
+            <summary>
+            Use the filter on a Type, returning true if the type matches the filter
+            and should therefore be included in the discovery process.
             </summary>
         </member>
         <member name="T:NUnit.Framework.Interfaces.IPropertyBag">
@@ -11188,44 +11316,49 @@
         <member name="T:NUnit.Framework.Interfaces.ISimpleTestBuilder">
             <summary>
             The ISimpleTestBuilder interface is exposed by a class that knows how to
-            build a single TestMethod from a suitable MethodInfo Types. In general, 
-            it is exposed by an attribute, but may be implemented in a helper class 
+            build a single tests from a specified method. In general,
+            it is exposed by an attribute, but it may be implemented in a helper class
             used by the attribute in some cases.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Interfaces.ISimpleTestBuilder.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Build a TestMethod from the provided MethodInfo.
+            Builds a single test from the specified method and context.
             </summary>
             <param name="method">The method to be used as a test</param>
             <param name="suite">The TestSuite to which the method will be added</param>
-            <returns>A TestMethod object</returns>
         </member>
         <member name="T:NUnit.Framework.Interfaces.ISuiteBuilder">
             <summary>
             The ISuiteBuilder interface is exposed by a class that knows how to
-            build a suite from one or more Types. 
+            build a single test suite from a specified type.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Interfaces.ISuiteBuilder.CanBuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
-            <summary>
-            Examine the type and determine if it is suitable for
-            this builder to use in building a TestSuite.
+             <summary>
+             Examine the type and determine if it is suitable for
+             this builder to use in building a TestSuite.
             
-            Note that returning false will cause the type to be ignored 
-            in loading the tests. If it is desired to load the suite
-            but label it as non-runnable, ignored, etc., then this
-            method must return true.
-            </summary>
-            <param name="typeInfo">The type of the fixture to be used</param>
-            <returns>True if the type can be used to build a TestSuite</returns>
+             Note that returning false will cause the type to be ignored
+             in loading the tests. If it is desired to load the suite
+             but label it as non-runnable, ignored, etc., then this
+             method must return true.
+             </summary>
+             <param name="typeInfo">The type of the fixture to be used</param>
         </member>
         <member name="M:NUnit.Framework.Interfaces.ISuiteBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-            Build a TestSuite from type provided.
+            Builds a single test suite from the specified type.
             </summary>
             <param name="typeInfo">The type of the fixture to be used</param>
-            <returns>A TestSuite</returns>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.ISuiteBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.IPreFilter)">
+            <summary>
+            Builds a single test suite from the specified type, subject
+            to a filter that decides which methods are included.
+            </summary>
+            <param name="typeInfo">The type of the fixture to be used</param>
+            <param name="filter">A PreFilter for selecting methods.</param>
         </member>
         <member name="T:NUnit.Framework.Interfaces.ITest">
             <summary>
@@ -11275,8 +11408,8 @@
         </member>
         <member name="P:NUnit.Framework.Interfaces.ITest.Method">
             <summary>
-            Gets an IMethod for the method implementing this test.
-            Returns null if the test is not implemented as a method.
+            Gets the method which declares the test, or <see langword="null"/>
+            if no method is associated with this test.
             </summary>
         </member>
         <member name="P:NUnit.Framework.Interfaces.ITest.RunState">
@@ -11330,52 +11463,45 @@
         <member name="T:NUnit.Framework.Interfaces.ITestBuilder">
             <summary>
             The ITestBuilder interface is exposed by a class that knows how to
-            build one or more TestMethods from a MethodInfo. In general, it is exposed
-            by an attribute, which has additional information available to provide
+            build tests from a specified method. In general, it is exposed
+            by an attribute which has additional information available to provide
             the necessary test parameters to distinguish the test cases built.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Interfaces.ITestBuilder.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Build one or more TestMethods from the provided MethodInfo.
+            Builds any number of tests from the specified method and context.
             </summary>
             <param name="method">The method to be used as a test</param>
             <param name="suite">The TestSuite to which the method will be added</param>
-            <returns>A TestMethod object</returns>
         </member>
         <member name="T:NUnit.Framework.Interfaces.ITestCaseBuilder">
             <summary>
             The ITestCaseBuilder interface is exposed by a class that knows how to
-            build a test case from certain methods. 
+            build a test from a specified method, possibly containing child test cases.
             </summary>
-            <remarks>
-            This interface is not the same as the ITestCaseBuilder interface in NUnit 2.x.
-            We have reused the name because the two products don't interoperate at all.
-            </remarks>
         </member>
         <member name="M:NUnit.Framework.Interfaces.ITestCaseBuilder.CanBuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
-            <summary>
-            Examine the method and determine if it is suitable for
-            this builder to use in building a TestCase to be
-            included in the suite being populated.
+             <summary>
+             Examine the method and determine if it is suitable for
+             this builder to use in building a TestCase to be
+             included in the suite being populated.
             
-            Note that returning false will cause the method to be ignored 
-            in loading the tests. If it is desired to load the method
-            but label it as non-runnable, ignored, etc., then this
-            method must return true.
-            </summary>
-            <param name="method">The test method to examine</param>
-            <param name="suite">The suite being populated</param>
-            <returns>True is the builder can use this method</returns>
+             Note that returning false will cause the method to be ignored
+             in loading the tests. If it is desired to load the method
+             but label it as non-runnable, ignored, etc., then this
+             method must return true.
+             </summary>
+             <param name="method">The test method to examine</param>
+             <param name="suite">The suite being populated</param>
         </member>
         <member name="M:NUnit.Framework.Interfaces.ITestCaseBuilder.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Build a TestCase from the provided MethodInfo for
-            inclusion in the suite being constructed.
+            Builds a single test from the specified method and context,
+            possibly containing child test cases.
             </summary>
             <param name="method">The method to be used as a test case</param>
             <param name="suite">The test suite being populated, or null</param>
-            <returns>A TestCase or null</returns>
         </member>
         <member name="T:NUnit.Framework.Interfaces.ITestCaseData">
             <summary>
@@ -11481,6 +11607,12 @@
             Called when a test produces output for immediate display
             </summary>
             <param name="output">A TestOutput object containing the text to display</param>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.ITestListener.SendMessage(NUnit.Framework.Interfaces.TestMessage)">
+            <summary>
+            Called when a test produces a message to be sent to listeners
+            </summary>
+            <param name="message">A <see cref="T:NUnit.Framework.Interfaces.TestMessage"/> object containing the text to send</param>
         </member>
         <member name="T:NUnit.Framework.Interfaces.ITestResult">
             <summary>
@@ -12009,6 +12141,45 @@
             <param name="filePath">Absolute file path to attachment file</param>
             <param name="description">User specifed description of attachment. May be null.</param>
         </member>
+        <member name="T:NUnit.Framework.Interfaces.TestMessage">
+            <summary>
+            The <see cref="T:NUnit.Framework.Interfaces.TestMessage"/> class holds a message sent by a test to all listeners
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.TestMessage.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Construct with text, destination type and
+            the name of the test that produced the message.
+            </summary>
+            <param name="destination">Destination of the message</param>
+            <param name="text">Text to be sent</param>
+            <param name="testId">ID of the test that produced the message</param>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.TestMessage.ToString">
+            <summary>
+            Converts <see cref="T:NUnit.Framework.Interfaces.TestMessage"/> object to string
+            </summary>
+        </member>
+        <member name="P:NUnit.Framework.Interfaces.TestMessage.Message">
+            <summary>
+            The message to send to listeners
+            </summary>
+        </member>
+        <member name="P:NUnit.Framework.Interfaces.TestMessage.Destination">
+            <summary>
+            The Destination of the message.
+            </summary>
+        </member>
+        <member name="P:NUnit.Framework.Interfaces.TestMessage.TestId">
+            <summary>
+            The ID of the test that sent the message
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Interfaces.TestMessage.ToXml">
+            <summary>
+            Returns the XML representation of the <see cref="T:NUnit.Framework.Interfaces.TestMessage"/> object.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Interfaces.TestOutput">
             <summary>
             The TestOutput class holds a unit of output from 
@@ -12271,14 +12442,6 @@
             <param name="codeBase">The code base.</param>
             <returns></returns>
         </member>
-        <member name="M:NUnit.Framework.Internal.AsyncInvocationRegion.WaitForPendingOperationsToComplete(System.Object)">
-            <summary>
-            Waits for pending asynchronous operations to complete, if appropriate,
-            and returns a proper result of the invocation by unwrapping task results
-            </summary>
-            <param name="invocationResult">The raw result of the method invocation</param>
-            <returns>The unwrapped result, if necessary</returns>
-        </member>
         <member name="T:NUnit.Framework.Internal.Builders.CombinatorialStrategy">
             <summary>
             CombinatorialStrategy creates test cases by using all possible
@@ -12299,24 +12462,15 @@
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DatapointProvider.HasDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Determine whether any data is available for a parameter.
+            Determines whether any data is available for a parameter.
             </summary>
-            <param name="parameter">A ParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>
-            True if any data is available, otherwise false.
-            </returns>
+            <param name="parameter">The parameter of a parameterized test</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DatapointProvider.GetDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Return an IEnumerable providing data for use with the
-            supplied parameter.
+            Retrieves data for use with the supplied parameter.
             </summary>
-            <param name="parameter">A ParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>
-            An IEnumerable providing the required data
-            </returns>
+            <param name="parameter">The parameter of a parameterized test</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Builders.DefaultSuiteBuilder">
             <summary>
@@ -12324,32 +12478,39 @@
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultSuiteBuilder.CanBuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
-            <summary>
-            Checks to see if the provided Type is a fixture.
-            To be considered a fixture, it must be a non-abstract
-            class with one or more attributes implementing the
-            IFixtureBuilder interface or one or more methods
-            marked as tests.
-            </summary>
-            <param name="typeInfo">The fixture type to check</param>
-            <returns>True if the fixture can be built, false if not</returns>
+             <summary>
+             Examine the type and determine if it is suitable for
+             this builder to use in building a TestSuite.
+            
+             Note that returning false will cause the type to be ignored
+             in loading the tests. If it is desired to load the suite
+             but label it as non-runnable, ignored, etc., then this
+             method must return true.
+             </summary>
+             <param name="typeInfo">The fixture type to check</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultSuiteBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-            Build a TestSuite from TypeInfo provided.
+            Builds a single test suite from the specified type.
             </summary>
             <param name="typeInfo">The fixture type to build</param>
-            <returns>A TestSuite built from that type</returns>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Builders.DefaultSuiteBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.IPreFilter)">
+            <summary>
+            Builds a single test suite from the specified type, subject
+            to a filter that decides which methods are included.
+            </summary>
+            <param name="typeInfo">The fixture type to build</param>
+            <param name="filter">A PreFilter for selecting methods.</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultSuiteBuilder.GetFixtureBuilderAttributes(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-            We look for attributes implementing IFixtureBuilder at one level 
-            of inheritance at a time. Attributes on base classes are not used 
+            We look for attributes implementing IFixtureBuilder at one level
+            of inheritance at a time. Attributes on base classes are not used
             unless there are no fixture builder attributes at all on the derived
             class. This is by design.
             </summary>
             <param name="typeInfo">The type being examined for attributes</param>
-            <returns>A list of the attributes found.</returns>
         </member>
         <member name="T:NUnit.Framework.Internal.Builders.DefaultTestCaseBuilder">
             <summary>
@@ -12366,58 +12527,50 @@
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultTestCaseBuilder.CanBuildFrom(NUnit.Framework.Interfaces.IMethodInfo)">
-            <summary>
-            Determines if the method can be used to build an NUnit test
-            test method of some kind. The method must normally be marked
-            with an identifying attribute for this to be true.
+             <summary>
+             Determines if the method can be used to build an NUnit test
+             test method of some kind. The method must normally be marked
+             with an identifying attribute for this to be true.
             
-            Note that this method does not check that the signature
-            of the method for validity. If we did that here, any
-            test methods with invalid signatures would be passed
-            over in silence in the test run. Since we want such
-            methods to be reported, the check for validity is made
-            in BuildFrom rather than here.
-            </summary>
-            <param name="method">An IMethodInfo for the method being used as a test method</param>
-            <returns>True if the builder can create a test case from this method</returns>
+             Note that this method does not check that the signature
+             of the method for validity. If we did that here, any
+             test methods with invalid signatures would be passed
+             over in silence in the test run. Since we want such
+             methods to be reported, the check for validity is made
+             in BuildFrom rather than here.
+             </summary>
+             <param name="method">An IMethodInfo for the method being used as a test method</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultTestCaseBuilder.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo)">
             <summary>
-            Build a Test from the provided MethodInfo. Depending on
-            whether the method takes arguments and on the availability
-            of test case data, this method may return a single test
-            or a group of tests contained in a ParameterizedMethodSuite.
+            Builds a single test from the specified method and context,
+            possibly containing child test cases.
             </summary>
             <param name="method">The method for which a test is to be built</param>
-            <returns>A Test representing one or more method invocations</returns>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultTestCaseBuilder.CanBuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
-            <summary>
-            Determines if the method can be used to build an NUnit test
-            test method of some kind. The method must normally be marked
-            with an identifying attribute for this to be true.
+             <summary>
+             Determines if the method can be used to build an NUnit test
+             test method of some kind. The method must normally be marked
+             with an identifying attribute for this to be true.
             
-            Note that this method does not check that the signature
-            of the method for validity. If we did that here, any
-            test methods with invalid signatures would be passed
-            over in silence in the test run. Since we want such
-            methods to be reported, the check for validity is made
-            in BuildFrom rather than here.
-            </summary>
-            <param name="method">An IMethodInfo for the method being used as a test method</param>
-            <param name="parentSuite">The test suite being built, to which the new test would be added</param>
-            <returns>True if the builder can create a test case from this method</returns>
+             Note that this method does not check that the signature
+             of the method for validity. If we did that here, any
+             test methods with invalid signatures would be passed
+             over in silence in the test run. Since we want such
+             methods to be reported, the check for validity is made
+             in BuildFrom rather than here.
+             </summary>
+             <param name="method">An IMethodInfo for the method being used as a test method</param>
+             <param name="parentSuite">The test suite being built, to which the new test would be added</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultTestCaseBuilder.BuildFrom(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
-            Build a Test from the provided MethodInfo. Depending on
-            whether the method takes arguments and on the availability
-            of test case data, this method may return a single test
-            or a group of tests contained in a ParameterizedMethodSuite.
+            Builds a single test from the specified method and context,
+            possibly containing child test cases.
             </summary>
             <param name="method">The method for which a test is to be built</param>
             <param name="parentSuite">The test fixture being populated, or null</param>
-            <returns>A Test representing one or more method invocations</returns>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultTestCaseBuilder.BuildParameterizedMethodSuite(NUnit.Framework.Interfaces.IMethodInfo,System.Collections.Generic.IEnumerable{NUnit.Framework.Internal.TestMethod})">
             <summary>
@@ -12425,7 +12578,6 @@
             </summary>
             <param name="method">The method for which a test is to be built.</param>
             <param name="tests">The list of test cases to include.</param>
-            <returns>A ParameterizedMethodSuite populated with test cases</returns>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.DefaultTestCaseBuilder.BuildSingleTestMethod(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.Test)">
             <summary>
@@ -12433,7 +12585,6 @@
             </summary>
             <param name="method">The MethodInfo for which a test is to be built</param>
             <param name="suite">The test suite for which the method is being built</param>
-            <returns>A TestMethod.</returns>
         </member>
         <member name="T:NUnit.Framework.Internal.Builders.NamespaceTreeBuilder">
             <summary>
@@ -12495,7 +12646,14 @@
             <param name="method">The MethodInfo from which to construct the TestMethod</param>
             <param name="parentSuite">The suite or fixture to which the new test will be added</param>
             <param name="parms">The ParameterSet to be used, or null</param>
-            <returns></returns>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Builders.NUnitTestCaseBuilder.CheckTestMethodAttributes(NUnit.Framework.Internal.TestMethod)">
+            <summary>
+            Checks to see if we have valid combinations of attributes.
+            </summary>
+            <param name="testMethod">The TestMethod to be checked. If it
+            is found to be non-runnable, it will be modified.</param>
+            <returns>True if the method signature is valid, false if not</returns>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.NUnitTestCaseBuilder.CheckTestMethodSignature(NUnit.Framework.Internal.TestMethod,NUnit.Framework.Internal.TestCaseParameters)">
              <summary>
@@ -12528,7 +12686,7 @@
             NUnitSuiteBuilder.
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Internal.Builders.NUnitTestFixtureBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo)">
+        <member name="M:NUnit.Framework.Internal.Builders.NUnitTestFixtureBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.IPreFilter)">
             <summary>
             Build a TestFixture from type provided. A non-null TestSuite
             must always be returned, since the method is generally called
@@ -12537,39 +12695,40 @@
             be returned nonetheless, labelled as non-runnable.
             </summary>
             <param name="typeInfo">An ITypeInfo for the fixture to be used.</param>
+            <param name="filter">Filter used to select methods as tests.</param>
             <returns>A TestSuite object or one derived from TestSuite.</returns>
         </member>
-        <member name="M:NUnit.Framework.Internal.Builders.NUnitTestFixtureBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.ITestFixtureData)">
+        <member name="M:NUnit.Framework.Internal.Builders.NUnitTestFixtureBuilder.BuildFrom(NUnit.Framework.Interfaces.ITypeInfo,NUnit.Framework.Interfaces.IPreFilter,NUnit.Framework.Interfaces.ITestFixtureData)">
             <summary>
             Overload of BuildFrom called by tests that have arguments.
-            Builds a fixture using the provided type and information 
+            Builds a fixture using the provided type and information
             in the ITestFixtureData object.
             </summary>
             <param name="typeInfo">The TypeInfo for which to construct a fixture.</param>
+            <param name="filter">Filter used to select methods as tests.</param>
             <param name="testFixtureData">An object implementing ITestFixtureData or null.</param>
             <returns></returns>
         </member>
-        <member name="M:NUnit.Framework.Internal.Builders.NUnitTestFixtureBuilder.AddTestCasesToFixture(NUnit.Framework.Internal.TestFixture)">
+        <member name="M:NUnit.Framework.Internal.Builders.NUnitTestFixtureBuilder.AddTestCasesToFixture(NUnit.Framework.Internal.TestFixture,NUnit.Framework.Interfaces.IPreFilter)">
             <summary>
             Method to add test cases to the newly constructed fixture.
             </summary>
-            <param name="fixture">The fixture to which cases should be added</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.NUnitTestFixtureBuilder.BuildTestCase(NUnit.Framework.Interfaces.IMethodInfo,NUnit.Framework.Internal.TestSuite)">
-            <summary>
-            Method to create a test case from a MethodInfo and add
-            it to the fixture being built. It first checks to see if
-            any global TestCaseBuilder addin wants to build the
-            test case. If not, it uses the internal builder
-            collection maintained by this fixture builder.
+             <summary>
+             Method to create a test case from a MethodInfo and add
+             it to the fixture being built. It first checks to see if
+             any global TestCaseBuilder addin wants to build the
+             test case. If not, it uses the internal builder
+             collection maintained by this fixture builder.
             
-            The default implementation has no test case builders.
-            Derived classes should add builders to the collection
-            in their constructor.
-            </summary>
-            <param name="method">The method for which a test is to be created</param>
-            <param name="suite">The test suite being built.</param>
-            <returns>A newly constructed Test</returns>
+             The default implementation has no test case builders.
+             Derived classes should add builders to the collection
+             in their constructor.
+             </summary>
+             <param name="method">The method for which a test is to be created</param>
+             <param name="suite">The test suite being built.</param>
+             <returns>A newly constructed Test</returns>
         </member>
         <member name="T:NUnit.Framework.Internal.Builders.PairwiseStrategy">
             <summary>
@@ -12588,14 +12747,14 @@
             </para>
             <para>
             The PairwiseStrategy code is based on "jenny" tool by Bob Jenkins:
-            http://burtleburtle.net/bob/math/jenny.html
+            https://burtleburtle.net/bob/math/jenny.html
             </para>
             </remarks>
         </member>
         <member name="T:NUnit.Framework.Internal.Builders.PairwiseStrategy.FleaRand">
             <summary>
             FleaRand is a pseudo-random number generator developed by Bob Jenkins:
-            http://burtleburtle.net/bob/rand/talksmall.html#flea
+            https://burtleburtle.net/bob/rand/talksmall.html#flea
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.PairwiseStrategy.FleaRand.#ctor(System.UInt32)">
@@ -12749,20 +12908,15 @@
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.ParameterDataProvider.HasDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Determine whether any data is available for a parameter.
+            Determines whether any data is available for a parameter.
             </summary>
-            <param name="parameter">An IParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>True if any data is available, otherwise false.</returns>
+            <param name="parameter">The parameter of a parameterized test</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.ParameterDataProvider.GetDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Return an IEnumerable providing data for use with the
-            supplied parameter.
+            Retrieves data for use with the supplied parameter.
             </summary>
-            <param name="parameter">An IParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>An IEnumerable providing the required data</returns>
+            <param name="parameter">The parameter of a parameterized test</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Builders.ParameterDataSourceProvider">
             <summary>
@@ -12772,24 +12926,15 @@
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.ParameterDataSourceProvider.HasDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Determine whether any data is available for a parameter.
+            Determines whether any data is available for a parameter.
             </summary>
-            <param name="parameter">A ParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>
-            True if any data is available, otherwise false.
-            </returns>
+            <param name="parameter">The parameter of a parameterized test</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Builders.ParameterDataSourceProvider.GetDataFor(NUnit.Framework.Interfaces.IParameterInfo)">
             <summary>
-            Return an IEnumerable providing data for use with the
-            supplied parameter.
+            Retrieves data for use with the supplied parameter.
             </summary>
-            <param name="parameter">An IParameterInfo representing one
-            argument to a parameterized test</param>
-            <returns>
-            An IEnumerable providing the required data
-            </returns>
+            <param name="parameter">The parameter of a parameterized test</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Builders.SequentialStrategy">
             <summary>
@@ -12933,9 +13078,9 @@
         </member>
         <member name="M:NUnit.Framework.Internal.Commands.DelegatingTestCommand.#ctor(NUnit.Framework.Internal.Commands.TestCommand)">
             <summary>
-            TODO: Documentation needed for constructor
+            Initializes a new instance of the <see cref="T:NUnit.Framework.Internal.Commands.DelegatingTestCommand"/> class.
             </summary>
-            <param name="innerCommand"></param>
+            <param name="innerCommand">The inner command.</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Commands.DisposeFixtureCommand">
             <summary>
@@ -12970,7 +13115,9 @@
         </member>
         <member name="T:NUnit.Framework.Internal.Commands.MaxTimeCommand">
             <summary>
-            TODO: Documentation needed for class
+            <see cref="T:NUnit.Framework.Internal.Commands.MaxTimeCommand" /> adjusts the result of a successful test
+            to a failure if the elapsed time has exceeded the specified maximum
+            time allowed.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.Commands.MaxTimeCommand.#ctor(NUnit.Framework.Internal.Commands.TestCommand,System.Int32)">
@@ -13191,7 +13338,7 @@
         </member>
         <member name="T:NUnit.Framework.Internal.Commands.TimeoutCommand">
             <summary>
-            TimeoutCommand creates a timer in order to cancel
+            <see cref="T:NUnit.Framework.Internal.Commands.TimeoutCommand"/> creates a timer in order to cancel
             a test if it exceeds a specified time and adjusts
             the test result if it did time out.
             </summary>
@@ -13267,6 +13414,13 @@
             is called.
             </summary>
         </member>
+        <member name="T:NUnit.Framework.Internal.DefaultBlockingAwaitAdapter">
+            <summary>
+            Useful when wrapping awaitables whose <c>GetResult</c> method does not block until complete.
+            Contains a default mechanism to implement <see cref="M:NUnit.Framework.Internal.AwaitAdapter.BlockUntilCompleted"/>
+            via <see cref="P:NUnit.Framework.Internal.AwaitAdapter.IsCompleted"/> and <see cref="M:NUnit.Framework.Internal.AwaitAdapter.OnCompleted(System.Action)"/>.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Internal.ExceptionHelper">
             <summary>
             ExceptionHelper provides static methods for working with exceptions
@@ -13303,6 +13457,11 @@
             </summary>
             <param name="exception">The exception.</param>
             <returns>A string representation of the stack trace.</returns>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ExceptionHelper.RecordException(System.Delegate,System.String)">
+            <summary>
+            Executes a parameterless synchronous or async delegate and returns the exception it throws, if any.
+            </summary>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.CompositeWorkItem">
             <summary>
@@ -13731,6 +13890,28 @@
             </summary>
             <param name="listener">The listener.</param>
         </member>
+        <member name="T:NUnit.Framework.Internal.Execution.TestMessageEvent">
+            <summary>
+            TestMessageEvent holds information needed to call the SendMessage method.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Execution.TestMessageEvent.#ctor(NUnit.Framework.Interfaces.TestMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NUnit.Framework.Internal.Execution.TestMessageEvent"/> class.
+            </summary>
+            <param name="testMessage">The test message object.</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Execution.TestMessageEvent.Send(NUnit.Framework.Interfaces.ITestListener)">
+            <summary>
+            Calls <see cref="M:NUnit.Framework.Internal.Execution.TestMessageEvent.Send(NUnit.Framework.Interfaces.ITestListener)"/> on the specified listener.
+            </summary>
+            <param name="listener">The listener.</param>
+        </member>
+        <member name="P:NUnit.Framework.Internal.Execution.TestMessageEvent.TestMessage">
+            <summary>
+            Holds <see cref="P:NUnit.Framework.Internal.Execution.TestMessageEvent.TestMessage"/> object for sending to all listeners
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Internal.Execution.EventQueue">
             <summary>
             Implements a queue of work items each of which
@@ -13924,9 +14105,9 @@
             Save the state of the queues and create a new isolated set
             </summary>
         </member>
-        <member name="M:NUnit.Framework.Internal.Execution.ParallelWorkItemDispatcher.RestoreQueues">
+        <member name="M:NUnit.Framework.Internal.Execution.ParallelWorkItemDispatcher.TryRestoreQueues">
             <summary>
-            Remove isolated queues and restore old ones
+            Try to remove isolated queues and restore old ones
             </summary>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.QueuingEventListener">
@@ -13962,6 +14143,12 @@
             Called when a test produces output for immediate display
             </summary>
             <param name="output">A TestOutput object containing the text to display</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Execution.QueuingEventListener.SendMessage(NUnit.Framework.Interfaces.TestMessage)">
+            <summary>
+            Called when a test produces a message to be sent to listeners
+            </summary>
+            <param name="message">A <see cref="T:NUnit.Framework.Interfaces.TestMessage"/> object containing the text to send</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Execution.SimpleWorkItem">
             <summary>
@@ -14933,11 +15120,12 @@
         </member>
         <member name="M:NUnit.Framework.Internal.Filters.NotFilter.Pass(NUnit.Framework.Interfaces.ITest)">
             <summary>
-            Determine if a particular test passes the filter criteria. The default 
-            implementation checks the test itself, its parents and any descendants.
+            Determine if a particular test passes the filter criteria.
             
-            Derived classes may override this method or any of the Match methods
-            to change the behavior of the filter.
+            Overriden in NotFilter so that
+            1. Two nested NotFilters are simply ignored
+            2. Otherwise, we only look at the test itself and parents, ignoring
+            any child test matches.
             </summary>
             <param name="test">The test to which the filter is applied</param>
             <returns>True if the test passes the filter, otherwise false</returns>
@@ -15114,19 +15302,25 @@
             a generic method from the actual arguments provided.
             </summary>
         </member>
+        <member name="F:NUnit.Framework.Internal.GenericMethodHelper.ConflictingTypesMarker">
+            <summary>
+            A special value, which is used to indicate that BestCommonType() method
+            was unable to find a common type for the specified arguments.
+            </summary>
+        </member>
         <member name="M:NUnit.Framework.Internal.GenericMethodHelper.#ctor(System.Reflection.MethodInfo)">
             <summary>
             Construct a GenericMethodHelper for a method
             </summary>
             <param name="method">MethodInfo for the method to examine</param>
         </member>
-        <member name="M:NUnit.Framework.Internal.GenericMethodHelper.GetTypeArguments(System.Object[])">
+        <member name="M:NUnit.Framework.Internal.GenericMethodHelper.TryGetTypeArguments(System.Object[],System.Type[]@)">
             <summary>
             Return the type arguments for the method, deducing them
             from the arguments actually provided.
             </summary>
             <param name="argList">The arguments to the method</param>
-            <returns>An array of type arguments.</returns>
+            <param name="typeArguments">If successful, an array of type arguments.</param>
         </member>
         <member name="T:NUnit.Framework.Internal.InvalidDataSourceException">
             <summary>
@@ -15582,6 +15776,13 @@
             Override ToString() so that error messages in NUnit's own tests make sense
             </summary>
         </member>
+        <member name="T:NUnit.Framework.Internal.NUnitCallContext">
+            <summary>
+            This class ensures the <see cref="T:System.Runtime.Remoting.Messaging.CallContext"/> is correctly cleared
+            or restored around framework actions. This is important if running multiple assemblies within the same
+            process, to ensure no leakage from one assembly to the next. See https://github.com/nunit/nunit-console/issues/325
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Internal.NUnitException">
             <summary>
             Thrown when an assertion failed. Here to preserve the inner
@@ -15614,6 +15815,17 @@
             Serialization Constructor
             </summary>
         </member>
+        <member name="T:NUnit.Framework.Internal.On">
+            <summary>
+            Enables the <see cref="M:NUnit.Framework.Internal.On.Dispose(System.Action)"/> syntax.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.On.Dispose(System.Action)">
+            <summary>
+            Wraps an action so that it is executed when the returned object is disposed.
+            This disposal is thread-safe and the action will be executed at most once.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Internal.OSPlatform">
             <summary>
             OSPlatform represents a particular operating system platform
@@ -15621,7 +15833,7 @@
         </member>
         <member name="F:NUnit.Framework.Internal.OSPlatform.UnixPlatformID_Microsoft">
             <summary>
-            Platform ID for Unix as defined by Microsoft .NET 2.0 and greater
+            Platform ID for Unix as defined by .NET
             </summary>
         </member>
         <member name="F:NUnit.Framework.Internal.OSPlatform.UnixPlatformID_Mono">
@@ -15887,13 +16099,47 @@
         </member>
         <member name="T:NUnit.Framework.Internal.ParamAttributeTypeConversions">
             <summary>
-            Helper methods for converting parameters to numeric values to supported types
+            <para>
+            Examines an attribute argument and tries to simulate what that value would have been if the literal syntax
+            which might have defined the value in C# had instead been used as an argument to a given method parameter in a direct call.
+            </para>
+            <para>
+            For example, since you can’t apply attributes using <see cref="T:System.Decimal"/> arguments, we allow the C# syntax
+            <c>10</c> (<see cref="T:System.Int32"/> value) or <c>0.1</c> (<see cref="T:System.Double"/> value) to be specified.
+            NUnit then converts it to match the method’s <see cref="T:System.Decimal"/> parameters, just as if you were actually
+            using the syntax <c>TestMethod(10)</c> or <c>TestMethod(0.1)</c>.
+            </para>
+            <para>
+            For another example, you might have written the syntax <c>10</c> and picked up the <see cref="T:System.Int32"/> attribute
+            constructor overload; however, the test method for which this value is intended only has a <see cref="T:System.Byte"/>
+            signature. Again, NUnit simulates what would have happened if the inferred C# syntax was transplanted
+            and you were actually using the syntax <c>TestMethod(10)</c>.
+            </para>
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.ParamAttributeTypeConversions.ConvertData(System.Object[],System.Type)">
             <summary>
             Converts an array of objects to the <paramref name="targetType"/>, if it is supported.
             </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ParamAttributeTypeConversions.Convert(System.Object,System.Type)">
+            <summary>
+            Converts a single value to the <paramref name="targetType"/>, if it is supported.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ParamAttributeTypeConversions.TryConvert(System.Object,System.Type,System.Object@)">
+            <summary>
+            Performs several special conversions allowed by NUnit in order to
+            permit arguments with types that cannot be used in the constructor
+            of an Attribute such as TestCaseAttribute or to simplify their use.
+            </summary>
+            <param name="value">The value to be converted</param>
+            <param name="targetType">The target <see cref="T:System.Type"/> in which the <paramref name="value"/> should be converted</param>
+            <param name="convertedValue">If conversion was successfully applied, the <paramref name="value"/> converted into <paramref name="targetType"/></param>
+            <returns>
+            <c>true</c> if <paramref name="value"/> was converted and <paramref name="convertedValue"/> should be used;
+            <c>false</c> is no conversion was applied and <paramref name="convertedValue"/> should be ignored
+            </returns>
         </member>
         <member name="T:NUnit.Framework.Internal.ParameterWrapper">
             <summary>
@@ -16006,6 +16252,45 @@
             is called.
             </summary>
         </member>
+        <member name="T:NUnit.Framework.Internal.PreFilter">
+            <summary>
+            Implements a simplified filter for use in deciding which
+            Types and Methods should be used to generate tests. It is consructed with a 
+            list of strings, each of which may end up being interpreted in various ways.
+            </summary>
+        </member>
+        <member name="P:NUnit.Framework.Internal.PreFilter.Empty">
+            <summary>
+            Return a new PreFilter, without elements, which is considered
+            empty and always matches.
+            </summary>
+        </member>
+        <member name="P:NUnit.Framework.Internal.PreFilter.IsEmpty">
+            <summary>
+            Return true if the filter is empty, in which case it
+            always succeeds. Technically, this is just a filter and
+            you can add elements but it's best to use Empty when
+            you need an empty filter and new when you plan to add.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.PreFilter.Add(System.String)">
+            <summary>
+            Add a new filter element to the filter
+            </summary>
+            <param name="filterText"></param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.PreFilter.IsMatch(System.Type)">
+            <summary>
+            Use the filter on a Type, returning true if the type matches the filter
+            and should therefore be included in the discovery process.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.PreFilter.IsMatch(System.Type,System.Reflection.MethodInfo)">
+            <summary>
+            Use the filter on a Type, returning true if the type matches the filter
+            and should therefore be included in the discovery process.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Internal.PropertyBag">
             <summary>
             A PropertyBag represents a collection of name value pairs
@@ -16093,7 +16378,7 @@
             The selected strategy for joining parameter data into test cases
             </summary>
         </member>
-        <member name="F:NUnit.Framework.Internal.PropertyNames.ProcessID">
+        <member name="F:NUnit.Framework.Internal.PropertyNames.ProcessId">
             <summary>
             The process ID of the executing assembly
             </summary>
@@ -16503,8 +16788,23 @@
         <member name="M:NUnit.Framework.Internal.Reflect.GetTypeArray(System.Object[])">
             <summary>
             Returns an array of types from an array of objects.
-            Differs from <see cref="M:System.Type.GetTypeArray(System.Object[])"/> by returning <see cref="T:NUnit.Compatibility.NUnitNullType"/>
+            Differs from <see cref="M:System.Type.GetTypeArray(System.Object[])"/> by returning <see langword="null"/>
             for null elements rather than throwing <see cref="T:System.ArgumentNullException"/>.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Reflect.GetConstructors(System.Type,System.Type[])">
+            <summary>
+            Gets the constructors to which the specified argument types can be coerced.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Reflect.ParametersMatch(System.Reflection.ParameterInfo[],System.Type[])">
+            <summary>
+            Determines if the given types can be coerced to match the given parameters.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Reflect.CanImplicitlyConvertTo(System.Type,System.Type)">
+            <summary>
+            Determines whether the current type can be implicitly converted to the specified type.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.Reflect.InvokeMethod(System.Reflection.MethodInfo,System.Object)">
@@ -16540,6 +16840,14 @@
             <param name="type">See <see cref="M:System.Type.GetProperty(System.String,System.Reflection.BindingFlags)"/>.</param>
             <param name="name">See <see cref="M:System.Type.GetProperty(System.String,System.Reflection.BindingFlags)"/>.</param>
             <param name="bindingFlags">See <see cref="M:System.Type.GetProperty(System.String,System.Reflection.BindingFlags)"/>.</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.Reflect.GetNonGenericPublicInstanceMethod(System.Type,System.String,System.Type[])">
+            <summary>
+            Same as <c>GetMethod(<paramref name="name"/>, <see cref="F:System.Reflection.BindingFlags.Public"/> |
+            <see cref="F:System.Reflection.BindingFlags.Instance"/>, <see langword="null"/>, <paramref name="parameterTypes"/>,
+            <see langword="null"/>)</c> except that it also chooses only non-generic methods.
+            Useful for avoiding the <see cref="T:System.Reflection.AmbiguousMatchException"/> you can have with <c>GetMethod</c>.
+            </summary>
         </member>
         <member name="T:NUnit.Framework.Internal.TestCaseResult">
             <summary>
@@ -16640,7 +16948,7 @@
         </member>
         <member name="P:NUnit.Framework.Internal.TestResult.ResultState">
             <summary>
-            Gets the ResultState of the test result, which 
+            Gets the ResultState of the test result, which
             indicates the success or failure of the test.
             </summary>
         </member>
@@ -16955,6 +17263,9 @@
         <member name="F:NUnit.Framework.Internal.RuntimeType.MonoTouch">
             <summary>MonoTouch</summary>
         </member>
+        <member name="F:NUnit.Framework.Internal.RuntimeType.NetCore">
+            <summary>Microsoft .NET Core</summary>
+        </member>
         <member name="T:NUnit.Framework.Internal.RuntimeFramework">
             <summary>
             RuntimeFramework represents a particular version
@@ -17036,6 +17347,56 @@
             </summary>
             <param name="target">The RuntimeFramework to be matched.</param>
             <returns>True on match, otherwise false</returns>
+        </member>
+        <member name="T:NUnit.Framework.Internal.SandboxedThreadState">
+            <summary>
+            Holds thread state which is captured and restored in order to sandbox user code.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SandboxedThreadState.Capture">
+            <summary>
+            Captures a snapshot of the tracked state of the current thread to be restored later.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SandboxedThreadState.Restore">
+            <summary>
+            Restores the tracked state of the current thread to the previously captured state.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SandboxedThreadState.WithCulture(System.Globalization.CultureInfo)">
+            <summary>
+            Returns a copy with the specified culture.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SandboxedThreadState.WithUICulture(System.Globalization.CultureInfo)">
+            <summary>
+            Returns a copy with the specified UI culture.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SandboxedThreadState.WithPrincipal(System.Security.Principal.IPrincipal)">
+            <summary>
+            Returns a copy with the specified principal.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SingleThreadedTestSynchronizationContext.Post(System.Threading.SendOrPostCallback,System.Object)">
+            <summary>
+            May be called from any thread.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SingleThreadedTestSynchronizationContext.Send(System.Threading.SendOrPostCallback,System.Object)">
+            <summary>
+            May be called from any thread.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SingleThreadedTestSynchronizationContext.ShutDown">
+            <summary>
+            May be called from any thread.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SingleThreadedTestSynchronizationContext.Run">
+            <summary>
+            May be called from any thread, but may only be called once.
+            </summary>
         </member>
         <member name="T:NUnit.Framework.Internal.StackFilter">
             <summary>
@@ -17200,24 +17561,9 @@
             The number of assertions for the current test
             </summary>
         </member>
-        <member name="F:NUnit.Framework.Internal.TestExecutionContext._currentCulture">
-            <summary>
-            The current culture
-            </summary>
-        </member>
-        <member name="F:NUnit.Framework.Internal.TestExecutionContext._currentUICulture">
-            <summary>
-            The current UI culture
-            </summary>
-        </member>
         <member name="F:NUnit.Framework.Internal.TestExecutionContext._currentResult">
             <summary>
             The current test result
-            </summary>
-        </member>
-        <member name="F:NUnit.Framework.Internal.TestExecutionContext._currentPrincipal">
-            <summary>
-            The current Principal.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.TestExecutionContext.#ctor">
@@ -17393,6 +17739,13 @@
             </summary>
             <param name="formatterFactory">The new factory</param>
         </member>
+        <member name="M:NUnit.Framework.Internal.TestExecutionContext.SendMessage(System.String,System.String)">
+            <summary>
+            Sends a message from test to listeners. This message is not kind of test output and doesn't go to test result.
+            </summary>
+            <param name="destination">A name recognized by the intended listeners.</param>
+            <param name="message">A message to be sent</param>
+        </member>
         <member name="M:NUnit.Framework.Internal.TestExecutionContext.InitializeLifetimeService">
             <summary>
             Obtain lifetime service object
@@ -17430,7 +17783,7 @@
             <summary>
             An AdhocTestExecutionContext is created whenever a context is needed
             but not available in CurrentContext. This happens when tests are run
-            on an adoc basis or Asserts are used outside of tests.
+            on an ad-hoc basis or Asserts are used outside of tests.
             </summary>
         </member>
         <member name="M:NUnit.Framework.Internal.TestExecutionContext.AdhocContext.#ctor">
@@ -17615,6 +17968,12 @@
             </summary>
             <param name="output">A TestOutput object containing the text to display</param>
         </member>
+        <member name="M:NUnit.Framework.Internal.TestListener.SendMessage(NUnit.Framework.Interfaces.TestMessage)">
+            <summary>
+            Called when a test produces a message to be sent to listeners
+            </summary>
+            <param name="message">A <see cref="T:NUnit.Framework.Interfaces.TestMessage"/> object containing the message to send</param>
+        </member>
         <member name="M:NUnit.Framework.Internal.TestListener.#ctor">
             <summary>
             Construct a new TestListener - private so it may not be used.
@@ -17726,6 +18085,11 @@
             used for display purposes.
             </summary>
         </member>
+        <member name="P:NUnit.Framework.Internal.TestParameters.ArgDisplayNames">
+            <summary>
+            The list of display names to use as the parameters in the test name.
+            </summary>
+        </member>
         <member name="T:NUnit.Framework.Internal.TestProgressReporter">
             <summary>
             TestProgressReporter translates ITestListener events into
@@ -17758,6 +18122,12 @@
             </summary>
             <param name="output">A TestOutput object containing the text to display</param>
         </member>
+        <member name="M:NUnit.Framework.Internal.TestProgressReporter.SendMessage(NUnit.Framework.Interfaces.TestMessage)">
+            <summary>
+            Called when a test produces a message to be sent to listeners
+            </summary>
+            <param name="message">A <see cref="T:NUnit.Framework.Interfaces.TestMessage"/> object containing the text to send</param>
+        </member>
         <member name="M:NUnit.Framework.Internal.TestProgressReporter.GetParent(NUnit.Framework.Interfaces.ITest)">
             <summary>
             Returns the parent test item for the target test item if it exists
@@ -17776,7 +18146,7 @@
         </member>
         <member name="T:NUnit.Framework.Internal.ParameterizedFixtureSuite">
             <summary>
-            ParameterizedFixtureSuite serves as a container for the set of test 
+            ParameterizedFixtureSuite serves as a container for the set of test
             fixtures created from a given Type using various parameters.
             </summary>
         </member>
@@ -17786,11 +18156,23 @@
             </summary>
             <param name="typeInfo">The ITypeInfo for the type that represents the suite.</param>
         </member>
+        <member name="M:NUnit.Framework.Internal.ParameterizedFixtureSuite.#ctor(NUnit.Framework.Internal.ParameterizedFixtureSuite,NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a copy of the given suite with only the descendants that pass the specified filter.
+            </summary>
+            <param name="suite">The <see cref="T:NUnit.Framework.Internal.ParameterizedFixtureSuite"/> to copy.</param>
+            <param name="filter">Determines which descendants are copied.</param>
+        </member>
         <member name="P:NUnit.Framework.Internal.ParameterizedFixtureSuite.TestType">
             <summary>
             Gets a string representing the type of test
             </summary>
-            <value></value>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ParameterizedFixtureSuite.Copy(NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a filtered copy of the test suite.
+            </summary>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="T:NUnit.Framework.Internal.ParameterizedMethodSuite">
             <summary>
@@ -17800,15 +18182,26 @@
         </member>
         <member name="M:NUnit.Framework.Internal.ParameterizedMethodSuite.#ctor(NUnit.Framework.Interfaces.IMethodInfo)">
             <summary>
-            Construct from a MethodInfo
+            Initializes a new instance of the <see cref="T:NUnit.Framework.Internal.ParameterizedMethodSuite"/> class.
             </summary>
-            <param name="method"></param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ParameterizedMethodSuite.#ctor(NUnit.Framework.Internal.ParameterizedMethodSuite,NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a copy of the given suite with only the descendants that pass the specified filter.
+            </summary>
+            <param name="suite">The <see cref="T:NUnit.Framework.Internal.ParameterizedMethodSuite"/> to copy.</param>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="P:NUnit.Framework.Internal.ParameterizedMethodSuite.TestType">
             <summary>
             Gets a string representing the type of test
             </summary>
-            <value></value>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ParameterizedMethodSuite.Copy(NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a filtered copy of the test suite.
+            </summary>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="T:NUnit.Framework.Internal.SetUpFixture">
             <summary>
@@ -17820,7 +18213,19 @@
             <summary>
             Initializes a new instance of the <see cref="T:NUnit.Framework.Internal.SetUpFixture"/> class.
             </summary>
-            <param name="type">The type.</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SetUpFixture.#ctor(NUnit.Framework.Internal.SetUpFixture,NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a copy of the given suite with only the descendants that pass the specified filter.
+            </summary>
+            <param name="setUpFixture">The <see cref="T:NUnit.Framework.Internal.SetUpFixture"/> to copy.</param>
+            <param name="filter">Determines which descendants are copied.</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.SetUpFixture.Copy(NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a filtered copy of the test suite.
+            </summary>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="T:NUnit.Framework.Internal.Test">
             <summary>
@@ -17833,7 +18238,7 @@
             uninitialized ids will stand out.
             </summary>
         </member>
-        <member name="F:NUnit.Framework.Internal.Test.DeclaringTypeInfo">
+        <member name="F:NUnit.Framework.Internal.Test._declaringTypeInfo">
             <summary>
             Used to cache the declaring type for this MethodInfo
             </summary>
@@ -17859,15 +18264,13 @@
         </member>
         <member name="M:NUnit.Framework.Internal.Test.#ctor(NUnit.Framework.Interfaces.ITypeInfo)">
             <summary>
-             TODO: Documentation needed for constructor
+            Constructs a test for a specific type.
             </summary>
-            <param name="typeInfo"></param>
         </member>
         <member name="M:NUnit.Framework.Internal.Test.#ctor(NUnit.Framework.Interfaces.IMethodInfo)">
             <summary>
-            Construct a test from a MethodInfo
+            Constructs a test for a specific method.
             </summary>
-            <param name="method"></param>
         </member>
         <member name="P:NUnit.Framework.Internal.Test.Id">
             <summary>
@@ -18003,12 +18406,11 @@
         <member name="M:NUnit.Framework.Internal.Test.ApplyAttributesToTest(System.Reflection.ICustomAttributeProvider)">
             <summary>
             Modify a newly constructed test by applying any of NUnit's common
-            attributes, based on a supplied ICustomAttributeProvider, which is
+            attributes, based on a supplied <see cref="T:System.Reflection.ICustomAttributeProvider"/>, which is
             usually the reflection element from which the test was constructed,
             but may not be in some instances. The attributes retrieved are
             saved for use in subsequent operations.
             </summary>
-            <param name="provider">An object implementing ICustomAttributeProvider</param>
         </member>
         <member name="M:NUnit.Framework.Internal.Test.MakeInvalid(System.String)">
             <summary>
@@ -18060,25 +18462,28 @@
         <member name="M:NUnit.Framework.Internal.TestAssembly.#ctor(System.Reflection.Assembly,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:NUnit.Framework.Internal.TestAssembly"/> class
-            specifying the Assembly and the path from which it was loaded.
+            specifying the Assembly and the suite name.
             </summary>
             <param name="assembly">The assembly this test represents.</param>
-            <param name="path">The path used to load the assembly.</param>
+            <param name="assemblyNameOrPath">
+            This becomes the full name of the suite and the filename part is used as the suite name.
+            </param>
         </member>
         <member name="M:NUnit.Framework.Internal.TestAssembly.#ctor(System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:NUnit.Framework.Internal.TestAssembly"/> class
-            for a path which could not be loaded.
+            specifying the suite name for an assembly that could not be loaded.
             </summary>
-            <param name="path">The path used to load the assembly.</param>
+            <param name="assemblyNameOrPath">
+            This becomes the full name of the suite and the filename part is used as the suite name.
+            </param>
         </member>
         <member name="M:NUnit.Framework.Internal.TestAssembly.#ctor(NUnit.Framework.Internal.TestAssembly,NUnit.Framework.Interfaces.ITestFilter)">
             <summary>
-            Copy-constructor style to create a filtered copy of the test assemblies
-            test cases
+            Creates a copy of the given assembly with only the descendants that pass the specified filter.
             </summary>
-            <param name="assembly"></param>
-            <param name="filter"></param>
+            <param name="assembly">The <see cref="T:NUnit.Framework.Internal.TestAssembly"/> to copy.</param>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="P:NUnit.Framework.Internal.TestAssembly.Assembly">
             <summary>
@@ -18096,6 +18501,12 @@
             Get custom attributes specified on the assembly
             </summary>
         </member>
+        <member name="M:NUnit.Framework.Internal.TestAssembly.Copy(NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a filtered copy of the test suite.
+            </summary>
+            <param name="filter">Determines which descendants are copied.</param>
+        </member>
         <member name="T:NUnit.Framework.Internal.TestFixture">
             <summary>
             TestFixture is a surrogate for a user test fixture class,
@@ -18108,6 +18519,19 @@
             </summary>
             <param name="fixtureType">Type of the fixture.</param>
             <param name="arguments">Arguments used to instantiate the test fixture, or null if none used</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.TestFixture.#ctor(NUnit.Framework.Internal.TestFixture,NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a copy of the given suite with only the descendants that pass the specified filter.
+            </summary>
+            <param name="fixture">The <see cref="T:NUnit.Framework.Internal.TestFixture"/> to copy.</param>
+            <param name="filter">Determines which descendants are copied.</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.TestFixture.Copy(NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a filtered copy of the test suite.
+            </summary>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="T:NUnit.Framework.Internal.TestMethod">
             <summary>
@@ -18213,10 +18637,10 @@
         </member>
         <member name="M:NUnit.Framework.Internal.TestSuite.#ctor(NUnit.Framework.Internal.TestSuite,NUnit.Framework.Interfaces.ITestFilter)">
             <summary>
-            Copy constructor style to create a filtered copy of the given test suite
+            Creates a copy of the given suite with only the descendants that pass the specified filter.
             </summary>
-            <param name="suite">Test Suite to copy</param>
-            <param name="filter">Filter to be applied</param>
+            <param name="suite">The <see cref="T:NUnit.Framework.Internal.TestSuite"/> to copy.</param>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="M:NUnit.Framework.Internal.TestSuite.Sort">
             <summary>
@@ -18228,6 +18652,12 @@
             Adds a test to the suite.
             </summary>
             <param name="test">The test.</param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.TestSuite.Copy(NUnit.Framework.Interfaces.ITestFilter)">
+            <summary>
+            Creates a filtered copy of the test suite.
+            </summary>
+            <param name="filter">Determines which descendants are copied.</param>
         </member>
         <member name="P:NUnit.Framework.Internal.TestSuite.Tests">
             <summary>
@@ -18356,12 +18786,6 @@
             TypeHelper provides static methods that operate on Types.
             </summary>
         </member>
-        <member name="F:NUnit.Framework.Internal.TypeHelper.NonmatchingType">
-            <summary>
-            A special value, which is used to indicate that BestCommonType() method
-            was unable to find a common type for the specified arguments.
-            </summary>
-        </member>
         <member name="M:NUnit.Framework.Internal.TypeHelper.GetDisplayName(System.Type)">
             <summary>
             Gets the display name for a Type as used by NUnit.
@@ -18377,14 +18801,11 @@
             <param name="arglist">The arglist provided.</param>
             <returns>The display name for the Type</returns>
         </member>
-        <member name="M:NUnit.Framework.Internal.TypeHelper.BestCommonType(System.Type,System.Type)">
+        <member name="M:NUnit.Framework.Internal.TypeHelper.TryGetBestCommonType(System.Type,System.Type,System.Type@)">
             <summary>
             Returns the best fit for a common type to be used in
             matching actual arguments to a methods Type parameters.
             </summary>
-            <param name="type1">The first type.</param>
-            <param name="type2">The second type.</param>
-            <returns>Either type1 or type2, depending on which is more general.</returns>
         </member>
         <member name="M:NUnit.Framework.Internal.TypeHelper.IsNumeric(System.Type)">
             <summary>
@@ -18514,8 +18935,8 @@
             Reconstruct a generic type name using the provided generic type name, and a
             <see cref="T:NUnit.Framework.List"/> of the template parameters.
             </summary>
-            <param name="GenericTypeName">The name of the generic type, including the number of template parameters expected.</param>
-            <param name="TemplateParamNames">A <see cref="T:NUnit.Framework.List"/> of names of the template parameters of the provided generic type.</param>
+            <param name="genericTypeName">The name of the generic type, including the number of template parameters expected.</param>
+            <param name="templateParamNames">A <see cref="T:NUnit.Framework.List"/> of names of the template parameters of the provided generic type.</param>
         </member>
         <member name="M:NUnit.Framework.Internal.TypeNameDifferenceResolver.GetShortenedGenericTypes(System.Type,System.Type,System.String@,System.String@)">
             <summary>
@@ -18666,6 +19087,85 @@
         <member name="M:NUnit.Framework.Internal.TypeWrapper.ToString">
             <summary>
             Override ToString() so that error messages in NUnit's own tests make sense
+            </summary>
+        </member>
+        <member name="T:NUnit.Framework.Internal.ValueGenerator.Step">
+            <summary>
+            Encapsulates the ability to increment a value by an amount which may be of a different type.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ValueGenerator.CreateStep(System.Object)">
+            <summary>
+            Creates a <see cref="T:NUnit.Framework.Internal.ValueGenerator.Step"/> from the specified value if the current instance is able to
+            use it to increment the on values which it operates. If the creation fails,
+            <see cref="T:System.NotSupportedException"/> is thrown.
+            </summary>
+            <exception cref="T:System.NotSupportedException"/>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ValueGenerator.TryCreateStep(System.Object,NUnit.Framework.Internal.ValueGenerator.Step@)">
+            <summary>
+            Creates a <see cref="T:NUnit.Framework.Internal.ValueGenerator.Step"/> from the specified value if the current instance is able to
+            use it to increment values on which it operates. A return value indicates
+            whether the creation succeeded.
+            </summary>
+        </member>
+        <member name="T:NUnit.Framework.Internal.ValueGenerator`1.ComparableStep`1">
+            <summary>
+            Provides a convenient shorthand when <typeparamref name="TStep"/> is <see cref="T:System.IComparable`1"/>
+            and the default value of <typeparamref name="TStep"/> represents zero.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ValueGenerator`1.ComparableStep`1.#ctor(`1,System.Func{`0,`1,`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:NUnit.Framework.Internal.ValueGenerator`1.ComparableStep`1"/> class.
+            </summary>
+            <param name="value">The amount by which to increment each time this step is applied.</param>
+            <param name="apply">
+            Must increment the given value and return the result.
+            If the result is outside the range representable by <typeparamref name="T"/>,
+            must throw <see cref="T:System.OverflowException"/>. If the result does not change due to lack
+            of precision representable by <typeparamref name="T"/>, must throw <see cref="T:System.ArithmeticException"/>.
+            </param>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ValueGenerator`1.ComparableStep`1.Apply(`0)">
+            <summary>
+            Increments the given value and returns the result.
+            If the result is outside the range representable by <typeparamref name="T"/>,
+            throws <see cref="T:System.OverflowException"/>. If the result does not change due to lack
+            of precision representable by <typeparamref name="T"/>, throws <see cref="T:System.ArithmeticException"/>.
+            </summary>
+            <exception cref="T:System.OverflowException"/>
+            <exception cref="T:System.ArithmeticException"/>
+        </member>
+        <member name="T:NUnit.Framework.Internal.ValueGenerator`1.Step">
+            <summary>
+            Encapsulates the ability to increment a <typeparamref name="T"/> value by an amount
+            which may be of a different type.
+            </summary>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ValueGenerator`1.Step.Apply(`0)">
+            <summary>
+            Increments the given value and returns the result.
+            If the result is outside the range representable by <typeparamref name="T"/>,
+            throws <see cref="T:System.OverflowException"/>. If the result does not change due to lack
+            of precision representable by <typeparamref name="T"/>, throws <see cref="T:System.ArithmeticException"/>.
+            </summary>
+            <exception cref="T:System.OverflowException"/>
+            <exception cref="T:System.ArithmeticException"/>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ValueGenerator`1.CreateStep(System.Object)">
+            <summary>
+            Creates a <see cref="T:NUnit.Framework.Internal.ValueGenerator`1.Step"/> from the specified value if the current instance is able to
+            use it to increment values of type <typeparamref name="T"/>. If the creation fails,
+            <see cref="T:System.NotSupportedException"/> is thrown.
+            </summary>
+            <exception cref="T:System.NotSupportedException"/>
+        </member>
+        <member name="M:NUnit.Framework.Internal.ValueGenerator`1.TryCreateStep(System.Object,NUnit.Framework.Internal.ValueGenerator.Step@)">
+            <summary>
+            Creates a <see cref="T:NUnit.Framework.Internal.ValueGenerator`1.Step"/> from the specified value if the current instance is able to
+            use it to increment values of type <typeparamref name="T"/>. A return value indicates
+            whether the creation succeeded.
             </summary>
         </member>
         <member name="T:NUnit.Framework.Is">
@@ -18964,7 +19464,7 @@
         <member name="M:NUnit.Framework.StringAssert.Equals(System.Object,System.Object)">
             <summary>
             DO NOT USE! Use StringAssert.AreEqualIgnoringCase(...) or Assert.AreEqual(...) instead.
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -18973,7 +19473,7 @@
         <member name="M:NUnit.Framework.StringAssert.ReferenceEquals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The ReferenceEquals method throws an InvalidOperationException. This is done 
+            The ReferenceEquals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a"></param>
@@ -19187,6 +19687,11 @@
             </summary>
             <returns>The modified TestCaseData instance</returns>
         </member>
+        <member name="M:NUnit.Framework.TestCaseData.SetArgDisplayNames(System.String[])">
+            <summary>
+            Sets the list of display names to use as the parameters in the test name.
+            </summary>
+        </member>
         <member name="M:NUnit.Framework.TestCaseData.SetDescription(System.String)">
             <summary>
             Sets the description for the test case
@@ -19333,7 +19838,7 @@
         </member>
         <member name="P:NUnit.Framework.TestContext.CurrentRepeatCount">
             <summary>
-            Get the number of times the current Test has been repeated. This is currently only 
+            Get the number of times the current Test has been repeated. This is currently only
             set when using the <see cref="T:NUnit.Framework.RetryAttribute"/>.
             TODO: add this to the RepeatAttribute as well
             </summary>
@@ -19460,7 +19965,7 @@
             is the only criterion for selection of the formatter, since
             it can be used without getting involved with a compound function.
             </summary>
-            <typeparam name="TSUPPORTED">The type supported by this formatter</typeparam>
+            <typeparam name="TSupported">The type supported by this formatter</typeparam>
             <param name="formatter">The ValueFormatter delegate</param>
         </member>
         <member name="T:NUnit.Framework.TestContext.TestAdapter">
@@ -19658,6 +20163,11 @@
             </summary>
             <returns>The modified TestFixtureData instance</returns>
         </member>
+        <member name="M:NUnit.Framework.TestFixtureData.SetArgDisplayNames(System.String[])">
+            <summary>
+            Sets the list of display names to use as the parameters in the test name.
+            </summary>
+        </member>
         <member name="M:NUnit.Framework.TestFixtureData.Explicit">
             <summary>
             Marks the test fixture as explicit.
@@ -19798,7 +20308,7 @@
         </member>
         <member name="T:NUnit.Framework.Warn">
             <summary>
-            Provides static methods to express conditions 
+            Provides static methods to express conditions
             that must be met for the test to succeed. If
             any test fails, a warning is issued.
             </summary>
@@ -19806,7 +20316,7 @@
         <member name="M:NUnit.Framework.Warn.Equals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The Equals method throws an InvalidOperationException. This is done 
+            The Equals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a">The left object.</param>
@@ -19816,7 +20326,7 @@
         <member name="M:NUnit.Framework.Warn.ReferenceEquals(System.Object,System.Object)">
             <summary>
             DO NOT USE!
-            The ReferenceEquals method throws an InvalidOperationException. This is done 
+            The ReferenceEquals method throws an InvalidOperationException. This is done
             to make sure there is no mistake by calling this function.
             </summary>
             <param name="a">The left object.</param>
@@ -19855,21 +20365,21 @@
         <member name="M:NUnit.Framework.Warn.Unless(System.Boolean,System.String,System.Object[])">
             <summary>
             Asserts that a condition is true. If the condition is false a warning is issued.
-            </summary> 
+            </summary>
             <param name="condition">The evaluated condition</param>
             <param name="message">The message to display if the condition is false</param>
             <param name="args">Arguments to be used in formatting the message</param>
         </member>
         <member name="M:NUnit.Framework.Warn.Unless(System.Boolean)">
             <summary>
-            Asserts that a condition is true. If the condition is false a warning is issued. 
+            Asserts that a condition is true. If the condition is false a warning is issued.
             </summary>
             <param name="condition">The evaluated condition</param>
         </member>
         <member name="M:NUnit.Framework.Warn.Unless(System.Boolean,System.Func{System.String})">
             <summary>
             Asserts that a condition is true. If the condition is false a warning is issued.
-            </summary> 
+            </summary>
             <param name="condition">The evaluated condition</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
@@ -19877,7 +20387,7 @@
             <summary>
             Asserts that a condition is true. If the condition is false the method throws
             an <see cref="T:NUnit.Framework.InconclusiveException"/>.
-            </summary> 
+            </summary>
             <param name="condition">A lambda that returns a Boolean</param>
             <param name="message">The message to display if the condition is false</param>
             <param name="args">Arguments to be used in formatting the message</param>
@@ -19893,7 +20403,7 @@
             <summary>
             Asserts that a condition is true. If the condition is false the method throws
             an <see cref="T:NUnit.Framework.InconclusiveException"/>.
-            </summary> 
+            </summary>
             <param name="condition">A lambda that returns a Boolean</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
@@ -19903,7 +20413,7 @@
             that satisfies the constraint provided.
             </summary>
             <param name="code">A TestDelegate to be executed</param>
-            <param name="constraint">A ThrowsConstraint used in the test</param>
+            <param name="constraint">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.Warn.Unless``1(``0,NUnit.Framework.Constraints.IResolveConstraint)">
             <summary>
@@ -19912,7 +20422,7 @@
             </summary>
             <typeparam name="TActual">The Type being compared.</typeparam>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.Warn.Unless``1(``0,NUnit.Framework.Constraints.IResolveConstraint,System.String,System.Object[])">
             <summary>
@@ -19932,7 +20442,7 @@
             </summary>
             <typeparam name="TActual">The Type being compared.</typeparam>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
         <member name="M:NUnit.Framework.Warn.If``1(NUnit.Framework.Constraints.ActualValueDelegate{``0},NUnit.Framework.Constraints.IResolveConstraint)">
@@ -19968,28 +20478,28 @@
         <member name="M:NUnit.Framework.Warn.If(System.Boolean,System.String,System.Object[])">
             <summary>
             Asserts that a condition is true. If the condition is false a warning is issued.
-            </summary> 
+            </summary>
             <param name="condition">The evaluated condition</param>
             <param name="message">The message to display if the condition is false</param>
             <param name="args">Arguments to be used in formatting the message</param>
         </member>
         <member name="M:NUnit.Framework.Warn.If(System.Boolean)">
             <summary>
-            Asserts that a condition is true. If the condition is false a warning is issued. 
+            Asserts that a condition is true. If the condition is false a warning is issued.
             </summary>
             <param name="condition">The evaluated condition</param>
         </member>
         <member name="M:NUnit.Framework.Warn.If(System.Boolean,System.Func{System.String})">
             <summary>
             Asserts that a condition is true. If the condition is false a warning is issued.
-            </summary> 
+            </summary>
             <param name="condition">The evaluated condition</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
         <member name="M:NUnit.Framework.Warn.If(System.Func{System.Boolean},System.String,System.Object[])">
             <summary>
             Asserts that a condition is false. If the condition is true a warning is issued.
-            </summary> 
+            </summary>
             <param name="condition">A lambda that returns a Boolean</param>
             <param name="message">The message to display if the condition is true</param>
             <param name="args">Arguments to be used in formatting the message</param>
@@ -20003,7 +20513,7 @@
         <member name="M:NUnit.Framework.Warn.If(System.Func{System.Boolean},System.Func{System.String})">
             <summary>
             Asserts that a condition is false. If the condition is true a warning is issued.
-            </summary> 
+            </summary>
             <param name="condition">A lambda that returns a Boolean</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
@@ -20014,7 +20524,7 @@
             </summary>
             <typeparam name="TActual">The Type being compared.</typeparam>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
         </member>
         <member name="M:NUnit.Framework.Warn.If``1(``0,NUnit.Framework.Constraints.IResolveConstraint,System.String,System.Object[])">
             <summary>
@@ -20034,7 +20544,7 @@
             </summary>
             <typeparam name="TActual">The Type being compared.</typeparam>
             <param name="actual">The actual value to test</param>
-            <param name="expression">A Constraint to be applied</param>
+            <param name="expression">A Constraint expression to be applied</param>
             <param name="getExceptionMessage">A function to build the message included with the Exception</param>
         </member>
         <member name="T:NUnit.FrameworkPackageSettings">
@@ -20154,53 +20664,6 @@
         <member name="M:NUnit.Compatibility.LongLivedMarshalByRefObject.InitializeLifetimeService">
             <summary>
             Obtains a lifetime service object to control the lifetime policy for this instance.
-            </summary>
-        </member>
-        <member name="T:NUnit.Compatibility.MemberInfoExtensions">
-            <summary>
-            Extensions to the various MemberInfo derived classes
-            </summary>
-        </member>
-        <member name="M:NUnit.Compatibility.MemberInfoExtensions.GetAttributes``1(System.Reflection.MemberInfo,System.Boolean)">
-            <summary>
-            Returns an array of custom attributes of the specified type applied to this member
-            </summary>
-        </member>
-        <member name="M:NUnit.Compatibility.MemberInfoExtensions.GetAttributes``1(System.Reflection.ParameterInfo,System.Boolean)">
-            <summary>
-            Returns an array of custom attributes of the specified type applied to this parameter
-            </summary>
-        </member>
-        <member name="M:NUnit.Compatibility.MemberInfoExtensions.GetAttributes``1(System.Reflection.Assembly)">
-            <summary>
-            Returns an array of custom attributes of the specified type applied to this assembly
-            </summary>
-        </member>
-        <member name="T:NUnit.Compatibility.AdditionalTypeExtensions">
-            <summary>
-            Type extensions that apply to all target frameworks
-            </summary>
-        </member>
-        <member name="M:NUnit.Compatibility.AdditionalTypeExtensions.ParametersMatch(System.Reflection.ParameterInfo[],System.Type[])">
-            <summary>
-            Determines if the given <see cref="T:System.Type"/> array is castable/matches the <see cref="T:System.Reflection.ParameterInfo"/> array.
-            </summary>
-            <param name="pinfos"></param>
-            <param name="ptypes"></param>
-            <returns></returns>
-        </member>
-        <member name="M:NUnit.Compatibility.AdditionalTypeExtensions.IsCastableFrom(System.Type,System.Type)">
-            <summary>
-            Determines if one type can be implicitly converted from another
-            </summary>
-            <param name="to"></param>
-            <param name="from"></param>
-            <returns></returns>
-        </member>
-        <member name="T:NUnit.Compatibility.NUnitNullType">
-            <summary>
-            This class is used as a flag when we get a parameter list for a method/constructor, but
-            we do not know one of the types because null was passed in.
             </summary>
         </member>
     </members>
