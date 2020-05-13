@@ -330,7 +330,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("TrimMs1Peaks = " + metaMorpheusParameters.getTrimMs1Peaks() + System.getProperty("line.separator"));
             bw.write("TrimMsMsPeaks = " + metaMorpheusParameters.getTrimMsMsPeaks() + System.getProperty("line.separator"));
             bw.write("UseDeltaScore = " + metaMorpheusParameters.getUseDeltaScore() + System.getProperty("line.separator"));
-            bw.write("QValueOutputFilter = 1.0" + System.getProperty("line.separator"));
+            bw.write("QValueOutputFilter = 0.0" + System.getProperty("line.separator"));
             bw.write("CustomIons = []" + System.getProperty("line.separator"));
             bw.write("AssumeOrphanPeaksAreZ1Fragments = true" + System.getProperty("line.separator"));
             bw.write("MaxHeterozygousVariants = " + metaMorpheusParameters.getMaxHeterozygousVariants() + System.getProperty("line.separator"));
