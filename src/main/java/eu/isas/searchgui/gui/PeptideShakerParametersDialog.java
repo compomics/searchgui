@@ -520,12 +520,12 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         }
 
         File selectedFile = FileChooserUtil.getUserSelectedFile(
-                this, 
-                ".psdb", 
-                "Compomics Peptide Shaker format (*.psdb)", 
+                this,
+                ".psdb",
+                "Compomics Peptide Shaker format (*.psdb)",
                 "Select PeptideShaker Output",
-                searchGUI.getLastSelectedFolder().getLastSelectedFolder(), 
-                "PeptideShaker_output.psdb", 
+                searchGUI.getLastSelectedFolder().getLastSelectedFolder(),
+                "PeptideShaker_output.psdb",
                 false
         );
 
@@ -667,7 +667,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_editProjectSettingsButtonActionPerformed
 
     /**
-     * Validate if the user input.
+     * Validate the user input.
      *
      * @param evt
      */
@@ -865,11 +865,11 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         if (installPath == null) {
             installPath = "user.home";
             downloadFolder = FileChooserUtil.getUserSelectedFolder(
-                    this, 
-                    "Select PeptideShaker Folder", 
-                    installPath, 
-                    "PeptideShaker Folder", 
-                    "Select", 
+                    this,
+                    "Select PeptideShaker Folder",
+                    installPath,
+                    "PeptideShaker Folder",
+                    "Select",
                     false
             );
         } else {

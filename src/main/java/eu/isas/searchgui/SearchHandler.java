@@ -3679,6 +3679,14 @@ public class SearchHandler {
                         cmsAndMsFiles.addAll(cmsFiles);
                         cmsAndMsFiles.addAll(msFiles);
 
+                        // add date to the PeptideShaker file name
+                        if (utilitiesUserParameters.isIncludeDateInOutputName()) {
+                            peptideShakerFile = new File(
+                                    peptideShakerFile.getParentFile(),
+                                    IoUtil.removeExtension(
+                                            peptideShakerFile.getName()) + "_" + outputTimeStamp + ".psdb");
+                        }
+
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                 waitingHandler,
                                 exceptionHandler,
