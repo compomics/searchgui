@@ -2510,10 +2510,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void addSpectraButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSpectraButtonActionPerformed
-
-        // First check whether a file has already been selected.
-        // If so, start from that file's parent.
-        File startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
+ 
+        // find the last used spectrum folder
+        File startLocation = utilitiesUserParameters.getSpectrumFolder();
+        if (startLocation == null) {
+            startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
+        }
         if (spectrumFiles.size() > 0) {
             File temp = spectrumFiles.get(0);
             startLocation = temp.getParentFile();
@@ -2610,7 +2612,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 }
                             }
 
-                            lastSelectedFolder.setLastSelectedFolder(newFile.getAbsolutePath());
+                            utilitiesUserParameters.setSpectrumFolder(newFile);
 
                         } else {
 
@@ -2632,7 +2634,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 }
                             }
 
-                            lastSelectedFolder.setLastSelectedFolder(newFile.getParent());
+                            utilitiesUserParameters.setSpectrumFolder(newFile);
 
                         }
                     }
@@ -2746,6 +2748,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     int nFiles = spectrumFiles.size() + rawFiles.size();
                     spectrumFilesTxt.setText(nFiles + " file(s) selected");
 
+                    UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
+                    
                     validateInput(false);
 
                 }
@@ -2760,9 +2764,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void editResultFolderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editResultFolderButtonActionPerformed
 
-        // First check whether a file has already been selected.
-        // If so, start from that file's parent.
-        File startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
+        // find the last used output folder
+        File startLocation = utilitiesUserParameters.getOutputFolder();
+        if (startLocation == null) {
+            startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
+        }
+
         if (outputFolderTxt.getText() != null && new File(outputFolderTxt.getText()).exists()) {
             File temp = new File(outputFolderTxt.getText());
             if (temp.isDirectory()) {
@@ -2829,9 +2836,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             // set the peptideshaker output file
-            searchHandler.setPeptideShakerFile(new File(outputFolder, "PeptideShaker_output.psdb"));
+            searchHandler.setPeptideShakerFile(new File(outputFolder, "PeptideShaker-output.psdb"));
 
+            utilitiesUserParameters.setOutputFolder(outputFolder);
             lastSelectedFolder.setLastSelectedFolder(outputFolder.getAbsolutePath());
+            UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
+            
             validateInput(false);
 
         }
