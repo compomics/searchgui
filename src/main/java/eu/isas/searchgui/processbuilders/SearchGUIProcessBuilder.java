@@ -180,23 +180,53 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
 
                     int numberOfEmptyLines = 0;
                     boolean ignoreOutput = false;
+                    boolean lastProgressCounter = false;
+                    boolean currentlyCountingProgress = false;
+
+                    String currentText = "";
 
                     // get input from scanner, send to std out and text box
                     while (scanner.hasNext() && !waitingHandler.isRunCanceled()) {
 
                         String temp = scanner.next();
-                        
-                        if (!ignoreOutput) { // @TODO: improve the parsing of the remaining content
+
+                        if (!currentlyCountingProgress) {
+
+                            currentText += temp + " ";
+
+                            if (currentText.lastIndexOf("Starting task: Task1GptmdTask") != -1) {
+                                currentText = "";
+                                waitingHandler.setMaxSecondaryProgressCounter(200);
+                            } else if (currentText.lastIndexOf("Finished task: Task1GptmdTask") != -1) {
+                                temp = "Finished task: Task1GptmdTask";
+                                currentText = "";
+                                ignoreOutput = false;
+                            } else if (currentText.lastIndexOf("Starting task: Task1SearchTask") != -1
+                                    || currentText.lastIndexOf("Starting task: Task2SearchTask") != -1) {
+                                currentText = "";
+                                lastProgressCounter = true;
+                            }
+                        }
+
+                        if (!ignoreOutput) {
 
                             if (!temp.isEmpty()) {
 
                                 if (temp.matches("[1-9]?\\d") || temp.equalsIgnoreCase("100")) {
                                     waitingHandler.increaseSecondaryProgressCounter(1);
 
+                                    currentlyCountingProgress = true;
+
                                     if (Integer.parseInt(temp) == 99 || Integer.parseInt(temp) == 100) {
-                                        waitingHandler.setSecondaryProgressCounterIndeterminate(true);
-                                        waitingHandler.appendReport("Writing MetaMorpheus output.", false, true);
+
+                                        currentlyCountingProgress = false;
+
                                         ignoreOutput = true;
+
+                                        if (lastProgressCounter) {
+                                            waitingHandler.setSecondaryProgressCounterIndeterminate(true);
+                                            waitingHandler.appendReport("Writing MetaMorpheus output.", false, true);
+                                        }
                                     }
 
                                 } else {

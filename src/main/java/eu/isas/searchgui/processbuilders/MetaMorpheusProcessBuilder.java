@@ -6,6 +6,7 @@ import com.compomics.util.experiment.biology.enzymes.Enzyme;
 import com.compomics.util.experiment.biology.ions.NeutralLoss;
 import com.compomics.util.experiment.biology.ions.impl.ReporterIon;
 import com.compomics.util.experiment.biology.modifications.Modification;
+import com.compomics.util.experiment.biology.modifications.ModificationCategory;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
@@ -26,6 +27,13 @@ import java.util.ArrayList;
  * @author Harald Barsnes
  */
 public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
+
+    /**
+     * The available MetaMorpheus task types.
+     */
+    public enum MetaMorpheusTaskType {
+        Search, Gptmd;
+    }
 
     /**
      * The MetaMorpheus folder.
@@ -125,8 +133,12 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         File metaMorpheusEnzymesFile = new File(metaMorpheusFolder, "ProteolyticDigestion" + File.separator + "proteases.tsv");
         createEnzymesFile(metaMorpheusEnzymesFile, searchParameters.getDigestionParameters());
 
-        // create parameters file
-        File metaMorpheusParametersFile = createParametersFile(searchParameters);
+        // create the parameter files
+        File metaMorpheusGptmdParameterFile = null;
+        if (metaMorpheusParameters.runGptm()) {
+            metaMorpheusGptmdParameterFile = createParameterFile(searchParameters, MetaMorpheusTaskType.Gptmd);
+        }
+        File metaMorpheusSearchParametersFile = createParameterFile(searchParameters, MetaMorpheusTaskType.Search);
 
         // add dotnet if not on windows
         if (!operatingSystem.contains("windows")) {
@@ -150,7 +162,10 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
         // the parameters file
         process_name_array.add("-t");
-        process_name_array.add(metaMorpheusParametersFile.getAbsolutePath());
+        if (metaMorpheusParameters.runGptm() && metaMorpheusGptmdParameterFile != null) {
+            process_name_array.add(metaMorpheusGptmdParameterFile.getAbsolutePath());
+        }
+        process_name_array.add(metaMorpheusSearchParametersFile.getAbsolutePath());
 
         // the output folder
         process_name_array.add("-o");
@@ -192,18 +207,19 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Create the parameters file.
+     * Creates a MetaMorpheus parameter file.
      *
      * @param searchParameters the file where to save the search parameters
+     * @param taskType the task type
      *
-     * @return the parameters file
+     * @return the parameter file
      *
      * @throws IOException exception thrown whenever an error occurred while
      * writing the configuration file
      */
-    private File createParametersFile(SearchParameters searchParameters) throws IOException {
+    private File createParameterFile(SearchParameters searchParameters, MetaMorpheusTaskType taskType) throws IOException {
 
-        File parameterFile = new File(metaMorpheusTempFolderPath, "SearchTask.toml");
+        File parameterFile = new File(metaMorpheusTempFolderPath, taskType.toString() + ".toml");
         BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
 
         try {
@@ -227,53 +243,69 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             // task type
-            bw.write("TaskType = \"Search\"" + System.getProperty("line.separator"));
+            bw.write("TaskType = \"" + taskType.toString() + "\"" + System.getProperty("line.separator"));
             bw.newLine();
+
+            //////////////////////////
+            // gptmd parameters
+            //////////////////////////
+            if (taskType == MetaMorpheusTaskType.Gptmd) {
+                bw.write("[GptmdParameters]" + System.getProperty("line.separator"));
+                bw.write("ListOfModsGptmd = \"");
+                writeModifications(modificationFactory.getModifications(ModificationCategory.Common_Biological), bw);
+                writeModifications(modificationFactory.getModifications(ModificationCategory.Common_Artifact), bw);
+                writeModifications(modificationFactory.getModifications(ModificationCategory.Metal), bw);
+                // @TODO: re-add the substitutions
+                //writeModifications(modificationFactory.getModifications(ModificationCategory.Nucleotide_Substitution_One), bw);
+                bw.write("\"" + System.getProperty("line.separator") + System.getProperty("line.separator"));
+            }
 
             //////////////////////////
             // search parameters
             //////////////////////////
-            bw.write("[SearchParameters]" + System.getProperty("line.separator"));
-            bw.write("DisposeOfFileWhenDone = false" + System.getProperty("line.separator"));
-            bw.write("DoParsimony = true" + System.getProperty("line.separator")); // NOTE: if false, the mzid file is not created!
-            bw.write("ModPeptidesAreDifferent = " + metaMorpheusParameters.getModPeptidesAreDifferent() + System.getProperty("line.separator"));
-            bw.write("NoOneHitWonders = " + metaMorpheusParameters.getNoOneHitWonders() + System.getProperty("line.separator"));
-            bw.write("MatchBetweenRuns = false" + System.getProperty("line.separator"));
-            bw.write("Normalize = false" + System.getProperty("line.separator"));
-            bw.write("QuantifyPpmTol = 5.0" + System.getProperty("line.separator"));
-            bw.write("DoHistogramAnalysis = false" + System.getProperty("line.separator"));
-            bw.write("SearchTarget = " + metaMorpheusParameters.getSearchTarget() + System.getProperty("line.separator"));
-            bw.write("DecoyType = \"" + metaMorpheusParameters.getDecoyType() + "\"" + System.getProperty("line.separator"));
-            bw.write("MassDiffAcceptorType = \"" + metaMorpheusParameters.getMassDiffAcceptorType() + "\"" + System.getProperty("line.separator"));
-            bw.write("WritePrunedDatabase = false" + System.getProperty("line.separator"));
-            bw.write("KeepAllUniprotMods = true" + System.getProperty("line.separator"));
-            bw.write("DoLocalizationAnalysis = true" + System.getProperty("line.separator"));
-            bw.write("DoQuantification = false" + System.getProperty("line.separator"));
-            bw.write("SearchType = \"" + metaMorpheusParameters.getSearchType() + "\"" + System.getProperty("line.separator"));
-            bw.write("LocalFdrCategories = [\"FullySpecific\"]" + System.getProperty("line.separator"));
-            bw.write("MaxFragmentSize = " + metaMorpheusParameters.getMaxFragmentSize() + System.getProperty("line.separator"));
-            bw.write("HistogramBinTolInDaltons = 0.003" + System.getProperty("line.separator"));
-            bw.write("MaximumMassThatFragmentIonScoreIsDoubled = 0.0" + System.getProperty("line.separator"));
-            bw.write("WriteMzId = " + metaMorpheusParameters.getWriteMzId() + System.getProperty("line.separator"));
-            bw.write("WritePepXml = " + metaMorpheusParameters.getWritePepXml() + System.getProperty("line.separator"));
-            bw.write("WriteDecoys = true" + System.getProperty("line.separator"));
-            bw.write("WriteContaminants = true" + System.getProperty("line.separator"));
-            bw.newLine();
+            if (taskType == MetaMorpheusTaskType.Search) {
+                bw.write("[SearchParameters]" + System.getProperty("line.separator"));
+                bw.write("DisposeOfFileWhenDone = false" + System.getProperty("line.separator"));
+                bw.write("DoParsimony = true" + System.getProperty("line.separator")); // NOTE: if false, the mzid file is not created!
+                bw.write("ModPeptidesAreDifferent = " + metaMorpheusParameters.getModPeptidesAreDifferent() + System.getProperty("line.separator"));
+                bw.write("NoOneHitWonders = " + metaMorpheusParameters.getNoOneHitWonders() + System.getProperty("line.separator"));
+                bw.write("MatchBetweenRuns = false" + System.getProperty("line.separator"));
+                bw.write("Normalize = false" + System.getProperty("line.separator"));
+                bw.write("QuantifyPpmTol = 5.0" + System.getProperty("line.separator"));
+                bw.write("DoHistogramAnalysis = false" + System.getProperty("line.separator"));
+                bw.write("SearchTarget = " + metaMorpheusParameters.getSearchTarget() + System.getProperty("line.separator"));
+                bw.write("DecoyType = \"" + metaMorpheusParameters.getDecoyType() + "\"" + System.getProperty("line.separator"));
+                bw.write("MassDiffAcceptorType = \"" + metaMorpheusParameters.getMassDiffAcceptorType() + "\"" + System.getProperty("line.separator"));
+                bw.write("WritePrunedDatabase = false" + System.getProperty("line.separator"));
+                bw.write("KeepAllUniprotMods = true" + System.getProperty("line.separator"));
+                bw.write("DoLocalizationAnalysis = true" + System.getProperty("line.separator"));
+                bw.write("DoQuantification = false" + System.getProperty("line.separator"));
+                bw.write("SearchType = \"" + metaMorpheusParameters.getSearchType() + "\"" + System.getProperty("line.separator"));
+                bw.write("LocalFdrCategories = [\"FullySpecific\"]" + System.getProperty("line.separator"));
+                bw.write("MaxFragmentSize = " + metaMorpheusParameters.getMaxFragmentSize() + System.getProperty("line.separator"));
+                bw.write("HistogramBinTolInDaltons = 0.003" + System.getProperty("line.separator"));
+                bw.write("MaximumMassThatFragmentIonScoreIsDoubled = 0.0" + System.getProperty("line.separator"));
+                bw.write("WriteMzId = " + metaMorpheusParameters.getWriteMzId() + System.getProperty("line.separator"));
+                bw.write("WritePepXml = " + metaMorpheusParameters.getWritePepXml() + System.getProperty("line.separator"));
+                bw.write("WriteDecoys = true" + System.getProperty("line.separator"));
+                bw.write("WriteContaminants = true" + System.getProperty("line.separator"));
+                bw.newLine();
 
-            //////////////////////////////////
-            // modification out parameters
-            //////////////////////////////////
-            bw.write("[SearchParameters.ModsToWriteSelection]" + System.getProperty("line.separator"));
-            bw.write("'N-linked glycosylation' = 3" + System.getProperty("line.separator"));
-            bw.write("'O-linked glycosylation' = 3" + System.getProperty("line.separator"));
-            bw.write("'Other glycosylation' = 3" + System.getProperty("line.separator"));
-            bw.write("'Common Biological' = 3" + System.getProperty("line.separator"));
-            bw.write("'Less Common' = 3" + System.getProperty("line.separator"));
-            bw.write("Metal = 3" + System.getProperty("line.separator"));
-            bw.write("'2+ nucleotide substitution' = 3" + System.getProperty("line.separator"));
-            bw.write("'1 nucleotide substitution' = 3" + System.getProperty("line.separator"));
-            bw.write("UniProt = 2" + System.getProperty("line.separator"));
-            bw.newLine();
+                //////////////////////////////////
+                // modification output parameters
+                //////////////////////////////////
+                bw.write("[SearchParameters.ModsToWriteSelection]" + System.getProperty("line.separator"));
+                bw.write("'N-linked glycosylation' = 3" + System.getProperty("line.separator"));
+                bw.write("'O-linked glycosylation' = 3" + System.getProperty("line.separator"));
+                bw.write("'Other glycosylation' = 3" + System.getProperty("line.separator"));
+                bw.write("'Common Biological' = 3" + System.getProperty("line.separator"));
+                bw.write("'Less Common' = 3" + System.getProperty("line.separator"));
+                bw.write("Metal = 3" + System.getProperty("line.separator"));
+                bw.write("'2+ nucleotide substitution' = 3" + System.getProperty("line.separator"));
+                bw.write("'1 nucleotide substitution' = 3" + System.getProperty("line.separator"));
+                bw.write("UniProt = 2" + System.getProperty("line.separator"));
+                bw.newLine();
+            }
 
             //////////////////////////
             // common parameters
@@ -534,16 +566,37 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
                 // add the fixed modifications
                 ArrayList<String> fixedModifications = searchParameters.getModificationParameters().getFixedModifications();
-
                 for (String modName : fixedModifications) {
                     bw.write(getModificationFormattedForMetaMorpheus(modName));
                 }
 
                 // add the variable modifications
                 ArrayList<String> variableModifications = searchParameters.getModificationParameters().getVariableModifications();
-
                 for (String modName : variableModifications) {
                     bw.write(getModificationFormattedForMetaMorpheus(modName));
+                }
+
+                // add the open search modifications
+                if (metaMorpheusParameters.runGptm()) {
+                    ArrayList<String> openSearchModifications = modificationFactory.getModifications(
+                            ModificationCategory.Common_Biological,
+                            ModificationCategory.Common_Artifact,
+                            ModificationCategory.Metal,
+                            ModificationCategory.Nucleotide_Substitution_One // @TODO: make the ptm selection user-selectable
+                    );
+
+                    // make sure that no ptm is added more than once
+                    for (String fixedMod : fixedModifications) {
+                        openSearchModifications.remove(fixedMod);
+                    }
+                    for (String variableMod : variableModifications) {
+                        openSearchModifications.remove(variableMod);
+                    }
+
+                    // write the gptm modifications to the file
+                    for (String modName : openSearchModifications) {
+                        bw.write(getModificationFormattedForMetaMorpheus(modName));
+                    }
                 }
 
             } finally {
@@ -551,7 +604,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             }
         } catch (IOException ioe) {
 
-            throw new IllegalArgumentException("Could not create MetaMorpheus modifications file. Unable to write file: '" + ioe.getMessage() + "'.");
+            throw new IllegalArgumentException(
+                    "Could not create MetaMorpheus modifications file. "
+                    + "Unable to write file: '" + ioe.getMessage() + "'.");
 
         }
     }
@@ -634,18 +689,32 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
         // the neutral losses
         for (NeutralLoss tempNeutralLoss : modification.getNeutralLosses()) {
-            modificationAsString += "NL   " + tempNeutralLoss.getComposition().getStringValue(true, false, true, true, true) + "\n";
+            modificationAsString += "NL   "
+                    + tempNeutralLoss.getComposition().getStringValue(
+                            true, false, true, true, false, true) + "\n";
         }
 
         // the modification type
-        modificationAsString += "MT   SearchGUI\n"; // @TODO: make use of the type?
+        modificationAsString += "MT   " + modification.getCategory() + "\n";
 
         // chemical formula
-        modificationAsString += "CF   " + modification.getAtomChainAdded().getStringValue(true, false, true, true, true) + "\n";
+        modificationAsString += "CF   ";
+        if (modification.getAtomChainAdded().size() > 0) {
+            modificationAsString
+                    += modification.getAtomChainAdded().getStringValue(true, false, true, true, false, true)
+                    + " ";
+        }
+        if (modification.getAtomChainRemoved().size() > 0) {
+            modificationAsString
+                    += modification.getAtomChainRemoved().getStringValue(true, false, true, true, true, true);
+        }
+        modificationAsString += "\n";
 
         // diagnostic ions
         for (ReporterIon tempReporterIon : modification.getReporterIons()) {
-            modificationAsString += "DI   " + tempReporterIon.getAtomicComposition().getStringValue(true, false, true, true, true) + "\n";
+            modificationAsString += "DI   "
+                    + tempReporterIon.getAtomicComposition().getStringValue(
+                            true, false, true, true, false, true) + "\n";
         }
 
         // add unimod name
@@ -672,22 +741,24 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         for (int i = 0; i < modifications.size(); i++) {
 
             if (i > 0) {
-                bw.write("\t\t");
+                bw.write("\\t\\t");
             }
 
             String modName = modifications.get(i);
             String tempModName = modName.replaceAll(" of ", " off "); // temporary fix given that MetaMorpheus kicks out ptms with " of " in the name...
 
-            AminoAcidPattern aminoAcidPattern = modificationFactory.getModification(modName).getPattern();
+            Modification tempModification = modificationFactory.getModification(modName);
+
+            AminoAcidPattern aminoAcidPattern = tempModification.getPattern();
 
             if (aminoAcidPattern != null) {
 
                 if (!aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
                     for (Character residue : aminoAcidPattern.getAminoAcidsAtTarget()) {
-                        bw.write("SearchGUI\t" + tempModName + " on " + residue);
+                        bw.write(tempModification.getCategory() + "\\t" + tempModName + " on " + residue);
                     }
                 } else {
-                    bw.write("SearchGUI\t" + tempModName + " on X");
+                    bw.write(tempModification.getCategory() + "\\t" + tempModName + " on X");
                 }
 
             }
