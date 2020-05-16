@@ -252,11 +252,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             if (taskType == MetaMorpheusTaskType.Gptmd) {
                 bw.write("[GptmdParameters]" + System.getProperty("line.separator"));
                 bw.write("ListOfModsGptmd = \"");
-                writeModifications(modificationFactory.getModifications(ModificationCategory.Common_Biological), bw);
-                writeModifications(modificationFactory.getModifications(ModificationCategory.Common_Artifact), bw);
-                writeModifications(modificationFactory.getModifications(ModificationCategory.Metal), bw);
-                // @TODO: re-add the substitutions
-                //writeModifications(modificationFactory.getModifications(ModificationCategory.Nucleotide_Substitution_One), bw);
+                for (ModificationCategory modCategory : metaMorpheusParameters.getGPtmCategories()) {
+                    writeModifications(modificationFactory.getModifications(modCategory), bw);
+                }
                 bw.write("\"" + System.getProperty("line.separator") + System.getProperty("line.separator"));
             }
 
@@ -578,11 +576,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
                 // add the open search modifications
                 if (metaMorpheusParameters.runGptm()) {
+
                     ArrayList<String> openSearchModifications = modificationFactory.getModifications(
-                            ModificationCategory.Common_Biological,
-                            ModificationCategory.Common_Artifact,
-                            ModificationCategory.Metal,
-                            ModificationCategory.Nucleotide_Substitution_One // @TODO: make the ptm selection user-selectable
+                            metaMorpheusParameters.getGPtmCategories().toArray(new ModificationCategory[0])
                     );
 
                     // make sure that no ptm is added more than once
