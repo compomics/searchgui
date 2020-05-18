@@ -514,18 +514,28 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
      */
     private void editOutputButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editOutputButtonActionPerformed
 
-        if (new File(outputFileTextField.getText()).getParentFile() != null) {
-            searchGUI.getLastSelectedFolder().setLastSelectedFolder(
-                    new File(outputFileTextField.getText()).getParentFile().getAbsolutePath());
+        // find the last used output folder
+        File startLocation = searchGUI.getUtilitiesUserParameters().getOutputFolder();
+        if (startLocation == null) {
+            startLocation = new File(searchGUI.getLastSelectedFolder().getLastSelectedFolder());
+        }
+        
+        if (!outputFileTextField.getText().isEmpty() && new File(outputFileTextField.getText()).getParentFile() != null) {
+            startLocation = new File(outputFileTextField.getText()).getParentFile();
         }
 
+        String tempProjectReference = projectNameIdTxt.getText().trim();
+        if (!tempProjectReference.isEmpty()) {
+            tempProjectReference = "-" + tempProjectReference;
+        }
+        
         File selectedFile = FileChooserUtil.getUserSelectedFile(
-                this, 
-                ".psdb", 
-                "Compomics Peptide Shaker format (*.psdb)", 
+                this,
+                ".psdb",
+                "Peptide Shaker Database Format (*.psdb)",
                 "Select PeptideShaker Output",
-                searchGUI.getLastSelectedFolder().getLastSelectedFolder(), 
-                "PeptideShaker_output.psdb", 
+                startLocation.getAbsolutePath(),
+                "PeptideShaker-output" + tempProjectReference + ".psdb",
                 false
         );
 
@@ -533,6 +543,9 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
             if (!selectedFile.getName().endsWith(".psdb")) {
                 selectedFile = new File(selectedFile.getAbsolutePath() + ".psdb");
             }
+            
+            searchGUI.getUtilitiesUserParameters().setOutputFolder(selectedFile.getParentFile());
+            searchGUI.getLastSelectedFolder().setLastSelectedFolder(selectedFile.getParentFile().getAbsolutePath());
 
             outputFileTextField.setText(selectedFile.getAbsolutePath());
         }
@@ -667,7 +680,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_editProjectSettingsButtonActionPerformed
 
     /**
-     * Validate if the user input.
+     * Validate the user input.
      *
      * @param evt
      */
@@ -865,11 +878,11 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         if (installPath == null) {
             installPath = "user.home";
             downloadFolder = FileChooserUtil.getUserSelectedFolder(
-                    this, 
-                    "Select PeptideShaker Folder", 
-                    installPath, 
-                    "PeptideShaker Folder", 
-                    "Select", 
+                    this,
+                    "Select PeptideShaker Folder",
+                    installPath,
+                    "PeptideShaker Folder",
+                    "Select",
                     false
             );
         } else {

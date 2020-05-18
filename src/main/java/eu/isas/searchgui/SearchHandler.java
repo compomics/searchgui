@@ -29,6 +29,7 @@ import com.compomics.util.parameters.identification.tool_specific.TideParameters
 import com.compomics.util.parameters.tools.ProcessingParameters;
 import com.compomics.util.parameters.searchgui.OutputParameters;
 import com.compomics.util.parameters.UtilitiesUserParameters;
+import com.compomics.util.parameters.identification.tool_specific.MetaMorpheusParameters;
 import com.compomics.util.waiting.Duration;
 import eu.isas.searchgui.processbuilders.*;
 import javax.swing.*;
@@ -3165,9 +3166,14 @@ public class SearchHandler {
 
                         if (!waitingHandler.isRunCanceled()) {
 
+                            String taskFileName
+                                    = ((MetaMorpheusParameters) searchParameters.getIdentificationAlgorithmParameter(
+                                            Advocate.metaMorpheus.getIndex())).runGptm()
+                                    ? "Task2SearchTask" : "Task1SearchTask";
+
                             File tempResultFile = new File(
                                     MetaMorpheusProcessBuilder.getTempFolderPath(metaMorpheusLocation)
-                                    + File.separator + "Task1SearchTask"
+                                    + File.separator + taskFileName
                                     + File.separator + "Individual File Results",
                                     getMetaMorpheusFileName(spectrumFileName));
 
@@ -3688,6 +3694,14 @@ public class SearchHandler {
                         ArrayList<File> cmsAndMsFiles = new ArrayList<>(cmsFiles.size() + msFiles.size());
                         cmsAndMsFiles.addAll(cmsFiles);
                         cmsAndMsFiles.addAll(msFiles);
+
+                        // add date to the PeptideShaker file name
+                        if (utilitiesUserParameters.isIncludeDateInOutputName()) {
+                            peptideShakerFile = new File(
+                                    peptideShakerFile.getParentFile(),
+                                    IoUtil.removeExtension(
+                                            peptideShakerFile.getName()) + "_" + outputTimeStamp + ".psdb");
+                        }
 
                         peptideShakerProcessBuilder = new PeptideShakerProcessBuilder(
                                 waitingHandler,
