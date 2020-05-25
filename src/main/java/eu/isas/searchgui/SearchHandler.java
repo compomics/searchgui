@@ -2386,11 +2386,16 @@ public class SearchHandler {
                             File rawFile = rawFiles.get(i);
                             String rawFileName = rawFile.getName();
                             File folder = rawFile.getParentFile();
-                            String msFileName = IoUtil.removeExtension(rawFileName) + thermoRawFileParserParameters.getOutputFormat().fileNameEnding;
+                            String msFileName = IoUtil.removeExtension(rawFileName) + thermoRawFileParserParameters.getOutputFormat().fileNameEnding.toLowerCase();
                             File msFile = new File(folder, msFileName);
 
+                            // Check whether the file exists but with a different case for the extension.
+                            msFile = IoUtil.existsExtensionNotCaseSensitive(msFile);
+
+                            // If the file already exists, skip the conversion and warn the user.
                             if (!msFile.exists()) {
 
+                                // Set up the converter.
                                 ThermoRawFileParserProcessBuilder thermoRawFileParserProcessBuilder = new ThermoRawFileParserProcessBuilder(
                                         thermoRawFileParserFolder,
                                         rawFile,
@@ -2431,8 +2436,13 @@ public class SearchHandler {
                             String msFileName = IoUtil.removeExtension(rawFileName) + msConvertParameters.getMsFormat().fileNameEnding;
                             File msFile = new File(folder, msFileName);
 
+                            // Check whether the file exists but with a different case for the extension.
+                            msFile = IoUtil.existsExtensionNotCaseSensitive(msFile);
+
+                            // If the file already exists, skip the conversion and warn the user.
                             if (!msFile.exists()) {
 
+                                // Set up the converter.
                                 MsConvertProcessBuilder msConvertProcessBuilder = new MsConvertProcessBuilder(
                                         rawFile,
                                         folder,
@@ -3823,7 +3833,7 @@ public class SearchHandler {
 
         File outputFile = getInputFile(folder);
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
             bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
@@ -4095,7 +4105,7 @@ public class SearchHandler {
                     zipFile.delete();
                 }
 
-                try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                     // find the uncompressed size of all the files to add to the zip
                     long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFilesMap);
@@ -4189,7 +4199,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -4267,7 +4277,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
