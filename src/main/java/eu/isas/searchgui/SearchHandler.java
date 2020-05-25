@@ -3163,8 +3163,7 @@ public class SearchHandler {
 
                             File tempResultFile = new File(
                                     MetaMorpheusProcessBuilder.getTempFolderPath(metaMorpheusLocation)
-                                    + File.separator + taskFileName
-                                    + File.separator + "Individual File Results",
+                                    + File.separator + taskFileName,
                                     getMetaMorpheusFileName(spectrumFileName));
 
                             if (tempResultFile.exists()) {

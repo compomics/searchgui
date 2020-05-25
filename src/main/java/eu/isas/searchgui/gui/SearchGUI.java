@@ -7334,7 +7334,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
                     false,
                     getTips(),
-                    "Search",
+                    "Searching",
                     "SearchGUI",
                     new eu.isas.searchgui.utilities.Properties().getVersion(),
                     true
@@ -7359,7 +7359,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
-     * Attempts to delete the temporary folders. Prints the stacktrace if an
+     * Attempts to delete the temporary folders. Prints the stack trace if an
      * error occurs.
      */
     private static void deleteTempFolders() {
