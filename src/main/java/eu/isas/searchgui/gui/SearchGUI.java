@@ -46,6 +46,7 @@ import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.gui.file_handling.FileDisplayDialog;
 import com.compomics.util.experiment.io.temp.TempFilesManager;
 import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserOutputFormat;
+import com.compomics.util.gui.enzymes.EnzymesDialog;
 import com.compomics.util.gui.modification.ModificationsDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersEditionDialog;
 import com.compomics.util.gui.parameters.identification.IdentificationParametersOverviewDialog;
@@ -727,6 +728,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         processingMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         editModificationsEditMenuItem = new javax.swing.JMenuItem();
+        editEnzymesEditMenuItem = new javax.swing.JMenuItem();
         editSearchEngineLocationsMenuItem = new javax.swing.JMenuItem();
         editIdSettingsFilesMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
@@ -2384,6 +2386,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
         editMenu.add(editModificationsEditMenuItem);
+
+        editEnzymesEditMenuItem.setMnemonic('E');
+        editEnzymesEditMenuItem.setText("Enzymes");
+        editEnzymesEditMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editEnzymesEditMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(editEnzymesEditMenuItem);
 
         editSearchEngineLocationsMenuItem.setMnemonic('S');
         editSearchEngineLocationsMenuItem.setText("Software Locations");
@@ -6276,6 +6287,15 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
     }//GEN-LAST:event_metaMorpheusSettingsButtonActionPerformed
 
+    /**
+     * Open the Enzymes dialog.
+     *
+     * @param evt the action event
+     */
+    private void editEnzymesEditMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editEnzymesEditMenuItemActionPerformed
+        new EnzymesDialog(this, true);
+    }//GEN-LAST:event_editEnzymesEditMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton aboutButton;
     private javax.swing.JMenuItem aboutMenuItem;
@@ -6298,6 +6318,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JButton direcTagSettingsButton;
     private javax.swing.JButton direcTagSupportButton;
     private javax.swing.JButton editDatabaseDetailsButton;
+    private javax.swing.JMenuItem editEnzymesEditMenuItem;
     private javax.swing.JMenuItem editIdSettingsFilesMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem editModificationsEditMenuItem;
