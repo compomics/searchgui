@@ -50,7 +50,16 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the exception handler
      */
-    public DirecTagProcessBuilder(File exeFolder, File spectrumFile, int nThreads, File outputFolder, SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) {
+    public DirecTagProcessBuilder(
+            File exeFolder,
+            File spectrumFile,
+            int nThreads,
+            File outputFolder,
+            SearchParameters searchParameters,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler
+    ) {
+
         this.spectrumFile = spectrumFile;
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -223,12 +232,16 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
      * Get the given modification as a string in the DirecTag format.
      *
      * @param modificationName the utilities name of the modification
-     * @param utilitiesModifications the list of utilities modifications, index is the index used
-     * in the DirecTag output (note that the same modification may occur more than once
-     * in the list as multiple DirecTag modification can map to the same utilities modification)
+     * @param utilitiesModifications the list of utilities modifications, index
+     * is the index used in the DirecTag output (note that the same modification
+     * may occur more than once in the list as multiple DirecTag modification
+     * can map to the same utilities modification)
      * @return the given modification as a string in the DirecTag format
      */
-    private String getVariableModificationFormattedForDirecTag(String modificationName, ArrayList<String> utilitiesModifications) {
+    private String getVariableModificationFormattedForDirecTag(
+            String modificationName, 
+            ArrayList<String> utilitiesModifications
+    ) {
 
         Modification tempModification = modificationFactory.getModification(modificationName);
         String modificationAsString = "";
