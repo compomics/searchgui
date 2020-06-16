@@ -469,6 +469,7 @@ public class SearchCLIInputBean {
     public static ArrayList<File> getSpectrumFiles(String optionInput) throws FileNotFoundException {
         ArrayList<String> extentions = new ArrayList<>();
         extentions.add(".mgf");
+        extentions.add(".mzml");
         return CommandLineUtils.getFiles(optionInput, extentions);
     }
 
