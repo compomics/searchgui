@@ -16,7 +16,7 @@ public enum SearchCLIParams {
     // IMPORTANT: Any change here must be reported in the wiki: 
     // https://github.com/compomics/searchgui/wiki/SearchCLI.
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    SPECTRUM_FILES("spectrum_files", "Spectrum files, comma separated list or an entire folder.", true),
+    SPECTRUM_FILES("spectrum_files", "Spectrum files (mgf or mzml), comma separated list or an entire folder.", true),
     FASTA_FILE("fasta_file", "The complete path to the FASTA file.", true),
     OUTPUT_FOLDER("output_folder", "The output folder.", true),
 
