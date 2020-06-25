@@ -161,6 +161,7 @@ public enum SearchCLIParams {
         
         output += "\n\nOutput Files Handling:\n\n";
         output += "-" + String.format(formatter, OUTPUT_DEFAULT_NAME.id) + " " + OUTPUT_DEFAULT_NAME.description + "\n";
+        output += "-" + String.format(formatter, OUTPUT_GZIP.id) + " " + OUTPUT_GZIP.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_OPTION.id) + " " + OUTPUT_OPTION.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATA.id) + " " + OUTPUT_DATA.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATE.id) + " " + OUTPUT_DATE.description + "\n";
