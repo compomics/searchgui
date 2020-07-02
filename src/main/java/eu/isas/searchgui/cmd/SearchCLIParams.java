@@ -59,7 +59,6 @@ public enum SearchCLIParams {
     OUTPUT_GZIP("output_gzip", "Gzip result files (0: no, 1: yes, default is '1').", false),
     OUTPUT_OPTION("output_option", "Optional result file packaging (" + OutputParameters.getCommandLineOptions() + "), default is '0'.", false),
     OUTPUT_DATA("output_data", "Include mgf and FASTA file in zipped output (0: no, 1: yes, default is '0').", false),
-    OUTPUT_MGF("output_mgf", "When using zipped output, writes mgf file/s out of it into the output folder (0: no, 1: yes, default is '0').", false),
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
     RENAME_XTANDEM_OUTPUT("rename_xtandem", "Turn the renaming of the X! Tandem files on/off. (0: off, 1: on, default is '1').", false),
     
@@ -165,7 +164,6 @@ public enum SearchCLIParams {
         output += "-" + String.format(formatter, OUTPUT_GZIP.id) + " " + OUTPUT_GZIP.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_OPTION.id) + " " + OUTPUT_OPTION.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATA.id) + " " + OUTPUT_DATA.description + "\n";
-        output += "-" + String.format(formatter, OUTPUT_MGF.id) + " " + OUTPUT_MGF.description + "\n";
         output += "-" + String.format(formatter, OUTPUT_DATE.id) + " " + OUTPUT_DATE.description + "\n";
         output += "-" + String.format(formatter, RENAME_XTANDEM_OUTPUT.id) + " " + RENAME_XTANDEM_OUTPUT.description + "\n";
         

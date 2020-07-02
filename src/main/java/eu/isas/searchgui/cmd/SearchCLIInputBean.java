@@ -178,11 +178,6 @@ public class SearchCLIInputBean {
      */
     private Boolean outputData = false;
     /**
-     * When returning a zip file, indicates whether mgf/s file should be written in the
-     * output, apart from zip file.
-     */
-    private Boolean outputMgf = false;
-    /**
      * Indicates whether the date should be included in the output file name.
      */
     private Boolean outputDate = false;
@@ -396,10 +391,6 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATA.id)) {
             int input = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATA.id));
             outputData = input == 1;
-        }
-        if (aLine.hasOption(SearchCLIParams.OUTPUT_MGF.id)) {
-            int input = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.OUTPUT_MGF.id));
-            outputMgf = input == 1;
         }
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATE.id)) {
             int input = Integer.parseInt(aLine.getOptionValue(SearchCLIParams.OUTPUT_DATE.id));
@@ -841,14 +832,6 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
-        
-        // check the output mgf option
-        if (aLine.hasOption(SearchCLIParams.OUTPUT_MGF.id)) {
-            String input = aLine.getOptionValue(SearchCLIParams.OUTPUT_MGF.id);
-            if (!CommandParameter.isBooleanInput(SearchCLIParams.OUTPUT_MGF.id, input)) {
-                return false;
-            }
-        }
 
         // check the output date option
         if (aLine.hasOption(SearchCLIParams.OUTPUT_DATE.id)) {
@@ -1152,17 +1135,6 @@ public class SearchCLIInputBean {
      */
     public Boolean isOutputData() {
         return outputData;
-    }
-    
-    /**
-     * Indicates whether mgf file/s should be written out of the zip file
-     * when the main output is zipped, .
-     *
-     * @return whether mgf file/s should be included out the output zip file
-     * when it is zipped
-     */
-    public Boolean isOutputMgf() {
-        return outputMgf;
     }
 
     /**

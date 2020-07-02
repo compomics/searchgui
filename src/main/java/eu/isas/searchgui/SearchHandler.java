@@ -3403,39 +3403,6 @@ public class SearchHandler {
                     );
 
                     waitingHandler.increasePrimaryProgressCounter();
-                    
-                    // writes an mgf file out of the main output zip file
-                    if (utilitiesUserParameters.getSearchGuiOutputParameters() != OutputParameters.no_zip
-                            && utilitiesUserParameters.outputMgf()) {
-
-                        waitingHandler.appendReport(
-                                "Writing mgf file/s to output folder.",
-                                true,
-                                true
-                        );
-                        
-                        for (int i = 0; i < getSpectrumFiles().size() && !waitingHandler.isRunCanceled(); i++) {
-
-                            File spectrumFile = getSpectrumFiles().get(i);
-                            String spectrumFileName = spectrumFile.getName();
-                            waitingHandler.appendReport(
-                                    "Writing: " + IoUtil.removeExtension(spectrumFileName) + ".mgf" + 
-                                            " (" + (i + 1) + "/" + getSpectrumFiles().size() + ")",
-                                    true,
-                                    true
-                            );
-                            
-                            File mgfFile = new File(outputFolder,
-                                    IoUtil.removeExtension(spectrumFileName) + ".mgf");
-
-                            MsFileExporter.writeMgfFile(
-                                    msFileHandler,
-                                    spectrumFileName,
-                                    mgfFile,
-                                    waitingHandler);
-                        }
-
-                    }
 
                 }
 

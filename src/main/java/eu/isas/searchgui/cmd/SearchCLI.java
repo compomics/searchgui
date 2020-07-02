@@ -174,7 +174,6 @@ public class SearchCLI implements Callable {
             userParameters.setGzip(searchCLIInputBean.isGzip());
             userParameters.setSearchGuiOutputParameters(searchCLIInputBean.getOutputOption());
             userParameters.setOutputData(searchCLIInputBean.isOutputData());
-            userParameters.setOutputMgf(searchCLIInputBean.isOutputMgf());
             userParameters.setIncludeDateInOutputName(searchCLIInputBean.isOutputDate());
             UtilitiesUserParameters.saveUserParameters(userParameters);
 
