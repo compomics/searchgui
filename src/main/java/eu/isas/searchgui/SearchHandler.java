@@ -2586,7 +2586,7 @@ public class SearchHandler {
 
                         MsFileExporter.writeMgfFile(
                                 msFileHandler,
-                                spectrumFileName,
+                                IoUtil.removeExtension(spectrumFileName),
                                 mgfFile,
                                 waitingHandler
                         );
@@ -2979,7 +2979,7 @@ public class SearchHandler {
 
                         MsFileExporter.writeMs2File(
                                 msFileHandler,
-                                spectrumFileName,
+                                IoUtil.removeExtension(spectrumFileName),
                                 ms2File,
                                 waitingHandler
                         );
@@ -3060,7 +3060,7 @@ public class SearchHandler {
 
                         MsFileExporter.writeAplFile(
                                 msFileHandler,
-                                spectrumFileName,
+                                IoUtil.removeExtension(spectrumFileName),
                                 aplFile,
                                 searchParameters,
                                 waitingHandler
