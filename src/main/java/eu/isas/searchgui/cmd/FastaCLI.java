@@ -222,7 +222,7 @@ public class FastaCLI {
         return System.getProperty("line.separator")
                 + "FastaCLI takes a FASTA file as input, generates general information about the database and allows operations on the FASTA file." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
-                + "For further help see https://compomics.github.io/projects/searchgui.html and https://compomics.github.io/projects/searchgui/wiki/searchcli.html." + System.getProperty("line.separator")
+                + "For further help see https://compomics.github.io/projects/searchgui.html and https://compomics.github.io/projects/searchgui/wiki/SearchCLI.html." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
                 + "----------------------"
                 + System.getProperty("line.separator")
