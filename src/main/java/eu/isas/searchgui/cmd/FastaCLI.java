@@ -90,7 +90,7 @@ public class FastaCLI {
 
                 fastaCLIInputBean = new FastaCLIInputBean(line);
 
-                fastaParametersInputBean = new FastaParametersInputBean(line, fastaCLIInputBean.getInputFile());
+                fastaParametersInputBean = new FastaParametersInputBean(line, fastaCLIInputBean.getInputFile(), waitingHandler);
 
                 call();
 
