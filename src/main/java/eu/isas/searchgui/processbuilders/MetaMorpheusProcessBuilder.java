@@ -325,8 +325,8 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("UseProvidedPrecursorInfo = " + metaMorpheusParameters.getUseProvidedPrecursorInfo() + System.getProperty("line.separator"));
             bw.write("DeconvolutionIntensityRatio = " + metaMorpheusParameters.getDeconvolutionIntensityRatio() + System.getProperty("line.separator"));
             bw.write("DeconvolutionMaxAssumedChargeState = " + searchParameters.getMaxChargeSearched() + System.getProperty("line.separator"));
-            bw.write("DeconvolutionMassTolerance = \"Â±" + metaMorpheusParameters.getDeconvolutionMassTolerance()
-                    + metaMorpheusParameters.getDeconvolutionMassToleranceType() + " \"" + System.getProperty("line.separator"));
+            bw.write("DeconvolutionMassTolerance = \"Â±" + metaMorpheusParameters.getDeconvolutionMassTolerance() + " "
+                    + metaMorpheusParameters.getDeconvolutionMassToleranceType() + "\"" + System.getProperty("line.separator"));
             bw.write("TotalPartitions = 1" + System.getProperty("line.separator"));
 
             // fragment and precursor tolerances
