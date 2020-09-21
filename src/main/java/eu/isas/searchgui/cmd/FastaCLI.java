@@ -13,8 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 
 /**
@@ -55,7 +55,7 @@ public class FastaCLI {
             Options nonPathOptions = new Options();
             FastaCLIParams.createOptionsCLI(nonPathOptions);
             FastaParametersCLIParams.createOptionsCLI(nonPathOptions);
-            BasicParser parser = new BasicParser();
+            DefaultParser parser = new DefaultParser();
             CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
             if (!FastaCLIInputBean.isValidStartup(line)) {

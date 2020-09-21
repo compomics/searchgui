@@ -371,7 +371,7 @@ public class SearchCLIInputBean {
         // set the reference mass
         if (aLine.hasOption(SearchCLIParams.REFERENCE_MASS.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.REFERENCE_MASS.id);
-            Double option = new Double(arg);
+            Double option = Double.valueOf(arg);
             refMass = option;
         }
 

@@ -7669,8 +7669,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     if (versionTokens.countTokens() > 1) {
 
-                        int mainVersion = new Integer(versionTokens.nextToken());
-                        int subversion = new Integer(versionTokens.nextToken());
+                        int mainVersion = Integer.valueOf(versionTokens.nextToken());
+                        int subversion = Integer.valueOf(versionTokens.nextToken());
 
                         if (mainVersion >= 10 && subversion >= 11) {
 

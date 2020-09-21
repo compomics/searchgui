@@ -84,8 +84,8 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
             if (operatingSystem.contains("mac os x")) {
                 StringTokenizer versionTokens = new StringTokenizer(System.getProperty("os.version"), ".");
                 if (versionTokens.countTokens() > 1) {
-                    int mainVersion = new Integer(versionTokens.nextToken());
-                    int subversion = new Integer(versionTokens.nextToken());
+                    int mainVersion = Integer.valueOf(versionTokens.nextToken());
+                    int subversion = Integer.valueOf(versionTokens.nextToken());
                     if (mainVersion >= 10 && subversion >= 11) {
                         monoPath = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
                     }

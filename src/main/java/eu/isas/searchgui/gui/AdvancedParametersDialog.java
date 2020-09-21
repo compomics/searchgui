@@ -557,16 +557,16 @@ public class AdvancedParametersDialog extends javax.swing.JDialog {
             userParameters.setCheckPeakPicking(peakPickingComboBox.getSelectedIndex() == 0);
             userParameters.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
             userParameters.setCheckMgfSize(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
-            userParameters.setMgfMaxSize(new Double(mgfMaxSizeTxt.getText().trim()));
-            userParameters.setMgfNSpectra(new Integer(mgfReducedSizeTxt.getText().trim()));
+            userParameters.setMgfMaxSize(Double.valueOf(mgfMaxSizeTxt.getText().trim()));
+            userParameters.setMgfNSpectra(Integer.valueOf(mgfReducedSizeTxt.getText().trim()));
             OutputParameters outputParameters = OutputParameters.getOutputParameters(groupResultFilesCmb.getSelectedIndex());
             userParameters.setSearchGuiOutputParameters(outputParameters);
             userParameters.setOutputData(includeDataCmb.getSelectedIndex() == 0);
             userParameters.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
-            userParameters.setRefMass(new Double(refMassTxt.getText()));
+            userParameters.setRefMass(Double.valueOf(refMassTxt.getText()));
             userParameters.setCheckSpectrumCharges(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
-            userParameters.setMinSpectrumChargeRange(new Integer(lowSpectrumChargeRangeTxt.getText()));
-            userParameters.setMaxSpectrumChargeRange(new Integer(highSpectrumChargeRangeTxt.getText()));
+            userParameters.setMinSpectrumChargeRange(Integer.valueOf(lowSpectrumChargeRangeTxt.getText()));
+            userParameters.setMaxSpectrumChargeRange(Integer.valueOf(highSpectrumChargeRangeTxt.getText()));
             userParameters.setGzip(zipIdFilesCmb.getSelectedIndex() == 0);
 
             UtilitiesUserParameters.saveUserParameters(userParameters);
@@ -698,7 +698,7 @@ public class AdvancedParametersDialog extends javax.swing.JDialog {
      */
     private void mgfReducedSizeTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mgfReducedSizeTxtActionPerformed
         try {
-            new Integer(mgfReducedSizeTxt.getText().trim());
+            Integer.valueOf(mgfReducedSizeTxt.getText().trim());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Maximum amount of spectra could not be parsed.",
                     "Input Error", JOptionPane.WARNING_MESSAGE);
@@ -722,7 +722,7 @@ public class AdvancedParametersDialog extends javax.swing.JDialog {
      */
     private void mgfMaxSizeTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mgfMaxSizeTxtActionPerformed
         try {
-            new Double(mgfMaxSizeTxt.getText().trim());
+            Double.valueOf(mgfMaxSizeTxt.getText().trim());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Maximum MGF file size could not be parsed.",
                     "Input Error", JOptionPane.WARNING_MESSAGE);

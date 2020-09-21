@@ -85,7 +85,7 @@ public class SearchCLI implements Callable {
             // parse the rest of the options   
             Options nonPathOptions = new Options();
             SearchCLIParams.createOptionsCLI(nonPathOptions);
-            BasicParser parser = new BasicParser();
+            DefaultParser parser = new DefaultParser();
             CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
             if (!SearchCLIInputBean.isValidStartup(line)) {
