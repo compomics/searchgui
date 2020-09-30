@@ -188,7 +188,9 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
  * **MS Amanda on Mac** - Running MS Amanda on Linux requires that you have [Mono](http://www.mono-project.com) installed. Mono 3.10.0 or newer is required. For help on installing Mono please see [http://www.mono-project.com/download](http://www.mono-project.com/download).
 
- * **MyriMatch on Linux** - If you get the error "`locale::facet::_S_create_c_locale name not valid`", this can be fixed by running the command "export LC_ALL=C" before running SearchGUI/MyriMatch. To make this fix permanent, put the export line in your .bash_profile (~/.bash_profile). If you still have problems, please contact the [MyriMatch developers](http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121).
+ * **MyriMatch on Linux** - If you get the error "`locale::facet::_S_create_c_locale name not valid`", this can be fixed by running the command "`export LC_ALL=C`" before running SearchGUI/MyriMatch. To make this fix permanent, put the export line in your .bash_profile (~/.bash_profile). If you still have problems, please contact the [MyriMatch developers](http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121).
+
+ * **MyriMatch on Linux II** - If you get the error "`myrimatch: loadlocale.c:129: _nl_intern_locale_data: Assertion cnt < (sizeof (_nl_value_type_LC_TIME) / sizeof (_nl_value_type_LC_TIME[0]))' failed.`" (or other locale-related variable than `LC_TIME`), this can be fixed by running the command "`export LC_TIME=C`" before running SearchGUI/MyriMatch. To make this fix permanent, put the export line in your .bash_profile (~/.bash_profile). 
 
  * **Linux and Mac OSX File Permissions** - On Linux and Mac OSX you may have to edit the permissions for the executable files in order for SearchGUI to work. Allow execution for all users.
 
