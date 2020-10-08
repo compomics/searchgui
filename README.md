@@ -191,6 +191,8 @@ Despite our efforts at enforcing good practices in our work, like every software
  * **Linux Support** - Users wanting to use SearchGUI on Linux may have to install the search engines first, see the tools web pages for available search engine versions. *Important:* Please verify that the search engines are working outside of SearchGUI before using them inside SearchGUI.
 
  * **Linux Support II** - If you get problems running makeblastdb (need to prepare FASTA files for OMSSA searches) make sure that you have the required 32 bit libraries. To install the libraries you can use "sudo apt-get install ia32-libs".
+ 
+ * **OMSSA on Mac** - Note that OMSSA is only available in a 32 bits version and that Mac OSX Catalina and newer only allows 64-bits apps. It is therefore recommended to use one or more of the other search engines in this setting.
 
  * **MS Amanda Log** - If you encounter problems with MS Amanda it may help to inspect the MS Amanda log files. On Windows these are located here: `C:\ProgramData\MSAmanda`.
 
@@ -206,8 +208,8 @@ Despite our efforts at enforcing good practices in our work, like every software
 
  * **Linux and Mac OSX File Permissions** - On Linux and Mac OSX you may have to edit the permissions for the executable files in order for SearchGUI to work. Allow execution for all users.
 
- * **32 bits vs 64 bits** - Please make sure that your using versions of the search engines that are compatible with your OS. Note that the latest releases of OMSSA are only available in 64 bits versions. For older versions of OMSSA see the [OMSSA archive](ftp://ftp.ncbi.nlm.nih.gov/pub/lewisg/omssa). However, it is always recommended to use the latest version if possible. Also note that OMSSA versions up until version 2.1.9 does not support precursor mass tolerance in ppm.
-
+ * **32 bits vs 64 bits** - Please make sure that your using versions of the search engines that are compatible with your OS.
+ 
  * **Xlib/X11 errorrs** - When running the command lines on systems without a grahpical user interface you may get errors related to X11. If that happens try adding `-Djava.awt.headless=true` to the command line.
 
  * **Problem Not Solved? Or Problem Not List?** - Contact the developers of SearchGUI by setting up an [issue](https://github.com/compomics/searchgui/issues) describing the problem. If the issue is related to the installation of the search engines, please contact the search engine developers directly.
