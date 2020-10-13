@@ -272,7 +272,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
-            missedCleavages = 50; // @TODO: is this correct?
+            missedCleavages = 2; // note: this settings is ignored anyway (but has to be between 0 and 5)
         } else { // whole protein
             enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
