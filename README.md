@@ -11,14 +11,14 @@
 ## SearchGUI Publications:
  * Barsnes H and Vaudel M: _SearchGUI: a highly adaptable common interface for proteomics search and de novo engines_. [[PMID 29774740](https://www.ncbi.nlm.nih.gov/pubmed/29774740)] [[pdf (accepted version)](https://github.com/mvaudel/Publications/blob/master/docs/aam/Barsnes_et_al_SearchGUI%20-%20revision.pdf)] [[Request a reprint](mailto:marc.vaudel@uib.no)].
  * Vaudel M, Barsnes H, Berven FS, Sickmann A, Martens L: _SearchGUI: An open-source graphical user interface for simultaneous OMSSA and X!Tandem searches_. [[PMID 21337703](http://www.ncbi.nlm.nih.gov/pubmed/21337703)] [[pdf (accepted version)](https://github.com/mvaudel/Publications/blob/master/docs/aam/Vaudel_et_al_SearchGUI_17092010.pdf)] [[Request a reprint](mailto:Harald.Barsnes@uib.no)]. 
- * If you use SearchGUI as part of a publication, please refer to the most recent publication.
+ * If you use SearchGUI as part of a publication, please refer to the most recent publication above.
 
 ----
 
 |   |   |   |
 | :------------------------- | :--------------- | :--: |
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.20/SearchGUI-3.3.20-windows.zip) | *v3.3.20 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.20/SearchGUI-3.3.20-mac_and_linux.tar.gz) | *v3.3.20 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.21/SearchGUI-3.3.21-windows.zip) | *v3.3.21 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](http://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/3.3.21/SearchGUI-3.3.21-mac_and_linux.tar.gz) | *v3.3.21 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
 
 ----
 
