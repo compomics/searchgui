@@ -9,7 +9,7 @@
       "CMD/1.0.0": {
         "dependencies": {
           "CommandLineParser": "2.7.82",
-          "EngineLayer": "0.0.311.8162",
+          "EngineLayer": "0.0.312.8187",
           "Microsoft.ML": "1.3.1",
           "Microsoft.ML.FastTree": "1.3.1",
           "Microsoft.NETCore.App": "2.2.8",
@@ -549,7 +549,7 @@
         }
       },
       "System.Threading.Tasks.Dataflow/4.8.0": {},
-      "EngineLayer/0.0.311.8162": {
+      "EngineLayer/0.0.312.8187": {
         "dependencies": {
           "Microsoft.ML": "1.3.1",
           "Microsoft.ML.FastTree": "1.3.1",
@@ -565,7 +565,7 @@
       },
       "TaskLayer/1.0.0": {
         "dependencies": {
-          "EngineLayer": "0.0.311.8162",
+          "EngineLayer": "0.0.312.8187",
           "MathNet.Numerics": "4.9.0",
           "Microsoft.ML": "1.3.1",
           "Microsoft.ML.FastTree": "1.3.1",
@@ -929,7 +929,7 @@
       "path": "system.threading.tasks.dataflow/4.8.0",
       "hashPath": "system.threading.tasks.dataflow.4.8.0.nupkg.sha512"
     },
-    "EngineLayer/0.0.311.8162": {
+    "EngineLayer/0.0.312.8187": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
