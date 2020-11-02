@@ -62,7 +62,7 @@ public enum SearchCLIParams {
     OUTPUT_DATE("output_date", "Include date in output name (0: no, 1: yes, default is '0').", false),
     RENAME_XTANDEM_OUTPUT("rename_xtandem", "Turn the renaming of the X! Tandem files on/off. (0: off, 1: on, default is '1').", false),
     
-    TARGET_DECOY_TAG("target_decoy_tag", "The tag added after adding decoy sequences to a FASTA file. Default is '_concatenated_target_decoy'", false);
+    TARGET_DECOY_TAG("target_decoy_tag", "The tag added after adding decoy sequences to a FASTA file. Default is '_concatenated_target_decoy'.", false);
 
     /**
      * Short Id for the CLI parameter.
