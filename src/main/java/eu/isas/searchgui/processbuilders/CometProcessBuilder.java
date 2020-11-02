@@ -50,7 +50,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2019.01 rev. 5"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2020.01 rev. 0"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -303,7 +303,8 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "fragment_bin_offset = " + cometParameters.getFragmentBinOffset() + " # offset position to start the binning (0.0 to 1.0)" + System.getProperty("line.separator")
                     + "theoretical_fragment_ions = " + theoretical_Fragment_ions + " # 0=use flanking peaks, 1=M peak only" + System.getProperty("line.separator")
                     + getIonsSearched()
-                    + "use_NL_ions = 1 # 0=no, 1=yes to consider NH3/H2O neutral loss peaks" + System.getProperty("line.separator") // @TODO: set the neutral losses
+                    // @TODO: reset to 1 once comet bug has been fixed
+                    + "use_NL_ions = 0 # 0=no, 1=yes to consider NH3/H2O neutral loss peaks" + System.getProperty("line.separator") // @TODO: set the neutral losses
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // output settings
@@ -314,8 +315,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "output_sqtstream = 0                   # 0=no, 1=yes  write sqt to standard output" + System.getProperty("line.separator")
                     + "output_sqtfile = " + outputFormat(CometOutputFormat.SQT) + "                 # 0=no, 1=yes  write sqt file" + System.getProperty("line.separator")
                     + "output_txtfile = " + outputFormat(CometOutputFormat.TXT) + "                 # 0=no, 1=yes  write tab-delimited txt file" + System.getProperty("line.separator")
-                    + "output_pepxmlfile = " + outputFormat(CometOutputFormat.PepXML) + "                 # 0=no, 1=yes  write pep.xml file" + System.getProperty("line.separator")
-                    + "output_percolatorfile = " + outputFormat(CometOutputFormat.Percolator) + "                 # 0=no, 1=yes  write Percolator tab-delimited input file" + System.getProperty("line.separator")
+                    + "output_pepxmlfile = " + outputFormat(CometOutputFormat.PepXML) + "           # 0=no, 1=yes  write pep.xml file" + System.getProperty("line.separator")
+                    + "output_percolatorfile = " + outputFormat(CometOutputFormat.Percolator) + "   # 0=no, 1=yes  write Percolator tab-delimited input file" + System.getProperty("line.separator")
+                    // @TODO: test mzid export
+                    + "output_mzidentmlfile = " + outputFormat(CometOutputFormat.mzIdentML) + "     # 0=no, 1=yes  write mzIdentML file" + System.getProperty("line.separator")
                     + "output_outfiles = 0                 # 0=no, 1=yes  write .out files" + System.getProperty("line.separator")
                     + "print_expect_score = " + Util.convertBooleanToInteger(cometParameters.getPrintExpectScore()) + "                 # 0=no, 1=yes to replace Sp with expect in out & sqt" + System.getProperty("line.separator")
                     + "num_output_lines = " + cometParameters.getNumberOfSpectrumMatches() + "                 # num peptide results to show" + System.getProperty("line.separator")
@@ -376,6 +379,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     // enzyme properties
                     /////////////////////////
                     + getEnzymeListing()
+                    /////////////////////////
+                    // parameters not yet implemented:
+                    // explicit_deltacn which controls how the deltaCn output score is calculated
+                    /////////////////////////
             );
         } finally {
             br.close();
@@ -426,6 +433,13 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         }
         ions.append(System.getProperty("line.separator"));
         ions.append("use_Z_ions = ");
+        if (searchParameters.getRewindIons().contains(PeptideFragmentIon.Z_ION)) {
+            ions.append("1");
+        } else {
+            ions.append("0");
+        }
+        ions.append(System.getProperty("line.separator"));
+        ions.append("use_Z1_ions = ");
         if (searchParameters.getRewindIons().contains(PeptideFragmentIon.Z_ION)) {
             ions.append("1");
         } else {
@@ -548,9 +562,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // add fragment neutral loss
             //      For any fragment ion that contain the variable modification, a neutral loss will 
             //      also be analyzed if the specified neutral loss value is not zero (0.0).
-            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) { 
-                result.append(" ").append(modification.getNeutralLosses().get(0).getMass()); // @TODO: verify wether only taking the first neutal ion is always the best option?
-            }
+//            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) { 
+//                result.append(" ").append(modification.getNeutralLosses().get(0).getMass()); // @TODO: verify wether only taking the first neutal ion is always the best option?
+//            }
+            result.append(" ").append(0.0);
             
             result.append(System.getProperty("line.separator"));
    
@@ -727,7 +742,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         if (modifiedMass == null) {
             modifiedMass = 0.0;
         }
-        result.append("add_O_ornithine = ").append(modifiedMass).append("                 # added to O - avg. 132.1610, mono  132.08988").append(System.getProperty("line.separator"));
+        result.append("add_O_pyrrolysine = ").append(modifiedMass).append("                 # added to O - avg. 132.1610, mono  132.08988").append(System.getProperty("line.separator"));
 
         modifiedMass = residueToModificationMap.get('H');
         if (modifiedMass == null) {
