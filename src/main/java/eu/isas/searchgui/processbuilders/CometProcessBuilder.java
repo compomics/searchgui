@@ -303,8 +303,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "fragment_bin_offset = " + cometParameters.getFragmentBinOffset() + " # offset position to start the binning (0.0 to 1.0)" + System.getProperty("line.separator")
                     + "theoretical_fragment_ions = " + theoretical_Fragment_ions + " # 0=use flanking peaks, 1=M peak only" + System.getProperty("line.separator")
                     + getIonsSearched()
-                    // @TODO: reset to 1 once comet bug has been fixed
-                    + "use_NL_ions = 0 # 0=no, 1=yes to consider NH3/H2O neutral loss peaks" + System.getProperty("line.separator") // @TODO: set the neutral losses
+                    + "use_NL_ions = 1 # 0=no, 1=yes to consider NH3/H2O neutral loss peaks" + System.getProperty("line.separator") // @TODO: set the neutral losses
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // output settings
@@ -562,10 +561,9 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // add fragment neutral loss
             //      For any fragment ion that contain the variable modification, a neutral loss will 
             //      also be analyzed if the specified neutral loss value is not zero (0.0).
-//            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) { 
-//                result.append(" ").append(modification.getNeutralLosses().get(0).getMass()); // @TODO: verify wether only taking the first neutal ion is always the best option?
-//            }
-            result.append(" ").append(0.0);
+            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) { 
+                result.append(" ").append(modification.getNeutralLosses().get(0).getMass()); // @TODO: verify wether only taking the first neutal ion is always the best option?
+            }
             
             result.append(System.getProperty("line.separator"));
    
