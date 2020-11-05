@@ -3555,7 +3555,11 @@ public class SearchHandler {
                             }
                         }
                         if (enableTide) {
-                            File outputFile = getDefaultOutputFile(outputFolder, Advocate.tide.getName(), utilitiesUserParameters.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder, 
+                                    Advocate.tide.getName(), 
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
@@ -3651,7 +3655,11 @@ public class SearchHandler {
                         for (String run : identificationFiles.keySet()) {
 
                             String runName = IoUtil.removeExtension(run);
-                            File outputFile = getDefaultOutputFile(outputFolder, runName, utilitiesUserParameters.isIncludeDateInOutputName());
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder, 
+                                    runName, 
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
 
                             if (outputFile.exists()) {
 
@@ -3969,8 +3977,7 @@ public class SearchHandler {
      * @return the default output file produced by SearchGUI
      */
     public static File getDefaultOutputFile(File outputFolder, boolean includeDate) {
-        String fileName = "";
-        fileName += defaultOutputFileName;
+        String fileName = defaultOutputFileName;
         if (includeDate) {
             fileName += "_" + outputTimeStamp;
         }
@@ -3991,7 +3998,7 @@ public class SearchHandler {
      */
     public static File getDefaultOutputFile(File outputFolder, String classifier, boolean includeDate) {
         String fileName = classifier;
-        fileName += defaultOutputFileName;
+        fileName += "_" + defaultOutputFileName;
         if (includeDate) {
             fileName += "_" + outputTimeStamp;
         }
@@ -4193,7 +4200,11 @@ public class SearchHandler {
                 for (Integer algorithm : algorithmToFileMap.keySet()) {
 
                     String advocateName = Advocate.getAdvocate(algorithm).getName();
-                    zipFile = getDefaultOutputFile(outputFolder, advocateName, includeDate);
+                    zipFile = getDefaultOutputFile(
+                            outputFolder, 
+                            advocateName, 
+                            includeDate
+                    );
 
                     if (zipFile.exists()) {
                         zipFile.delete();
@@ -4271,7 +4282,11 @@ public class SearchHandler {
                 for (String spectrumFileName : identificationFilesMap.keySet()) {
 
                     String spectrumFileNameWithoutExtension = IoUtil.removeExtension(spectrumFileName);
-                    zipFile = getDefaultOutputFile(outputFolder, spectrumFileNameWithoutExtension, includeDate);
+                    zipFile = getDefaultOutputFile(
+                            outputFolder, 
+                            spectrumFileNameWithoutExtension, 
+                            includeDate
+                    );
 
                     if (zipFile.exists()) {
                         zipFile.delete();
