@@ -115,12 +115,6 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
         File andromedaTempFolder = new File(andromedaTempFolderPath);
 
-        if (!andromedaTempFolder.exists()) {
-
-            andromedaTempFolder.mkdirs();
-
-        }
-
         // make sure that the andromeda file is executable
         File andromeda = new File(andromedaFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
         andromeda.setExecutable(true);
@@ -181,6 +175,14 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         if (andromedaTempFolderPath == null) {
 
             andromedaTempFolderPath = andromedaFolder.getAbsolutePath() + File.separator + andromedaTempSubFolderName;
+
+        }
+        
+        File andromedaTempFolder = new File(andromedaTempFolderPath);
+
+        if (!andromedaTempFolder.exists()) {
+
+            andromedaTempFolder.mkdirs();
 
         }
 
