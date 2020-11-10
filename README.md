@@ -32,7 +32,7 @@
 
 ## Introduction
 
-SearchGUI is a a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MS-GF+](http://www.ncbi.nlm.nih.gov/pubmed/?term=25358478), [MS Amanda](http://ms.imp.ac.at/?goto#msamanda), [MyriMatch](http://www.ncbi.nlm.nih.gov/pubmed/?term=17269722), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.coxdocs.org/doku.php?id=maxquant:andromeda:start), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Novor](http://rapidnovor.com) and [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/).
+SearchGUI is a a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MyriMatch](http://forge.fenchurch.mc.vanderbilt.edu/scm/viewvc.php/*checkout*/trunk/doc/index.html?root=myrimatch), [MS Amanda](http://ms.imp.ac.at/?goto=msamanda), [MS-GF+](https://github.com/MSGFPlus/msgfplus), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Comet](http://comet-ms.sourceforge.net/), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.andromeda-search.org), [MetaMorpheus](https://github.com/smith-chem-wisc/MetaMorpheus), [Novor](http://rapidnovor.com) and [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/).
 
 To start using SearchGUI, unzip the downloaded file, and double-click the `SearchGUI-X.Y.Z.jar file`. No additional installation required!
 
@@ -52,7 +52,7 @@ For developer access to the search results we recommend the use of [compomics-ut
  * [Easybuild](#easybuild)
  * [Database Help](https://github.com/compomics/searchgui/wiki/DatabaseHelp)
  * [User Defined Modifications](#user-defined-modifications)
- * [Converting Spectrum Data](#converting-spectrum-data)
+ * [Spectrum Data Formats](#spectrum-data-formats)
  * [Result Analysis](#result-analysis)
 
 To start identifying peptides and proteins using SearchGUI, download the latest version, unzip the downloaded file, and double-click on the SearchGUI-X.Y.Z.jar file.
@@ -144,13 +144,11 @@ It is straightforward to add/edit modifications via the graphical user interface
 
 ----
 
-### Converting Spectrum Data
+### Spectrum Data Formats
 
-SearchGUI supports mgf files as the direct input format for the spectra as this is what is supported by all the search engines.
+SearchGUI supports mzML and mgf files as the direct input format for the spectrum files. In addition, [ThermoRawFileParser](https://github.com/compomics/ThermoRawFileParser) is  included, which supports out-of-the-box conversion of Thermo raw files into mzML and mgf.
 
-However, by referring to the location of your [ProteoWizard](http://proteowizard.sourceforge.net) installtion you can also provide your raw files as input, which will then be converted to mgf using [msconvert](http://proteowizard.sourceforge.net).
-
-Note that this option is only available via the graphical user interface. From the command line you have to run the msconvert command line separatelty.
+Furthermore, by referencing the location of your [ProteoWizard](http://proteowizard.sourceforge.net) installtion you may also provide additional raw file types as input, which will then be converted using [msconvert](http://proteowizard.sourceforge.net). Note that this option is only available via the graphical user interface. From the command line you have to run the msconvert command line separatelty.
 
 [Go to top of page](#searchgui)
 
@@ -193,6 +191,8 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
  * **MyriMatch on Linux II** - If you get the error "`myrimatch: loadlocale.c:129: _nl_intern_locale_data: Assertion cnt < (sizeof (_nl_value_type_LC_TIME) / sizeof (_nl_value_type_LC_TIME[0]))' failed.`" (or other locale-related variable than `LC_TIME`), this can be fixed by running the command "`export LC_TIME=C`" before running SearchGUI/MyriMatch. To make this fix permanent, put the export line in your .bash_profile (~/.bash_profile). 
 
  * **MyriMatch on Windows** - If Myrimatch finishes almost immediately and SearchGUI log shows something like "`MyriMatch finished for * (47.0 milliseconds). Could not find MyriMatch result file`", myrimatch executable may not be running properly. Into its internal path (similar to <SearchGUI>\resources\MyriMatch\windows\windows_64bit, depending on your platform) you can execute it just writing `myriMatch` . If it throws errors about missing libraries like MSVCR100.dll or MSVCP100.dll you will need to install the last version available of them from Microsoft. MSVCR100.dll and MSVCP100.dll need this specific Microsoft Visual C++ package: [Microsoft Visual C++ 2010 Service Pack 1 Redistributable Package MFC Security Update](https://www.microsoft.com/en-us/download/details.aspx?id=26999). Other versions of Visual C++ redistributable libraries may be obtained here:[The latest supported Visual C++ downloads](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
+
+ * **MetaMorpheus requirements** - 64-bit operating system and .NET Core 3.1. See [https://github.com/smith-chem-wisc/MetaMorpheus](https://github.com/smith-chem-wisc/MetaMorpheus) for more details.
 
  * **Linux and Mac OSX File Permissions** - On Linux and Mac OSX you may have to edit the permissions for the executable files in order for SearchGUI to work. Allow execution for all users.
 
