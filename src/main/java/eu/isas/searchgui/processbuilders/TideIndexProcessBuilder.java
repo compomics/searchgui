@@ -168,7 +168,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
 
             process_name_array.add("--custom-enzyme");
-            process_name_array.add("{X}|{X}");
+            process_name_array.add("[Z]|[Z]");
 
         } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
 
@@ -182,42 +182,54 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
                 Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
                 String enzymeName = enzyme.getName();
                 // enzyme
-                //      note: Tide enzymes not implemented in utilities: 
+                //      note: Tide enzymes not implemented in utilities:
                 //          elastase ([ALIV]|{P}), clostripain ([R]|[]), iodosobenzoate ([W]|[]), proline-endopeptidase ([P]|[]), 
                 //          staph-protease ([E]|[]), elastase-trypsin-chymotrypsin ([ALIVKRWFY]|{P})
-                if (enzymeName.equals("Trypsin")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("trypsin");
-                } else if (enzymeName.equals("Trypsin (no P rule)")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("trypsin/p");
-                } else if (enzymeName.equals("Chymotrypsin")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("chymotrypsin");
-                } else if (enzymeName.equals("CNBr")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("cyanogen-bromide");
-                } else if (enzymeName.equals("Asp-N")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("asp-n");
-                } else if (enzymeName.equals("Lys-C")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("lys-c");
-                } else if (enzymeName.equals("Lys-N")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("lys-n");
-                } else if (enzymeName.equals("Arg-C")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("arg-c");
-                } else if (enzymeName.equals("Glu-C")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("glu-c");
-                } else if (enzymeName.equals("Pepsin A")) {
-                    process_name_array.add("--enzyme");
-                    process_name_array.add("pepsin-a");
-                } else {
-                    process_name_array.add("--custom-enzyme");
-                    process_name_array.add(digestionPreferences.getXTandemFormat());
+                switch (enzymeName) {
+                    case "Trypsin":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("trypsin");
+                        break;
+                    case "Trypsin (no P rule)":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("trypsin/p");
+                        break;
+                    case "Chymotrypsin":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("chymotrypsin");
+                        break;
+                    case "CNBr":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("cyanogen-bromide");
+                        break;
+                    case "Asp-N":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("asp-n");
+                        break;
+                    case "Lys-C":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("lys-c");
+                        break;
+                    case "Lys-N":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("lys-n");
+                        break;
+                    case "Arg-C":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("arg-c");
+                        break;
+                    case "Glu-C":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("glu-c");
+                        break;
+                    case "Pepsin A":
+                        process_name_array.add("--enzyme");
+                        process_name_array.add("pepsin-a");
+                        break;
+                    default:
+                        process_name_array.add("--custom-enzyme");
+                        process_name_array.add(digestionPreferences.getXTandemFormat());
+                        break;
                 }
                 process_name_array.add("--missed-cleavages");
                 Integer missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
