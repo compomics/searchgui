@@ -231,6 +231,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The ms file handler.
      */
     private final MsFileHandler msFileHandler = new MsFileHandler();
+    
+    /**
+     * Name of SearchGUI's Conda package
+     */
+    private final static String condaAppName = "searchgui";
 
     /**
      * Empty constructor for instantiation purposes.
@@ -300,7 +305,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if a newer version of SearchGUI is available
         boolean newVersion = false;
-        if (!getJarFilePath().equalsIgnoreCase(".") && utilitiesUserParameters.isAutoUpdate()) {
+        if (!getJarFilePath().equalsIgnoreCase(".") && utilitiesUserParameters.isAutoUpdate() && !CompomicsWrapper.appRunningIntoConda(condaAppName)) {
             newVersion = checkForNewVersion();
         }
 
