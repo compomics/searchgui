@@ -209,7 +209,8 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getNovorLocation(), 
                     searchCLIInputBean.getDirecTagLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
-                    processingParameters
+                    processingParameters,
+                    true
             );
 
             searchHandler.setLogFolder(logFolder);

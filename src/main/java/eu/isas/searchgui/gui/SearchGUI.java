@@ -231,13 +231,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The ms file handler.
      */
     private final MsFileHandler msFileHandler = new MsFileHandler();
-
     /**
-     * Empty constructor for instantiation purposes.
+     * Name of SearchGUI's Conda package
      */
-    private SearchGUI() {
-
-    }
+    private final static String CONDA_APP_NAME = "searchgui";
 
     /**
      * Creates a SearchGUI dialog.
@@ -300,7 +297,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         // check if a newer version of SearchGUI is available
         boolean newVersion = false;
-        if (!getJarFilePath().equalsIgnoreCase(".") && utilitiesUserParameters.isAutoUpdate()) {
+
+        if (!getJarFilePath().equalsIgnoreCase(".")
+                && !CompomicsWrapper.appRunningIntoConda(CONDA_APP_NAME)
+                && utilitiesUserParameters.isAutoUpdate()
+                && !searchHandler.getOverrideUpdateCheck()) {
             newVersion = checkForNewVersion();
         }
 
@@ -350,7 +351,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     identificationParametersFile,
                     processingParameters,
                     msFileHandler,
-                    exceptionHandler
+                    exceptionHandler, 
+                    false
             );
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());

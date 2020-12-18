@@ -1,6 +1,6 @@
-2020/11/09
+2020/12/17
 
-Comet version "2020.01 rev. 0".  This is a full release.
+Comet version "2020.01 rev. 1".  This is a maintenance release.
 http://comet-ms.sourceforge.net
 
 comet.VERSION.win32.exe:  Windows 32-bit binary compiled with VS2017
@@ -9,7 +9,17 @@ comet.VERSION.linux.exe:  Linux binary compiled on Centos 6.9 (glibc 2.12)
 comet.VERSION.debian.exe: Linux binary compiled on Debian 10.0 (glibc 2.28)
 
 
-release 2020.01 rev. 0 (2020.01.0), release date 2020/10/20
+release 2020.01 rev. 0 (2020.01.1), release date 2020/12/17
+
+- For TIMS-TOF mzML files, changed the scan number reporting to be the scan
+  "index" value plus "1".
+- Bug fix: Fixed issue where spectra that have all peak intensities of zero
+  would cause the program to crash.  Issue reported by D. Shteynberg.
+- Bug fix: Fixed issue where mzML scans without a precursor charge were not being
+  searched. This issue was limited to mzML and not a problem with mzXML files.
+  Issue reported by D. Shteynberg.
+
+release 2020.01 rev. 0 (2020.01.0), release date 2020/11/09
 
 - Implemented mzIdentML output via the parameter entry "output_mzidentmlfile".
   The mzIdentML format does not fully support the reporting of Comet results so

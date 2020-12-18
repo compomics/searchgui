@@ -351,12 +351,17 @@ public class SearchHandler {
      * The mass spectrometry file handler.
      */
     private final MsFileHandler msFileHandler;
+    /**
+     * If true, the update check is ignored. If false, the update check is done
+     * if the isAutoUpdate in UtilitiesUserParameters is set to true.
+     */
+    private boolean overrideUpdateCheck = false;
 
     /**
      * Constructor for the SearchGUI command line interface.Uses the
      * configuration file searchGUI_configuration.txt to get the default search
-     * engine locations and which search engines that are enabled. Mainly for
-     * use via the graphical UI.
+     * engine locations and which search engines that are enabled.Mainly for use
+     * via the graphical UI.
      *
      * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
@@ -365,8 +370,9 @@ public class SearchHandler {
      * @param rawFiles list of raw files
      * @param identificationParametersFile the identification parameters file
      * @param processingParameters the processing parameters
-     * @param msFileHandler The mass spectrometry file handler.
+     * @param msFileHandler the mass spectrometry file handler
      * @param exceptionHandler a handler for exceptions
+     * @param overrideUpdateCheck if true, the update check is ignored
      */
     public SearchHandler(
             IdentificationParameters identificationParameters,
@@ -377,7 +383,8 @@ public class SearchHandler {
             File identificationParametersFile,
             ProcessingParameters processingParameters,
             MsFileHandler msFileHandler,
-            ExceptionHandler exceptionHandler
+            ExceptionHandler exceptionHandler,
+            boolean overrideUpdateCheck
     ) {
 
         this.resultsFolder = resultsFolder;
@@ -386,6 +393,7 @@ public class SearchHandler {
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
+        this.overrideUpdateCheck = overrideUpdateCheck;
 
         enableOmssa = loadSearchEngineLocation(
                 Advocate.omssa,
@@ -507,7 +515,7 @@ public class SearchHandler {
     }
 
     /**
-     * Constructor for the SearchGUI command line interface. If the search
+     * Constructor for the SearchGUI command line interface.If the search
      * engines folders are set to null the default search engine locations are
      * used.
      *
@@ -554,6 +562,7 @@ public class SearchHandler {
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
      * @param processingParameters the processing preferences
+     * @param overrideUpdateCheck if true, the update check is ignored
      */
     public SearchHandler(
             IdentificationParameters identificationParameters,
@@ -586,7 +595,8 @@ public class SearchHandler {
             File novorFolder,
             File direcTagFolder,
             File makeblastdbFolder,
-            ProcessingParameters processingParameters
+            ProcessingParameters processingParameters,
+            boolean overrideUpdateCheck
     ) {
 
         this.resultsFolder = resultsFolder;
@@ -612,6 +622,7 @@ public class SearchHandler {
         this.identificationParameters = identificationParameters;
         this.processingParameters = processingParameters;
         this.identificationParametersFile = identificationParametersFile;
+        this.overrideUpdateCheck = overrideUpdateCheck;
 
         if (omssaFolder != null) {
             this.omssaLocation = omssaFolder;
@@ -3556,8 +3567,8 @@ public class SearchHandler {
                         }
                         if (enableTide) {
                             File outputFile = getDefaultOutputFile(
-                                    outputFolder, 
-                                    Advocate.tide.getName(), 
+                                    outputFolder,
+                                    Advocate.tide.getName(),
                                     utilitiesUserParameters.isIncludeDateInOutputName()
                             );
                             if (outputFile.exists()) {
@@ -3656,8 +3667,8 @@ public class SearchHandler {
 
                             String runName = IoUtil.removeExtension(run);
                             File outputFile = getDefaultOutputFile(
-                                    outputFolder, 
-                                    runName, 
+                                    outputFolder,
+                                    runName,
                                     utilitiesUserParameters.isIncludeDateInOutputName()
                             );
 
@@ -3841,7 +3852,7 @@ public class SearchHandler {
 
         File outputFile = getInputFile(folder);
 
-        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
             bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
@@ -4112,7 +4123,7 @@ public class SearchHandler {
                     zipFile.delete();
                 }
 
-                try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                     // find the uncompressed size of all the files to add to the zip
                     long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFilesMap);
@@ -4201,8 +4212,8 @@ public class SearchHandler {
 
                     String advocateName = Advocate.getAdvocate(algorithm).getName();
                     zipFile = getDefaultOutputFile(
-                            outputFolder, 
-                            advocateName, 
+                            outputFolder,
+                            advocateName,
                             includeDate
                     );
 
@@ -4210,7 +4221,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -4283,8 +4294,8 @@ public class SearchHandler {
 
                     String spectrumFileNameWithoutExtension = IoUtil.removeExtension(spectrumFileName);
                     zipFile = getDefaultOutputFile(
-                            outputFolder, 
-                            spectrumFileNameWithoutExtension, 
+                            outputFolder,
+                            spectrumFileNameWithoutExtension,
                             includeDate
                     );
 
@@ -4292,7 +4303,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -4800,5 +4811,14 @@ public class SearchHandler {
             String newOutputFileName
     ) {
         defaultOutputFileName = newOutputFileName;
+    }
+
+    /**
+     * Returns true if the update check is to ignored.
+     *
+     * @return true if the update check is to ignored
+     */
+    public boolean getOverrideUpdateCheck() {
+        return overrideUpdateCheck;
     }
 }
