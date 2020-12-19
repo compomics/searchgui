@@ -301,7 +301,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (!getJarFilePath().equalsIgnoreCase(".")
                 && !CompomicsWrapper.appRunningIntoConda(CONDA_APP_NAME)
                 && utilitiesUserParameters.isAutoUpdate()
-                && !searchHandler.getOverrideUpdateCheck()) {
+                && (searchHandler != null && !searchHandler.getOverrideUpdateCheck())) {
             newVersion = checkForNewVersion();
         }
 
