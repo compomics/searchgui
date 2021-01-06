@@ -43,11 +43,15 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File msgfEnzymesFile;
     /**
+     * The temp folder for MS-GF+ files.
+     */
+    private File msgfTempFolder;
+    /**
      * The MS-GF+ enzyme map. Key: utilities enzyme name, element: ms-gf+ index.
      */
     private HashMap<String, Integer> enzymeMap = new HashMap<>();
     /**
-     * The post translational modifications factory.
+     * The post-translational modifications factory.
      */
     private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
@@ -84,6 +88,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param msgfDirectory directory location of MSGFPlus.jar
+     * @param msgfTempFolder the temp folder for MSGF+
      * @param mgfFile the file containing the spectra
      * @param fastaFile the FASTA file
      * @param outputFile the output file
@@ -98,33 +103,42 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
-    public MsgfProcessBuilder(File msgfDirectory, File mgfFile, File fastaFile, File outputFile, SearchParameters searchParameters,
-            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, boolean isCommandLine)
-            throws IOException, ClassNotFoundException {
+    public MsgfProcessBuilder(
+            File msgfDirectory,
+            File msgfTempFolder,
+            File mgfFile,
+            File fastaFile,
+            File outputFile,
+            SearchParameters searchParameters,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler,
+            int nThreads,
+            boolean isCommandLine
+    ) throws IOException, ClassNotFoundException {
 
         this.searchParameters = searchParameters;
         msgfParameters = (MsgfParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msgf.getIndex());
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
+        this.msgfTempFolder = msgfTempFolder;
         this.spectrumFile = mgfFile;
+
+        // create the temp folder if it does not exist
+        if (!msgfTempFolder.exists()) {
+            msgfTempFolder.mkdirs();
+        }
 
         // make sure that the msgf+ jar file is executable
         File msgfExecutable = new File(msgfDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
         msgfExecutable.setExecutable(true);
 
-        // create the parameters folder if it does not exist
-        File parametersFolder = new File(msgfDirectory, PARAMS_FOLDER_NAME);
-        if (!parametersFolder.exists()) {
-            parametersFolder.mkdir();
-        }
-
         // create the ms-gf+ modification file
-        msgfModFile = new File(parametersFolder, MOD_FILE);
+        msgfModFile = new File(msgfTempFolder, MOD_FILE);
         createModificationsFile();
 
         // create ms-gf+ enzyme file
-        msgfEnzymesFile = new File(parametersFolder, ENZYMES_FILE);
+        msgfEnzymesFile = new File(msgfTempFolder, ENZYMES_FILE);
         createEnzymesFile();
 
         // set java home
@@ -183,7 +197,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // link to the msgf+ modifications file
         process_name_array.add("-mod");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(msgfModFile));
-        
+
         // max variable modifications per peptide
         process_name_array.add("-numMods");
         process_name_array.add("" + msgfParameters.getNumberOfModificationsPerPeptide());
@@ -207,7 +221,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-tasks");
             process_name_array.add("" + msgfParameters.getNumberOfTasks());
         }
-        
+
         // set the fragmentation method
         process_name_array.add("-m");
         process_name_array.add("" + msgfParameters.getFragmentationType());
@@ -244,7 +258,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             process_name_array.add("0");
         }
-        
+
         // set mass of charge carrier, default: mass of proton (1.00727649)
         //process_name_array.add("-ccm");
         //process_name_array.add("1.00727649"); // @TODO: implement?
@@ -252,7 +266,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // set the maximum missed cleavages
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
-            
+
             Integer missedCleavages = null;
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
                 int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
@@ -266,7 +280,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
                 process_name_array.add("" + missedCleavages);
             }
         }
-        
+
         // set the range of allowed isotope peak errors
         process_name_array.add("-ti");
         process_name_array.add(CommandLineUtils.getQuoteType()
@@ -313,31 +327,35 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
                 // add the fixed modifications
                 bw.write("#fixed modifications\n");
                 ArrayList<String> fixedModifications = searchParameters.getModificationParameters().getFixedModifications();
-                
+
                 for (String modName : fixedModifications) {
-                    
+
                     bw.write(getModificationFormattedForMsgf(modName, true) + "\n");
-                    
+
                 }
                 bw.write("\n");
 
                 // add the variable modifications
                 bw.write("#variable modifications\n");
                 ArrayList<String> variableModifications = searchParameters.getModificationParameters().getVariableModifications();
-                
+
                 for (String modName : variableModifications) {
-                    
+
                     bw.write(getModificationFormattedForMsgf(modName, false) + "\n");
-                    
+
                 }
-                
+
             } finally {
                 bw.close();
             }
         } catch (IOException ioe) {
-            
-            throw new IllegalArgumentException("Could not create MS-GF+ modifications file. Unable to write file: '" + ioe.getMessage() + "'.");
-            
+
+            throw new IllegalArgumentException(
+                    "Could not create MS-GF+ modifications file. Unable to write file: '"
+                    + ioe.getMessage()
+                    + "'."
+            );
+
         }
     }
 
@@ -357,7 +375,9 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         enzymeMap = new HashMap<>();
 
         try {
+            
             BufferedWriter bw = new BufferedWriter(new FileWriter(msgfEnzymesFile));
+            
             try {
 
                 EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
@@ -366,7 +386,6 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
                 for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
 
                     String enzymeName = enzyme.getName();
-
                     Integer enzymeIndex = getEnzymeMapping(enzyme);
 
                     if (enzymeIndex == null) {
@@ -420,20 +439,20 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // get the targeted amino acids
         String aminoAcidsAtTarget = "";
         AminoAcidPattern aminoAcidPattern = modification.getPattern();
-        
+
         if (aminoAcidPattern != null) {
-            
+
             for (Character aa : modification.getPattern().getAminoAcidsAtTarget()) {
-                
+
                 aminoAcidsAtTarget += aa;
-                
+
             }
         }
-        
+
         if (aminoAcidsAtTarget.length() == 0) {
-            
+
             aminoAcidsAtTarget = "*";
-            
+
         }
 
         // get the type of the modification

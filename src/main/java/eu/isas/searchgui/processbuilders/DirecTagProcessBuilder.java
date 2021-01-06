@@ -31,7 +31,7 @@ public class DirecTagProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File spectrumFile;
     /**
-     * The post translational modifications factory.
+     * The post-translational modifications factory.
      */
     private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**

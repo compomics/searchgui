@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.apache.commons.io.FileUtils;
 
 /**
  * ProcessBuilder for the MetaMorpheus search engine.
@@ -42,11 +43,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The temp folder for MetaMorpheus files.
      */
-    private static String metaMorpheusTempFolderPath = null;
-    /**
-     * The name of the temp sub folder for MetaMorpheus files.
-     */
-    private static String metaMorpheusTempSubFolderName = "temp";
+    private File metaMorpheusTempFolder;
     /**
      * The spectrum file.
      */
@@ -64,7 +61,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     private MetaMorpheusParameters metaMorpheusParameters;
     /**
-     * The post translational modifications factory.
+     * The post-translational modifications factory.
      */
     private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
@@ -76,6 +73,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param metaMorpheusFolder the MetaMorpheus folder
+     * @param metaMorpheusTempFolder the MetaMorpheus temp folder
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param threads the number of threads to use
@@ -89,6 +87,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     public MetaMorpheusProcessBuilder(
             File metaMorpheusFolder,
+            File metaMorpheusTempFolder,
             SearchParameters searchParameters,
             File spectrumFile,
             int threads,
@@ -101,16 +100,14 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
         this.metaMorpheusFolder = metaMorpheusFolder;
+        this.metaMorpheusTempFolder = metaMorpheusTempFolder;
         this.searchParameters = searchParameters;
         metaMorpheusParameters = (MetaMorpheusParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.metaMorpheus.getIndex());
         this.spectrumFile = spectrumFile;
         this.numberOfThreads = threads;
         this.fastaFile = fastaFile;
 
-        metaMorpheusTempFolderPath = getTempFolderPath(metaMorpheusFolder);
-
-        File metaMorpheusTempFolder = new File(metaMorpheusTempFolderPath);
-
+        // create the temp folder if it does not exist
         if (!metaMorpheusTempFolder.exists()) {
             metaMorpheusTempFolder.mkdirs();
         }
@@ -126,11 +123,11 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         metaMorpheus.setExecutable(true);
 
         // create the modification lists
-        File metaMorpheusModFile = new File(metaMorpheusFolder, "Mods" + File.separator + "CustomModifications.txt");
+        File metaMorpheusModFile = new File(metaMorpheusTempFolder, "Mods" + File.separator + "CustomModifications.txt");
         createModificationsFile(metaMorpheusModFile);
 
         // create enzyme
-        File metaMorpheusEnzymesFile = new File(metaMorpheusFolder, "ProteolyticDigestion" + File.separator + "proteases.tsv");
+        File metaMorpheusEnzymesFile = new File(metaMorpheusTempFolder, "ProteolyticDigestion" + File.separator + "proteases.tsv");
         createEnzymesFile(metaMorpheusEnzymesFile, searchParameters.getDigestionParameters());
 
         // create the parameter files
@@ -152,6 +149,16 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         // full path to executable
         process_name_array.add(metaMorpheus.getAbsolutePath());
 
+        // set the temp settings folder
+        process_name_array.add("--mmsettings");
+        process_name_array.add(metaMorpheusTempFolder.getAbsolutePath());
+
+        // copy the default metamorpheus settings to the metamorpheus temp folder
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Contaminants"), new File(metaMorpheusTempFolder, "Contaminants"));
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "CustomAminoAcids"), new File(metaMorpheusTempFolder, "CustomAminoAcids"));
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Data"), new File(metaMorpheusTempFolder, "Data"));
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Glycan_Mods"), new File(metaMorpheusTempFolder, "Glycan_Mods"));
+
         // the protein sequence file
         process_name_array.add("-d");
         process_name_array.add(fastaFile.getAbsolutePath()); // @TODO: also support uniprot xml?
@@ -169,7 +176,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
         // the output folder
         process_name_array.add("-o");
-        process_name_array.add(metaMorpheusTempFolderPath);
+        process_name_array.add(metaMorpheusTempFolder.getAbsolutePath());
 
         process_name_array.trimToSize();
 
@@ -219,7 +226,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File createParameterFile(SearchParameters searchParameters, MetaMorpheusTaskType taskType) throws IOException {
 
-        File parameterFile = new File(metaMorpheusTempFolderPath, taskType.toString() + ".toml");
+        File parameterFile = new File(metaMorpheusTempFolder, taskType.toString() + ".toml");
         BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
 
         try {
@@ -403,26 +410,6 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Returns the temp folder path. Instantiates if null.
-     *
-     * @param metaMorpheusFolder the MetaMorpheus folder
-     *
-     * @return the temp folder path
-     */
-    public static String getTempFolderPath(File metaMorpheusFolder) {
-
-        if (metaMorpheusTempFolderPath == null) {
-
-            metaMorpheusTempFolderPath = metaMorpheusFolder.getAbsolutePath()
-                    + File.separator + metaMorpheusTempSubFolderName;
-
-        }
-
-        return metaMorpheusTempFolderPath;
-
-    }
-
-    /**
      * Creates the MetaMorpheus enzymes file.
      *
      * @param metaMorpheusEnzymesFile the MetaMorpheus enzyme file
@@ -432,6 +419,11 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     private void createEnzymesFile(File metaMorpheusEnzymesFile, DigestionParameters digestionPreferences) throws IOException {
 
+        // create the parent folder if it does not exist
+        if (!metaMorpheusEnzymesFile.getParentFile().exists()) {
+            metaMorpheusEnzymesFile.getParentFile().mkdirs();
+        }
+        
         try {
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(metaMorpheusEnzymesFile));
@@ -466,9 +458,8 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
                     Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
 
-                    String enzymeName = enzyme.getName();
-
                     // name
+                    String enzymeName = enzyme.getName();
                     bw.write(enzymeName + "\t");
 
                     // sequence inducing cleavage 
@@ -542,7 +533,11 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                 bw.close();
             }
         } catch (IOException ioe) {
-            throw new IOException("Could not create MetaMorpheus enzymes file. Unable to write file: '" + ioe.getMessage() + "'.");
+            throw new IOException(
+                    "Could not create MetaMorpheus enzymes file. Unable to write file: '"
+                    + ioe.getMessage()
+                    + "'."
+            );
         }
     }
 
@@ -555,6 +550,11 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     private void createModificationsFile(File metaMorpheusModFile) throws IOException {
 
+        // create the parent folder if it does not exist
+        if (!metaMorpheusModFile.getParentFile().exists()) {
+            metaMorpheusModFile.getParentFile().mkdirs();
+        }
+        
         try {
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(metaMorpheusModFile));

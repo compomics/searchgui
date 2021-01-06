@@ -7,14 +7,8 @@ import com.compomics.util.experiment.io.mass_spectrometry.cms.CmsFolder;
 import com.compomics.util.io.flat.SimpleFileReader;
 import com.compomics.util.io.flat.SimpleFileWriter;
 import eu.isas.searchgui.SearchHandler;
-import eu.isas.searchgui.processbuilders.AndromedaProcessBuilder;
-import eu.isas.searchgui.processbuilders.CometProcessBuilder;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,6 +16,7 @@ import java.util.ArrayList;
  * This class sets the path preferences for the files to read/write
  *
  * @author Marc Vaudel
+ * @author Harald Barsnes
  */
 public class SearchGUIPathParameters {
 
@@ -34,36 +29,27 @@ public class SearchGUIPathParameters {
          * Directory where SearchGUI temporary files should be stored.
          */
         tempDirectory(
-                "searchgui_temp", 
-                "Folder where SearchGUI temporary files are stored.", 
-                "", 
+                "searchgui_temp",
+                "Folder where SearchGUI temporary files are stored.",
+                "",
                 true
         ),
         /**
-         * Directory where Comet temporary files should be stored.
+         * Folder where search engine temporary files should be stored.
          */
-        cometDirectory(
-                "comet_temp", 
-                "Folder where Comet temporary files are stored.", 
-                "", 
-                true
-        ),
-        /**
-         * Directory where Andromeda temporary files should be stored.
-         */
-        andromedaDirectory(
-                "andromeda_temp", 
-                "Folder where Andromeda temporary files are stored.", 
-                "", 
+        tempSearchEngineDirectory(
+                "search_engine_temp",
+                "Folder where search engine temporary files are stored.",
+                "",
                 true
         ),
         /**
          * The folder to use for cms files.
          */
         cmsFolder(
-                "cms", 
-                "Folder to use for cms files", 
-                "", 
+                "cms",
+                "Folder to use for cms files",
+                "",
                 true
         );
         /**
@@ -94,17 +80,17 @@ public class SearchGUIPathParameters {
          * @param isDirectory boolean indicating whether a folder is expected
          */
         private SearchGUIPathKey(
-                String id, 
-                String description, 
-                String defaultSubDirectory, 
+                String id,
+                String description,
+                String defaultSubDirectory,
                 boolean isDirectory
         ) {
-        
+
             this.id = id;
             this.description = description;
             this.defaultSubDirectory = defaultSubDirectory;
             this.isDirectory = isDirectory;
-        
+
         }
 
         /**
@@ -175,14 +161,14 @@ public class SearchGUIPathParameters {
      * Loads a path to be set from a line.
      *
      * @param line the line where to read the path from
-     * 
+     *
      * @throws FileNotFoundException thrown if the file the path refers to
      * cannot be found
      */
     public static void loadPathParameterFromLine(
             String line
     ) throws FileNotFoundException {
-        
+
         String id = UtilitiesPathParameters.getPathID(line);
 
         if (id.equals("")) {
@@ -230,7 +216,7 @@ public class SearchGUIPathParameters {
      * @param path the path to be set
      */
     public static void setPathParameter(
-            SearchGUIPathKey searchGUIPathKey, 
+            SearchGUIPathKey searchGUIPathKey,
             String path
     ) {
 
@@ -240,14 +226,10 @@ public class SearchGUIPathParameters {
                 SearchHandler.setTempFolderPath(path);
                 break;
 
-            case cometDirectory:
-                CometProcessBuilder.setTempFolder(path);
+            case tempSearchEngineDirectory:
+                SearchHandler.setTempSearchEngineFolderPath(path);
                 break;
 
-            case andromedaDirectory:
-                AndromedaProcessBuilder.setTempFolderPath(path);
-                break;
-                
             case cmsFolder:
                 CmsFolder.setParentFolder(path);
                 break;
@@ -265,7 +247,7 @@ public class SearchGUIPathParameters {
      * @param path the path to be set
      */
     public static void setPathParameter(
-            PathKey pathKey, 
+            PathKey pathKey,
             String path
     ) {
 
@@ -291,10 +273,10 @@ public class SearchGUIPathParameters {
      * @param searchGUIPathKey the key of the path
      * @param jarFilePath path to the jar file
      *
-     * @return the path 
+     * @return the path
      */
     public static String getPathParameter(
-            SearchGUIPathKey searchGUIPathKey, 
+            SearchGUIPathKey searchGUIPathKey,
             String jarFilePath
     ) {
 
@@ -303,12 +285,9 @@ public class SearchGUIPathParameters {
             case tempDirectory:
                 return SearchHandler.getTempFolderPath(jarFilePath);
 
-            case cometDirectory:
-                return CometProcessBuilder.getTempFolder();
+            case tempSearchEngineDirectory:
+                return SearchHandler.getTempSearchEngineFolderPath(jarFilePath);
 
-            case andromedaDirectory:
-                return AndromedaProcessBuilder.getTempFolderPath();
-                
             case cmsFolder:
                 return CmsFolder.getParentFolder();
 
@@ -360,14 +339,14 @@ public class SearchGUIPathParameters {
      * @throws IOException thrown of the file cannot be found
      */
     public static void writeConfigurationToFile(
-            File file, 
+            File file,
             String jarFilePath
     ) throws IOException {
-        
+
         try (SimpleFileWriter writer = new SimpleFileWriter(file, false)) {
-            
+
             writeConfigurationToFile(writer, jarFilePath);
-        
+
         }
     }
 
@@ -380,10 +359,10 @@ public class SearchGUIPathParameters {
      * @throws IOException thrown of the file cannot be found
      */
     public static void writeConfigurationToFile(
-            SimpleFileWriter writer, 
+            SimpleFileWriter writer,
             String jarFilePath
     ) throws IOException {
-    
+
         for (SearchGUIPathKey pathKey : SearchGUIPathKey.values()) {
 
             writePathToFile(writer, pathKey, jarFilePath);
@@ -404,15 +383,15 @@ public class SearchGUIPathParameters {
      * @throws IOException thrown of the file cannot be found
      */
     public static void writePathToFile(
-            SimpleFileWriter writer, 
-            SearchGUIPathKey pathKey, 
+            SimpleFileWriter writer,
+            SearchGUIPathKey pathKey,
             String jarFilePath
     ) throws IOException {
 
         writer.write(pathKey.id + UtilitiesPathParameters.separator);
 
         switch (pathKey) {
-            
+
             case tempDirectory:
                 String toWrite = SearchHandler.getTempFolderPath(jarFilePath);
                 if (toWrite == null) {
@@ -421,16 +400,8 @@ public class SearchGUIPathParameters {
                 writer.write(toWrite);
                 break;
 
-            case cometDirectory:
-                toWrite = CometProcessBuilder.getTempFolder();
-                if (toWrite == null) {
-                    toWrite = UtilitiesPathParameters.defaultPath;
-                }
-                writer.write(toWrite);
-                break;
-
-            case andromedaDirectory:
-                toWrite = AndromedaProcessBuilder.getTempFolderPath();
+            case tempSearchEngineDirectory:
+                toWrite = SearchHandler.getTempSearchEngineFolderPath(jarFilePath);
                 if (toWrite == null) {
                     toWrite = UtilitiesPathParameters.defaultPath;
                 }
@@ -446,12 +417,16 @@ public class SearchGUIPathParameters {
                 break;
 
             default:
-                throw new UnsupportedOperationException("Path " + pathKey.id + " not implemented.");
-        
+                throw new UnsupportedOperationException(
+                        "Path "
+                        + pathKey.id
+                        + " not implemented."
+                );
+
         }
-        
+
         writer.newLine();
-    
+
     }
 
     /**
@@ -459,7 +434,7 @@ public class SearchGUIPathParameters {
      * able to write.
      *
      * @param jarFilePath the path to the jar file
-     * 
+     *
      * @return a list containing the keys of the paths where the tool is not
      * able to write
      *
@@ -487,13 +462,16 @@ public class SearchGUIPathParameters {
         return result;
 
     }
-    
+
     /**
      * Returns the path to the jar file.
      *
      * @return the path to the jar file
      */
     public String getJarFilePath() {
-        return CompomicsWrapper.getJarFilePath(this.getClass().getResource("SearchGUIPathPreferences.class").getPath(), "SearchGUI");
+        return CompomicsWrapper.getJarFilePath(
+                this.getClass().getResource("SearchGUIPathPreferences.class").getPath(),
+                "SearchGUI"
+        );
     }
 }

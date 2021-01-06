@@ -38,11 +38,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The temp folder for Comet files.
      */
-    private static String cometTempFolderPath;
-    /**
-     * The name of the temp sub folder for Comet files.
-     */
-    private static String cometTempSubFolderName = "temp";
+    private File cometTempFolder;
     /**
      * The name of the Comet executable.
      */
@@ -84,6 +80,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param cometFolder the Comet folder
+     * @param cometTempFolder the temp folder for Comet files
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param fastaFile the FASTA file
@@ -96,19 +93,25 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown if there are problems creating the Comet
      * parameter file
      */
-    public CometProcessBuilder(File cometFolder, SearchParameters searchParameters, File spectrumFile, File fastaFile, 
+    public CometProcessBuilder(File cometFolder, File cometTempFolder, SearchParameters searchParameters, File spectrumFile, File fastaFile, 
             WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, Double refMass) throws IOException {
 
-        this.waitingHandler = waitingHandler;
-        this.exceptionHandler = exceptionHandler;
         this.cometFolder = cometFolder;
+        this.cometTempFolder = cometTempFolder;
         this.searchParameters = searchParameters;
         cometParameters = (CometParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.comet.getIndex());
         this.spectrumFile = spectrumFile;
         this.fastaFile = fastaFile;
+        this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
         this.nThreads = nThreads;
         this.refMass = refMass;
 
+        // create the temp folder if it does not exist
+        if (!cometTempFolder.exists()) {
+            cometTempFolder.mkdirs();
+        }
+        
         createParametersFile();
 
         // make sure that the comet file is executable
@@ -119,10 +122,8 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(comet.getAbsolutePath());
 
         // link to the parameter file
-        if (cometTempFolderPath != null && !cometFolder.getAbsolutePath().equalsIgnoreCase(cometTempFolderPath)) {
-            String path = new File(cometTempFolderPath, "comet.params").getPath();
-            process_name_array.add("-P" + path);
-        }
+        String path = new File(cometTempFolder, "comet.params").getAbsolutePath();
+        process_name_array.add("-P" + path);
 
         // link to the input file
         process_name_array.add(spectrumFile.getAbsolutePath());
@@ -151,18 +152,6 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException
      */
     private void createParametersFile() throws IOException {
-
-        File cometTempFolder;
-        if (cometTempFolderPath == null) {
-            cometTempFolder = cometFolder;
-        } else {
-            cometTempFolder = new File(cometTempFolderPath);
-        }
-
-        // create the temp folder if it doesn't exist
-        if (!cometTempFolder.exists()) {
-            cometTempFolder.mkdirs();
-        }
 
         BufferedWriter br = new BufferedWriter(new FileWriter(new File(cometTempFolder, "comet.params")));
 
@@ -899,25 +888,6 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     @Override
     public String getCurrentlyProcessedFileName() {
         return spectrumFile.getName();
-    }
-
-    /**
-     * Returns the temp folder to use for Comet files. Null if not set.
-     *
-     * @return the temp folder to use for Comet files
-     */
-    public static String getTempFolder() {
-        return cometTempFolderPath;
-    }
-
-    /**
-     * Sets the temp folder to use for Comet files. If null the Comet folder
-     * will be used. NB: Cannot contain spaces.
-     *
-     * @param cometTempFolder the temp folder to use for Comet files.
-     */
-    public static void setTempFolder(String cometTempFolder) {
-        CometProcessBuilder.cometTempFolderPath = cometTempFolder;
     }
 
     /**

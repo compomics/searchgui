@@ -186,10 +186,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private Integer maxLoadedSpectra = 2000;
     /**
-     * The path to the folder where the MS Amanda temp files are stored. Set to
-     * DEFAULT to use the default location for MS Amanda.
+     * The folder where the MS Amanda temp files are stored.
      */
-    private String msAmandaTempFolder = "DEFAULT";
+    private File msAmandaTempFolder;
     /**
      * The MS Amanda parameters.
      */
@@ -199,6 +198,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param msAmandaDirectory directory location of MSAmanda.exe
+     * @param msAmandaTempFolder the folder for temp MS Amanda files
      * @param mgfFile the spectrum file
      * @param fastaFile the FASTA file
      * @param outputPath path where to output the results
@@ -207,8 +207,17 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use (note: cannot be used)
      */
-    public MsAmandaProcessBuilder(File msAmandaDirectory, File mgfFile, File fastaFile, String outputPath,
-            SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
+    public MsAmandaProcessBuilder(
+            File msAmandaDirectory,
+            File msAmandaTempFolder,
+            File mgfFile,
+            File fastaFile,
+            String outputPath,
+            SearchParameters searchParameters,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler,
+            int nThreads
+    ) {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -216,10 +225,16 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the paths
         msAmandaFolder = msAmandaDirectory;
+        this.msAmandaTempFolder = msAmandaTempFolder;
         spectrumFile = mgfFile;
         database = fastaFile.getAbsoluteFile();
-        //msAmandTempFolder = ""; @TODO: allow the user to set the temp folder
+        
+        // create the temp folder if it does not exist
+        if (!msAmandaTempFolder.exists()) {
+            msAmandaTempFolder.mkdirs();
+        }
 
+        // set the various search settings
         maxRank = msAmandaParameters.getMaxRank();
         generateDecoys = msAmandaParameters.generateDecoy();
         reportBothBestHitsForTD = msAmandaParameters.reportBothBestHitsForTD();
@@ -327,7 +342,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the settings file
         process_name_array.add("-e");
-        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(msAmandaFolder, SETTINGS_FILE)));
+        process_name_array.add(CommandLineUtils.getCommandLineArgument(new File(msAmandaTempFolder, SETTINGS_FILE)));
 
         // add the file format
         process_name_array.add("-f");
@@ -362,7 +377,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private void createEnzymeFile() {
 
-        File enzymeFile = new File(msAmandaFolder, ENZYMES_FILE);
+        File enzymeFile = new File(msAmandaTempFolder, ENZYMES_FILE);
 
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(enzymeFile));
@@ -437,7 +452,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private void createSettingsFile() throws IllegalArgumentException {
 
-        File settingsFile = new File(msAmandaFolder, SETTINGS_FILE);
+        File settingsFile = new File(msAmandaTempFolder, SETTINGS_FILE);
 
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(settingsFile));
@@ -458,7 +473,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<MaxNoDynModifs>" + maxVariableModifications + "</MaxNoDynModifs> " + System.getProperty("line.separator")
                     + "\t\t<MaxNumberModSites>" + maxModificationSites + "</MaxNumberModSites> " + System.getProperty("line.separator")
                     + "\t\t<MaxNumberNeutralLoss>" + maxNeutralLosses + "</MaxNumberNeutralLoss> " + System.getProperty("line.separator")
-                    + "\t\t<MaxNumberNeutralLossModifications>" + maxNeutralLosses + "</MaxNumberNeutralLossModifications> " + System.getProperty("line.separator")
+                    + "\t\t<MaxNumberNeutralLossModifications>" + maxNeutralLossesPerModification + "</MaxNumberNeutralLossModifications> " + System.getProperty("line.separator")
                     + "\t\t<MinimumPepLength>" + minPeptideLength + "</MinimumPepLength> " + System.getProperty("line.separator")
                     + "\t\t<MaximumPepLength>" + maxPeptideLength + "</MaximumPepLength> " + System.getProperty("line.separator")
                     + "\t\t<ReportBothBestHitsForTD>" + reportBothBestHitsForTD + "</ReportBothBestHitsForTD> " + System.getProperty("line.separator")
@@ -467,7 +482,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t<basic_settings> " + System.getProperty("line.separator")
                     + "\t\t<instruments_file>" + new File(msAmandaFolder, INSTRUMENTS_FILE).getAbsolutePath() + "</instruments_file> " + System.getProperty("line.separator")
                     + "\t\t<unimod_file>" + new File(msAmandaFolder, UNIMOD_FILE).getAbsolutePath() + "</unimod_file> " + System.getProperty("line.separator")
-                    + "\t\t<enzyme_file>" + new File(msAmandaFolder, ENZYMES_FILE).getAbsolutePath() + "</enzyme_file> " + System.getProperty("line.separator")
+                    + "\t\t<enzyme_file>" + new File(msAmandaTempFolder, ENZYMES_FILE).getAbsolutePath() + "</enzyme_file> " + System.getProperty("line.separator")
                     + "\t\t<unimod_obo_file>" + new File(msAmandaFolder, UNIMOD_OBO_FILE).getAbsolutePath() + "</unimod_obo_file> " + System.getProperty("line.separator")
                     + "\t\t<psims_obo_file>" + new File(msAmandaFolder, PSI_MS_OBO_FILE).getAbsolutePath() + "</psims_obo_file> " + System.getProperty("line.separator")
                     + "\t\t<monoisotopic>" + monoisotopic + "</monoisotopic> " + System.getProperty("line.separator")
@@ -628,7 +643,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Set if target and decoy are ranked separately or shared.
-     * 
+     *
      * @param reportBothBestHitsForTD the reportBothBestHitsForTD to set
      */
     public void setReportBothBestHitsForTD(boolean reportBothBestHitsForTD) {

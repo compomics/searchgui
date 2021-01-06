@@ -36,6 +36,10 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
      */
     public final static String EXECUTABLE_FILE_NAME = "novor.jar";
     /**
+     * The temp folder for Novor files.
+     */
+    private File novorTempFolder;
+    /**
      * The spectrumFile file.
      */
     private File spectrumFile;
@@ -58,7 +62,7 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The post translational modifications factory.
      */
-    private ModificationFactory modificatoinFactory = ModificationFactory.getInstance();
+    private ModificationFactory modificationFactory = ModificationFactory.getInstance();
     /**
      * The Novor to utilities modification map. Key: Novor modification short
      * name, element: utilities modification name.
@@ -69,6 +73,7 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param novorFolder the path to the Novor executable
+     * @param novorTempFolder the folder for Novor temp files
      * @param mgfFile the spectrum MGF file
      * @param outputFile the output file
      * @param searchParameters the search parameters
@@ -81,14 +86,28 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while getting the SearchGUI path
      */
-    public NovorProcessBuilder(File novorFolder, File mgfFile, File outputFile, SearchParameters searchParameters, boolean isCommandLine,
-            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler) throws IOException, ClassNotFoundException {
+    public NovorProcessBuilder(
+            File novorFolder,
+            File novorTempFolder,
+            File mgfFile,
+            File outputFile,
+            SearchParameters searchParameters,
+            boolean isCommandLine,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler
+    ) throws IOException, ClassNotFoundException {
 
         this.novorFolder = novorFolder;
+        this.novorTempFolder = novorTempFolder;
         this.spectrumFile = mgfFile;
         this.searchParameters = searchParameters;
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
+        
+        // create the temp folder if it does not exist
+        if (!novorTempFolder.exists()) {
+            novorTempFolder.mkdirs();
+        }
 
         // make sure that the novor jar file is executable
         File novorExecutable = new File(novorFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
@@ -123,11 +142,11 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the parameters
         process_name_array.add("-p");
-        process_name_array.add(novorFolder.getAbsolutePath() + File.separator + parameterFileName);
+        process_name_array.add(novorTempFolder.getAbsolutePath() + File.separator + parameterFileName);
 
         // add the custom modifications
         process_name_array.add("-m");
-        process_name_array.add(novorFolder.getAbsolutePath() + File.separator + modsFileName);
+        process_name_array.add(novorTempFolder.getAbsolutePath() + File.separator + modsFileName);
 
         // add output folder
         process_name_array.add("-o");
@@ -163,7 +182,7 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
         // get the Novoe specific parameters
         NovorParameters novorParameters = (NovorParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.novor.getIndex());
 
-        try (BufferedWriter bufferedParameterWriter = new BufferedWriter(new FileWriter(novorFolder.getAbsolutePath() + File.separator + parameterFileName))) {
+        try (BufferedWriter bufferedParameterWriter = new BufferedWriter(new FileWriter(novorTempFolder.getAbsolutePath() + File.separator + parameterFileName))) {
 
             bufferedParameterWriter.write("# Search parameters" + System.getProperty("line.separator"));
 
@@ -197,7 +216,7 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
             bufferedParameterWriter.write(System.getProperty("line.separator"));
 
             // modifications
-            FileWriter modsWriter = new FileWriter(novorFolder.getAbsolutePath() + File.separator + modsFileName);
+            FileWriter modsWriter = new FileWriter(novorTempFolder.getAbsolutePath() + File.separator + modsFileName);
             BufferedWriter bufferedModsWriter = new BufferedWriter(modsWriter);
 
             // create map for mapping back to the utilities ptms used
@@ -210,7 +229,7 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
 
                 for (String variableModification : searchParameters.getModificationParameters().getVariableModifications()) {
 
-                    Modification modification = modificatoinFactory.getModification(variableModification);
+                    Modification modification = modificationFactory.getModification(variableModification);
                     addModification(bufferedModsWriter, modification);
 
                     // update the modifications string
@@ -237,7 +256,7 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
 
                 for (String fixedModification : searchParameters.getModificationParameters().getFixedModifications()) {
 
-                    Modification modification = modificatoinFactory.getModification(fixedModification);
+                    Modification modification = modificationFactory.getModification(fixedModification);
                     addModification(bufferedModsWriter, modification);
 
                     // update the modifications string
@@ -317,11 +336,11 @@ public class NovorProcessBuilder extends SearchGUIProcessBuilder {
                 bufferedModsWriter.write("n--, ");
             case modcaa_peptide:
             case modcaa_protein:
-            bufferedModsWriter.write("-rc, ");
+                bufferedModsWriter.write("-rc, ");
                 break;
             case modc_peptide:
             case modc_protein:
-            bufferedModsWriter.write("--c, ");
+                bufferedModsWriter.write("--c, ");
                 break;
             default:
                 throw new UnsupportedOperationException("Modification type " + modificationType + " not supported.");

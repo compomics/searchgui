@@ -48,6 +48,10 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      */
     public final static String EXECUTABLE_FILE_NAME = "tandem";
     /**
+     * The temp folder for XTandem files.
+     */
+    private File xTandemTempFolder;
+    /**
      * The number of processors available.
      */
     private int nProcessors;
@@ -174,6 +178,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param xTandem_directory directory location of tandem.exe
+     * @param xTandemTempFolder folder for XTandem temp files
      * @param mgfFile the spectrum file
      * @param fastaFile the FASTA file
      * @param outputPath path where to output the results
@@ -182,7 +187,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use
      */
-    public TandemProcessBuilder(File xTandem_directory, File mgfFile, File fastaFile, String outputPath,
+    public TandemProcessBuilder(File xTandem_directory, File xTandemTempFolder, File mgfFile, File fastaFile, String outputPath,
             SearchParameters searchParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) {
 
         xtandemParameters = (XtandemParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.xtandem.getIndex());
@@ -194,6 +199,13 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         spectrumFile = mgfFile;
         dataBase = fastaFile.getAbsoluteFile();
         this.outputPath = outputPath;
+        this.xTandemTempFolder = xTandemTempFolder;
+
+        // create the temp folder if it does not exist
+        if (!xTandemTempFolder.exists()) {
+            xTandemTempFolder.mkdirs();
+        }
+
         fragmentMassError = searchParameters.getFragmentIonAccuracy();
         precursorMassError = searchParameters.getPrecursorAccuracy();
         if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
@@ -300,7 +312,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             if (newModification && xtandemParameters.isQuickPyrolidone()
-                    && (modName.equals("Pyrolidone from E") || modName.equals("Pyrolidone from Q") || modName.equals("Pyrolidone from carbamidomethylated C"))) {
+                    && (modName.equals("Pyrolidone from E")
+                    || modName.equals("Pyrolidone from Q")
+                    || modName.equals("Pyrolidone from carbamidomethylated C"))) {
 
                 newModification = false;
 
@@ -369,7 +383,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
             enzymeIsSemiSpecific = "no";
             this.missedCleavages = 0;
         }
-        
+
         // @TODO: should be "yes" if the search parameters higher isotope tolerance is >0. no otherwise
         if (xtandemParameters.getParentMonoisotopicMassIsotopeError()) {
             parentMonoisotopicMassIsotopeError = "yes";
@@ -392,7 +406,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
         // full path to executable
         process_name_array.add(xTandemFile.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
 
-        // Link to the input file
+        // link to the input file
         process_name_array.add(inputFile.getAbsolutePath());
 
         process_name_array.trimToSize();
@@ -417,13 +431,16 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * Creates the X!Tandem input file.
      */
     private void createInputFile() {
-        inputFile = new File(xTandemFile, INPUT_FILE);
+
+        inputFile = new File(xTandemTempFolder, INPUT_FILE);
+
         try {
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(inputFile));
             bw.write("<?xml version=\"1.0\"?>" + System.getProperty("line.separator")
                     + "<bioml>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"list path, default parameters\">" + PARAMETER_FILE + "</note>" + System.getProperty("line.separator")
-                    + "\t<note type=\"input\" label=\"list path, taxonomy information\">" + TAXONOMY_FILE + "</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"list path, default parameters\">" + new File(xTandemTempFolder, PARAMETER_FILE).getAbsolutePath() + "</note>" + System.getProperty("line.separator")
+                    + "\t<note type=\"input\" label=\"list path, taxonomy information\">" + new File(xTandemTempFolder, TAXONOMY_FILE).getAbsolutePath() + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"protein, taxon\">all</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"spectrum, path\">" + spectrumFile.getAbsolutePath() + "</note>" + System.getProperty("line.separator")
                     + "\t<note type=\"input\" label=\"output, path\">" + outputPath + "</note>" + System.getProperty("line.separator")
@@ -431,8 +448,13 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "</bioml>" + System.getProperty("line.separator"));
             bw.flush();
             bw.close();
+
         } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not create X!Tandem input file. Unable to write file: '" + ioe.getMessage() + "'!");
+            throw new IllegalArgumentException(
+                    "Could not create X!Tandem input file. Unable to write file: '"
+                    + ioe.getMessage()
+                    + "'!"
+            );
         }
     }
 
@@ -440,8 +462,11 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
      * Creates the taxonomy file.
      */
     private void createTaxonomyFile() throws IllegalArgumentException {
-        taxonomyFile = new File(xTandemFile, TAXONOMY_FILE);
+
+        taxonomyFile = new File(xTandemTempFolder, TAXONOMY_FILE);
+
         try {
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(taxonomyFile));
             bw.write(
                     "<?xml version=\"1.0\"?>" + System.getProperty("line.separator")
@@ -452,8 +477,13 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + "</bioml>");
             bw.flush();
             bw.close();
+
         } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not create X!Tandem taxonomy file. Unable to write file: '" + ioe.getMessage() + "'!");
+            throw new IllegalArgumentException(
+                    "Could not create X!Tandem taxonomy file. Unable to write file: '"
+                    + ioe.getMessage()
+                    + "'!"
+            );
         }
     }
 
@@ -509,9 +539,10 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
 
         }
 
-        parameterFile = new File(xTandemFile, PARAMETER_FILE);
+        parameterFile = new File(xTandemTempFolder, PARAMETER_FILE);
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile))) {
+
             bw.write(
                     "<?xml version=\"1.0\"?>" + System.getProperty("line.separator")
                     + "<?xml-stylesheet type=\"text/xsl\" href=\"tandem-input-style.xsl\"?>" + System.getProperty("line.separator")
@@ -665,8 +696,13 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                     + System.getProperty("line.separator")
                     + "</bioml>" + System.getProperty("line.separator"));
             bw.flush();
+
         } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not create X!Tandem parameter file. Unable to write file: '" + ioe.getMessage() + "'!");
+            throw new IllegalArgumentException(
+                    "Could not create X!Tandem parameter file. Unable to write file: '"
+                    + ioe.getMessage()
+                    + "'!"
+            );
         }
     }
 

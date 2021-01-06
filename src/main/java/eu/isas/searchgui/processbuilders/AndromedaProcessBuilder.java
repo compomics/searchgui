@@ -43,15 +43,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The temp folder for Andromeda files.
      */
-    private static String andromedaTempFolderPath = null;
-    /**
-     * The name of the temp sub folder for Andromeda files.
-     */
-    private static String andromedaTempSubFolderName = "temp";
-    /**
-     * The sub folder containing the apar files.
-     */
-    private final static String APAR_FOLDER = "apar_files";
+    private File andromedaTempFolder = null;
     /**
      * The spectrum file.
      */
@@ -77,6 +69,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param andromedaFolder the Andromeda folder
+     * @param andromedaTempFolder the temp folder for Andromeda
      * @param searchParameters the search parameters
      * @param searchParametersFile the file where to save the search parameters
      * @param spectrumFile the spectrum file
@@ -89,31 +82,30 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * writing a file.
      */
     public AndromedaProcessBuilder(
-            File andromedaFolder, 
-            SearchParameters searchParameters, 
-            File searchParametersFile, 
-            File spectrumFile, 
-            File fastaFile, 
-            WaitingHandler waitingHandler, 
-            ExceptionHandler exceptionHandler, 
+            File andromedaFolder,
+            File andromedaTempFolder,
+            SearchParameters searchParameters,
+            File searchParametersFile,
+            File spectrumFile,
+            File fastaFile,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler,
             int nThreads
     ) throws IOException {
 
-        this.waitingHandler = waitingHandler;
-        this.exceptionHandler = exceptionHandler;
         this.andromedaFolder = andromedaFolder;
+        this.andromedaTempFolder = andromedaTempFolder;
         this.searchParameters = searchParameters;
         andromedaParameters = (AndromedaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.andromeda.getIndex());
         this.spectrumFile = spectrumFile;
         this.fastaFile = fastaFile;
+        this.waitingHandler = waitingHandler;
+        this.exceptionHandler = exceptionHandler;
 
-        if (andromedaTempFolderPath == null) {
-
-            andromedaTempFolderPath = getTempFolderPath(andromedaFolder);
-
+        // create the temp folder if it does not exist
+        if (!andromedaTempFolder.exists()) {
+            andromedaTempFolder.mkdirs();
         }
-
-        File andromedaTempFolder = new File(andromedaTempFolderPath);
 
         // make sure that the andromeda file is executable
         File andromeda = new File(andromedaFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
@@ -164,51 +156,10 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
     }
 
     /**
-     * Returns the temp folder path. Instantiates if null.
-     *
-     * @param andromedaFolder the Andromeda folder
-     *
-     * @return the temp folder path
-     */
-    public static String getTempFolderPath(File andromedaFolder) {
-
-        if (andromedaTempFolderPath == null) {
-
-            andromedaTempFolderPath = andromedaFolder.getAbsolutePath() + File.separator + andromedaTempSubFolderName;
-
-        }
-        
-        File andromedaTempFolder = new File(andromedaTempFolderPath);
-
-        if (!andromedaTempFolder.exists()) {
-
-            andromedaTempFolder.mkdirs();
-
-        }
-
-        return andromedaTempFolderPath;
-
-    }
-
-    /**
-     * Returns the generic FASTA file corresponding to the given FASTA file.
-     *
-     * @param andromedaFolder the Andromeda folder
-     * @param fastaFileName the FASTA file name
-     *
-     * @return the generic FASTA file corresponding to the given FASTA file
-     */
-    public static File getGenericFastaFile(File andromedaFolder, String fastaFileName) {
-
-        return new File(getTempFolderPath(andromedaFolder), fastaFileName);
-
-    }
-
-    /**
      * Create the FASTA file.
      *
-     * @param andromedaFolder the Andromeda folder
-     * @param fastaFile the original FASTA file
+     * @param andromedaTempFolder the Andromeda temp folder
+     * @param originalFastaFile the original FASTA file
      * @param waitingHandler the waiting handler
      *
      * @return the parameters file
@@ -216,18 +167,21 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException exception thrown whenever an error occurred while
      * reading or writing a file
      */
-    public static File createGenericFastaFile(File andromedaFolder, File fastaFile, WaitingHandler waitingHandler) throws IOException {
+    public static File createGenericFastaFile(
+            File andromedaTempFolder,
+            File originalFastaFile,
+            WaitingHandler waitingHandler
+    ) throws IOException {
 
-        String andromedaTempFolder = getTempFolderPath(andromedaFolder);
-        File andromedaFile = new File(andromedaTempFolder, fastaFile.getName());
+        File andromedaFastaFile = new File(andromedaTempFolder, originalFastaFile.getName());
 
-        if (!andromedaFile.exists()) {
+        if (!andromedaFastaFile.exists()) {
 
-            GenericFastaConverter.convertFile(fastaFile, andromedaFile, waitingHandler);
+            GenericFastaConverter.convertFile(originalFastaFile, andromedaFastaFile, waitingHandler);
 
         }
 
-        return andromedaFile;
+        return andromedaFastaFile;
 
     }
 
@@ -235,16 +189,17 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * Creates the database configuration file.
      *
      * @param andromedaFolder the Andromeda installation folder
+     * @param andromedaTempFolder the Andromeda temp folder
      * @param fastaFile the FASTA file
      *
      * @throws IOException exception thrown whenever an error occurred while
      * writing the database configuration file.
      */
-    public static void createDatabaseFile(File andromedaFolder, File fastaFile) throws IOException {
+    public static void createDatabaseFile(File andromedaFolder, File andromedaTempFolder, File fastaFile) throws IOException {
 
-        File databaseFolder = new File(andromedaFolder, "conf");
+        File databaseFolder = new File(andromedaFolder, "conf"); // @TODO: possible to use the temp folder instead??
         File databaseFile = new File(databaseFolder, "databases.xml");
-        File genericFastaFile = getGenericFastaFile(andromedaFolder, IoUtil.getFileName(fastaFile));
+        File genericFastaFile = new File(andromedaTempFolder, IoUtil.getFileName(fastaFile));
         BufferedWriter bw = new BufferedWriter(new FileWriter(databaseFile));
         String dbName = genericFastaFile.getName();
         String date = "0001-01-01T00:00:00";
@@ -255,8 +210,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.write("<databases xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
             bw.newLine();
             bw.write("   <database create_date=\"" + date
-                    + "\" last_modified_date=\"" + date 
-                    + "\" user=\"SearchGUI\" filename=\"" + dbName 
+                    + "\" last_modified_date=\"" + date
+                    + "\" user=\"SearchGUI\" filename=\"" + dbName
                     + "\" search_expression=\"" + "&gt;generic\\|([^|]*)\\|(.*)\" mutation_parse_rule=\"\" "
                     + "species=\"Homo sapiens (Human)\" taxid=\"9606\" "
                     + "source=\"UniprotKB\" />"); //@TODO: add species and source
@@ -278,17 +233,21 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * writing the file.
      */
     public static void createEnzymesFile(File andromedaFolder) throws IOException {
+
         EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
-        File file = new File(andromedaFolder, "conf");
-        file = new File(file, "enzymes.xml");
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        File confFolder = new File(andromedaFolder, "conf"); // @TODO: possible to use the temp folder instead??
+        File enzymesFile = new File(confFolder, "enzymes.xml");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(enzymesFile));
         int index = 0;
         String date = "0001-01-01T00:00:00";
+
         try {
+
             bw.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             bw.newLine();
             bw.write("<enzymes xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">");
             bw.newLine();
+
             for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
 
                 bw.write("   <enzyme index=\"" + index
@@ -300,34 +259,46 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.newLine();
                 bw.write("      <specificity>");
                 bw.newLine();
+
                 ArrayList<Character> aaBefore = new ArrayList<>(enzyme.getAminoAcidBefore());
+
                 if (aaBefore.isEmpty()) {
                     for (char aa : AminoAcid.getUniqueAminoAcids()) {
                         aaBefore.add(aa);
                     }
                 }
+
                 ArrayList<Character> aaAfter = new ArrayList<>(enzyme.getAminoAcidAfter());
+
                 if (aaAfter.isEmpty()) {
                     for (char aa : AminoAcid.getUniqueAminoAcids()) {
                         aaAfter.add(aa);
                     }
                 }
+
                 for (Character aa1 : aaBefore) {
+
                     for (Character aa2 : aaAfter) {
+
                         if (!enzyme.getRestrictionBefore().contains(aa1) && !enzyme.getRestrictionAfter().contains(aa2)) {
                             bw.write("         <string>" + aa1 + aa2 + "</string>");
                             bw.newLine();
                         }
                     }
+
                 }
+
                 bw.write("      </specificity>");
                 bw.newLine();
                 bw.write("    </enzyme>");
                 bw.newLine();
                 index++;
+
             }
+
             bw.write("</enzymes>");
             bw.newLine();
+
         } finally {
             bw.close();
         }
@@ -349,9 +320,9 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      */
     public static void createPtmFile(File andromedaFolder, IdentificationParameters identificationParameters, File identificationParametersFile) throws IOException, ClassNotFoundException {
 
-        File file = new File(andromedaFolder, "conf");
-        file = new File(file, "modifications.xml");
-        BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        File confFolder = new File(andromedaFolder, "conf"); // @TODO: possible to use the temp folder instead??
+        File modFile = new File(confFolder, "modifications.xml");
+        BufferedWriter bw = new BufferedWriter(new FileWriter(modFile));
         int index = 0;
         String date = "0001-01-01T00:00:00";
 
@@ -412,90 +383,145 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 + "\" user=\"SearchGUI\" "
                 + "reporterCorrectionM2=\"0\" reporterCorrectionM1=\"0\" reporterCorrectionP1=\"0\" reporterCorrectionP2=\"0\" "
                 + "composition=\"" + getComposition(modification) + "\" multi_modification=\"false\">");
+
         bw.newLine();
+
         if (null == modification.getModificationType()) {
-            throw new IllegalArgumentException("Export not implemented for PTM of type " + modification.getModificationType() + ".");
+
+            throw new IllegalArgumentException(
+                    "Export not implemented for PTM of type "
+                    + modification.getModificationType()
+                    + "."
+            );
+
         } else {
+
             switch (modification.getModificationType()) {
+
                 case modaa:
                     bw.write("      <position>anywhere</position>");
                     break;
+
                 case modn_protein:
                     bw.write("      <position>proteinNterm</position>");
                     break;
+
                 case modnaa_protein:
                     bw.write("      <position>proteinNterm</position>");
                     break;
+
                 case modn_peptide:
                     bw.write("      <position>anyNterm</position>");
                     break;
+
                 case modnaa_peptide:
                     bw.write("      <position>anyNterm</position>");
                     break;
+
                 case modc_protein:
                     bw.write("      <position>proteinCterm</position>");
                     break;
+
                 case modcaa_protein:
                     bw.write("      <position>proteinCterm</position>");
                     break;
+
                 case modc_peptide:
                     bw.write("      <position>anyCterm</position>");
                     break;
+
                 case modcaa_peptide:
                     bw.write("      <position>anyCterm</position>");
                     break;
+
                 default:
-                    throw new IllegalArgumentException("Export not implemented for PTM of type " + modification.getModificationType() + ".");
+                    throw new IllegalArgumentException(
+                            "Export not implemented for PTM of type "
+                            + modification.getModificationType()
+                            + "."
+                    );
             }
         }
+
         bw.newLine();
+
         int siteIndex = 0;
         AminoAcidPattern aminoAcidPattern = modification.getPattern();
+
         if (aminoAcidPattern != null && !aminoAcidPattern.getAminoAcidsAtTarget().isEmpty()) {
+
             for (Character aa : aminoAcidPattern.getAminoAcidsAtTarget()) {
+
                 bw.write("      <modification_site index=\"" + siteIndex + "\" site=\"" + aa + "\">");
                 bw.newLine();
                 siteIndex++;
                 ArrayList<NeutralLoss> neutralLosses = modification.getNeutralLosses();
+
                 if (!neutralLosses.isEmpty()) {
+
                     bw.write("         <neutralloss_collection>");
                     bw.newLine();
+
                     for (NeutralLoss neutralLoss : neutralLosses) {
+
                         if (neutralLoss.getComposition() != null) {
+
                             bw.write("            <neutralloss name=\"" + neutralLoss.name
                                     + "\" shortname=\"" + neutralLoss.name
                                     + "\" composition=\"" + getComposition(neutralLoss.getComposition()) + "\" />");
                             bw.newLine();
+
                         }
+
                     }
+
                     bw.write("         </neutralloss_collection>");
                     bw.newLine();
+
                 } else {
+
                     bw.write("         <neutralloss_collection />");
                     bw.newLine();
+
                 }
+
                 ArrayList<ReporterIon> reporterIons = modification.getReporterIons();
+
                 if (!reporterIons.isEmpty()) {
+
                     bw.write("         <diagnostic_collection>");
                     bw.newLine();
+
                     for (ReporterIon reporterIon : reporterIons) {
+
                         if (reporterIon.getAtomicComposition() != null) {
+
                             bw.write("            <diagnostic name=\"" + reporterIon.getName()
                                     + "\" shortname=\"" + reporterIon.getName()
                                     + "\" composition=\"" + getComposition(reporterIon.getAtomicComposition()) + "\" />");
                             bw.newLine();
+
                         }
+
                     }
+
                     bw.write("         </diagnostic_collection>");
                     bw.newLine();
+
                 } else {
+
                     bw.write("         <neutralloss_collection />");
                     bw.newLine();
+
                 }
+
                 bw.write("      </modification_site>");
                 bw.newLine();
+
             }
+
         } else {
+
             bw.write("      <modification_site site=\"-\">");
             bw.newLine();
             bw.write("         <neutralloss_collection />");
@@ -504,13 +530,16 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             bw.write("      </modification_site>");
             bw.newLine();
+
         }
+
         bw.write("      <type>Standard</type>"); //@TODO: classify PTMs
         bw.newLine();
         bw.write("      <terminus_type>none</terminus_type>"); //@TODO: check with Jürgen what should be here
         bw.newLine();
         bw.write("   </modification>");
         bw.newLine();
+
     }
 
     /**
@@ -527,21 +556,30 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         ArrayList<String> atoms = new ArrayList<>();
 
         for (AtomImpl atomImpl : atomChain.getAtomChain()) {
+
             String atom = atomImpl.getAtomSymbol();
             if (!atoms.contains(atom)) {
                 atoms.add(atom);
             }
+
             if (atomImpl.getIsotope() == 0) {
+
                 Integer occurrence = monoisotopic.get(atom);
+
                 if (occurrence == null) {
                     occurrence = 0;
                 }
+
                 monoisotopic.put(atom, occurrence + 1);
+
             } else {
+
                 Integer occurrence = isotopic.get(atom);
+
                 if (occurrence == null) {
                     occurrence = 0;
                 }
+
                 isotopic.put(atom, occurrence + 1);
             }
         }
@@ -550,25 +588,37 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         StringBuilder result = new StringBuilder();
 
         for (String atom : atoms) {
+
             Integer occurrence = monoisotopic.get(atom);
+
             if (occurrence != null && occurrence != 0) {
+
                 if (result.length() > 0) {
                     result.append(" ");
                 }
+
                 result.append(atom);
+
                 if (occurrence > 1 || occurrence < -1) {
                     result.append("(").append(occurrence).append(")");
                 }
+
             }
+
             occurrence = isotopic.get(atom);
+
             if (occurrence != null && occurrence != 0) {
+
                 if (result.length() > 0) {
                     result.append(" ");
                 }
+
                 result.append(atom).append("x");
+
                 if (occurrence > 1 || occurrence < -1) {
                     result.append("(").append(occurrence).append(")");
                 }
+
             }
         }
 
@@ -583,6 +633,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      * @return the atomic composition in the Andromeda format
      */
     private static String getComposition(Modification modification) {
+
         AtomChain atomChainAdded = modification.getAtomChainAdded(),
                 atomChainRemoved = modification.getAtomChainRemoved();
         HashMap<String, Integer> monoisotopic = new HashMap<>();
@@ -590,73 +641,112 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         ArrayList<String> atoms = new ArrayList<>();
 
         if (atomChainAdded != null) {
+
             for (AtomImpl atomImpl : atomChainAdded.getAtomChain()) {
+
                 String atom = atomImpl.getAtomSymbol();
+
                 if (!atoms.contains(atom)) {
                     atoms.add(atom);
                 }
+
                 if (atomImpl.getIsotope() == 0) {
+
                     Integer occurrence = monoisotopic.get(atom);
+
                     if (occurrence == null) {
                         occurrence = 0;
                     }
+
                     monoisotopic.put(atom, occurrence + 1);
+
                 } else {
+
                     Integer occurrence = isotopic.get(atom);
+
                     if (occurrence == null) {
                         occurrence = 0;
                     }
+
                     isotopic.put(atom, occurrence + 1);
+
                 }
+
             }
+
         }
 
         if (atomChainRemoved != null) {
+
             for (AtomImpl atomImpl : atomChainRemoved.getAtomChain()) {
+
                 String atom = atomImpl.getAtomSymbol();
+
                 if (!atoms.contains(atom)) {
                     atoms.add(atom);
                 }
+
                 if (atomImpl.getIsotope() == 0) {
+
                     Integer occurrence = monoisotopic.get(atom);
+
                     if (occurrence == null) {
                         occurrence = 0;
                     }
+
                     monoisotopic.put(atom, occurrence - 1);
+
                 } else {
+
                     Integer occurrence = isotopic.get(atom);
+
                     if (occurrence == null) {
                         occurrence = 0;
                     }
+
                     isotopic.put(atom, occurrence - 1);
+
                 }
+
             }
+
         }
 
         Collections.sort(atoms);
         StringBuilder result = new StringBuilder();
 
         for (String atom : atoms) {
+
             Integer occurrence = monoisotopic.get(atom);
+
             if (occurrence != null && occurrence != 0) {
+
                 if (result.length() > 0) {
                     result.append(" ");
                 }
+
                 result.append(atom);
+
                 if (occurrence > 1 || occurrence < -1) {
                     result.append("(").append(occurrence).append(")");
                 }
+
             }
             occurrence = isotopic.get(atom);
+
             if (occurrence != null && occurrence != 0) {
+
                 if (result.length() > 0) {
                     result.append(" ");
                 }
+
                 result.append(atom).append("x");
+
                 if (occurrence > 1 || occurrence < -1) {
                     result.append("(").append(occurrence).append(")");
                 }
             }
+
         }
 
         return result.toString();
@@ -674,9 +764,8 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File createParametersFile(File searchParametersFile) throws IOException {
 
-        File andromedaTempFolder = new File(andromedaTempFolderPath);
-
         String fileName;
+
         try {
             fileName = IoUtil.removeExtension(searchParametersFile.getName()) + ".apar";
         } catch (Exception e) {
@@ -687,22 +776,28 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile));
 
         try {
+
             boolean semiSpecific = false;
             DigestionParameters digestionParameters = searchParameters.getDigestionParameters();
 
             if (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+
                 Enzyme enzyme = digestionParameters.getEnzymes().get(0);
                 String enzymeName = enzyme.getName();
                 bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
                 bw.newLine();
+
                 if (digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
                         || digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
                         || digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                 }
+
             } else if (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
+
                 bw.write("enzyme mode=unspecific");
                 bw.newLine();
+
             } else {
                 // whole enzyme
                 // @TODO: what to put here..?
@@ -713,69 +808,92 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             } else {
                 bw.write("enzyme mode=specific");
             }
+
             bw.newLine();
             ModificationParameters modificationProfile = searchParameters.getModificationParameters();
             StringBuilder list = new StringBuilder();
+
             for (String ptmName : modificationProfile.getVariableModifications()) {
+
                 if (list.length() > 0) {
                     list.append(",");
                 }
+
                 list.append(ptmName);
             }
+
             bw.write("variable modifications=" + list);
             bw.newLine();
             list = new StringBuilder();
+
             for (String ptmName : modificationProfile.getFixedModifications()) {
+
                 if (list.length() > 0) {
                     list.append(",");
                 }
+
                 list.append(ptmName);
             }
+
             bw.write("fixed modifications=" + list);
             bw.newLine();
             bw.write("label modifications="); //@TODO: support labels
             bw.newLine();
+
             if (!modificationProfile.getRefinementVariableModifications().isEmpty()) {
+
                 bw.write("has additional variable modifications=True");
                 bw.newLine();
                 list = new StringBuilder();
+
                 for (String ptmName : modificationProfile.getRefinementVariableModifications()) {
+
                     if (list.length() > 0) {
                         list.append(",");
                     }
+
                     list.append(ptmName);
                 }
+
                 bw.write("additional variable modifications=" + list);
                 bw.newLine();
                 bw.write("additional variable modification proteins=");
                 bw.newLine();
+
             } else {
+
                 bw.write("has additional variable modifications=False");
                 bw.newLine();
                 bw.write("additional variable modifications=");
                 bw.newLine();
                 bw.write("additional variable modification proteins=");
                 bw.newLine();
+
             }
+
             bw.write("peptide mass tolerance=" + searchParameters.getPrecursorAccuracy());
             bw.newLine();
             bw.write("max peptide mass=" + andromedaParameters.getMaxPeptideMass());
             bw.newLine();
             bw.write("max combinations=" + andromedaParameters.getMaxCombinations());
             bw.newLine();
+
             if (searchParameters.isPrecursorAccuracyTypePpm()) {
                 bw.write("peptide mass tolerance Unit=ppm");
             } else {
                 bw.write("peptide mass tolerance Unit=Da");
             }
+
             bw.newLine();
             bw.write("fragment mass tolerance=" + searchParameters.getFragmentIonAccuracy());
             bw.newLine();
+
             if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
                 bw.write("fragment mass tolerance Unit=ppm");
             } else {
                 bw.write("fragment mass tolerance Unit=Da");
             }
+
             bw.newLine();
             bw.write("top peaks=" + andromedaParameters.getTopPeaks());
             bw.newLine();
@@ -783,60 +901,77 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
 
             if (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+
                 Integer missedCleavages = null;
+
                 for (Enzyme enzyme : digestionParameters.getEnzymes()) {
+
                     int enzymeMissedCleavages = digestionParameters.getnMissedCleavages(enzyme.getName());
+
                     if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
                         missedCleavages = enzymeMissedCleavages;
                     }
                 }
+
                 bw.write("max missed cleavages=" + missedCleavages);
                 bw.newLine();
             }
 
-            bw.write("fasta file=\"" + getGenericFastaFile(andromedaFolder, IoUtil.getFileName(fastaFile)).getAbsolutePath() + "\"");
+            bw.write("fasta file=\"" + new File(andromedaTempFolder, IoUtil.getFileName(fastaFile)).getAbsolutePath() + "\"");
             bw.newLine();
             bw.write("decoy mode=" + andromedaParameters.getDecoyMode());
             bw.newLine();
             bw.write("include contaminants=False");
             bw.newLine();
+
             if (andromedaParameters.isIncludeWater()) {
                 bw.write("include water=True");
             } else {
                 bw.write("include water=False");
             }
+
             bw.newLine();
+
             if (andromedaParameters.isIncludeAmmonia()) {
                 bw.write("include ammonia=True");
             } else {
                 bw.write("include ammonia=False");
             }
+
             bw.newLine();
+
             if (andromedaParameters.isDependentLosses()) {
                 bw.write("dependent losses=True");
             } else {
                 bw.write("dependent losses=False");
             }
+
             bw.newLine();
             bw.write("special aas=");
             bw.newLine();
+
             if (andromedaParameters.isFragmentAll()) {
                 bw.write("fragment all=True");
             } else {
                 bw.write("fragment all=False");
             }
+
             bw.newLine();
+
             if (andromedaParameters.isEmpiricalCorrection()) {
                 bw.write("empirical correction=True");
             } else {
                 bw.write("empirical correction=False");
             }
+
             bw.newLine();
+
             if (andromedaParameters.isHigherCharge()) {
                 bw.write("higher charges=True");
             } else {
                 bw.write("higher charges=False");
             }
+
             bw.newLine();
             bw.write("fragmentation type=" + andromedaParameters.getFragmentationMethod().name);
             bw.newLine();
@@ -846,11 +981,13 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
             bw.newLine();
             bw.write("max peptide length no enzyme=" + andromedaParameters.getMaxPeptideLengthNoEnzyme());
             bw.newLine();
+
             if (andromedaParameters.isEqualIL()) {
                 bw.write("equal il=True");
             } else {
                 bw.write("equal il=False");
             }
+
             bw.newLine();
             bw.write("number of candidates=" + andromedaParameters.getNumberOfCandidates());
             bw.newLine();
@@ -858,6 +995,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         } finally {
             bw.close();
         }
+
         return parameterFile;
     }
 
@@ -871,23 +1009,4 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
         return spectrumFile.getName();
     }
 
-    /**
-     * Returns the temp folder to use for Andromeda files. Null if not set.
-     *
-     * @return the temp folder to use for Andromeda files
-     */
-    public static String getTempFolderPath() {
-        return andromedaTempFolderPath;
-    }
-
-    /**
-     * Sets the temp folder to use for Andromeda files. If null the Andromeda
-     * folder will be used.
-     *
-     * @param andromedaTempFolderPath the temp folder to use for Andromeda
-     * files.
-     */
-    public static void setTempFolderPath(String andromedaTempFolderPath) {
-        AndromedaProcessBuilder.andromedaTempFolderPath = andromedaTempFolderPath;
-    }
 }

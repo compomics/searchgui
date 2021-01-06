@@ -532,7 +532,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         File selectedFile = FileChooserUtil.getUserSelectedFile(
                 this,
                 ".psdb",
-                "Peptide Shaker Database Format (*.psdb)",
+                "PeptideShaker Database Format (*.psdb)",
                 "Select PeptideShaker Output",
                 startLocation.getAbsolutePath(),
                 "PeptideShaker-output" + tempProjectReference + ".psdb",

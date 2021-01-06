@@ -324,9 +324,13 @@ public class SearchHandler {
      */
     private ExceptionHandler exceptionHandler;
     /**
-     * A folder to use to store temporary files.
+     * A folder used to store temporary files.
      */
     private static String tempFolderPath = null;
+    /**
+     * A folder used to store temporary search engine files.
+     */
+    private static String tempSearchEngineFolderPath = null;
     /**
      * The duration of the search.
      */
@@ -2274,7 +2278,7 @@ public class SearchHandler {
                         }
                     }
 
-                    // Write modification files to the OMSSA directory and save PTM indexes in the search parameters
+                    // write modification files to the OMSSA directory and save ptm indexes in the search parameters
                     File modsXmlFile = new File(omssaLocation, "mods.xml");
                     if (!modsXmlFile.exists()) {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
@@ -2286,7 +2290,7 @@ public class SearchHandler {
                             identificationParametersFile
                     );
 
-                    // Copy the files to the results folder
+                    // copy the files to the results folder
                     File destinationFile = new File(outputTempFolder, "omssa_mods.xml");
                     IoUtil.copyFile(modsXmlFile, destinationFile);
                     destinationFile = new File(outputTempFolder, "omssa_usermods.xml");
@@ -2312,23 +2316,24 @@ public class SearchHandler {
 
                     // create generic database
                     AndromedaProcessBuilder.createGenericFastaFile(
-                            andromedaLocation,
+                            new File(getTempSearchEngineFolderPath(getJarFilePath()), "andromeda"),
                             fastaFile,
                             waitingHandler
                     );
 
-                    // write Andromeda database configuration file
+                    // write andromeda database configuration file
                     AndromedaProcessBuilder.createDatabaseFile(
                             andromedaLocation,
+                            new File(getTempSearchEngineFolderPath(getJarFilePath()), "andromeda"),
                             fastaFile
                     );
 
-                    // write Andromeda enzyme configuration file
+                    // write andromeda enzyme configuration file
                     AndromedaProcessBuilder.createEnzymesFile(
                             andromedaLocation
                     );
 
-                    // write Andromeda PTM configuration file and save PTM indexes in the search parameters
+                    // write andromeda ptm configuration file and save ptm indexes in the search parameters
                     AndromedaProcessBuilder.createPtmFile(
                             andromedaLocation,
                             identificationParameters,
@@ -2340,9 +2345,12 @@ public class SearchHandler {
 
                 if (enableTide && !waitingHandler.isRunCanceled()) {
 
+                    File tideTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "tide");
+                    
                     // create the tide index
                     tideIndexProcessBuilder = new TideIndexProcessBuilder(
                             tideLocation,
+                            tideTempFolder,
                             fastaFile,
                             searchParameters,
                             waitingHandler,
@@ -2609,9 +2617,11 @@ public class SearchHandler {
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
 
                         File xTandemOutputFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
+                        File xTandemTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "xtandem");
 
                         xTandemProcessBuilder = new TandemProcessBuilder(
                                 xtandemLocation,
+                                xTandemTempFolder,
                                 mgfFile,
                                 fastaFile,
                                 xTandemOutputFile.getAbsolutePath(),
@@ -2753,9 +2763,11 @@ public class SearchHandler {
 
                         File msAmandaOutputFile = new File(outputTempFolder, getMsAmandaFileName(spectrumFileName));
                         String filePath = msAmandaOutputFile.getAbsolutePath();
-
+                        File msAmandaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "msamanda");
+                        
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(
                                 msAmandaLocation,
+                                msAmandaTempFolder,
                                 mgfFile,
                                 fastaFile,
                                 filePath,
@@ -2805,9 +2817,11 @@ public class SearchHandler {
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
 
                         File msgfOutputFile = new File(outputTempFolder, getMsgfFileName(spectrumFileName));
+                        File msgfTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "msgf");
 
                         msgfProcessBuilder = new MsgfProcessBuilder(
                                 msgfLocation,
+                                msgfTempFolder,
                                 spectrumFile,
                                 fastaFile,
                                 msgfOutputFile,
@@ -2919,9 +2933,12 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
+                        
+                        File cometTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "comet");
 
                         cometProcessBuilder = new CometProcessBuilder(
                                 cometLocation,
+                                cometTempFolder,
                                 searchParameters,
                                 spectrumFile,
                                 fastaFile,
@@ -2996,12 +3013,14 @@ public class SearchHandler {
                         );
 
                         File tideOutputFile = new File(outputTempFolder, getTideFileName(spectrumFileName));
+                        File tideTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "tide");
 
                         // perform the tide search
                         if (!waitingHandler.isRunCanceled()) {
 
                             tideSearchProcessBuilder = new TideSearchProcessBuilder(
                                     tideLocation,
+                                    tideTempFolder,
                                     searchParameters,
                                     ms2File,
                                     waitingHandler,
@@ -3078,9 +3097,11 @@ public class SearchHandler {
                         );
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-
+                        File andromedaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "andromeda");
+                        
                         andromedaProcessBuilder = new AndromedaProcessBuilder(
                                 andromedaLocation,
+                                andromedaTempFolder,
                                 searchParameters,
                                 identificationParametersFile,
                                 aplFile,
@@ -3156,9 +3177,11 @@ public class SearchHandler {
                     if (enableMetaMorpheus && !waitingHandler.isRunCanceled()) {
 
                         File metaMorpheusOutputFile = new File(outputTempFolder, getMetaMorpheusFileName(spectrumFileName));
+                        File metaMorpheusTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "metamorpheus");
 
                         metaMorpheusProcessBuilder = new MetaMorpheusProcessBuilder(
                                 metaMorpheusLocation,
+                                metaMorpheusTempFolder,
                                 searchParameters,
                                 spectrumFile, // @TODO: should complain if not mzml!
                                 processingParameters.getnThreads(),
@@ -3183,7 +3206,7 @@ public class SearchHandler {
                                     ? "Task2SearchTask" : "Task1SearchTask";
 
                             File tempResultFile = new File(
-                                    MetaMorpheusProcessBuilder.getTempFolderPath(metaMorpheusLocation)
+                                    metaMorpheusTempFolder.getAbsolutePath()
                                     + File.separator + taskFileName,
                                     getMetaMorpheusFileName(spectrumFileName));
 
@@ -3241,9 +3264,11 @@ public class SearchHandler {
                     if (enableNovor && !waitingHandler.isRunCanceled()) {
 
                         File novorOutputFile = new File(outputTempFolder, getNovorFileName(spectrumFileName));
+                        File novorTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "novor");
 
                         novorProcessBuilder = new NovorProcessBuilder(
                                 novorLocation,
+                                novorTempFolder,
                                 mgfFile,
                                 novorOutputFile,
                                 searchParameters,
@@ -3787,15 +3812,10 @@ public class SearchHandler {
                     }
                 }
 
-                if (enableAndromeda && AndromedaProcessBuilder.getTempFolderPath() != null) {
-
-                    File andromedaTempFolder = new File(AndromedaProcessBuilder.getTempFolderPath());
-
-                    if (andromedaTempFolder.exists()) {
-
-                        IoUtil.emptyDir(andromedaTempFolder);
-
-                    }
+                // clear the search engine temp folders
+                File tempSearchEngineFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()));
+                if (tempSearchEngineFolder.exists()) {
+                    IoUtil.emptyDir(tempSearchEngineFolder);
                 }
 
                 finished = true;
@@ -4698,7 +4718,7 @@ public class SearchHandler {
      * @param jarFilePath the path to the jar file
      * @return the folder to use to store peak lists
      */
-    public static File getPeakListFolder(
+    public File getPeakListFolder(
             String jarFilePath
     ) {
         File peakListFolder = new File(getTempFolderPath(jarFilePath), PEAK_LIST_SUBFOLDER);
@@ -4749,7 +4769,44 @@ public class SearchHandler {
     public static void setTempFolderPath(
             String tempFolderPath
     ) {
-        tempFolderPath = tempFolderPath;
+        SearchHandler.tempFolderPath = tempFolderPath;
+    }
+    
+    /**
+     * Returns the folder to use for temporary search engine files.
+     *
+     * @param jarFilePath the path to the jar file
+     * @return the folder to use for temporary search engine files
+     */
+     public static String getTempSearchEngineFolderPath(
+            String jarFilePath
+    ) {
+        if (tempSearchEngineFolderPath == null) {
+            if (jarFilePath.equals(".")) {
+                tempSearchEngineFolderPath = "resources" + File.separator + "temp" + File.separator + "search_engines";
+            } else {
+                tempSearchEngineFolderPath = jarFilePath + File.separator + "resources" + File.separator + "temp" + File.separator + "search_engines";
+            }
+        }
+        
+        File tempFolder = new File(tempSearchEngineFolderPath);
+        tempSearchEngineFolderPath = tempFolder.getAbsolutePath();
+        if (!tempFolder.exists()) {
+            tempFolder.mkdirs();
+        }
+        
+        return tempSearchEngineFolderPath;
+    }
+    
+    /**
+     * Sets the folder to use for temporary search engine files.
+     *
+     * @param tempSearchEngineFolderPath the folder to use for temporary search engine files
+     */
+    public static void setTempSearchEngineFolderPath(
+            String tempSearchEngineFolderPath
+    ) {
+        SearchHandler.tempSearchEngineFolderPath = tempSearchEngineFolderPath;
     }
 
     /**

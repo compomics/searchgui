@@ -22,6 +22,10 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
      */
     public static final String EXECUTABLE_FILE_NAME = "crux";
     /**
+     * The temp folder for Tide files.
+     */
+    private File tideTempFolder;
+    /**
      * The spectrum file.
      */
     private File spectrumFile;
@@ -34,6 +38,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
      * Constructor.
      *
      * @param tideFolder the Tide folder
+     * @param tideTempFolder the folder for Tide temp files
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param waitingHandler the waiting handler
@@ -43,10 +48,19 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown of there are problems creating the Tide
      * parameter file
      */
-    public TideSearchProcessBuilder(File tideFolder, SearchParameters searchParameters, File spectrumFile, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads) throws IOException {
+    public TideSearchProcessBuilder(
+            File tideFolder,
+            File tideTempFolder,
+            SearchParameters searchParameters,
+            File spectrumFile,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler,
+            int nThreads
+    ) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
+        this.tideTempFolder = tideTempFolder; // @TODO: use the temp folder
         tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         this.spectrumFile = spectrumFile;
 
@@ -70,7 +84,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(spectrumFile.getAbsolutePath());
 
         // link to the index
-        process_name_array.add(tideParameters.getFastIndexFolderName());
+        process_name_array.add(tideParameters.getFastIndexFolderName()); // @TODO: put in the user temp folder instead??
 
         // overwrite existing files
         process_name_array.add("--overwrite");
@@ -123,7 +137,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         // precursor charges
         process_name_array.add("--spectrum-charge");
         process_name_array.add(tideParameters.getSpectrumCharges());
-        
+
         // max precursor charge
         process_name_array.add("--max-precursor-charge");
         process_name_array.add("" + searchParameters.getMaxChargeSearched());
