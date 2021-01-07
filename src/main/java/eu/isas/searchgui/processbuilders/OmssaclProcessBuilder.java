@@ -46,11 +46,16 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * The name of the OMSSA executable.
      */
     public final static String EXECUTABLE_FILE_NAME = "omssacl";
+    /**
+     * The temp folder for OMSSA files.
+     */
+    private File omssaTempFolder;
 
     /**
      * Constructor.
      *
      * @param omssacl_directory directory location of omssacl.exe
+     * @param aOmssaTempFolder the OMSSA temp folder
      * @param mgfFile the spectrum file
      * @param fastaFile the FASTA file
      * @param outputFile string location where to send omx/csv/pepxml formatted
@@ -67,12 +72,28 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public OmssaclProcessBuilder(File omssacl_directory, File mgfFile, File fastaFile, File outputFile, SearchParameters searchParameters,
-            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, Double refMass, int nThreads) throws IOException, ClassNotFoundException {
+    public OmssaclProcessBuilder(
+            File omssacl_directory,
+            File aOmssaTempFolder,
+            File mgfFile,
+            File fastaFile,
+            File outputFile,
+            SearchParameters searchParameters,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler,
+            Double refMass,
+            int nThreads
+    ) throws IOException, ClassNotFoundException {
 
         this.spectrumFile = mgfFile;
         this.waitingHandler = waitingHandler;
         this.modificationParameters = searchParameters.getModificationParameters();
+        this.omssaTempFolder = aOmssaTempFolder;
+
+        // create the temp folder if it does not exist
+        if (!omssaTempFolder.exists()) {
+            omssaTempFolder.mkdirs();
+        }
 
         OmssaParameters omssaParameters = (OmssaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.omssa.getIndex());
 
@@ -264,6 +285,8 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-mv");
             process_name_array.add(modificationIndexes);
         }
+        process_name_array.add("-mux");
+        process_name_array.add(new File(omssaTempFolder, "usermods.xml").getAbsolutePath());
         process_name_array.add("-d");
         process_name_array.add(seqDBFile.getName());
         if (spectrumFile != null) {
@@ -277,12 +300,16 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add(spectrumFile.getAbsolutePath());
         }
         if (outputFile != null) {
-            if (omssaParameters.getSelectedOutput().equals("OMX")) {
-                process_name_array.add("-ox");
-            } else if (omssaParameters.getSelectedOutput().equals("CSV")) {
-                process_name_array.add("-oc");
-            } else {
-                process_name_array.add("-op");
+            switch (omssaParameters.getSelectedOutput()) {
+                case "OMX":
+                    process_name_array.add("-ox");
+                    break;
+                case "CSV":
+                    process_name_array.add("-oc");
+                    break;
+                default:
+                    process_name_array.add("-op");
+                    break;
             }
             process_name_array.add(CommandLineUtils.getCommandLineArgument(outputFile));
         }
@@ -302,7 +329,6 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         System.out.println(System.getProperty("line.separator"));
 
         pb = new ProcessBuilder(process_name_array);
-
         pb.directory(dbFilePath);
 
         // set error out and std out to same stream
@@ -327,19 +353,24 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @return ion number
      */
     public int getIonId(String letter) {
-        if (letter.equals("a")) {
-            return 0;
-        } else if (letter.equals("b")) {
-            return 1;
-        } else if (letter.equals("c")) {
-            return 2;
-        } else if (letter.equals("x")) {
-            return 3;
-        } else if (letter.equals("y")) {
-            return 4;
-        } else if (letter.equals("z")) {
-            return 5;
+
+        switch (letter) {
+            case "a":
+                return 0;
+            case "b":
+                return 1;
+            case "c":
+                return 2;
+            case "x":
+                return 3;
+            case "y":
+                return 4;
+            case "z":
+                return 5;
+            default:
+                break;
         }
+
         return -1;
     }
 
@@ -352,17 +383,27 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @return the corresponding list of OMSSA modification indexes
      */
-    public ArrayList<Integer> getSearchedModificationsIds(ArrayList<String> modificationsNames, OmssaParameters omssaParameters) {
+    public ArrayList<Integer> getSearchedModificationsIds(
+            ArrayList<String> modificationsNames,
+            OmssaParameters omssaParameters
+    ) {
+
         ArrayList<Integer> result = new ArrayList<>();
+
         for (String modName : modificationsNames) {
+
             Integer index = omssaParameters.getPtmIndex(modName);
+
             if (index == null) {
                 throw new IllegalArgumentException("No OMSSA index found for modification " + modName);
             }
+
             if (!result.contains(index)) {
                 result.add(index);
             }
+
         }
+
         Collections.sort(result);
         return result;
     }
@@ -382,7 +423,11 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @throws java.lang.ClassNotFoundException exception thrown whenever an
      * error occurred while saving the search parameters
      */
-    public static void writeOmssaUserModificationsFile(File omssaFile, IdentificationParameters identificationParameters, File identificationParametersFile) throws IOException, ClassNotFoundException {
+    public static void writeOmssaUserModificationsFile(
+            File omssaFile,
+            IdentificationParameters identificationParameters,
+            File identificationParametersFile
+    ) throws IOException, ClassNotFoundException {
 
         ModificationFactory modificationFactory = ModificationFactory.getInstance();
 
@@ -397,6 +442,7 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         Collections.sort(indexes);
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(omssaFile));
+
         try {
             String toWrite = "<?xml version=\"1.0\"?>\n<MSModSpecSet\n"
                     + "xmlns=\"http://www.ncbi.nlm.nih.gov\"\n"
@@ -412,8 +458,10 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
                 bw.write(toWrite);
                 cpt++;
             }
+
             toWrite = "</MSModSpecSet>";
             bw.write(toWrite);
+
         } finally {
             bw.close();
         }
@@ -421,8 +469,8 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
 
     /**
      * Returns an MSModSpec bloc as present in the OMSSA user modification files
-     * for a given PTM. Only the amino acids targeted by the pattern of the modification
-     * will be considered.
+     * for a given PTM. Only the amino acids targeted by the pattern of the
+     * modification will be considered.
      *
      * @param modification the modification
      * @param cpt the index of this modification in the list
@@ -439,37 +487,50 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
                 + "\t\t<MSModSpec_type>\n";
 
         ModificationType modificationType = modification.getModificationType();
-        
+
         switch (modificationType) {
             case modaa:
                 result += "\t\t\t<MSModType value=\"modaa\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modn_peptide:
                 result += "\t\t\t<MSModType value=\"modnp\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modnaa_peptide:
                 result += "\t\t\t<MSModType value=\"modnpaa\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modn_protein:
                 result += "\t\t\t<MSModType value=\"modn\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modnaa_protein:
                 result += "\t\t\t<MSModType value=\"modnaa\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modc_peptide:
                 result += "\t\t\t<MSModType value=\"modcp\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modcaa_peptide:
                 result += "\t\t\t<MSModType value=\"modcpaa\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modc_protein:
                 result += "\t\t\t<MSModType value=\"modc\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             case modcaa_protein:
                 result += "\t\t\t<MSModType value=\"modcaa\">" + modificationType.index + "</MSModType>\n";
                 break;
+
             default:
-                throw new UnsupportedOperationException("Export not implemented for modification of type " + modificationType + ".");
+                throw new UnsupportedOperationException(
+                        "Export not implemented for modification of type "
+                        + modificationType
+                        + "."
+                );
         }
 
         result += "\t\t</MSModSpec_type>\n";
@@ -477,35 +538,48 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
         result += "\t\t<MSModSpec_monomass>" + modification.getRoundedMass() + "</MSModSpec_monomass>\n"
                 + "\t\t<MSModSpec_averagemass>0</MSModSpec_averagemass>\n"
                 + "\t\t<MSModSpec_n15mass>0</MSModSpec_n15mass>\n";
+
         if (modificationType == ModificationType.modaa
                 || modificationType == ModificationType.modcaa_peptide
                 || modificationType == ModificationType.modcaa_protein
                 || modificationType == ModificationType.modnaa_peptide
                 || modificationType == ModificationType.modnaa_protein) {
+
             result += "\t\t<MSModSpec_residues>\n";
+
             for (Character aa : modification.getPattern().getAminoAcidsAtTarget()) {
                 result += "\t\t\t<MSModSpec_residues_E>" + aa + "</MSModSpec_residues_E>\n";
             }
+
             result += "\t\t</MSModSpec_residues>\n";
         }
+
         boolean first = true;
+
         for (NeutralLoss neutralLoss : modification.getNeutralLosses()) {
+
             if (neutralLoss.isFixed()) {
+
                 if (first) {
                     result += "\t\t<MSModSpec_neutralloss>\n";
                     first = false;
                 }
+
                 result += "\t\t\t<MSMassSet>\n";
                 result += "\t\t\t\t<MSMassSet_monomass>" + neutralLoss.getMass() + "</MSMassSet_monomass>\n";
                 result += "\t\t\t\t<MSMassSet_averagemass>0</MSMassSet_averagemass>";
                 result += "\t\t\t\t<MSMassSet_n15mass>0</MSMassSet_n15mass>";
                 result += "\t\t\t</MSMassSet>\n";
+
             }
         }
+
         if (!first) {
             result += "\t\t</MSModSpec_neutralloss>\n";
         }
+
         result += "\t</MSModSpec>\n";
+
         return result;
     }
 
@@ -518,76 +592,84 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @return the OMSSA enzyme index corresponding to the digestion preferences
      */
     private int getEnzymeIndex(DigestionParameters digestionPreferences) {
+
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
             return 11;
-        }
-        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
+            return 17;
+        } else if (digestionPreferences.getEnzymes().size() > 1) {
             return 17;
         }
-        if (digestionPreferences.getEnzymes().size() > 1) {
-            return 17;
-        }
+
         Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
         String enzymeName = enzyme.getName();
         Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
-        if (enzymeName.equals("Trypsin")) {
-            if (specificity == Specificity.specific) {
-                return 0;
-            } else {
-                return 16;
-            }
+
+        switch (enzymeName) {
+
+            case "Trypsin":
+                if (specificity == Specificity.specific) {
+                    return 0;
+                } else {
+                    return 16;
+                }
+
+            case "Trypsin (no P rule)":
+                return 10;
+
+            case "Arg-C":
+            case "Arg-C (no P rule)":
+                return 1;
+
+            case "Glu-C":
+                if (specificity == Specificity.specific) {
+                    return 13;
+                } else {
+                    return 24;
+                }
+
+            case "Lys-C":
+                return 5;
+
+            case "Lys-C (no P rule)":
+                return 6;
+
+            case "Lys-N":
+                return 21;
+
+            case "Asp-N":
+                return 12;
+
+            case "Asp-N Ammonium Bicarbonate":
+                return 19;
+
+            case "Chymotrypsin":
+                if (specificity == Specificity.specific) {
+                    return 3;
+                } else {
+                    return 23;
+                }
+
+            case "Chymotrypsin (no P rule)":
+                if (specificity == Specificity.specific) {
+                    return 18;
+                } else {
+                    return 23;
+                }
+
+            case "Pepsin A":
+                return 7;
+
+            case "CNBr":
+                return 2;
+
+            case "Thermolysin":
+                return 22;
+
+            default:
+                break;
         }
-        if (enzymeName.equals("Trypsin (no P rule)")) {
-            return 10;
-        }
-        if (enzymeName.equals("Arg-C") || enzymeName.equals("Arg-C (no P rule)")) {
-            return 1;
-        }
-        if (enzymeName.equals("Glu-C")) {
-            if (specificity == Specificity.specific) {
-                return 13;
-            } else {
-                return 24;
-            }
-        }
-        if (enzymeName.equals("Lys-C")) {
-            return 5;
-        }
-        if (enzymeName.equals("Lys-C (no P rule)")) {
-            return 6;
-        }
-        if (enzymeName.equals("Lys-N")) {
-            return 21;
-        }
-        if (enzymeName.equals("Asp-N")) {
-            return 12;
-        }
-        if (enzymeName.equals("Asp-N Ammonium Bicarbonate")) {
-            return 19;
-        }
-        if (enzymeName.equals("Chymotrypsin")) {
-            if (specificity == Specificity.specific) {
-                return 3;
-            } else {
-                return 23;
-            }
-        }
-        if (enzymeName.equals("Chymotrypsin (no P rule)")) {
-            if (specificity == Specificity.specific) {
-                return 18;
-            } else {
-                return 23;
-            }
-        }
-        if (enzymeName.equals("Pepsin A")) {
-            return 7;
-        }
-        if (enzymeName.equals("CNBr")) {
-            return 2;
-        }
-        if (enzymeName.equals("Thermolysin")) {
-            return 22;
-        }
+
         return 17;
     }
 }

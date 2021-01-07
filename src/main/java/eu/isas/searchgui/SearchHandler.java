@@ -2278,12 +2278,19 @@ public class SearchHandler {
                         }
                     }
 
+                    File omssaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "omssa");
+
+                    // create the temp folder if it does not exist
+                    if (!omssaTempFolder.exists()) {
+                        omssaTempFolder.mkdirs();
+                    }
+
                     // write modification files to the OMSSA directory and save ptm indexes in the search parameters
                     File modsXmlFile = new File(omssaLocation, "mods.xml");
                     if (!modsXmlFile.exists()) {
                         throw new IllegalArgumentException("OMSSA mods.xml file not found.");
                     }
-                    File userModsXmlFile = new File(omssaLocation, "usermods.xml");
+                    File userModsXmlFile = new File(omssaTempFolder, "usermods.xml");
                     OmssaclProcessBuilder.writeOmssaUserModificationsFile(
                             userModsXmlFile,
                             identificationParameters,
@@ -2874,9 +2881,11 @@ public class SearchHandler {
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
 
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
+                        File omssaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "omssa");
 
                         omssaProcessBuilder = new OmssaclProcessBuilder(
                                 omssaLocation,
+                                omssaTempFolder,
                                 mgfFile,
                                 fastaFile,
                                 omssaOutputFile,
