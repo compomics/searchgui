@@ -60,7 +60,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
-        this.tideTempFolder = tideTempFolder; // @TODO: use the temp folder
+        this.tideTempFolder = tideTempFolder;
         tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         this.spectrumFile = spectrumFile;
 
@@ -84,7 +84,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(spectrumFile.getAbsolutePath());
 
         // link to the index
-        process_name_array.add(tideParameters.getFastIndexFolderName()); // @TODO: put in the user temp folder instead??
+        process_name_array.add(new File(tideTempFolder, tideParameters.getFastIndexFolderName()).getAbsolutePath());
 
         // overwrite existing files
         process_name_array.add("--overwrite");
@@ -118,7 +118,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the output directory
         process_name_array.add("--output-dir");
-        process_name_array.add(tideParameters.getOutputFolderName());
+        process_name_array.add(new File(tideTempFolder, tideParameters.getOutputFolderName()).getAbsolutePath());
 
         // min spectrum mz
         process_name_array.add("--spectrum-min-mz");

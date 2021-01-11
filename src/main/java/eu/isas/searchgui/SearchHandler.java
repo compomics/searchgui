@@ -3051,7 +3051,7 @@ public class SearchHandler {
                             String tideResultsFolderName = ((TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex())).getOutputFolderName();
 
                             // move the tide result file to the results folder
-                            File tempTideOutputFile = new File(new File(tideLocation, tideResultsFolderName), getTideFileName(spectrumFileName));
+                            File tempTideOutputFile = new File(new File(tideTempFolder, tideResultsFolderName), getTideFileName(spectrumFileName));
                             FileUtils.moveFile(tempTideOutputFile, tideOutputFile);
 
                             HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
