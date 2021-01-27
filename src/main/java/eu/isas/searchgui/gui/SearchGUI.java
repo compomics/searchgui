@@ -300,8 +300,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         if (!getJarFilePath().equalsIgnoreCase(".")
                 && !CompomicsWrapper.appRunningIntoConda(CONDA_APP_NAME)
-                && utilitiesUserParameters.isAutoUpdate()
-                && (searchHandler != null && !searchHandler.getOverrideUpdateCheck())) {
+                && utilitiesUserParameters.isAutoUpdate()) {
             newVersion = checkForNewVersion();
         }
 
@@ -351,8 +350,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     identificationParametersFile,
                     processingParameters,
                     msFileHandler,
-                    exceptionHandler, 
-                    false
+                    exceptionHandler
             );
 
             enableOmssaJCheckBox.setSelected(searchHandler.isOmssaEnabled());
@@ -2523,7 +2521,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void addSpectraButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addSpectraButtonActionPerformed
- 
+
         // find the last used spectrum folder
         File startLocation = utilitiesUserParameters.getSpectrumFolder();
         if (startLocation == null) {
@@ -2762,7 +2760,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     spectrumFilesTxt.setText(nFiles + " file(s) selected");
 
                     UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
-                    
+
                     validateInput(false);
 
                 }
@@ -2854,7 +2852,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             utilitiesUserParameters.setOutputFolder(outputFolder);
             lastSelectedFolder.setLastSelectedFolder(outputFolder.getAbsolutePath());
             UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
-            
+
             validateInput(false);
 
         }
@@ -6999,14 +6997,14 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         ArrayList<File> allSpectrumAndRawFile = new ArrayList<>();
         allSpectrumAndRawFile.addAll(spectrumFiles);
         allSpectrumAndRawFile.addAll(rawFiles);
-        
+
         for (File file1 : allSpectrumAndRawFile) {
 
             for (File file2 : allSpectrumAndRawFile) {
 
-                if (file1 != file2 &&
-                        IoUtil.removeExtension(file1.getName().toLowerCase()).equals(
-                        IoUtil.removeExtension(file2.getName().toLowerCase()))) {
+                if (file1 != file2
+                        && IoUtil.removeExtension(file1.getName().toLowerCase()).equals(
+                                IoUtil.removeExtension(file2.getName().toLowerCase()))) {
 
                     this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")));
 
@@ -7416,7 +7414,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             File output = new File(folder, SearchHandler.SEARCHGUI_CONFIGURATION_FILE);
 
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(output))) {
+            try ( BufferedWriter bw = new BufferedWriter(new FileWriter(output))) {
 
                 bw.write("OMSSA Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getOmssaLocation() + System.getProperty("line.separator") + searchHandler.isOmssaEnabled() + System.getProperty("line.separator"));

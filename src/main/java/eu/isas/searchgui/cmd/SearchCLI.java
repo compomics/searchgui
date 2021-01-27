@@ -166,7 +166,6 @@ public class SearchCLI implements Callable {
             if (error != null) {
                 System.out.println(error);
             }
-
            
             UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
             userParameters.setRefMass(searchCLIInputBean.getRefMass());
@@ -209,8 +208,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getNovorLocation(), 
                     searchCLIInputBean.getDirecTagLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
-                    processingParameters,
-                    true
+                    processingParameters
             );
 
             searchHandler.setLogFolder(logFolder);

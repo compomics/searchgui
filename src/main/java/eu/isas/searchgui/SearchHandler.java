@@ -355,11 +355,6 @@ public class SearchHandler {
      * The mass spectrometry file handler.
      */
     private final MsFileHandler msFileHandler;
-    /**
-     * If true, the update check is ignored. If false, the update check is done
-     * if the isAutoUpdate in UtilitiesUserParameters is set to true.
-     */
-    private boolean overrideUpdateCheck = false;
 
     /**
      * Constructor for the SearchGUI command line interface.Uses the
@@ -376,7 +371,6 @@ public class SearchHandler {
      * @param processingParameters the processing parameters
      * @param msFileHandler the mass spectrometry file handler
      * @param exceptionHandler a handler for exceptions
-     * @param overrideUpdateCheck if true, the update check is ignored
      */
     public SearchHandler(
             IdentificationParameters identificationParameters,
@@ -387,8 +381,7 @@ public class SearchHandler {
             File identificationParametersFile,
             ProcessingParameters processingParameters,
             MsFileHandler msFileHandler,
-            ExceptionHandler exceptionHandler,
-            boolean overrideUpdateCheck
+            ExceptionHandler exceptionHandler
     ) {
 
         this.resultsFolder = resultsFolder;
@@ -397,7 +390,6 @@ public class SearchHandler {
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
-        this.overrideUpdateCheck = overrideUpdateCheck;
 
         enableOmssa = loadSearchEngineLocation(
                 Advocate.omssa,
@@ -566,7 +558,6 @@ public class SearchHandler {
      * @param makeblastdbFolder the folder where makeblastdb is installed, if
      * null the default location is used
      * @param processingParameters the processing preferences
-     * @param overrideUpdateCheck if true, the update check is ignored
      */
     public SearchHandler(
             IdentificationParameters identificationParameters,
@@ -599,8 +590,7 @@ public class SearchHandler {
             File novorFolder,
             File direcTagFolder,
             File makeblastdbFolder,
-            ProcessingParameters processingParameters,
-            boolean overrideUpdateCheck
+            ProcessingParameters processingParameters
     ) {
 
         this.resultsFolder = resultsFolder;
@@ -626,7 +616,6 @@ public class SearchHandler {
         this.identificationParameters = identificationParameters;
         this.processingParameters = processingParameters;
         this.identificationParametersFile = identificationParametersFile;
-        this.overrideUpdateCheck = overrideUpdateCheck;
 
         if (omssaFolder != null) {
             this.omssaLocation = omssaFolder;
@@ -4879,12 +4868,4 @@ public class SearchHandler {
         defaultOutputFileName = newOutputFileName;
     }
 
-    /**
-     * Returns true if the update check is to ignored.
-     *
-     * @return true if the update check is to ignored
-     */
-    public boolean getOverrideUpdateCheck() {
-        return overrideUpdateCheck;
-    }
 }
