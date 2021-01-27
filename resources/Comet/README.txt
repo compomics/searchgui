@@ -1,6 +1,6 @@
-2020/12/17
+2021/01/05
 
-Comet version "2020.01 rev. 1".  This is a maintenance release.
+Comet version "2020.01 rev. 2".  This is a maintenance release.
 http://comet-ms.sourceforge.net
 
 comet.VERSION.win32.exe:  Windows 32-bit binary compiled with VS2017
@@ -9,8 +9,12 @@ comet.VERSION.linux.exe:  Linux binary compiled on Centos 6.9 (glibc 2.12)
 comet.VERSION.debian.exe: Linux binary compiled on Debian 10.0 (glibc 2.28)
 
 
-release 2020.01 rev. 0 (2020.01.1), release date 2020/12/17
+release 2020.01 rev. 2 (2020.01.2), release date 2021/01/05
+- Bug fix: Fixed issue where spectra were not being searched. This was due to
+  the poor attempt at a fix in release 2020.01.1 for spectra with all zero
+  intensity peaks.
 
+release 2020.01 rev. 1 (2020.01.1), release date 2020/12/17
 - For TIMS-TOF mzML files, changed the scan number reporting to be the scan
   "index" value plus "1".
 - Bug fix: Fixed issue where spectra that have all peak intensities of zero
