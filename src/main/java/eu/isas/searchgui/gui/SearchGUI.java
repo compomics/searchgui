@@ -2874,7 +2874,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         // validate the msconvert output format
         if (nonThermoRawFilesSelected
                 && (msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mgf
-                || msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mzML)) {
+                && msConvertParameters.getMsFormat() != ProteoWizardMsFormat.mzML)) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -3137,10 +3137,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // check if the output files already exist
             boolean fileFound = false;
 
-            ArrayList<File> spectrumFiles = new ArrayList<>(this.spectrumFiles);
-            spectrumFiles.addAll(rawFiles);
+            ArrayList<File> tempSpectrumFiles = new ArrayList<>(this.spectrumFiles);
+            tempSpectrumFiles.addAll(rawFiles);
 
-            for (File spectrumFile : spectrumFiles) {
+            for (File spectrumFile : tempSpectrumFiles) {
 
                 String spectrumFileName = spectrumFile.getName();
 
@@ -3343,7 +3343,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
             } else if (outputOption == OutputParameters.run) {
 
-                for (File spectrumFile : spectrumFiles) {
+                for (File spectrumFile : tempSpectrumFiles) {
 
                     String runName = IoUtil.removeExtension(spectrumFile.getName());
 
@@ -3380,7 +3380,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // check if the xtandem files can be renamed
             if (searchHandler.isXtandemEnabled() && utilitiesUserParameters.renameXTandemFile()) {
 
-                for (File spectrumFile : spectrumFiles) {
+                for (File spectrumFile : tempSpectrumFiles) {
 
                     String spectrumFileName = spectrumFile.getName();
 

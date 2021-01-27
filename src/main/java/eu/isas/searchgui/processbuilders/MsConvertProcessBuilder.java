@@ -5,6 +5,7 @@ import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.MsConvertParameters;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardMsFormat;
 import com.compomics.util.experiment.mass_spectrometry.proteowizard.ProteoWizardFilter;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.IOException;
  * Process builder to run msconvert.
  *
  * @author Marc Vaudel
+ * @author Harald Barsnes
  */
 public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -47,8 +49,13 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown if there are problems accessing the files
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
-    public MsConvertProcessBuilder(File rawFile, File destinationFolder, MsConvertParameters msConvertParameters, WaitingHandler waitingHandler, ExceptionHandler exceptionHandler)
-            throws IOException, ClassNotFoundException {
+    public MsConvertProcessBuilder(
+            File rawFile,
+            File destinationFolder,
+            MsConvertParameters msConvertParameters,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler
+    ) throws IOException, ClassNotFoundException {
 
         this.rawFile = rawFile;
         this.destinationFolder = destinationFolder;
@@ -76,6 +83,17 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
 
         File proteoWizardFolder = new File(proteoWizardPath, "msconvert");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(proteoWizardFolder));
+
+        // special case for .d files as here we need the parent folder
+        if (IoUtil.getExtension(rawFile).equalsIgnoreCase(ProteoWizardMsFormat.d.fileNameEnding)) {
+
+            File fileParent = rawFile.getParentFile();
+
+            if (rawFile.getName().equalsIgnoreCase(fileParent.getName())) {
+                rawFile = fileParent;
+            }
+        } 
+            
         process_name_array.add(CommandLineUtils.getCommandLineArgument(rawFile));
 
         ProteoWizardMsFormat msFormat = msConvertParameters.getMsFormat();
@@ -83,10 +101,10 @@ public class MsConvertProcessBuilder extends SearchGUIProcessBuilder {
             msFormat = ProteoWizardMsFormat.mgf;
         }
         process_name_array.add("--" + msFormat.commandLineOption);
-        
+
         process_name_array.add("-o");
         process_name_array.add(CommandLineUtils.getCommandLineArgument(destinationFolder));
-        
+
         // set the name of the output file
         if (rawFile.getName().lastIndexOf(".") != -1) {
             process_name_array.add("--outfile");
