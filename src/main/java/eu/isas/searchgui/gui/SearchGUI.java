@@ -534,6 +534,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (utilitiesUserParameters.isAutoUpdate()) {
                 Util.sendGAUpdate("UA-36198780-2", "toolstart", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
             }
+            
+            String javaVersion = System.getProperty("java.version");
+            boolean javaVersionWarning = javaVersion.startsWith("1.5") 
+                || javaVersion.startsWith("1.6")
+                || javaVersion.startsWith("1.7") 
+                || javaVersion.startsWith("1.8");
+            
+            if (javaVersionWarning) {
+                new JavaParametersDialog(this, this, null, "SearchGUI", true);
+            }
         }
     }
 

@@ -69,11 +69,17 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         // check for 64 bit java and for at least 4 gb memory 
         boolean java64bit = CompomicsWrapper.is64BitJava();
         boolean memoryOk = utilitiesUserParameters.getMemoryParameter() >= 4000;
+        
         String javaVersion = System.getProperty("java.version");
-        boolean javaVersionWarning = javaVersion.startsWith("1.5") || javaVersion.startsWith("1.6");
+        boolean javaVersionWarning = javaVersion.startsWith("1.5") 
+                || javaVersion.startsWith("1.6")
+                || javaVersion.startsWith("1.7") 
+                || javaVersion.startsWith("1.8");
+        
         if (java64bit && memoryOk && !javaVersionWarning) {
             lowMemoryWarningLabel.setVisible(false);
         }
+        
         if (javaVersionWarning) {
             lowMemoryWarningLabel.setText("<html><u>Java Version Warning!</u>");
         }
