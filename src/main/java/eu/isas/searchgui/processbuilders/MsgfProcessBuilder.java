@@ -133,12 +133,16 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         File msgfExecutable = new File(msgfDirectory.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
         msgfExecutable.setExecutable(true);
 
+        // create the ms-gf+ params folder
+        File msgfParamsFolder = new File(msgfTempFolder, "params");
+        msgfParamsFolder.mkdir();
+        
         // create the ms-gf+ modification file
-        msgfModFile = new File(msgfTempFolder, MOD_FILE);
+        msgfModFile = new File(msgfParamsFolder, MOD_FILE);
         createModificationsFile();
 
         // create ms-gf+ enzyme file
-        msgfEnzymesFile = new File(msgfTempFolder, ENZYMES_FILE);
+        msgfEnzymesFile = new File(msgfParamsFolder, ENZYMES_FILE);
         createEnzymesFile();
 
         // set java home
@@ -305,7 +309,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
 
         pb = new ProcessBuilder(process_name_array);
 
-        pb.directory(msgfDirectory);
+        pb.directory(msgfTempFolder);
         // set error out and std out to same stream
         pb.redirectErrorStream(true);
     }
