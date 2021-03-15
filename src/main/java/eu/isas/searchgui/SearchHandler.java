@@ -67,10 +67,6 @@ public class SearchHandler {
      */
     private WaitingHandler waitingHandler;
     /**
-     * Enzymes file.
-     */
-    private static String enzymeFile = "resources/conf/searchGUI_enzymes.xml";
-    /**
      * Default SearchGUI configurations.
      */
     public static final String SEARCHGUI_CONFIGURATION_FILE = "searchGUI_configuration.txt";
@@ -862,20 +858,6 @@ public class SearchHandler {
         if (waitingHandler != null) {
             waitingHandler.setRunCanceled();
         }
-    }
-
-    /**
-     * Returns the user defined enzymes file.
-     *
-     * @param jarFilePath the path to the jar file
-     * @return the user defined enzymes file
-     */
-    public static File getEnzymesFile(String jarFilePath) {
-        File result = new File(jarFilePath, enzymeFile);
-        if (!result.exists()) {
-            throw new IllegalArgumentException(enzymeFile + " not found.");
-        }
-        return result;
     }
 
     /**
@@ -3976,24 +3958,6 @@ public class SearchHandler {
      */
     public void setThermoRawFileParserParameters(ThermoRawFileParserParameters thermoRawFileParserParameters) {
         this.thermoRawFileParserParameters = thermoRawFileParserParameters;
-    }
-
-    /**
-     * Returns the file containing the enzymes.
-     *
-     * @return the file containing the enzymes
-     */
-    public static String getEnzymeFile() {
-        return enzymeFile;
-    }
-
-    /**
-     * Sets the file containing the enzymes.
-     *
-     * @param enzymeFile the file containing the enzymes
-     */
-    public static void setEnzymeFile(String enzymeFile) {
-        SearchHandler.enzymeFile = enzymeFile;
     }
 
     /**
