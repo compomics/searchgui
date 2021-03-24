@@ -1,6 +1,6 @@
-2021/01/05
+2021/03/18
 
-Comet version "2020.01 rev. 2".  This is a maintenance release.
+Comet version "2020.01 rev. 3".  This is a maintenance release.
 http://comet-ms.sourceforge.net
 
 comet.VERSION.win32.exe:  Windows 32-bit binary compiled with VS2017
@@ -8,6 +8,36 @@ comet.VERSION.win64.exe:  Windows 64-bit binary compiled with VS2017
 comet.VERSION.linux.exe:  Linux binary compiled on Centos 6.9 (glibc 2.12)
 comet.VERSION.debian.exe: Linux binary compiled on Debian 10.0 (glibc 2.28)
 
+release 2020.01 re.v 3 (2020.01.3), release date 2021/03/18
+- Revert use of maps (ala HiXcorr) to spectral arrays for spectral preprocessing.
+  The use of maps had a measurable performance hit that was especially noticeable
+  for real-time search applications.
+- For each variable_mod0X parameter, extend the 4th field to allow specifying
+  a minimum (in addition to the maximum) number of modified residues in each
+  peptide. Feature request by J. Mohr.
+- In the text output, the xcorr rank column (2nd column) will now handle ties in
+  its rank reporting.
+- Extend maximum length of reported protein accession string from 99 to 511
+  characters. Feature request by L. Liu.
+- Real-time search: Comet was inadvertantly looping over all PSMs for a
+  spectrum query to retrieve matched protein names. This was unnecessary and
+  caused a performance hit; protein names are now retrieve only for the top
+  scoring peptide(s).
+- Bug fix: added a check to see if a directory path was specified as the sequence
+  database. Under linux, if a directory were specified as the database, Comet
+  would simply sit there and not report any error.  Thanks to L. Mendoza for
+  reporting this issue.
+- Bug fix: report proper flanking residues for a peptide when it is identified in
+  multiple proteins; use the flanking residues from the first protein in the
+  database.  Similarly, flanking residues for start methionine clipped sequences
+  were addressed as those were not being handled correctly either.
+- Bug fix: for real-time search using Comet's internal decoy peptides, storing
+  and reporting of duplicate peptides, e.g. a peptide that is present in both
+  target and decoy forms, was not being handled correctly; this has been
+  addressed.
+- Bug fix: in the pep.xml output, the "index" attribute of the "spectrum_query"
+  element was not being populated correctly. With each spectrum batch, the index
+  value was being reset to 1. This has been corrected.
 
 release 2020.01 rev. 2 (2020.01.2), release date 2021/01/05
 - Bug fix: Fixed issue where spectra were not being searched. This was due to

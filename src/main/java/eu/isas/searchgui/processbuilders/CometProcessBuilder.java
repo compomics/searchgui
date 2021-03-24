@@ -46,7 +46,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2020.01 rev. 2"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2020.01 rev. 3"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */

@@ -9,13 +9,13 @@
       "CMD/1.0.0": {
         "dependencies": {
           "CommandLineParser": "2.7.82",
-          "EngineLayer": "0.0.315.8376",
+          "EngineLayer": "0.0.316.8407",
           "Microsoft.ML": "1.3.1",
           "Microsoft.ML.FastTree": "1.3.1",
           "Microsoft.NETCore.App": "2.2.8",
           "Nett": "0.13.0",
           "TaskLayer": "1.0.0",
-          "mzLib": "1.0.484"
+          "mzLib": "1.0.487"
         },
         "runtime": {
           "CMD.dll": {}
@@ -212,7 +212,7 @@
           "System.Security.Principal.Windows": "4.6.0"
         }
       },
-      "mzLib/1.0.484": {
+      "mzLib/1.0.487": {
         "dependencies": {
           "Easy.Common": "3.5.0",
           "MathNet.Numerics": "4.15.0",
@@ -553,7 +553,7 @@
         }
       },
       "System.Threading.Tasks.Dataflow/4.8.0": {},
-      "EngineLayer/0.0.315.8376": {
+      "EngineLayer/0.0.316.8407": {
         "dependencies": {
           "Microsoft.ML": "1.3.1",
           "Microsoft.ML.FastTree": "1.3.1",
@@ -561,7 +561,7 @@
           "NETStandard.Library": "2.0.3",
           "Nett": "0.13.0",
           "Newtonsoft.Json": "12.0.3",
-          "mzLib": "1.0.484"
+          "mzLib": "1.0.487"
         },
         "runtime": {
           "EngineLayer.dll": {}
@@ -569,14 +569,14 @@
       },
       "TaskLayer/1.0.0": {
         "dependencies": {
-          "EngineLayer": "0.0.315.8376",
+          "EngineLayer": "0.0.316.8407",
           "MathNet.Numerics": "4.15.0",
           "Microsoft.ML": "1.3.1",
           "Microsoft.ML.FastTree": "1.3.1",
           "Microsoft.NETCore.App": "2.2.8",
           "NetSerializer": "4.1.1",
           "Nett": "0.13.0",
-          "mzLib": "1.0.484"
+          "mzLib": "1.0.487"
         },
         "runtime": {
           "TaskLayer.dll": {}
@@ -688,12 +688,12 @@
       "path": "microsoft.win32.registry/4.6.0",
       "hashPath": "microsoft.win32.registry.4.6.0.nupkg.sha512"
     },
-    "mzLib/1.0.484": {
+    "mzLib/1.0.487": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-essXsdPJKQvW6Wglg/hiKRnz9Z13M56xLxGvBSXy24XV9As6uSpu+xMX3wA7iqPylIZMql0Qike6Khb2kzMgxA==",
-      "path": "mzlib/1.0.484",
-      "hashPath": "mzlib.1.0.484.nupkg.sha512"
+      "sha512": "sha512-s1kFxvdU58mrLxg9V1TlmP//4mIkueC20Ez6uux+azpaC2IIoGvN4l1V4oKrpesHQ68KyYWcy9wADM6SCBG4fw==",
+      "path": "mzlib/1.0.487",
+      "hashPath": "mzlib.1.0.487.nupkg.sha512"
     },
     "NetSerializer/4.1.1": {
       "type": "package",
@@ -933,7 +933,7 @@
       "path": "system.threading.tasks.dataflow/4.8.0",
       "hashPath": "system.threading.tasks.dataflow.4.8.0.nupkg.sha512"
     },
-    "EngineLayer/0.0.315.8376": {
+    "EngineLayer/0.0.316.8407": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -121,8 +121,15 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             metaMorpheus = new File(metaMorpheusFolder.getAbsolutePath() + File.separator + getExecutableFileName());
         }
         metaMorpheus.setExecutable(true);
+        
+        // copy the default metamorpheus settings to the metamorpheus temp folder
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Contaminants"), new File(metaMorpheusTempFolder, "Contaminants"));
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "CustomAminoAcids"), new File(metaMorpheusTempFolder, "CustomAminoAcids"));
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Data"), new File(metaMorpheusTempFolder, "Data"));
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Glycan_Mods"), new File(metaMorpheusTempFolder, "Glycan_Mods"));
+        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Mods"), new File(metaMorpheusTempFolder, "Mods"));
 
-        // create the modification lists
+        // create the custom modifications file
         File metaMorpheusModFile = new File(metaMorpheusTempFolder, "Mods" + File.separator + "CustomModifications.txt");
         createModificationsFile(metaMorpheusModFile);
 
@@ -152,12 +159,6 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         // set the temp settings folder
         process_name_array.add("--mmsettings");
         process_name_array.add(metaMorpheusTempFolder.getAbsolutePath());
-
-        // copy the default metamorpheus settings to the metamorpheus temp folder
-        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Contaminants"), new File(metaMorpheusTempFolder, "Contaminants"));
-        FileUtils.copyDirectory(new File(metaMorpheusFolder, "CustomAminoAcids"), new File(metaMorpheusTempFolder, "CustomAminoAcids"));
-        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Data"), new File(metaMorpheusTempFolder, "Data"));
-        FileUtils.copyDirectory(new File(metaMorpheusFolder, "Glycan_Mods"), new File(metaMorpheusTempFolder, "Glycan_Mods"));
 
         // the protein sequence file
         process_name_array.add("-d");
@@ -423,7 +424,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         if (!metaMorpheusEnzymesFile.getParentFile().exists()) {
             metaMorpheusEnzymesFile.getParentFile().mkdirs();
         }
-        
+
         try {
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(metaMorpheusEnzymesFile));
@@ -442,15 +443,15 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                         + "Notes");
                 bw.newLine();
 
-                // dummy trypsin, as otherwise metamorpheus refuses to start... // @TODO: figure out why!
-                bw.write("trypsin\tK|,R|\t\t\tfull\tMS:1001313\tTrypsin/P\t(?<=[KR])");
+                // dummy trypsin, as otherwise metamorpheus refuses to start...
+                bw.write("trypsin\tK|,R|\t\t\tfull\tMS:1001313\tTrypsin/P\t(?<=[KR])\t");
                 bw.newLine();
 
                 if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
-                    bw.write("Whole Protein\t\t\t\tnone\tMS:1001955\tno cleavage");
+                    bw.write("Whole Protein\t\t\t\tnone\tMS:1001955\tno cleavage\t\t\t");
                     bw.newLine();
                 } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
-                    bw.write("Unspecific\tX|\t\t\tfull\tMS:1001956\tunspecific cleavage");
+                    bw.write("Unspecific\tX|\t\t\tfull\tMS:1001956\tunspecific cleavage\t\t");
                     bw.newLine();
                 } else if (digestionPreferences.getEnzymes().size() > 1) {
                     throw new IOException("Multiple enzymes not supported!");
@@ -509,6 +510,8 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                         } else {
                             bw.write("semi\t");
                         }
+                    } else {
+                        bw.write("\t");
                     }
 
                     // psi-ms accesion number and name
@@ -523,9 +526,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                     // bw.write("(?<=[FYWL])(?!P)"); // @TODO: add regular expressions?
                     bw.write("\t");
 
-                    // notes
+                    // cleavage mass shifts (and 'notes' after that if any)
                     bw.write("\t");
-
+                    
                     bw.newLine();
                 }
 
@@ -554,7 +557,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         if (!metaMorpheusModFile.getParentFile().exists()) {
             metaMorpheusModFile.getParentFile().mkdirs();
         }
-        
+
         try {
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(metaMorpheusModFile));
