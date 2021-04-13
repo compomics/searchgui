@@ -109,10 +109,10 @@ public class PathSettingsCLIInputBean {
     }
     
     /**
-     * Return true of a log file is to be used. False, sends the logs to the
+     * Return true if a log file is to be used. False, sends the logs to the
      * standard output.
      *
-     * @return true of a log file is to be used, false sends the logs to the
+     * @return true if a log file is to be used, false sends the logs to the
      * standard output
      */
     public boolean useLogFile() {
