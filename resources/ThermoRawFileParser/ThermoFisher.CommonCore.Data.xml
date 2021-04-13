@@ -73,16 +73,16 @@
         </member>
         <member name="P:ThermoFisher.CommonCore.Data.Business.Analytics.MaxTextCategories">
             <summary>
-            Gets or sets the maximum number of unique strings which are shown as a bar categrory,
-            for "text string" diagnotic items.
-            Any additional strings are displayed as a bar labelled "Other".
+            Gets or sets the maximum number of unique strings which are shown as a bar category,
+            for "text string" diagnostic items.
+            Any additional strings are displayed as a bar labeled "Other".
             Valid range: 3-1000
             Default: 10
             </summary>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.Analytics.#ctor(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus)">
             <summary>
-            Create an analzer for raw data.
+            Create an analyzer for raw data.
             </summary>
             <param name="file">the (open) raw file</param>
         </member>
@@ -201,7 +201,18 @@
             </summary>
             <param name="indexOfKey">index into status log for required item</param>
             <param name="dataMode">Determines how positive, zero and negative data are handled.</param>
-            <returns>the set of values. Items which are (True, false) or (On,Off)or (yes,no) return 1 for true/on/yes and 0 for fasle/off/no</returns>
+            <returns>the set of values. Items which are (True, false) or (On,Off)or (yes,no) return 1 for true/on/yes and 0 for false/off/no</returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.Analytics.StatusValueTrendFromKey(System.Int32,ThermoFisher.CommonCore.Data.Business.DataFilter,System.Int32@)">
+            <summary>
+            Find a trend for the given status item. Calling code should select a device with a status log first.
+            </summary>
+            <param name="indexOfKey">index into status log for required item</param>
+            <param name="dataMode">Determines how positive, zero and negative data are handled.</param>
+            <param name="startRecord">First record in the log to inspect. This is intended for incremental log reading (real time data).
+            The value is updated to the next needed record number, such that repeated calls get new information as it arrives.</param>
+            <returns>the set of values. Items which are (True, false) or (On,Off)or (yes,no) return 1 for true/on/yes and 0 for false/off/no.
+            If there are no further records after "startRecord" or all records are "NaN" the result will be an empty array.</returns>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.Analytics.TrailerValueSignalFromKey(System.Int32,ThermoFisher.CommonCore.Data.Business.DataFilter)">
             <summary>
@@ -217,11 +228,37 @@
             </summary>
             <param name="indexOfKey">index into trailer extra for required item</param>
             <param name="dataMode">Determines how positive, zero and negative data are handled.</param>
+            <returns>the set of values. Items which are (True, false) or (On,Off)or (yes,no) return 1 for true/on/yes and 0 for false/off/no.
+            If there are no further records after "startRecord" or all records are "NaN" the result will be an empty array.</returns>
+            <returns>the set of values. Items which are (True, false) or (On,Off)or (yes,no) return 1 for true/on/yes and 0 for fasle/off/no</returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.Analytics.StatusValueSignalFromKey(System.Int32,ThermoFisher.CommonCore.Data.Business.DataFilter,System.Int32@)">
+            <summary>
+            Find a trend for the given status item. Calling code should select a device with a status log first.
+            </summary>
+            <param name="indexOfKey">index into trailer extra for required item</param>
+            <param name="dataMode">Determines how positive, zero and negative data are handled.</param>
+            <param name="startRecord">First record in the log to inspect. This is intended for incremental log reading (real time data).
+            The value is updated to the next needed record number, such that repeated calls get new information as it arrives.</param>
+            <returns>the set of values. Items which are (True, false) or (On,Off)or (yes,no) return 1 for true/on/yes and 0 for false/off/no.
+            If there are no further records after "startRecord" or all records are "NaN" the result will be an empty array.</returns>
             <returns>the set of values. Items which are (True, false) or (On,Off)or (yes,no) return 1 for true/on/yes and 0 for fasle/off/no</returns>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.Analytics.GetStatusNumericValueFromLog(System.Int32,ThermoFisher.CommonCore.Data.Business.HeaderItem,System.Int32,System.Double@,System.Collections.Generic.Dictionary{System.String,ThermoFisher.CommonCore.Data.Business.Analytics.NameData},System.Int32)">
             <summary>
             Get a status numeric value from a status log
+            </summary>
+            <param name="indexOfKey">Index of the item in status log header</param>
+            <param name="recordFormat">status log format for this item</param>
+            <param name="log">stats log record index</param>
+            <param name="time">Time of this log entry</param>
+            <param name="foundNames">list of names for "string" items</param>
+            <param name="maxTextCategories">The max number of unique strings accepted</param>
+            <returns>The numeric value for this log entry</returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.Analytics.GetStatusNumericValueFromSortedLog(System.Int32,ThermoFisher.CommonCore.Data.Business.HeaderItem,System.Int32,System.Double@,System.Collections.Generic.Dictionary{System.String,ThermoFisher.CommonCore.Data.Business.Analytics.NameData},System.Int32)">
+            <summary>
+            Get a status numeric value from a sorted status log
             </summary>
             <param name="indexOfKey">Index of the item in status log header</param>
             <param name="recordFormat">status log format for this item</param>
@@ -256,7 +293,7 @@
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.Analytics.ValidateMaxTextcategories">
             <summary>
-            Silenty ensure MaxTextCategories is in bounds, and fix if not
+            Silently ensure MaxTextCategories is in bounds, and fix if not
             </summary>
             <returns>the fixed max</returns>
         </member>
@@ -354,6 +391,114 @@
             <summary>
             Assigned bar number
             </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus">
+            <summary>
+            Autofilter extensions for raw files
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.EnhancedAutoFilter(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus)">
+            <summary>
+            Create an enhanced autofilter for this raw file
+            </summary>
+            <param name="file">raw file</param>
+            <returns>enhanced auto filter</returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.EnhancedAutoFilter(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,System.Double,System.Double)">
+            <summary>
+            Create an enhanced autofilter for this raw file, uing cans over a specific time range.
+            </summary>
+            <param name="file">raw file</param>
+            <param name="startTime">start retention time</param>
+            <param name="endTime">end retention time</param>
+            <returns>enhanced auto filter</returns>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced">
+            <summary>
+            This class extends the functions of "auto filter".
+            On construction, the "auto filter" list is obtained from the MS detector.
+            methods are then called to construct a list of filters based on this data.
+            The list can be searched for "items matching a given filter rule".
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.AddEmptyFilter">
+            <summary>
+            Adds the "empty filter" to the list.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.AddActivationTypeFilters">
+            <summary>
+            Searches for the activation types used.
+            Adds "Activation type" to the list, for MS/MS data (MS2 or above).
+            This can find CID, HCD, ETD, UVPD
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.Add(System.String)">
+            <summary>
+            Creates a filter from a string and adds it
+            </summary>
+            <param name="filter"></param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.AddMsOrderFilters(System.Boolean)">
+            <summary>
+            Adds "ms order filters" to the list
+            this includes ms, ms2 etc up to ms10
+            if any ms/ms is found msn is also added.
+            </summary>
+            <param name="addMsn">When true (default): if any ms/ms is found "MSn" is also added.</param>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.IncludeCompoundNames">
+            <summary>
+            Gets or sets a value indicating whether compound names should be included.
+            This only has an effect if the "Name" property is set for at least one filter.
+            Results which have names are shown in sorted (alpha) order.
+            Any other filters, which do not have a name, are then added after the 
+            named items, in the original "auto filter" order.
+            If a name appears for more than one filter, then an entry is created
+            which only contains a compound name, such that a chromatogram
+            can be created based on all data identified for that compound.
+            Note that this "name only" list is excluded when a "unique filter list" is
+            requested with a specific subset filter.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.CompoundNameSeparator">
+            <summary>
+            Gets or sets a separator which appears between a compound name and a filter.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.AddUniqueFilters(System.String)">
+            <summary>
+            Add all unique filter groups (auto filter).
+            </summary>
+            <param name="mustContain">If this is not empty: The filters must all contan this sub-filter.
+            For example "d" for "only return data dependent"</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.MergeCvValues">
+            <summary>
+            Remove "CV" from filters, such that filters which have CV at different values are merged.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.#ctor(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,System.Boolean,System.Double,System.Double)">
+            <summary>
+            Create am emhaced auto filter for a raw file
+            </summary>
+            <param name="rawData"></param>
+            <param name="applyTimeLimits">indicates whether time limits are used for the
+             "auto filter" request from the raw file.
+             If this is true:
+             Only scans from minTime to maxTime are used
+             else: all scans are used</param>
+            <param name="minTime">the minimum retention time for getting a set of filters from the raw file.
+            Only applied when applyTimeLimits is set.</param>
+            <param name="maxTime">the maximum retention time for getting a set of filters from the raw file.
+            Only applied when applyTimeLimits is set.</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.AutoFilterPlus.AutoFilterEnhanced.MergeCV(System.Collections.Generic.List{ThermoFisher.CommonCore.Data.Interfaces.IFilterWithString})">
+            <summary>
+            remove "CV" from all filters
+            </summary>
+            <param name="filterList">Filter to consolidate</param>
+            <returns>Updated list</returns>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Business.AutoSamplerInformation">
             <summary>
@@ -1021,6 +1166,17 @@
             Mass calibration coefficients
             </summary>
         </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.CentroidStream.#ctor">
+            <summary>
+            Creates a new instance of CentroidStream
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.CentroidStream.#ctor(ThermoFisher.CommonCore.Data.Business.CentroidStream)">
+            <summary>
+            Deep copy constructor
+            </summary>
+            <param name="labelData"></param>
+        </member>
         <member name="P:ThermoFisher.CommonCore.Data.Business.CentroidStream.Baselines">
             <summary>
             Gets or sets the list of baseline at each peak
@@ -1172,7 +1328,7 @@
             subtracted from low and added to high to search for matching masses</param>
             <returns>Sum of intensities in all ranges</returns>
         </member>
-        <member name="M:ThermoFisher.CommonCore.Data.Business.CentroidStream.SumMasses(ThermoFisher.CommonCore.Data.Business.Range[],System.Double)">
+        <member name="M:ThermoFisher.CommonCore.Data.Business.CentroidStream.SumMasses(ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess[],System.Double)">
             <summary>
             Sum all masses within the ranges
             </summary>
@@ -2794,6 +2950,18 @@
             </param>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.ChromatogramTraceSettings.#ctor(System.String,ThermoFisher.CommonCore.Data.Business.Range[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:ThermoFisher.CommonCore.Data.Business.ChromatogramTraceSettings" /> class.
+            Initialize settings for a mass chromatogram. Makes "TraceType.MassRange"
+            </summary>
+            <param name="filter">
+            scan filter
+            </param>
+            <param name="ranges">
+            The mass range(s)
+            </param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ChromatogramTraceSettings.#ctor(System.String,ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess[])">
             <summary>
             Initializes a new instance of the <see cref="T:ThermoFisher.CommonCore.Data.Business.ChromatogramTraceSettings" /> class.
             Initialize settings for a mass chromatogram. Makes "TraceType.MassRange"
@@ -5236,6 +5404,100 @@
             </summary>
             <returns>A copy of the event collection</returns>
         </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ExtendedScan">
+            <summary>
+            Extends the "Scan" object to provide charge envolope information,
+            which is available from certain instrumnets.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ExtendedScan.#ctor(ThermoFisher.CommonCore.Data.Business.Scan)">
+            <summary>
+            Creates a new ExtendedScan from a Scan.
+            All extended data is empty
+            </summary>
+            <param name="scan"></param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ExtendedScan.DeepClone">
+            <summary>
+            Make a deep clone of this extended scan.
+            </summary>
+            <returns>
+            An object containing all data in the input, and no shared references
+            </returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ExtendedScan.#ctor">
+            <summary>
+            Default constructor for Extended Scan
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ExtendedScan.FromFile(ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtended,System.Int32)">
+            <summary>
+            Create an extended scan object from a file and a scan number.
+            </summary>
+            <param name="rawFile">
+            File to read from
+            </param>
+            <param name="scanNumber">
+            Scan number to read
+            </param>
+            <returns>
+            The scan read, or null of the scan number if not valid
+            </returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ExtendedScan.ReadFromFileExtended(ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtended,System.Int32,ThermoFisher.CommonCore.Data.Business.ScanStatistics)">
+            <summary>
+            read extended scan data from file.
+            </summary>
+            <param name="rawFile">
+            The raw file.
+            </param>
+            <param name="scanNumber">
+            The scan number.
+            </param>
+            <param name="stats">
+            The stats.
+            </param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ExtendedScan.Slice(ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess[],System.Boolean,System.Boolean)">
+            <summary>
+            Return a slice of a scan which only contains data within the supplied mass Range or ranges.
+            For example: For a scan with data from m/z 200 to 700, and a single mass range of 300 to 400:
+            This returns a new scan containing all data with the range 300 to 400.
+            All annotaion and charge envolope data is discarded, as peaks whcih make up envelopes are 
+            not guranteed to be in any slice.
+            </summary>
+            <param name="massRanges">The mass ranges, where data should be retained. When multiple ranges are supplied,
+            all data which is in at least one range is included in the returned scan</param>
+            <param name="trimMassRange">If this is true, then the scan will reset the
+            scan's mass range to the bounds of the supplied mass ranges </param>
+            <param name="expandProfiles">This setting only applies when the scan has both profile and centroid data.
+            If true: When there isa centroid near the start or end of a range, and the first or
+            final "above zero" section of the profile includes that peak, then the profile is extended, to include the points
+            which contribute to that peak. A maximum of 10 points may be added</param>
+            <returns>A copy of the scan, with only the data in the supplied ranges</returns>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ExtendedScan.ExtendedCentroidsAccess">
+            <summary>
+            Gets centroids with additional charge envelope information (when available)
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ExtendedScan.HasChargeEnvelopes">
+            <summary>
+            Gets a value indicating whether charge envelope data 
+            was recorded for this scan
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ExtendedScan.Annotations">
+            <summary>
+            Gets additional annotations per peak, related to change envelopes
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ExtendedScan.ChargeEnvelopes">
+            <summary>
+            Gets the change envelopes. This include overall information
+            about the envelope, plus the set of included peaks, 
+            </summary>
+        </member>
         <member name="T:ThermoFisher.CommonCore.Data.Business.FileHeader">
             <summary>
             The file header.
@@ -5493,6 +5755,51 @@
             <returns>
             The <see cref="T:System.Boolean"/>.
             </returns>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.FilterWithString">
+            <summary>
+            Defines a combination of plain text and interface defintions of filters.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.FilterWithString.Filter">
+            <summary>
+            Gets a Standard (parsable) text form of the filter. This does not include any compound names.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.FilterWithString.ScanFilter">
+            <summary>
+            Gets the scan filer (as accessable fields)
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.FilterWithString.FilterWithName">
+            <summary>
+            Gets a string which combines the compound name and the filter text.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.FilterWithString.Name">
+            <summary>
+            Gets the compound name
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.FilterWithString.#ctor(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,System.String)">
+            <summary>
+            Creates a new instance of FilterWithString, parsing the filter based on 
+            a supplied raw file.
+            </summary>
+            <param name="rawData">The raw data, used to parse this filter</param>
+            <param name="text">The text form of the filter</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.FilterWithString.#ctor">
+            <summary>
+            Creates a new instance of FilterWithString.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.FilterWithString.NameOnly">
+            <summary>
+            Gets a value indicating whether this object only has a compound name,
+            and does not have any filter text or filter interface defined.
+            When this is set: Only the Name property should be used.
+            </summary>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Business.FindResult">
             <summary>
@@ -6404,6 +6711,11 @@
         <member name="P:ThermoFisher.CommonCore.Data.Business.InstrumentData.IsValid">
             <summary>
             Gets or sets a value indicating whether the instrument is valid.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.InstrumentData.HasAccurateMassPrecursors">
+            <summary>
+            Gets a value indicating whether this file has accurate mass precursors
             </summary>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.InstrumentData.#ctor">
@@ -9275,6 +9587,15 @@
             the tolerance is subtracted from low and added to high of the new range
             </param>
         </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.Range.#ctor(ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ThermoFisher.CommonCore.Data.Business.Range"/> class. 
+            Construct a range from another range.
+            </summary>
+            <param name="from">
+            range to copy
+            </param>
+        </member>
         <member name="P:ThermoFisher.CommonCore.Data.Business.Range.Low">
             <summary>
             Gets or sets the low end of range
@@ -9845,6 +10166,13 @@
             </param>
             <param name="rawFileNoise">Optional: Noise and baseline table</param>
         </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.Scan.#ctor(ThermoFisher.CommonCore.Data.Business.Scan)">
+            <summary>
+            Copy scan data. This protected method is inteded for derived object use only.
+            It is not a "deep clone" of a scan.
+            </summary>
+            <param name="scan">Scan to copy</param>
+        </member>
         <member name="P:ThermoFisher.CommonCore.Data.Business.Scan.CentroidScan">
             <summary>
             Gets or sets A second data stream for the scan
@@ -9932,6 +10260,12 @@
         <member name="P:ThermoFisher.CommonCore.Data.Business.Scan.PreferredNoises">
             <summary>
             Gets Noises for default data stream (usually centroid stream, if present).
+            Returns an empty array if centroid stream is not preferred or not present 
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.Scan.PreferredBaselines">
+            <summary>
+            Gets Baselines for default data stream (usually centroid stream, if present).
             Returns an empty array if centroid stream is not preferred or not present 
             </summary>
         </member>
@@ -10107,6 +10441,12 @@
             <returns>
             An object containing all data in the input, and no shared references
             </returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.Scan.DeepCopyFrom(ThermoFisher.CommonCore.Data.Business.Scan)">
+            <summary>
+            Deep Copy all data from another scan into this scan.
+            Intended to assist in cloning derived objects.
+            </summary>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.Scan.Slice(ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess[],System.Boolean,System.Boolean)">
             <summary>
@@ -11179,6 +11519,513 @@
             </summary>
             <param name="data">Access to data to be averaged</param>
             <returns>Interface to perform averaging</returns>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.IExtendedCentroids">
+            <summary>
+            Defines an extended centroid scan (FTMS data), which includes analysis of charge envelopes.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IExtendedCentroids.HasChargeEnvelopes">
+            <summary>
+            Gets a value indicating whether charge envelope data 
+            was recorded for this scan
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IExtendedCentroids.Annotations">
+            <summary>
+            Gets additional annotations per peak, related to change envelopes
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IExtendedCentroids.ChargeEnvelopes">
+            <summary>
+            Gets the change envelopes. This include overall information
+            about the envelope, plus the set of included peaks, 
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary">
+            <summary>
+            All isotopes just having a different charge will be grouped together in a charge envelope. Due
+            to calculation restrictions it is quite likely that there are further peaks which theoretically
+            be part of the same charge envelope, but where noise level, neighborhood, hardware limitations
+            keep those peaks unassigned.
+            This interfaces has statistics about a charge envelope, but not the contributing peaks.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.MonoisotopicMass">
+            <summary>
+            This is the monoisotopic mass that a particular peak belongs to. The value is
+            a calculated one, it is very likely that this cannot be seen at all in the spectrum.
+            But it is the reference point of all members of one charge envelope.
+            <para>
+            Note that the value becomes 0 if the value is not isotopically resolved. See also <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.AverageMass"/> and
+            <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.IsIsotopicallyResolved"/>
+            </para>
+            <para>
+             Keep in mind that depending on instrument calibration this value may not exactly match a calculated mass.
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.CrossCorrelation">
+            <summary>
+            This cross-correlation factor is the maximum of all cross-correlation values
+            over all averagines. An averagine is a statistical model of the isotope distribution
+            of the same molecule at a given charge. The observed peaks within the spectrum are fitted
+            to the model, the overlap is calculated by a cross-correlation that only takes the intensities
+            into account.
+            <para>
+            The averagine model is strongly linked to peptide analysis. As an example, averagine
+            mass distribution for pesticides are totally different.
+            </para>
+            <para>
+            Cross-correlation factors vary in the range 0 to 1. 0 will be set if <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.MonoisotopicMass"/>
+            is also 0. In this case, the fit was unsuccessful. The value is also 0 if <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.IsIsotopicallyResolved"/>
+            is set.
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.TopPeakCentroidId">
+            <summary>
+            This is the index to the top peak centroid in the centroid list coming with the same scan.
+            One can use this to get access to the mass of the so called top peak.
+            </summary>
+            <remarks>
+            The top peak is that peak in a charge envelope that fulfills two requirements in this order: 1) never being considered
+            to be part of another charge envelope, and 2) having the highest abundance.
+            </remarks>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.IsIsotopicallyResolved">
+            <summary>
+            Return whether this charge envelope was created using isotopically resolved species.
+            <para>
+            For isotopically resolved peaks the <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.MonoisotopicMass"/>
+            is set. If not resolved, only an average mass is returned.
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.AverageMass">
+            <summary>
+            When peaks are non-isotopically resolved (see <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.IsIsotopicallyResolved"/>),
+            this value contains the average mass of all species in the envelope, otherwise it contains 0.
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelope">
+            <summary>
+            Defines a set of peaks which are part of a charge envelope
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelope.Peaks">
+            <summary>
+            Gets or sets the collection of peaks in this charge envelopes
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelope.TopPeakCentroidId">
+            <summary>
+            Gets or sets the index into the centroids for the top peak
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopePeak">
+            <summary>
+            Data about a single peak within a charge envelope.
+            <para>
+            This grouping has a separate structure explained in <see cref="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary"/>. While presentation to CC consumers
+            may be different, the (at least Orbitrap-)generated data structure allocates one 16-bit value for each centroid.
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopePeak.IsMonoisotopic">
+            <summary>
+            Returns true if the peak is a monoisotopic peak, false otherwise.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopePeak.IsClusterTop">
+            <summary>
+            Returns true if the conditions below met, false otherwise.
+            <para>
+            The top peak is that peak in a charge envelope that fulfills two requirements in this order:
+            1) never being considered to be part of another charge envelope, and
+            2) having the highest abundance.
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopePeak.IsIsotopicallyResolved">
+            <summary>
+            Returns true if the peak and its charge envelope have further isotope sibling (according to averagine model, etc).
+            <para>
+            Note that a charge envelope must be considered non-isotopically resolved if at least one of its peaks has this flag "false",
+            and it can be considered an error if some peaks of an envelope have this flag set and other peaks not.
+            </para>
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.IApdPeakAnnotation">
+            <summary>
+            Advanced Peak Detection on (FT) scans allow to better calculate charges of peaks. This is done by finding correlations
+            of peaks. If found, the assumption is considered valid that these peaks belong to the same species of a molecule, but
+            with different charges.
+            <para>
+            This grouping has a separate structure explained in <see cref="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary"/>. While presentation to CC consumers
+            may be different, the (at least Orbitrap-)generated data structure allocates one 16-bit value for each centroid.
+            </para>
+            <para>
+            The 16-bit value contains three bits and an index number into an array of <see cref="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary"/>s which also come
+            with the same scan.
+            TODO
+            This is an interface. Implementation details ( such as "structure is 16 bit") are not meaningful here.
+            Describe instead "What information is presented to the consumer".
+            Using IPeakAnnotation you can ???
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.IApdPeakAnnotation.ChargeEnvelopeIndex">
+            <summary>
+            Returns null if information is not available (as with non-APD annotated Orbitrap spectra or unresolved peaks),
+            the index to the corresponding <see cref="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary"/> otherwise. Values out of range must not exist and should be checked
+            in advance.
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ICentroidAnnotations">
+            <summary>
+            Defines data which explains how charges are calculated.
+            ChargeEnvelopes contains summary information about each detected envelope.
+            CentroidAnnotations can be used to determine which charge envelope (if any) a peak belongs to.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ICentroidAnnotations.HasChargeEnvelopes">
+            <summary>
+            Gets or sets a flag indicating whether there are charge envelopes.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ICentroidAnnotations.IsValid">
+            <summary>
+            Gets a value indicating whether this is valid "charge envelope" data, when decoded from a raw file.
+            Raw files have diagnostic sections of potentially unknown formats, so it is possible that, even though some data exists, it
+            cannot be decoded as charge envelopes.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ICentroidAnnotations.ChargeEnvelopes">
+            <summary>
+            Gets summary informtion the "charge envelopes". Purpose needs to be detailed?
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ICentroidAnnotations.CentroidAnnotations">
+            <summary>
+            Gets the "Centroid Annotations". Purpose needs to be detailed?
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions">
+            <summary>
+            This class can be ued to decode instrument specific additional data saved with a scan.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.ScanAnnotations(ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtended,System.Int32)">
+            <summary>
+            Obtain the annotations for a specific scan
+            </summary>
+            <param name="data">The raw file</param>
+            <param name="scan">scan number</param>
+            <returns>Annotations for this scan</returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.CentroidsWithAnnotations(ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtended,System.Int32,System.Boolean)">
+            <summary>
+            Read centroid data for a scan, with annotations (where available).
+            These annotations are set by the charge calculator in some instruments.
+            </summary>
+            <param name="data">The raw file</param>
+            <param name="scan">scan number</param>
+            <param name="includeReferenceAndExceptionPeaks">set if reference and exception peaks should be returned</param>
+            <returns>The extended scan</returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.GetExtendedCentroids(ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtended,System.Int32,System.Boolean)">
+            <summary>
+            Read centroid data for a scan, with annotations (where available).
+            These annotations are set by the charge calculator in some instruments.
+            This version returns an internal type
+            </summary>
+            <param name="data">The raw file</param>
+            <param name="scan">scan number</param>
+            <param name="includeReferenceAndExceptionPeaks">set if reference and exception peaks should be returned</param>
+            <returns>The extended scan</returns>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.ExtendedCentroids">
+            <summary>
+            An extension of centroids which includes:
+            Peak charge envelopes.
+            Annotations for each centroid
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.ExtendedCentroids.#ctor(ThermoFisher.CommonCore.Data.Business.CentroidStream)">
+            <summary>
+            Created an extended centroid stream by making a copy of the base data
+            </summary>
+            <param name="labelData"></param>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.ExtendedCentroids.Annotations">
+            <summary>
+            Gets or sets the annotation about charge envelopes for each peak
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.ExtendedCentroids.HasChargeEnvelopes">
+            <summary>
+            Gets or sets a value indicating whether charge envelope data 
+            was recorded for this scan
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData">
+            <summary>
+            This class converts the byte array within the debug section of an Orbitrap scan to a list
+            of centroid annotations. Those annotations may point to charge envelopes, they also become
+            available.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.HasChargeEnvelopes">
+            <summary>
+            Gets or sets a flag indicating whether there are charge envelopes.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.IsValid">
+            <summary>
+            Gets or sets a value indicating whether this is valid data.
+            It is valid, even if there is no data available.
+            It is invalid if data has been found, but cannot be decoded.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopes">
+            <summary>
+            Get access to the charge envelopes. It is an empty array if no APD data has been calculated
+            or if unfolding the binary data shows errors.
+            </summary>
+            <returns>Returns the charge envelopes of the scan</returns>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.CentroidAnnotations">
+            <summary>
+            Get access to the centroid peak annotations. It is an empty array if no APD data has been calculated
+            or if unfolding the binary data shows errors.
+            </summary>
+            <returns>Returns the peak annotations of the scan</returns>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment">
+            <summary>
+            This class defines the characteristics of an Orbitrap debug subsegment.
+            <para>
+            The debug section according to unified_data_format.html has the format:
+            <list type="table">
+              <listheader>
+                <term>  Type         </term><description>     Meaning                                                                </description>
+              </listheader>
+              <item>
+                <term>  Uint32       </term><description>     Or'd combination of all debug sub-section flags + some extra bits      </description>
+                <term>  SubSection   </term><description>     defined below                                                          </description>
+                <term>  SubSection   </term><description>     further sub-sections, end defined by overall length of debug section   </description>
+              </item>
+            </list>
+            </para>
+            <para>
+            The debug sub-section according to unified_data_format.html has the format:
+            <list type="table">
+              <listheader>
+                <term>  Type         </term><description>     Meaning                                                                </description>
+              </listheader>
+              <item>
+                <term>  Uint32       </term><description>     Content flags (0x100 = transients, 0x80000 for extensions, see below)  </description>
+                <term>  UInt32       </term><description>     Count of 32-bit word of this sub-section                               </description>
+                <term>  UInt32[]     </term><description>     Content depending on sub-section                                       </description>
+              </item>
+            </list>
+            </para>
+            <para>
+            The APD extensions and all other extensions have an UInt32 specifier as first 32-bit word what data follows. The specifiers are:
+            <list type="table">
+              <listheader>
+                <term>Value </term><description>     Meaning                                                                </description>
+              </listheader>
+              <item>
+                <term>  1   </term><description>     transients (effectively not in use)                                    </description>
+                <term>  2   </term><description>     Annotations (array of 16-bit values for each centroid)                 </description>
+                <term>  3   </term><description>     ChargeEnvelopes (array of those)                                       </description>
+              </item>
+            </list>
+            </para>
+            <para>
+            The APD annotations section is an array or annotation elements, each consisting of 16-bit values, one for each centroid. For an
+            odd number of centroids, there exists a further 16-bit value of unknown content. Each annotation has a format described in
+            class description of <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation"/>.
+            </para>
+            <para>
+            The APD charge envelopes section is an array or charge envelopes. Each charge envelopes has a format described in
+            class description of <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.DebugSegmentType">
+            <summary>
+            What type of sub-segment do we have?
+            </summary>
+        </member>
+        <member name="F:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.TransientsDebugHeaderBit">
+            <summary>
+            According to unified_data_format.html, DBUGCON definition, the 9th LSB bit
+            is a send_transient section.
+            </summary>
+        </member>
+        <member name="F:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.OrbitrapExtensionDebugHeaderBit">
+            <summary>
+            This value is reserved for extensions of the debug section. Sub-segments have a further indicator
+            describing the packet type.
+            </summary>
+        </member>
+        <member name="F:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.OrbitrapAnnotationSegmentIdentifier">
+            <summary>
+            This debug segment extension is an array of <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation"/>s.
+            </summary>
+        </member>
+        <member name="F:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.OrbitrapChargeEnvelopeSegmentIdentifier">
+            <summary>
+            This debug segment extension is an array of <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary"/>s.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.ArrayOffset">
+            <summary>
+            This is the offset into the byte array to which this structure belongs.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.Size">
+            <summary>
+            Access to the size of data in section without headers in 32-bit words.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment.SegmentType">
+            <summary>
+            What kind of debug sub-segment is contained in this sub-segment?
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation">
+            <summary>
+            This structure is one element of the annotations <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment"/>. The format is:
+            <para>
+            <list type="table">
+              <listheader>
+                <term>  Bit          </term><description>     Meaning                                                     </description>
+              </listheader>
+              <item>
+                <term>  0-12 (LSB)   </term><description>     Index into array of charge envelopes (0x1FFF=no envelope)   </description>
+                <term>  13           </term><description>     Flag IsNonIsotopicallyResolved                              </description>
+                <term>  14           </term><description>     Flag IsClusterTop                                           </description>
+                <term>  15           </term><description>     Flag IsMonoisotopic                                         </description>
+              </item>
+            </list>
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation.IsMonoisotopic">
+            <summary>
+            Implementation of <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopePeak.IsMonoisotopic"/>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation.IsClusterTop">
+            <summary>
+            Implementation of <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopePeak.IsClusterTop"/>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation.IsIsotopicallyResolved">
+            <summary>
+            Implementation of <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopePeak.IsIsotopicallyResolved"/>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation.IsNonIsotopicallyResolved">
+            <summary>
+            Not resolved
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation.ChargeEnvelopeIndex">
+            <summary>
+            Implementation of <see cref="P:ThermoFisher.CommonCore.Data.Business.IApdPeakAnnotation.ChargeEnvelopeIndex"/>
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeStored">
+            <summary>
+            This structure is one element of the charge envelopes <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.DebugSubSegment"/>. The format is:
+            <para>
+            <list type="table">
+              <listheader>
+                <term>  Type       </term><description>     Meaning                                                                                </description>
+              </listheader>
+              <item>
+                <term>  double     </term><description>     Usually monoisotopic mass (with respect to instrument accuracy), can be average mass   </description>
+                <term>  float      </term><description>     Cross-correlation of applied model (like averagine), can be 0 for various reasons      </description>
+                <term>  (U)Int32   </term><description>     Index into centroid list of peak being most abundant in this envelope                  </description>
+              </item>
+            </list>
+            </para>
+            </summary>
+        </member>
+        <member name="F:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeStored.Mass">
+            <summary>
+            Access to the stored mass, which is either the monoisotopic mass or rge average mass, depending on flags of the annotation section.
+            </summary>
+        </member>
+        <member name="F:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeStored.Xcorr">
+            <summary>
+            Cross-correlation in the range [0 - 1] of the fitting of the envelope.
+            </summary>
+        </member>
+        <member name="F:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeStored.Index">
+            <summary>
+            Index into the array of centroids. The indexed centroid is the most abundant of all centroids belonging to this envelope.
+            <para>
+            Orbitrap format never uses addresses more than 2**30 peaks, so no need for uint.
+            </para>
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary">
+            <summary>
+            This class implements <see cref="T:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary"/>. It bases on a stored Orbitrap data block.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary.#ctor(ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeStored)">
+            <summary>
+            Initialize a <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary"/> and assign the structure on which it bases.
+            </summary>
+            <param name="stored">Data structure containing its core values</param>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary.MonoisotopicMass">
+            <summary>
+            Returns the monoisotopic mass for a model-fitted envelope and all species belonging to
+            this envelope with respect to the mass accuracy or 0 if resolved non-isotopically.
+            See <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.AverageMass"/>.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary.CrossCorrelation">
+            <summary>
+            Cross-correlation value of the model fitting in the range 0-1. Value remains 0 for non-isotopically
+            resolved peaks or unsuccessful fittings. 
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary.ThermoFisher#CommonCore#Data#Business#IChargeEnvelopeSummary#TopPeakCentroidId">
+            <summary>
+            Index into centroid list to the most abundant centroid within this envelope. The value can be used
+            for grouping.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary.IsNonIsotopicallyResolved">
+            <summary>
+            Returns true if at least one peak belonging to the charge envelope was non-isotopically resolved.
+            <para>
+            Call the setter for each <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation"/> in order to detect non-isotopically resolved peaks.
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary.IsIsotopicallyResolved">
+            <summary>
+            Returns true if at least one peak belonging to the charge envelope was non-isotopically resolved.
+            <para>
+            Call the setter for each <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.Annotation"/> in order to detect non-isotopically resolved peaks.
+            </para>
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Business.ScanDataExtensions.UnfoldedApdData.ChargeEnvelopeSummary.AverageMass">
+            <summary>
+            Returns 0 for a model-fitted envelope or the average mass if resolved non-isotopically.
+            See <see cref="P:ThermoFisher.CommonCore.Data.Business.IChargeEnvelopeSummary.AverageMass"/>.
+            </summary>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Business.TokenClass">
             <summary>
@@ -12491,16 +13338,17 @@
         <member name="P:ThermoFisher.CommonCore.Data.Business.ScanEventHelper.ScanEvent">
             <summary>
             Gets the scan event which was used to construct this object.
+            If the object was created from IScanFilter, this will be null
             </summary>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.ScanEventHelper.DifferentTriState(ThermoFisher.CommonCore.Data.FilterEnums.TriState,ThermoFisher.CommonCore.Data.FilterEnums.TriState)">
             <summary>
             Test if two tri-states are different.
             </summary>
-            <param name="state1">
+            <param name="filterState">
             The state 1.
             </param>
-            <param name="state2">
+            <param name="eventState">
             The state 2.
             </param>
             <returns>
@@ -12539,6 +13387,21 @@
             The scan event.
             </param>
             <param name="eventCode">event code (form scan index). -1 for "not known"</param>
+            <returns>
+            The <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanEventHelper"/>.
+            </returns>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanEventHelper.ScanEventHelperFactory(ThermoFisher.CommonCore.Data.Interfaces.IScanFilter)">
+            <summary>
+            This scan event helper factory creates a ScanEventHelper from an IScanFilter interface.
+            This constructor permits an application to test if a scan filter contains another filter.
+            The contructed object from this method is considered a "scan" and another scan filter can be tested against it,
+            using "TestScan". Example: Crreate this from "+ d". You can test that "+" or "d" filters match this
+            (return true from TestScanAgainstFilter).
+            </summary>
+            <param name="scanFilter">
+            The scan filter.
+            </param>
             <returns>
             The <see cref="T:ThermoFisher.CommonCore.Data.Business.ScanEventHelper"/>.
             </returns>
@@ -12658,13 +13521,15 @@
             The <see cref="T:System.Boolean"/>.
             </returns>
         </member>
-        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanEventHelper.CompensationVoltageValue(System.Int32)">
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ScanEventHelper.CompensationVoltageValue(System.Int32,System.Int32)">
             <summary>
             Get the compensation voltage value.
             </summary>
             <param name="index">
             The index.
             </param>
+            <param name="sourceFragmentations">The number of source fragmentation values,
+            (which are before CV values in the table)</param>
             <returns>
             The <see cref="T:System.Double"/>.
             </returns>
@@ -13966,6 +14831,19 @@
             Class to create accessors for raw a raw file, for multiple threads.
             </summary>
         </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.#ctor(ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtended)">
+            <summary>
+            Initializes a new instance of the <see cref="T:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess"/> class.
+            To use this: Construct an interface "IRawDataPlus".
+            Construct this object from the IRawDataPlus.
+            Call <see cref="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.CreateThreadAccessor"/> to make a separate object for each thread to use.
+            After all threads are completed,
+            and the raw file is no longer needed, dispose of the original IRawDataPlus. 
+            </summary>
+            <param name="file">
+            The file.
+            </param>
+        </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.#ctor(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus)">
             <summary>
             Initializes a new instance of the <see cref="T:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess"/> class.
@@ -14107,6 +14985,17 @@
             <summary>
             Gets the name of the computer, used to create this file.
             </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.RawFileThreadAccessor.GetAdditionalScanData(System.Int32)">
+            <summary>
+            Gets additional (binary) data from a scan.
+            The format of this data is custom (per instrument) and can be decoded into
+            objects by a specific decoder for the detector type.
+            </summary>
+            <param name="scan">Scan whose data is needed</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.RawFileThreadAccessor.GetExtendedScanData(System.Int32)">
+            <inheritdoc/>
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.RawFileThreadAccessor.GetScanStatsForScanNumber(System.Int32)">
             <summary>
@@ -15044,6 +15933,15 @@
         </member>
         <member name="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.RawFileThreadAccessor.GetCompoundNamesForScanRange(System.Int32,System.Int32)">
             <inheritdoc />
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Business.ThreadSafeRawFileAccess.RawFileThreadAccessor.GetSortedStatusLogEntry(System.Int32)">
+            <summary>
+            Gets the (raw) status log data at a given index in the sorted log.
+            The form of the log removes duplicate and out of order times
+            Designed for efficiency, this method does not convert logs to display string format.
+            </summary>
+            <param name="index">Index (from 0 to "GetStatusLogEntriesCount() -1")</param>
+            <returns>Log data at the given index</returns>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Business.TokenAndType">
             <summary>
@@ -16595,7 +17493,7 @@
             The average of the listed scans. Use Scan.ScansCombined to find how many scans were averaged.
             </returns>
         </member>
-        <member name="M:ThermoFisher.CommonCore.Data.Extensions.AverageAndSubtractScans(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Business.Range,System.Collections.Generic.IList{ThermoFisher.CommonCore.Data.Business.Range},System.String,ThermoFisher.CommonCore.Data.Business.MassOptions,ThermoFisher.CommonCore.Data.Interfaces.FtAverageOptions)">
+        <member name="M:ThermoFisher.CommonCore.Data.Extensions.AverageAndSubtractScans(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess,System.Collections.Generic.IList{ThermoFisher.CommonCore.Data.Business.Range},System.String,ThermoFisher.CommonCore.Data.Business.MassOptions,ThermoFisher.CommonCore.Data.Interfaces.FtAverageOptions)">
             <summary>
             Calculates the averaged and subtracted spectra based upon the lists supplied.
             If the first scan in the list contains "FT Profile",
@@ -16628,7 +17526,7 @@
             The average of the listed scans. Use Scan.ScansCombined to find how many scans were averaged.
             </returns>
         </member>
-        <member name="M:ThermoFisher.CommonCore.Data.Extensions.AverageAndSubtractScans(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Business.Range,System.Collections.Generic.IList{ThermoFisher.CommonCore.Data.Business.Range},ThermoFisher.CommonCore.Data.Interfaces.IScanFilter,ThermoFisher.CommonCore.Data.Business.MassOptions,ThermoFisher.CommonCore.Data.Interfaces.FtAverageOptions)">
+        <member name="M:ThermoFisher.CommonCore.Data.Extensions.AverageAndSubtractScans(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess,System.Collections.Generic.IList{ThermoFisher.CommonCore.Data.Business.Range},ThermoFisher.CommonCore.Data.Interfaces.IScanFilter,ThermoFisher.CommonCore.Data.Business.MassOptions,ThermoFisher.CommonCore.Data.Interfaces.FtAverageOptions)">
             <summary>
             Calculates the averaged and subtracted spectra based upon the lists supplied.
             If the first scan in the list contains "FT Profile",
@@ -16661,7 +17559,7 @@
             The average of the listed scans. Use Scan.ScansCombined to find how many scans were averaged.
             </returns>
         </member>
-        <member name="M:ThermoFisher.CommonCore.Data.Extensions.AverageAndSubtractScansForCompound(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Business.Range,System.Collections.Generic.IList{ThermoFisher.CommonCore.Data.Business.Range},System.String,ThermoFisher.CommonCore.Data.Business.MassOptions,ThermoFisher.CommonCore.Data.Interfaces.FtAverageOptions)">
+        <member name="M:ThermoFisher.CommonCore.Data.Extensions.AverageAndSubtractScansForCompound(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess,System.Collections.Generic.IList{ThermoFisher.CommonCore.Data.Business.Range},System.String,ThermoFisher.CommonCore.Data.Business.MassOptions,ThermoFisher.CommonCore.Data.Interfaces.FtAverageOptions)">
             <summary>
             Calculates the averaged and subtracted spectra based upon the lists supplied,
             which include the named compound.
@@ -16695,7 +17593,7 @@
             The average of the listed scans. Use Scan.ScansCombined to find how many scans were averaged.
             </returns>
         </member>
-        <member name="M:ThermoFisher.CommonCore.Data.Extensions.GetCompoundScanListByTimeRange(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,System.String,ThermoFisher.CommonCore.Data.Business.Range)">
+        <member name="M:ThermoFisher.CommonCore.Data.Extensions.GetCompoundScanListByTimeRange(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,System.String,ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess)">
             <summary>
             Get the list of scans which conatin a given copound, in the range
             "nearest scan time to range.Low" to "nearest scan time to range.High"
@@ -16775,7 +17673,7 @@
             <param name="endTime">The end time.</param>
             <returns>List of filtered scan numbers</returns>
         </member>
-        <member name="M:ThermoFisher.CommonCore.Data.Extensions.ScanRangeFromTimeRange(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Business.Range)">
+        <member name="M:ThermoFisher.CommonCore.Data.Extensions.ScanRangeFromTimeRange(ThermoFisher.CommonCore.Data.Interfaces.IRawDataPlus,ThermoFisher.CommonCore.Data.Interfaces.IRangeAccess)">
             <summary>
             Convert a time range to a the nearest scan range
             </summary>
@@ -20105,6 +21003,75 @@
             </summary>
             <returns>True if this is valid data</returns>
         </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter">
+            <summary>
+            This inteface extends the functions of "auto filter".
+            methods are  called to construct a list of filters based on internal data
+            of the class which implements this. Inital data is, for example,
+            the results of "auto filter" on a raw file.
+            The list can be searched for "items matching a given filter rule".
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.FilterList">
+            <summary>
+            Gets the results of the enhanced auto filter.
+            these results are initailly empty, and et extended
+            as "Add" methods are called.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.AddActivationTypeFilters">
+            <summary>
+            Searches for the activation types used.
+            Adds "Activation type" to the list, for MS/MS data (MS2 or above).
+            This can find CID, HCD, ETD, UVPD
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.AddEmptyFilter">
+            <summary>
+            Adds the "empty filter" to the list.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.AddMsOrderFilters(System.Boolean)">
+            <summary>
+            Adds "ms order filters" to the list
+            this includes ms, ms2 etc up to ms5
+            if any ms/ms is found msn is also added.
+            </summary>
+            <param name="addMsn">When true (default): if any ms/ms is found msn is also added.</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.AddUniqueFilters(System.String)">
+            <summary>
+            Add all unique filter groups (auto filter).
+            </summary>
+            <param name="mustContain">If this is not empty: The filters must all contan this sub-filter.
+            For example "d" for "only return data dependent"</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.MergeCvValues">
+            <summary>
+            Merge filters which differ only by CV.
+            Because there is no speciic CV value, the merged filters will not show
+            the code CV. 
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.IncludeCompoundNames">
+            <summary>
+            Gets or sets a value indicating whether compound names shoud be included.
+            This only has an effect if the "Name" property is set for at least one filter.
+            Results which have names are shown in sorted (alpha) order.
+            Any other filters, which do not have a name, are then added after the 
+            named items, in the original "auto filter" order.
+            If a name appaers for more than one filter, then an entry is created
+            which only contains a compound name, such that a chromatogram
+            can be created based on all data identified for that compound.
+            Note that this "name only" list is excluded when a "unique filter list" is
+            requested with a specific subset filter.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IEnhancedAutoFilter.CompoundNameSeparator">
+            <summary>
+            Gets or sets a separator which appears between a compound name and a filter.
+            </summary>
+        </member>
         <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IErrorLogEntry">
             <summary>
             The ErrorLogEntry interface.
@@ -20118,6 +21085,61 @@
         <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IErrorLogEntry.Message">
             <summary>
             Gets the error message.
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IExtendedScanData">
+            <summary>
+            Additional data about a scan.
+            This data may include Transients (raw detector data) and other instrument specific data blocks.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IExtendedScanData.Header">
+            <summary>
+            Gets the header for the extended data. The format of this is instrument specific.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IExtendedScanData.Transients">
+            <summary>
+            Gets the transient data for this scan, in an instrument specific (unknown) format. This may be very large.
+            Fo performance reasons: Applications should not attempt to access this, unless needed by an algorithm.
+            Note that this is not commonly included in raw files.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IExtendedScanData.DataSegments">
+            <summary>
+            Gets additional data blocks for a scan.
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IDataSegment">
+            <summary>
+            Defines a block of instrument specific data
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IDataSegment.Header">
+            <summary>
+            Get the block header, which needs to be decoded as defined by the instrument.
+            This will identify the meaning of the data.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IDataSegment.Bytes">
+            <summary>
+            Gets the data within this block
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.ITransientSegment">
+            <summary>
+            Defines a transient segment for a scan
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.ITransientSegment.Header">
+            <summary>
+            Gets the transient segment header, which need to be used by instrument specific code.
+            This header is defined as "32 1 bit flags" and not a countable (integer) value.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.ITransientSegment.Data">
+            <summary>
+            Gets the transient data, as defined for the instrument.
             </summary>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IFileError">
@@ -20439,6 +21461,38 @@
             Gets a value indicating whether there are possible next scans after the current scan.
             This does not guarantee that another matching scan exists. It simply tests that the current iterator position
             is not the last scan in the file.
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IFilterWithString">
+            <summary>
+            Defines a combination of plain text and interface defintions of filters.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IFilterWithString.Filter">
+            <summary>
+            Gets a Standard (parsable) text form of the filter. This does not include any compound names.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IFilterWithString.ScanFilter">
+            <summary>
+            Gets the scan filer (as accessable fields)
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IFilterWithString.NameOnly">
+            <summary>
+            Gets a value indicating whether this object only has a compound name,
+            and does not have any filter text or filter interface defined.
+            When this is set: Only the Name property should be used.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IFilterWithString.Name">
+            <summary>
+            Gets the compound name
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IFilterWithString.FilterWithName">
+            <summary>
+            Gets a string which combines the compound name and the filter text.
             </summary>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IHeaderItem">
@@ -24224,7 +25278,7 @@
             Gets the (raw) status log data at a given index in the log.
             Deigned for efficiency, this method does not convert logs to display string format.
             </summary>
-            <param name="index">Index (from 0 to "GetStatusLogEntriesCount() -1")</param>
+            <param name="index">Index (from 0 to "RunHeaderEx.StatusLogCount -1 ))</param>
             <returns>Log data at the given index</returns>
             <exception cref="T:ThermoFisher.CommonCore.Data.Business.NoSelectedDeviceException">Thrown if no device has been selected</exception>
         </member>
@@ -24312,6 +25366,52 @@
             Defines managed access to raw data, for multiple threads.
             An object implementing this interface "owns" the underlying raw data, and will close any associated file
             when disposed. All created thread accessors must no longer be in used, when this object is disposed.
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtensions">
+            <summary>
+            Defines additional raw data access methods, including diagnostic data in FT format scans.
+            </summary>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtensions.GetAdditionalScanData(System.Int32)">
+            <summary>
+            Gets additional (binary) data from a scan.
+            The format of this data is custom (per instrument) and can be decoded into
+            objects by a specific decoder for the detector type.
+            <seealso cref="M:ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtensions.GetExtendedScanData(System.Int32)"/>
+            </summary>
+            <param name="scan">Scan whose data is needed</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtensions.GetExtendedScanData(System.Int32)">
+            <summary>
+            Gets additional data from a scan, formatted as a series of data blocks.
+            The format of this data is custom (per instrument) and can be decoded into
+            objects by a specific decoder for the detector type.
+            If the data is not in a detectable "data block" format, then this data is returned as "Not valid".
+            Data of a format not known to this interface may be retrieved by using <see cref="M:ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtensions.GetExtendedScanData(System.Int32)"/>
+            </summary>
+            <param name="scan">Scan whose data is needed</param>
+        </member>
+        <member name="M:ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtensions.GetSortedStatusLogEntry(System.Int32)">
+            <summary>
+            Gets the (raw) status log data at a given index in the sorted log.
+            This form of the log removes duplicate and out of order times
+            Designed for efficiency, this method does not convert logs to display string format.
+            </summary>
+            <param name="index">Index  (from 0 to "GetStatusLogEntriesCount() -1")</param>
+            <returns>Log data at the given index</returns>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IRawDataExtended">
+            <summary>
+            The IRawDataExtended interface. Provides access to raw data.
+            This extends IRawDataPlus, adding "IRawDataExtensions".
+            This is a disposable interface, as an implementation may hold an active file,
+            database or other protocol connection.
+            Many interfaces returned from implementations of this interface may rely
+            on an active file, database or protocol connection.
+            Do not dispose of this object until interfaces (especially enumerators)
+            returned from it are no longer in use.
+            All value type returns from this interface are safe against the underlying file being closed.
             </summary>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IRawFileWriter">
@@ -24962,6 +26062,16 @@
         <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IScanAccess.IsUserTolerance">
             <summary>
             Gets a value indicating whether the User Tolerance value is being used.
+            </summary>
+        </member>
+        <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IExtendedScanAccess">
+            <summary>
+            Access to extdnded scans, which may conain charge envelope data.
+            </summary>
+        </member>
+        <member name="P:ThermoFisher.CommonCore.Data.Interfaces.IExtendedScanAccess.ExtendedCentroidsAccess">
+            <summary>
+            Gets centroids with additional charge envelope information (when available)
             </summary>
         </member>
         <member name="T:ThermoFisher.CommonCore.Data.Interfaces.IScanAdd">

@@ -232,6 +232,11 @@
             Gets a value indicating whether the property can be written to.
             </summary>
         </member>
+        <member name="P:Namotion.Reflection.ContextualPropertyInfo.CanRead">
+            <summary>
+            Gets a value indicating whether the property can be read from.
+            </summary>
+        </member>
         <member name="M:Namotion.Reflection.ContextualPropertyInfo.GetValue(System.Object)">
             <summary>
             Returns the value of a field supported by a given object.
@@ -286,6 +291,16 @@
             Gets the type's element type (i.e. array type).
             </summary>
         </member>
+        <member name="P:Namotion.Reflection.ContextualType.EnumerableItemType">
+            <summary>
+            Gets the type's element type (i.e. array type).
+            </summary>
+        </member>
+        <member name="P:Namotion.Reflection.ContextualType.BaseType">
+            <summary>
+            Gets the type's base type
+            </summary>
+        </member>
         <member name="P:Namotion.Reflection.ContextualType.Nullability">
             <summary>
             Gets the nullability information of this type in the given context by unwrapping Nullable{T} into account.
@@ -319,6 +334,20 @@
             <typeparam name="T">The attribute type.</typeparam>
             <returns>The attributes.</returns>
         </member>
+        <member name="M:Namotion.Reflection.ContextualType.GetProperty(System.String)">
+            <summary>
+            Gets a contextual property of the given contextual type (preserving the context).
+            </summary>
+            <param name="propertyName">The property name.</param>
+            <returns>The contextual property or null.</returns>
+        </member>
+        <member name="M:Namotion.Reflection.ContextualType.GetField(System.String)">
+            <summary>
+            Gets a contextual field of the given contextual type (preserving the context).
+            </summary>
+            <param name="fieldName">The field name.</param>
+            <returns>The contextual field or null.</returns>
+        </member>
         <member name="M:Namotion.Reflection.ContextualType.ToString">
             <inheritdocs />
         </member>
@@ -340,9 +369,9 @@
             <param name="type">The type.</param>
             <returns></returns>
         </member>
-        <member name="M:Namotion.Reflection.ContextualTypeExtensions.GetContextualParameters(System.Reflection.MethodInfo)">
+        <member name="M:Namotion.Reflection.ContextualTypeExtensions.GetContextualParameters(System.Reflection.MethodBase)">
             <summary>
-            Gets an array of <see cref="T:Namotion.Reflection.ContextualParameterInfo"/> for the given <see cref="T:System.Reflection.MethodInfo"/> instance.
+            Gets an array of <see cref="T:Namotion.Reflection.ContextualParameterInfo"/> for the given <see cref="T:System.Reflection.MethodBase"/> instance.
             </summary>
             <param name="method">The method.</param>
             <returns>The runtime properties.</returns>

@@ -7,6 +7,15 @@
         <member name="T:NJsonSchema.Annotations.CanBeNullAttribute">
             <summary>Indicates that the value of the marked element is nullable.</summary>
         </member>
+        <member name="T:NJsonSchema.Annotations.IJsonSchemaExtensionDataAttribute">
+            <summary>Interface to add an extension data property to a class or property, implementation needs to inherit from System.Attribute.</summary>
+        </member>
+        <member name="P:NJsonSchema.Annotations.IJsonSchemaExtensionDataAttribute.Key">
+            <summary>Gets the property name.</summary>
+        </member>
+        <member name="P:NJsonSchema.Annotations.IJsonSchemaExtensionDataAttribute.Value">
+            <summary>Gets the value.</summary>
+        </member>
         <member name="T:NJsonSchema.Annotations.ItemsCanBeNullAttribute">
             <summary>Annotation to specify that array items or dictionary values are nullable.</summary>
         </member>
@@ -280,6 +289,20 @@
             <param name="serializer">The calling serializer.</param>
             <returns>The object value.</returns>
         </member>
+        <member name="T:NJsonSchema.Converters.JsonInheritanceAttribute">
+            <summary>Defines a child class in the inheritance chain.</summary>
+        </member>
+        <member name="M:NJsonSchema.Converters.JsonInheritanceAttribute.#ctor(System.String,System.Type)">
+            <summary>Initializes a new instance of the <see cref="T:NJsonSchema.Converters.JsonInheritanceAttribute"/> class.</summary>
+            <param name="key">The discriminator key.</param>
+            <param name="type">The child class type.</param>
+        </member>
+        <member name="P:NJsonSchema.Converters.JsonInheritanceAttribute.Key">
+            <summary>Gets the discriminator key.</summary>
+        </member>
+        <member name="P:NJsonSchema.Converters.JsonInheritanceAttribute.Type">
+            <summary>Gets the child class type.</summary>
+        </member>
         <member name="T:NJsonSchema.Converters.JsonInheritanceConverter">
             <summary>Defines the class as inheritance base class and adds a discriminator property to the serialized object.</summary>
         </member>
@@ -296,7 +319,8 @@
         <member name="M:NJsonSchema.Converters.JsonInheritanceConverter.#ctor(System.String,System.Boolean)">
             <summary>Initializes a new instance of the <see cref="T:NJsonSchema.Converters.JsonInheritanceConverter"/> class.</summary>
             <param name="discriminator">The discriminator.</param>
-            <param name="readTypeProperty">Read the $type property to determine the type (fallback).</param>
+            <param name="readTypeProperty">Read the $type property to determine the type 
+            (fallback, should not be used as it might lead to security problems).</param>
         </member>
         <member name="M:NJsonSchema.Converters.JsonInheritanceConverter.#ctor(System.Type)">
             <summary>Initializes a new instance of the <see cref="T:NJsonSchema.Converters.JsonInheritanceConverter"/> class which only applies for the given base type.</summary>
@@ -395,6 +419,14 @@
             <param name="schema">The schema.</param>
             <param name="typeNameHint">The type name hint.</param>
             <returns>The type name.</returns>
+        </member>
+        <member name="M:NJsonSchema.DefaultTypeNameGenerator.RemoveIllegalCharacters(System.String)">
+            <summary>
+            Replaces all characters that are not normals letters, numbers or underscore, with an underscore.
+            Will prepend an underscore if the first characters is a number.
+            In case there are this would result in multiple underscores in a row, strips down to one underscore.
+            Will trim any underscores at the end of the type name.
+            </summary>
         </member>
         <member name="T:NJsonSchema.Generation.DefaultReflectionService">
             <summary>The default reflection service implementation.</summary>
@@ -653,6 +685,12 @@
             <param name="schema">The schema.</param>
             <param name="typeDescription">The type description.</param>
         </member>
+        <member name="M:NJsonSchema.Generation.JsonSchemaGenerator.IsPropertyIgnored(Namotion.Reflection.ContextualMemberInfo,System.Type)">
+            <summary>Checks whether a property is ignored.</summary>
+            <param name="property">The property.</param>
+            <param name="parentType">The properties parent type.</param>
+            <returns>The result.</returns>
+        </member>
         <member name="T:NJsonSchema.Generation.JsonSchemaGeneratorSettings">
             <summary>The JSON Schema generator settings.</summary>
         </member>
@@ -694,13 +732,17 @@
             <summary>Will set `additionalProperties` on all added <see cref="T:NJsonSchema.JsonSchema">schema definitions and references</see>(default: false).</summary>
         </member>
         <member name="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.GenerateExamples">
-            <summary>Gets or sets a value indicating whether tho generate the example property of the schemas based on the the &lt;example&gt; xml docs entry as JSON.</summary>
+            <summary>Gets or sets a value indicating whether to generate the example property of the schemas based on the &lt;example&gt; xml docs entry as JSON.</summary>
         </member>
         <member name="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.SchemaType">
             <summary>Gets or sets the schema type to generate (default: JsonSchema).</summary>
         </member>
         <member name="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.SerializerSettings">
-            <summary>Gets or sets the serializer settings.</summary>
+            <summary>Gets or sets the Newtonsoft JSON serializer settings.</summary>
+            <remarks><see cref="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.DefaultPropertyNameHandling"/>, <see cref="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.DefaultEnumHandling"/> and <see cref="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.ContractResolver"/> will be ignored.</remarks>
+        </member>
+        <member name="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.SerializerOptions">
+            <summary>Gets or sets the System.Text.Json serializer options.</summary>
             <remarks><see cref="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.DefaultPropertyNameHandling"/>, <see cref="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.DefaultEnumHandling"/> and <see cref="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.ContractResolver"/> will be ignored.</remarks>
         </member>
         <member name="P:NJsonSchema.Generation.JsonSchemaGeneratorSettings.ExcludedTypeNames">
@@ -867,6 +909,14 @@
         <member name="F:NJsonSchema.Generation.ReferenceTypeNullHandling.NotNull">
             <summary>Reference types cannot be null by default.</summary>
         </member>
+        <member name="T:NJsonSchema.Generation.SampleJsonDataGenerator">
+            <summary>Generates a sample JSON object from a JSON Schema.</summary>
+        </member>
+        <member name="M:NJsonSchema.Generation.SampleJsonDataGenerator.Generate(NJsonSchema.JsonSchema)">
+            <summary>Generates a sample JSON object from a JSON Schema.</summary>
+            <param name="schema">The JSON Schema.</param>
+            <returns>The JSON token.</returns>
+        </member>
         <member name="T:NJsonSchema.Generation.SampleJsonSchemaGenerator">
             <summary>Generates a JSON Schema from sample JSON data.</summary>
         </member>
@@ -900,6 +950,18 @@
         </member>
         <member name="P:NJsonSchema.Generation.SchemaProcessorContext.Settings">
             <summary>Gets the settings.</summary>
+        </member>
+        <member name="T:NJsonSchema.Generation.SystemTextJsonUtilities">
+            <summary>
+            Utility methods for dealing with System.Text.Json.
+            </summary>
+        </member>
+        <member name="M:NJsonSchema.Generation.SystemTextJsonUtilities.ConvertJsonOptionsToNewtonsoftSettings(System.Object)">
+            <summary>
+            Converst System.Text.Json serializer options to Newtonsoft JSON settings.
+            </summary>
+            <param name="serializerOptions">The options.</param>
+            <returns>The settings.</returns>
         </member>
         <member name="T:NJsonSchema.Generation.TypeMappers.ITypeMapper">
             <summary>Maps .NET type to a generated JSON Schema.</summary>
@@ -1015,9 +1077,10 @@
         <member name="P:NJsonSchema.Infrastructure.DynamicApis.SupportsHttpClientApis">
             <summary>Gets a value indicating whether WebClient APIs are available.</summary>
         </member>
-        <member name="M:NJsonSchema.Infrastructure.DynamicApis.HttpGetAsync(System.String)">
+        <member name="M:NJsonSchema.Infrastructure.DynamicApis.HttpGetAsync(System.String,System.Threading.CancellationToken)">
             <summary>Request the given URL via HTTP.</summary>
             <param name="url">The URL.</param>
+            <param name="cancellationToken">The cancellation token.</param>
             <returns>The content.</returns>
             <exception cref="T:System.NotSupportedException">The HttpClient.GetAsync API is not available on this platform.</exception>
         </member>
@@ -1051,13 +1114,13 @@
             <exception cref="T:System.NotSupportedException">The System.IO.File API is not available on this platform.</exception>
         </member>
         <member name="M:NJsonSchema.Infrastructure.DynamicApis.FileReadAllText(System.String)">
-            <summary>Reads all content of a file (UTF8).</summary>
+            <summary>Reads all content of a file (UTF8 with or without BOM).</summary>
             <param name="filePath">The file path.</param>
             <returns>The file content.</returns>
             <exception cref="T:System.NotSupportedException">The System.IO.File API is not available on this platform.</exception>
         </member>
         <member name="M:NJsonSchema.Infrastructure.DynamicApis.FileWriteAllText(System.String,System.String)">
-            <summary>Writes text to a file (UTF8).</summary>
+            <summary>Writes text to a file (UTF8 without BOM).</summary>
             <param name="filePath">The file path.</param>
             <param name="text">The text.</param>
             <returns></returns>
@@ -1116,6 +1179,16 @@
             <param name="documentPath">The document path.</param>
             <param name="referenceResolverFactory">The reference resolver factory.</param>
             <param name="contractResolver">The contract resolver.</param>
+            <returns>The deserialized schema.</returns>
+        </member>
+        <member name="M:NJsonSchema.Infrastructure.JsonSchemaSerialization.FromJsonAsync``1(System.String,NJsonSchema.SchemaType,System.String,System.Func{``0,NJsonSchema.JsonReferenceResolver},Newtonsoft.Json.Serialization.IContractResolver,System.Threading.CancellationToken)">
+            <summary>Deserializes JSON data to a schema with reference handling.</summary>
+            <param name="json">The JSON data.</param>
+            <param name="schemaType">The schema type.</param>
+            <param name="documentPath">The document path.</param>
+            <param name="referenceResolverFactory">The reference resolver factory.</param>
+            <param name="contractResolver">The contract resolver.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The deserialized schema.</returns>
         </member>
         <member name="M:NJsonSchema.Infrastructure.JsonSchemaSerialization.FromJson``1(System.String,Newtonsoft.Json.Serialization.IContractResolver)">
@@ -1313,9 +1386,6 @@
         <member name="T:NJsonSchema.JsonPathUtilities">
             <summary>Utilities to work with JSON paths.</summary>
         </member>
-        <member name="F:NJsonSchema.JsonPathUtilities.ReferenceReplaceString">
-            <summary>Gets the $ref replacement string.</summary>
-        </member>
         <member name="M:NJsonSchema.JsonPathUtilities.GetJsonPath(System.Object,System.Object)">
             <summary>Gets the JSON path of the given object.</summary>
             <param name="rootObject">The root object.</param>
@@ -1359,38 +1429,48 @@
             <param name="documentPath">The document path.</param>
             <param name="schema">The referenced schema.</param>
         </member>
-        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveReferenceAsync(System.Object,System.String)">
+        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveReferenceAsync(System.Object,System.String,System.Type,Newtonsoft.Json.Serialization.IContractResolver,System.Threading.CancellationToken)">
             <summary>Gets the object from the given JSON path.</summary>
             <param name="rootObject">The root object.</param>
             <param name="jsonPath">The JSON path.</param>
+            <param name="targetType">The target type to resolve.</param>
+            <param name="contractResolver">The contract resolver.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema or <c>null</c> when the object could not be found.</returns>
             <exception cref="T:System.InvalidOperationException">Could not resolve the JSON path.</exception>
             <exception cref="T:System.NotSupportedException">Could not resolve the JSON path.</exception>
         </member>
-        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveReferenceWithoutAppendAsync(System.Object,System.String)">
+        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveReferenceWithoutAppendAsync(System.Object,System.String,System.Type,Newtonsoft.Json.Serialization.IContractResolver,System.Threading.CancellationToken)">
             <summary>Gets the object from the given JSON path.</summary>
             <param name="rootObject">The root object.</param>
             <param name="jsonPath">The JSON path.</param>
+            <param name="targetType">The target type to resolve.</param>
+            <param name="contractResolver">The contract resolver.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema or <c>null</c> when the object could not be found.</returns>
             <exception cref="T:System.InvalidOperationException">Could not resolve the JSON path.</exception>
             <exception cref="T:System.NotSupportedException">Could not resolve the JSON path.</exception>
         </member>
-        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveDocumentReference(System.Object,System.String)">
+        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveDocumentReference(System.Object,System.String,System.Type,Newtonsoft.Json.Serialization.IContractResolver)">
             <summary>Resolves a document reference.</summary>
             <param name="rootObject">The root object.</param>
             <param name="jsonPath">The JSON path to resolve.</param>
+            <param name="targetType">The target type to resolve.</param>
+            <param name="contractResolver">The contract resolver.</param>
             <returns>The resolved JSON Schema.</returns>
             <exception cref="T:System.InvalidOperationException">Could not resolve the JSON path.</exception>
         </member>
-        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveFileReferenceAsync(System.String)">
+        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveFileReferenceAsync(System.String,System.Threading.CancellationToken)">
             <summary>Resolves a file reference.</summary>
             <param name="filePath">The file path.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The resolved JSON Schema.</returns>
             <exception cref="T:System.NotSupportedException">The System.IO.File API is not available on this platform.</exception>
         </member>
-        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveUrlReferenceAsync(System.String)">
+        <member name="M:NJsonSchema.JsonReferenceResolver.ResolveUrlReferenceAsync(System.String,System.Threading.CancellationToken)">
             <summary>Resolves an URL reference.</summary>
             <param name="url">The URL.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <exception cref="T:System.NotSupportedException">The HttpClient.GetAsync API is not available on this platform.</exception>
         </member>
         <member name="T:NJsonSchema.JsonSchema">
@@ -1436,47 +1516,54 @@
             <summary>Creates a <see cref="T:NJsonSchema.JsonSchema" /> from sample JSON data.</summary>
             <returns>The JSON Schema.</returns>
         </member>
-        <member name="M:NJsonSchema.JsonSchema.FromFileAsync(System.String)">
+        <member name="M:NJsonSchema.JsonSchema.FromFileAsync(System.String,System.Threading.CancellationToken)">
             <summary>Loads a JSON Schema from a given file path (only available in .NET 4.x).</summary>
             <param name="filePath">The file path.</param>
+            <param name="cancellationToken">Cancellation token instance</param>
             <returns>The JSON Schema.</returns>
         </member>
-        <member name="M:NJsonSchema.JsonSchema.FromFileAsync(System.String,System.Func{NJsonSchema.JsonSchema,NJsonSchema.JsonReferenceResolver})">
+        <member name="M:NJsonSchema.JsonSchema.FromFileAsync(System.String,System.Func{NJsonSchema.JsonSchema,NJsonSchema.JsonReferenceResolver},System.Threading.CancellationToken)">
             <summary>Loads a JSON Schema from a given file path (only available in .NET 4.x).</summary>
             <param name="filePath">The file path.</param>
             <param name="referenceResolverFactory">The JSON reference resolver factory.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema.</returns>
             <exception cref="T:System.NotSupportedException">The System.IO.File API is not available on this platform.</exception>
         </member>
-        <member name="M:NJsonSchema.JsonSchema.FromUrlAsync(System.String)">
+        <member name="M:NJsonSchema.JsonSchema.FromUrlAsync(System.String,System.Threading.CancellationToken)">
             <summary>Loads a JSON Schema from a given URL (only available in .NET 4.x).</summary>
             <param name="url">The URL to the document.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema.</returns>
             <exception cref="T:System.NotSupportedException">The HttpClient.GetAsync API is not available on this platform.</exception>
         </member>
-        <member name="M:NJsonSchema.JsonSchema.FromUrlAsync(System.String,System.Func{NJsonSchema.JsonSchema,NJsonSchema.JsonReferenceResolver})">
+        <member name="M:NJsonSchema.JsonSchema.FromUrlAsync(System.String,System.Func{NJsonSchema.JsonSchema,NJsonSchema.JsonReferenceResolver},System.Threading.CancellationToken)">
             <summary>Loads a JSON Schema from a given URL (only available in .NET 4.x).</summary>
             <param name="url">The URL to the document.</param>
             <param name="referenceResolverFactory">The JSON reference resolver factory.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema.</returns>
             <exception cref="T:System.NotSupportedException">The HttpClient.GetAsync API is not available on this platform.</exception>
         </member>
-        <member name="M:NJsonSchema.JsonSchema.FromJsonAsync(System.String)">
+        <member name="M:NJsonSchema.JsonSchema.FromJsonAsync(System.String,System.Threading.CancellationToken)">
             <summary>Deserializes a JSON string to a <see cref="T:NJsonSchema.JsonSchema"/>. </summary>
             <param name="data">The JSON string. </param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema.</returns>
         </member>
-        <member name="M:NJsonSchema.JsonSchema.FromJsonAsync(System.String,System.String)">
+        <member name="M:NJsonSchema.JsonSchema.FromJsonAsync(System.String,System.String,System.Threading.CancellationToken)">
             <summary>Deserializes a JSON string to a <see cref="T:NJsonSchema.JsonSchema"/>. </summary>
             <param name="data">The JSON string. </param>
             <param name="documentPath">The document path (URL or file path) for resolving relative document references.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema.</returns>
         </member>
-        <member name="M:NJsonSchema.JsonSchema.FromJsonAsync(System.String,System.String,System.Func{NJsonSchema.JsonSchema,NJsonSchema.JsonReferenceResolver})">
+        <member name="M:NJsonSchema.JsonSchema.FromJsonAsync(System.String,System.String,System.Func{NJsonSchema.JsonSchema,NJsonSchema.JsonReferenceResolver},System.Threading.CancellationToken)">
             <summary>Deserializes a JSON string to a <see cref="T:NJsonSchema.JsonSchema" />.</summary>
             <param name="data">The JSON string.</param>
             <param name="documentPath">The document path (URL or file path) for resolving relative document references.</param>
             <param name="referenceResolverFactory">The JSON reference resolver factory.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The JSON Schema.</returns>
         </member>
         <member name="P:NJsonSchema.JsonSchema.IsBinary">
@@ -1584,7 +1671,10 @@
             <summary>Gets or sets the minimal number of allowed properties in an object. </summary>
         </member>
         <member name="P:NJsonSchema.JsonSchema.IsDeprecated">
-            <summary>Gets or sets a value indicating whether the schema is deprecated (Swagger and Open API only).</summary>
+            <summary>Gets or sets a value indicating whether the schema is deprecated (native in Open API 'deprecated', custom in Swagger/JSON Schema 'x-deprecated').</summary>
+        </member>
+        <member name="P:NJsonSchema.JsonSchema.DeprecatedMessage">
+            <summary>Gets or sets a message indicating why the schema is deprecated (custom extension, sets 'x-deprecatedMessage').</summary>
         </member>
         <member name="P:NJsonSchema.JsonSchema.IsAbstract">
             <summary>Gets or sets a value indicating whether the type is abstract, i.e. cannot be instantiated directly (x-abstract).</summary>
@@ -1609,7 +1699,7 @@
             <remarks>This collection can also be changed through the <see cref="P:NJsonSchema.JsonSchemaProperty.IsRequired"/> property. </remarks>>
         </member>
         <member name="P:NJsonSchema.JsonSchema.DictionaryKey">
-            <summary>Gets or sets the dictionary key schema (x-key, only enum schemas are allowed).</summary>
+            <summary>Gets or sets the dictionary key schema (x-dictionaryKey, only enum schemas are allowed).</summary>
         </member>
         <member name="P:NJsonSchema.JsonSchema.Properties">
             <summary>Gets the properties of the type. </summary>
@@ -1685,6 +1775,10 @@
             <summary>Serializes the <see cref="T:NJsonSchema.JsonSchema" /> to a JSON string.</summary>
             <param name="formatting">The formatting.</param>
             <returns>The JSON string.</returns>
+        </member>
+        <member name="M:NJsonSchema.JsonSchema.ToSampleJson">
+            <summary>Creates a <see cref="T:NJsonSchema.JsonSchema" /> from sample JSON data.</summary>
+            <returns>The JSON Schema.</returns>
         </member>
         <member name="M:NJsonSchema.JsonSchema.InheritsSchema(NJsonSchema.JsonSchema)">
             <summary>Gets a value indicating whether this schema inherits from the given parent schema.</summary>
@@ -1833,22 +1927,13 @@
             <param name="referenceResolver">The JSON document resolver.</param>
             <param name="rootObject">The root object.</param>
         </member>
-        <member name="M:NJsonSchema.JsonSchemaReferenceUtilities.UpdateSchemaReferencesAsync(System.Object,NJsonSchema.JsonReferenceResolver,Newtonsoft.Json.Serialization.IContractResolver)">
+        <member name="M:NJsonSchema.JsonSchemaReferenceUtilities.UpdateSchemaReferencesAsync(System.Object,NJsonSchema.JsonReferenceResolver,Newtonsoft.Json.Serialization.IContractResolver,System.Threading.CancellationToken)">
             <summary>Updates all <see cref="P:NJsonSchema.References.IJsonReferenceBase.Reference"/> properties from the
             available <see cref="P:NJsonSchema.References.IJsonReferenceBase.Reference"/> properties.</summary>
             <param name="referenceResolver">The JSON document resolver.</param>
             <param name="rootObject">The root object.</param>
             <param name="contractResolver">The contract resolver.</param>
-        </member>
-        <member name="M:NJsonSchema.JsonSchemaReferenceUtilities.ConvertJsonReferences(System.String)">
-            <summary>Converts JSON references ($ref) to property references.</summary>
-            <param name="data">The data.</param>
-            <returns>The data.</returns>
-        </member>
-        <member name="M:NJsonSchema.JsonSchemaReferenceUtilities.ConvertPropertyReferences(System.String)">
-            <summary>Converts property references to JSON references ($ref).</summary>
-            <param name="data">The data.</param>
-            <returns></returns>
+            <param name="cancellationToken">The cancellation token</param>
         </member>
         <member name="M:NJsonSchema.JsonSchemaReferenceUtilities.UpdateSchemaReferencePaths(System.Object)">
             <summary>Updates the <see cref="P:NJsonSchema.References.IJsonReferenceBase.Reference" /> properties
@@ -2176,6 +2261,21 @@
             <param name="tokenType">Type of token holding the value.</param>
             <returns>True if value is correct for given format, False - if not.</returns>
         </member>
+        <member name="T:NJsonSchema.Validation.FormatValidators.UuidFormatValidator">
+            <summary>Validator for "Uuid" format.</summary>
+        </member>
+        <member name="P:NJsonSchema.Validation.FormatValidators.UuidFormatValidator.Format">
+            <summary>Gets the format attribute's value.</summary>
+        </member>
+        <member name="P:NJsonSchema.Validation.FormatValidators.UuidFormatValidator.ValidationErrorKind">
+            <summary>Gets the kind of error produced by validator.</summary>
+        </member>
+        <member name="M:NJsonSchema.Validation.FormatValidators.UuidFormatValidator.IsValid(System.String,Newtonsoft.Json.Linq.JTokenType)">
+            <summary>Validates format of given value.</summary>
+            <param name="value">String value.</param>
+            <param name="tokenType">Type of token holding the value.</param>
+            <returns>True if value is correct for given format, False - if not.</returns>
+        </member>
         <member name="T:NJsonSchema.Validation.JsonSchemaValidator">
             <summary>Class to validate a JSON schema against a given <see cref="T:Newtonsoft.Json.Linq.JToken"/>. </summary>
         </member>
@@ -2397,6 +2497,9 @@
         <member name="F:NJsonSchema.Validation.ValidationErrorKind.NoTypeValidates">
             <summary>No type of the types does validate (check error details in <see cref="T:NJsonSchema.Validation.MultiTypeValidationError"/>). </summary>
         </member>
+        <member name="F:NJsonSchema.Validation.ValidationErrorKind.UuidExpected">
+            <summary>A valid UUID is expected. </summary>
+        </member>
         <member name="T:NJsonSchema.Visitors.AsyncJsonReferenceVisitorBase">
             <summary>Visitor to transform an object with <see cref="T:NJsonSchema.JsonSchema"/> objects.</summary>
         </member>
@@ -2412,37 +2515,47 @@
             <param name="obj">The object to process.</param>
             <returns>The task.</returns>
         </member>
-        <member name="M:NJsonSchema.Visitors.AsyncJsonReferenceVisitorBase.VisitJsonReferenceAsync(NJsonSchema.References.IJsonReference,System.String,System.String)">
+        <member name="M:NJsonSchema.Visitors.AsyncJsonReferenceVisitorBase.VisitAsync(System.Object,System.Threading.CancellationToken)">
+            <summary>Processes an object.</summary>
+            <param name="obj">The object to process.</param>
+            <param name="cancellationToken">Cancellation token instance</param>
+            <returns>The task.</returns>
+        </member>
+        <member name="M:NJsonSchema.Visitors.AsyncJsonReferenceVisitorBase.VisitJsonReferenceAsync(NJsonSchema.References.IJsonReference,System.String,System.String,System.Threading.CancellationToken)">
             <summary>Called when a <see cref="T:NJsonSchema.References.IJsonReference"/> is visited.</summary>
             <param name="reference">The visited schema.</param>
             <param name="path">The path.</param>
             <param name="typeNameHint">The type name hint.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The task.</returns>
         </member>
-        <member name="M:NJsonSchema.Visitors.AsyncJsonReferenceVisitorBase.VisitAsync(System.Object,System.String,System.String,System.Collections.Generic.ISet{System.Object},System.Action{System.Object})">
+        <member name="M:NJsonSchema.Visitors.AsyncJsonReferenceVisitorBase.VisitAsync(System.Object,System.String,System.String,System.Collections.Generic.ISet{System.Object},System.Action{System.Object},System.Threading.CancellationToken)">
             <summary>Processes an object.</summary>
             <param name="obj">The object to process.</param>
             <param name="path">The path</param>
             <param name="typeNameHint">The type name hint.</param>
             <param name="checkedObjects">The checked objects.</param>
             <param name="replacer">The replacer.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The task.</returns>
         </member>
         <member name="T:NJsonSchema.Visitors.AsyncJsonSchemaVisitorBase">
             <summary>Visitor to transform an object with <see cref="T:NJsonSchema.JsonSchema"/> objects.</summary>
         </member>
-        <member name="M:NJsonSchema.Visitors.AsyncJsonSchemaVisitorBase.VisitSchemaAsync(NJsonSchema.JsonSchema,System.String,System.String)">
+        <member name="M:NJsonSchema.Visitors.AsyncJsonSchemaVisitorBase.VisitSchemaAsync(NJsonSchema.JsonSchema,System.String,System.String,System.Threading.CancellationToken)">
             <summary>Called when a <see cref="T:NJsonSchema.JsonSchema"/> is visited.</summary>
             <param name="schema">The visited schema.</param>
             <param name="path">The path.</param>
             <param name="typeNameHint">The type name hint.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The task.</returns>
         </member>
-        <member name="M:NJsonSchema.Visitors.AsyncJsonSchemaVisitorBase.VisitJsonReferenceAsync(NJsonSchema.References.IJsonReference,System.String,System.String)">
+        <member name="M:NJsonSchema.Visitors.AsyncJsonSchemaVisitorBase.VisitJsonReferenceAsync(NJsonSchema.References.IJsonReference,System.String,System.String,System.Threading.CancellationToken)">
             <summary>Called when a <see cref="T:NJsonSchema.References.IJsonReference"/> is visited.</summary>
             <param name="reference">The visited schema.</param>
             <param name="path">The path.</param>
             <param name="typeNameHint">The type name hint.</param>
+            <param name="cancellationToken">The cancellation token</param>
             <returns>The task.</returns>
         </member>
         <member name="T:NJsonSchema.Visitors.JsonReferenceVisitorBase">
