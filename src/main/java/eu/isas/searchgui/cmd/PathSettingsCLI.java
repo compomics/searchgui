@@ -67,10 +67,13 @@ public class PathSettingsCLI {
             waitingHandler = new WaitingHandlerCLIImpl();
         }
 
-        if (pathSettingsCLIInputBean.getLogFolder() != null) {
-            SearchCLI.redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
-        } else {
-            SearchCLI.redirectErrorStream(new File(getJarFilePath() + File.separator + "resources"));
+        // set the SearchGUI log file
+        if (pathSettingsCLIInputBean.useLogFile()) {
+            if (pathSettingsCLIInputBean.getLogFolder() != null) {
+                SearchCLI.redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
+            } else {
+                SearchCLI.redirectErrorStream(new File(getJarFilePath() + File.separator + "resources"));
+            }
         }
 
         if (pathSettingsCLIInputBean.hasInput()) {
@@ -225,7 +228,7 @@ public class PathSettingsCLI {
                 + ", cliInputBean=" + pathSettingsCLIInputBean
                 + '}';
     }
-    
+
     /**
      * If the arguments contains changes to the paths these arguments will be
      * extracted and the paths updated, before the remaining non-path options
@@ -239,8 +242,8 @@ public class PathSettingsCLI {
 
         ArrayList<String> allPathOptions = PathSettingsCLIParams.getOptionIDs();
 
-        ArrayList<String> pathSettingArgs = new ArrayList<String>();
-        ArrayList<String> nonPathSettingArgs = new ArrayList<String>();
+        ArrayList<String> pathSettingArgs = new ArrayList<>();
+        ArrayList<String> nonPathSettingArgs = new ArrayList<>();
 
         for (int i = 0; i < args.length; i++) {
 
