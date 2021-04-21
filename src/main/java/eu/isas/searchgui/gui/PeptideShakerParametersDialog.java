@@ -73,8 +73,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         String javaVersion = System.getProperty("java.version");
         boolean javaVersionWarning = javaVersion.startsWith("1.5") 
                 || javaVersion.startsWith("1.6")
-                || javaVersion.startsWith("1.7") 
-                || javaVersion.startsWith("1.8");
+                || javaVersion.startsWith("1.7");
         
         if (java64bit && memoryOk && !javaVersionWarning) {
             lowMemoryWarningLabel.setVisible(false);

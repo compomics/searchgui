@@ -17,6 +17,7 @@ import eu.isas.searchgui.utilities.Properties;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -61,6 +62,22 @@ public class SearchCLI implements Callable {
     public SearchCLI(String[] args) {
 
         try {
+            // turn off illegal access log messages
+            try {
+                Class loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
+                Field loggerField = loggerClass.getDeclaredField("logger");
+                Class unsafeClass = Class.forName("sun.misc.Unsafe");
+                Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
+                unsafeField.setAccessible(true);
+                Object unsafe = unsafeField.get(null);
+                Long offset = (Long) unsafeClass.getMethod("staticFieldOffset", Field.class).invoke(unsafe, loggerField);
+                unsafeClass.getMethod("putObjectVolatile", Object.class, long.class, Object.class) //
+                        .invoke(unsafe, loggerClass, offset, null);
+            } catch (Throwable ex) {
+                // ignore, i.e. simply show the warnings...
+                //ex.printStackTrace();
+            }
+
             // check if there are updates to the paths
             String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
 

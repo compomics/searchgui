@@ -74,6 +74,8 @@ public class PathSettingsCLI {
             } else {
                 SearchCLI.redirectErrorStream(new File(getJarFilePath() + File.separator + "resources"));
             }
+        } else {
+            System.setErr(new java.io.PrintStream(System.out));
         }
 
         if (pathSettingsCLIInputBean.hasInput()) {

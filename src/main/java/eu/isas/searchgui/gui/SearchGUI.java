@@ -100,6 +100,7 @@ import eu.isas.searchgui.processbuilders.OmssaclProcessBuilder;
 import eu.isas.searchgui.processbuilders.TandemProcessBuilder;
 import eu.isas.searchgui.processbuilders.TideSearchProcessBuilder;
 import java.awt.Dimension;
+import java.lang.reflect.Field;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -538,8 +539,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             String javaVersion = System.getProperty("java.version");
             boolean javaVersionWarning = javaVersion.startsWith("1.5") 
                 || javaVersion.startsWith("1.6")
-                || javaVersion.startsWith("1.7") 
-                || javaVersion.startsWith("1.8");
+                || javaVersion.startsWith("1.7");
             
             if (javaVersionWarning) {
                 new JavaParametersDialog(this, this, null, "SearchGUI", true);
@@ -7066,6 +7066,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public static void main(String[] args) {
 
+        // turn off illegal access log messages
+        try {
+            Class loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
+            Field loggerField = loggerClass.getDeclaredField("logger");
+            Class unsafeClass = Class.forName("sun.misc.Unsafe");
+            Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            Object unsafe = unsafeField.get(null);
+            Long offset = (Long) unsafeClass.getMethod("staticFieldOffset", Field.class).invoke(unsafe, loggerField);
+            unsafeClass.getMethod("putObjectVolatile", Object.class, long.class, Object.class) //
+                    .invoke(unsafe, loggerClass, offset, null);
+        } catch (Throwable ex) {
+            // ignore, i.e. simply show the warnings...
+            //ex.printStackTrace();
+        }
+        
         // set the look and feel
         boolean numbusLookAndFeelSet = false;
         try {
