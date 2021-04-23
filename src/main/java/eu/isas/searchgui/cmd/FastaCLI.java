@@ -48,7 +48,7 @@ public class FastaCLI {
         try {
             waitingHandler = new WaitingHandlerCLIImpl();
 
-             // check if there are updates to the paths
+            // check if there are updates to the paths
             String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
 
             // parse the rest of the cptions   

@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
  * search.
  *
  * @author Marc Vaudel
+ * @author Harald Barsnes
  */
 public class TandemProcessBuilder extends SearchGUIProcessBuilder {
 
@@ -283,7 +284,9 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
                 Modification modification = modificationFactory.getModification(modName);
                 AminoAcidPattern modificationPattern = modification.getPattern();
 
-                if (modificationPattern == null || (modificationPattern.length() == 1 && modificationPattern.getAminoAcidsAtTarget().size() == 1)) {
+                if (modificationPattern == null
+                        || (modificationPattern.length() == 1 && modificationPattern.getAminoAcidsAtTarget().size() == 1)
+                        || (modificationPattern.length() == 0 && (modification.getModificationType().isNTerm() || modification.getModificationType().isCTerm()))) {
 
                     variableMod.add(modName);
 
@@ -541,7 +544,7 @@ public class TandemProcessBuilder extends SearchGUIProcessBuilder {
 
         parameterFile = new File(xTandemTempFolder, PARAMETER_FILE);
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile))) {
+        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(parameterFile))) {
 
             bw.write(
                     "<?xml version=\"1.0\"?>" + System.getProperty("line.separator")
