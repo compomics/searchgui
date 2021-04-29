@@ -2324,7 +2324,7 @@ public class SearchHandler {
                 if (enableTide && !waitingHandler.isRunCanceled()) {
 
                     File tideTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "tide");
-                    
+
                     // create the tide index
                     tideIndexProcessBuilder = new TideIndexProcessBuilder(
                             tideLocation,
@@ -2512,6 +2512,12 @@ public class SearchHandler {
 
                     for (File spectrumFile : msFiles) {
 
+                        waitingHandler.appendReport(
+                                "Importing spectrum file " + spectrumFile.getName(),
+                                true,
+                                true
+                        );
+
                         File folder = CmsFolder.getParentFolder() == null
                                 ? spectrumFile.getParentFile() : new File(CmsFolder.getParentFolder());
 
@@ -2533,6 +2539,7 @@ public class SearchHandler {
                             true,
                             true
                     );
+                    waitingHandler.appendReportEndLine();
 
                 }
 
@@ -2742,7 +2749,7 @@ public class SearchHandler {
                         File msAmandaOutputFile = new File(outputTempFolder, getMsAmandaFileName(spectrumFileName));
                         String filePath = msAmandaOutputFile.getAbsolutePath();
                         File msAmandaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "msamanda");
-                        
+
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(
                                 msAmandaLocation,
                                 msAmandaTempFolder,
@@ -2913,7 +2920,7 @@ public class SearchHandler {
                         if (cometOutputFile.exists()) {
                             cometOutputFile.delete();
                         }
-                        
+
                         File cometTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "comet");
 
                         cometProcessBuilder = new CometProcessBuilder(
@@ -3078,7 +3085,7 @@ public class SearchHandler {
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
                         File andromedaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "andromeda");
-                        
+
                         andromedaProcessBuilder = new AndromedaProcessBuilder(
                                 andromedaLocation,
                                 andromedaTempFolder,
@@ -3852,7 +3859,7 @@ public class SearchHandler {
 
         File outputFile = getInputFile(folder);
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+        try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
             bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
@@ -4105,7 +4112,7 @@ public class SearchHandler {
                     zipFile.delete();
                 }
 
-                try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                     // find the uncompressed size of all the files to add to the zip
                     long totalUncompressedSize = getTotalUncompressedSize(tempOutputFolder, parametersFile, identificationFilesMap);
@@ -4203,7 +4210,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -4285,7 +4292,7 @@ public class SearchHandler {
                         zipFile.delete();
                     }
 
-                    try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
+                    try ( ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zipFile)))) {
 
                         // add input file
                         ZipUtils.addFileToZip(inputFile, out, waitingHandler, totalUncompressedSize);
@@ -4733,14 +4740,14 @@ public class SearchHandler {
     ) {
         SearchHandler.tempFolderPath = tempFolderPath;
     }
-    
+
     /**
      * Returns the folder to use for temporary search engine files.
      *
      * @param jarFilePath the path to the jar file
      * @return the folder to use for temporary search engine files
      */
-     public static String getTempSearchEngineFolderPath(
+    public static String getTempSearchEngineFolderPath(
             String jarFilePath
     ) {
         if (tempSearchEngineFolderPath == null) {
@@ -4750,20 +4757,21 @@ public class SearchHandler {
                 tempSearchEngineFolderPath = jarFilePath + File.separator + "resources" + File.separator + "temp" + File.separator + "search_engines";
             }
         }
-        
+
         File tempFolder = new File(tempSearchEngineFolderPath);
         tempSearchEngineFolderPath = tempFolder.getAbsolutePath();
         if (!tempFolder.exists()) {
             tempFolder.mkdirs();
         }
-        
+
         return tempSearchEngineFolderPath;
     }
-    
+
     /**
      * Sets the folder to use for temporary search engine files.
      *
-     * @param tempSearchEngineFolderPath the folder to use for temporary search engine files
+     * @param tempSearchEngineFolderPath the folder to use for temporary search
+     * engine files
      */
     public static void setTempSearchEngineFolderPath(
             String tempSearchEngineFolderPath
