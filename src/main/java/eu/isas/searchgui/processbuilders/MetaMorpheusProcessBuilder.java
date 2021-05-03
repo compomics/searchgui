@@ -1,5 +1,6 @@
 package eu.isas.searchgui.processbuilders;
 
+import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.aminoacids.sequence.AminoAcidPattern;
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
@@ -15,6 +16,8 @@ import com.compomics.util.parameters.identification.search.SearchParameters.Mass
 import com.compomics.util.parameters.identification.tool_specific.MetaMorpheusParameters;
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
+import eu.isas.searchgui.SearchHandler;
+import eu.isas.searchgui.gui.SearchGUI;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -144,14 +147,26 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         }
         File metaMorpheusSearchParametersFile = createParameterFile(searchParameters, MetaMorpheusTaskType.Search);
 
-        // add dotnet if not on windows
-        if (!operatingSystem.contains("windows")) {
-            String dotNetPath = "dotnet";
-            if (operatingSystem.contains("mac os x")) {
-                dotNetPath = "/usr/local/share/dotnet/dotnet";
+        if (!CompomicsWrapper.appRunningIntoConda(SearchHandler.CONDA_APP_NAME)) {
+            
+            // add dotnet if not on windows
+            if (!operatingSystem.contains("windows")) {
+                String dotNetPath = "dotnet";
+                if (operatingSystem.contains("mac os x")) {
+                    dotNetPath = "/usr/local/share/dotnet/dotnet";
+                }
+                process_name_array.add(dotNetPath);
             }
-            process_name_array.add(dotNetPath);
         }
+        /*
+        * When using Conda, our binaries are replaced by the ones available at
+        * https://anaconda.org/conda-forge/metamorpheus
+        * On Windows, MetaMorpheus Conda package looks the same than our binaries
+        * On Linux and Mac, it internally executes dotnet but we do not have to care about it,
+        * so no explicit call to dotnet is necessary.
+        */
+            
+        
 
         // full path to executable
         process_name_array.add(metaMorpheus.getAbsolutePath());
@@ -207,11 +222,20 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
         String operatingSystem = System.getProperty("os.name").toLowerCase();
 
-        if (operatingSystem.contains("windows")) {
-            return "CMD.exe";
-        } else {
-            return "CMD.dll";
+        if (!CompomicsWrapper.appRunningIntoConda(SearchHandler.CONDA_APP_NAME)) {
+            if (operatingSystem.contains("windows")) {
+                return "CMD.exe";
+            } else {
+                return "CMD.dll";
+            }
+        } else{
+            /*
+             * When running into Conda, Linux and Mac executable names are taken from 
+             * MetaMorpheus Conda package and are special
+            */
+            return "metamorpheus";
         }
+        
     }
 
     /**

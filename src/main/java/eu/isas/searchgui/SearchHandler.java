@@ -351,6 +351,10 @@ public class SearchHandler {
      * The mass spectrometry file handler.
      */
     private final MsFileHandler msFileHandler;
+    /**
+     * Name of SearchGUI's Conda package
+     */
+    public final static String CONDA_APP_NAME = "searchgui";
 
     /**
      * Constructor for the SearchGUI command line interface.Uses the

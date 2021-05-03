@@ -232,10 +232,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The ms file handler.
      */
     private final MsFileHandler msFileHandler = new MsFileHandler();
-    /**
-     * Name of SearchGUI's Conda package
-     */
-    private final static String CONDA_APP_NAME = "searchgui";
+    
 
     /**
      * Creates a SearchGUI dialog.
@@ -300,7 +297,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean newVersion = false;
 
         if (!getJarFilePath().equalsIgnoreCase(".")
-                && !CompomicsWrapper.appRunningIntoConda(CONDA_APP_NAME)
+                && !CompomicsWrapper.appRunningIntoConda(SearchHandler.CONDA_APP_NAME)
                 && utilitiesUserParameters.isAutoUpdate()) {
             newVersion = checkForNewVersion();
         }
