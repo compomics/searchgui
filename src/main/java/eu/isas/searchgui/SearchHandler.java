@@ -352,7 +352,7 @@ public class SearchHandler {
      */
     private final MsFileHandler msFileHandler;
     /**
-     * Name of SearchGUI's Conda package
+     * Name of SearchGUI's Conda package.
      */
     public final static String CONDA_APP_NAME = "searchgui";
 
