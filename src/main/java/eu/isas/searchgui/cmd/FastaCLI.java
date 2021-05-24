@@ -89,15 +89,19 @@ public class FastaCLI {
             } else {
 
                 fastaCLIInputBean = new FastaCLIInputBean(line);
-
                 fastaParametersInputBean = new FastaParametersInputBean(line, fastaCLIInputBean.getInputFile(), waitingHandler);
-
                 call();
 
             }
         } catch (Exception e) {
-            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
+
+            waitingHandler.appendReport(
+                    "An error occurred while running the command line. " + getLogFileMessage(),
+                    true,
+                    true
+            );
             e.printStackTrace();
+
         }
     }
 
@@ -110,9 +114,16 @@ public class FastaCLI {
 
             FastaParameters fastaParameters = fastaParametersInputBean.getFastaParameters();
             String fastaFilePath = fastaCLIInputBean.getInputFile().getAbsolutePath();
-            System.out.println("Input: " + fastaFilePath + System.getProperty("line.separator"));
 
+            System.out.println(
+                    System.getProperty("line.separator")
+                    + "Input: " + fastaFilePath
+                    + System.getProperty("line.separator")
+            );
+
+            System.out.println("Extracting FASTA summary. Please wait...");
             FastaSummary fastaSummary = FastaSummary.getSummary(fastaFilePath, fastaParameters, true, waitingHandler);
+            System.out.println(System.getProperty("line.separator"));
             writeDbProperties(fastaSummary, fastaParameters);
 
             if (fastaCLIInputBean.isDecoy()) {
@@ -125,16 +136,24 @@ public class FastaCLI {
 
                 File newFile = generateTargetDecoyDatabase(fastaParameters, waitingHandler);
 
-                System.out.println("Decoy file successfully created: " + System.getProperty("line.separator"));
-                System.out.println("Output: " + newFile.getAbsolutePath() + System.getProperty("line.separator"));
+                System.out.println(System.getProperty("line.separator"));
+                System.out.println("Decoy file successfully created." + System.getProperty("line.separator"));
+                System.out.println("Output: " + newFile.getAbsolutePath());
 
                 FastaParameters decoyParameters = DecoyConverter.getDecoyParameters(fastaParameters);
                 FastaSummary decoySummary = DecoyConverter.getDecoySummary(newFile, fastaSummary);
                 writeDbProperties(decoySummary, decoyParameters);
 
             }
+
         } catch (Exception e) {
-            waitingHandler.appendReport("An error occurred while running the command line. " + getLogFileMessage(), true, true);
+
+            waitingHandler.appendReport(
+                    "An error occurred while running the command line. " + getLogFileMessage(),
+                    true,
+                    true
+            );
+
             e.printStackTrace();
         }
     }
@@ -146,7 +165,7 @@ public class FastaCLI {
      * @param fastaParameters the FASTA parsing parameters
      */
     public void writeDbProperties(
-            FastaSummary fastaSummary, 
+            FastaSummary fastaSummary,
             FastaParameters fastaParameters
     ) {
 
@@ -183,7 +202,7 @@ public class FastaCLI {
 
         }
 
-        System.out.println("Size: " + nSequences + System.getProperty("line.separator"));
+        System.out.println("Size: " + nSequences);
 
     }
 
@@ -192,23 +211,28 @@ public class FastaCLI {
      *
      * @param fastaParameters the FASTA parsing parameters
      * @param waitingHandler the waiting handler
-     * 
+     *
      * @return the file created
-     * @throws IOException exception thrown whenever an error happened while 
+     * @throws IOException exception thrown whenever an error happened while
      * reading or writing a FASTA file
      */
     public File generateTargetDecoyDatabase(
-            FastaParameters fastaParameters, 
+            FastaParameters fastaParameters,
             WaitingHandler waitingHandler
     ) throws IOException {
 
-        // Get file in
+        // get file in
         File fileIn = fastaCLIInputBean.getInputFile();
 
-        // Get file out
-        File fileOut = new File(fileIn.getParent(), IoUtil.removeExtension(fileIn.getName()) + fastaParameters.getTargetDecoyFileNameSuffix() + ".fasta");
+        // get file out
+        File fileOut = new File(
+                fileIn.getParent(),
+                IoUtil.removeExtension(fileIn.getName())
+                + fastaParameters.getTargetDecoyFileNameSuffix()
+                + ".fasta"
+        );
 
-        // Write file
+        // write file
         waitingHandler.setWaitingText("Appending Decoy Sequences. Please Wait...");
         DecoyConverter.appendDecoySequences(fileIn, fileOut, fastaParameters, waitingHandler);
 
@@ -220,9 +244,13 @@ public class FastaCLI {
      */
     private static String getHeader() {
         return System.getProperty("line.separator")
-                + "FastaCLI takes a FASTA file as input, generates general information about the database and allows operations on the FASTA file." + System.getProperty("line.separator")
+                + "FastaCLI takes a FASTA file as input, generates general "
+                + "information about the database and allows operations on "
+                + "the FASTA file." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
-                + "For further help see https://compomics.github.io/projects/searchgui.html and https://compomics.github.io/projects/searchgui/wiki/SearchCLI.html." + System.getProperty("line.separator")
+                + "For further help see https://compomics.github.io/projects/searchgui.html "
+                + "and https://compomics.github.io/projects/searchgui/wiki/SearchCLI.html."
+                + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
                 + "----------------------"
                 + System.getProperty("line.separator")
@@ -239,21 +267,23 @@ public class FastaCLI {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         try {
             new FastaCLI(args);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
-    
+
     /**
-     * Returns the "see the log file" message. With the path if available. 
-     * 
+     * Returns the "see the log file" message. With the path if available.
+     *
      * @return the "see the log file" message
      */
     public static String getLogFileMessage() {
 //        if (logFolder == null) {
-            return "Please see the SearchGUI log file.";
+        return "Please see the SearchGUI log file.";
 //        } else {
 //            return "Please see the SearchGUI log file: " + logFolder.getAbsolutePath() + File.separator + "SearchGUI.log";  // @TODO: figure out how to get the location of the log file
 //        }
@@ -265,6 +295,11 @@ public class FastaCLI {
      * @return the path to the jar file
      */
     public String getJarFilePath() {
-        return CompomicsWrapper.getJarFilePath(this.getClass().getResource("FastaCLI.class").getPath(), "SearchGUI");
+
+        return CompomicsWrapper.getJarFilePath(
+                this.getClass().getResource("FastaCLI.class").getPath(),
+                "SearchGUI"
+        );
+
     }
 }
