@@ -20,7 +20,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 /**
  * This class will build files and start a process to perform an MS Amanda
@@ -62,7 +61,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The name of the MS Amanda executable.
      */
-    public static final String EXECUTABLE_FILE_NAME = "MSAmanda.exe";
+    public static final String EXECUTABLE_FILE_NAME = "MSAmanda";
     /**
      * The database file.
      */
@@ -307,27 +306,6 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         // make sure that the ms amanda exe file is executable
         File msAmanda = new File(msAmandaFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
         msAmanda.setExecutable(true);
-
-        // add mono if not on windows
-        String operatingSystem = System.getProperty("os.name").toLowerCase();
-        if (!operatingSystem.contains("windows")) {
-
-            String monoPath = "mono";
-
-            // modern mac os x versions need a specific mono path
-            if (operatingSystem.contains("mac os x")) {
-                StringTokenizer versionTokens = new StringTokenizer(System.getProperty("os.version"), ".");
-                if (versionTokens.countTokens() > 1) {
-                    int mainVersion = Integer.valueOf(versionTokens.nextToken());
-                    int subversion = Integer.valueOf(versionTokens.nextToken());
-                    if (mainVersion >= 10 && subversion >= 11) {
-                        monoPath = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
-                    }
-                }
-            }
-
-            process_name_array.add(monoPath);
-        }
 
         // full path to executable
         process_name_array.add(msAmanda.getAbsolutePath());

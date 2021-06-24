@@ -423,7 +423,7 @@ public class SearchHandler {
         );
         enableMsAmanda = loadSearchEngineLocation(
                 Advocate.msAmanda,
-                true,
+                false,
                 true,
                 true,
                 true,
@@ -667,7 +667,7 @@ public class SearchHandler {
         } else {
             loadSearchEngineLocation(
                     Advocate.msAmanda,
-                    true,
+                    false,
                     true,
                     true,
                     true,
