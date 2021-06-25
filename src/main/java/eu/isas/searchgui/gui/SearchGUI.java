@@ -221,7 +221,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public static String msAmandaErrorMessage = "Make sure that MS Amanda is installed correctly and that you have selected<br>"
             + "the correct version of MS Amanda for your system. Note that for Mac and Linux<br>"
-            + "<a href=\"https://www.mono-project.com/download/\">Mono</a> has to be installed. "
+            + "<a href=\"https://dotnet.microsoft.com/download/dotnet?utm_source=getdotnetcorecli&utm_medium=referral\">.NET Core</a> has to be installed. "
             + "See the <a href=\"https://compomics.github.io/projects/searchgui.html#troubleshooting\">TroubleShooting</a> section at the SearchGUI<br>"
             + "web page for help, and the SearchGUI log for details about the error.";
     /**
