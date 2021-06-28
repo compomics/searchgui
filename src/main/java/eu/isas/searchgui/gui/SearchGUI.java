@@ -7909,6 +7909,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     process_name_array.add(executableWrapper);
 
                 }
+                
+                // make sure that the file is executable
+                File executableFile = new File(searchEngineLocation + File.separator + executable);
+                executableFile.setExecutable(true);
 
                 // add the path to the executable
                 process_name_array.add(searchEngineLocation + File.separator + executable);
