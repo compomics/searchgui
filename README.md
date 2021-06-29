@@ -182,9 +182,7 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
  * **MS Amanda Log** - If you encounter problems with MS Amanda it may help to inspect the MS Amanda log files. On Windows these are located here: `C:\ProgramData\MSAmanda`.
 
- * **MS Amanda on Linux** - Running MS Amanda on Linux requires that you have [Mono](http://www.mono-project.com) installed. Mono 3.2.1 or newer is required and the libmono-system-core4.0-cil has to be installed. To check your Mono version run "mono -V". Mono can be installed as follows: "sudo apt-get install mono-runtime" (and if needed "sudo apt-get install libmono-system-core4.0-cil" and "sudo apt-get -f"). For some Linux distributions Mono version 3.X is not directly available, you might be able to use: "sudo add-apt-repository ppa:directhex/monoxide", "sudo apt-get update" and "sudo apt-get dist-upgrade". For more help on installing Mono please see [http://www.mono-project.com/download](http://www.mono-project.com/download).
-
- * **MS Amanda on Mac** - Running MS Amanda on Linux requires that you have [Mono](http://www.mono-project.com) installed. Mono 3.10.0 or newer is required. For help on installing Mono please see [http://www.mono-project.com/download](http://www.mono-project.com/download).
+ * **MS Amanda on Linux and Mac** - Running MS Amanda on Linux or Mac requires that you have [.NET Core](https://dotnet.microsoft.com/download/dotnet?utm_source=getdotnetcorecli&utm_medium=referral) installed. .NET 5.0 or newer is required.
 
  * **MyriMatch on Linux** - If you get the error "`locale::facet::_S_create_c_locale name not valid`", this can be fixed by running the command "`export LC_ALL=C`" before running SearchGUI/MyriMatch. To make this fix permanent, put the export line in your .bash_profile (~/.bash_profile). If you still have problems, please contact the [MyriMatch developers](http://www.mc.vanderbilt.edu/root/vumc.php?site=msrc/bioinformatics&doc=27121).
 
