@@ -2704,6 +2704,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         progressDialog.setTitle("Validating Spectrum Files. Please Wait... ("
                                 + ++fileCounter + "/" + tempSpectrumFiles.size() + ")");
 
+                        // @TODO: charge testing has been removed?
+                        
                         if (validSpectrumTitles) {
                             spectrumFiles.add(spectrumFile);
                             lastSelectedFolder.setLastSelectedFolder(spectrumFile.getAbsolutePath());
