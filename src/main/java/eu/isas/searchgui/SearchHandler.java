@@ -3174,7 +3174,7 @@ public class SearchHandler {
                                 metaMorpheusLocation,
                                 metaMorpheusTempFolder,
                                 searchParameters,
-                                spectrumFile, // @TODO: should complain if not mzml!
+                                spectrumFile, // @TODO: should complain if not mzml!!
                                 processingParameters.getnThreads(),
                                 fastaFile,
                                 metaMorpheusOutputFile,
@@ -3425,7 +3425,7 @@ public class SearchHandler {
                             outputFolder,
                             outputTempFolder,
                             identificationFiles,
-                            identificationParametersFile,
+                            IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName()),
                             utilitiesUserParameters.isIncludeDateInOutputName()
                     );
 
@@ -3744,7 +3744,7 @@ public class SearchHandler {
                                 cmsAndMsFiles,
                                 fastaFile,
                                 identificationFilesList,
-                                identificationParametersFile,
+                                IdentificationParametersFactory.getIdentificationParametersFile(identificationParameters.getName()),
                                 peptideShakerFile,
                                 true,
                                 processingParameters,
