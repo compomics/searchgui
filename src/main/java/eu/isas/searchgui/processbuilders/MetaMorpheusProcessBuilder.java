@@ -17,7 +17,6 @@ import com.compomics.util.parameters.identification.tool_specific.MetaMorpheusPa
 import com.compomics.util.pride.CvTerm;
 import com.compomics.util.waiting.WaitingHandler;
 import eu.isas.searchgui.SearchHandler;
-import eu.isas.searchgui.gui.SearchGUI;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -313,6 +312,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                 bw.write("SearchType = \"" + metaMorpheusParameters.getSearchType() + "\"" + System.getProperty("line.separator"));
                 bw.write("LocalFdrCategories = [\"FullySpecific\"]" + System.getProperty("line.separator"));
                 bw.write("MaxFragmentSize = " + metaMorpheusParameters.getMaxFragmentSize() + System.getProperty("line.separator"));
+                bw.write("MinAllowedInternalFragmentLength = " + metaMorpheusParameters.getMinAllowedInternalFragmentLength() + System.getProperty("line.separator"));
                 bw.write("HistogramBinTolInDaltons = 0.003" + System.getProperty("line.separator"));
                 bw.write("MaximumMassThatFragmentIonScoreIsDoubled = 0.0" + System.getProperty("line.separator"));
                 bw.write("WriteMzId = " + metaMorpheusParameters.getWriteMzId() + System.getProperty("line.separator"));
