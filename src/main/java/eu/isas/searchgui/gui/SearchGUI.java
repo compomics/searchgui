@@ -1365,8 +1365,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         tideSupportButton.setBorderPainted(false);
         tideSupportButton.setContentAreaFilled(false);
 
-        cometSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/windows_and_linux_gray-new.png"))); // NOI18N
-        cometSupportButton.setToolTipText("Supported on Windows and Linux");
+        cometSupportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        cometSupportButton.setToolTipText("Supported on Windows, Mac and Linux");
         cometSupportButton.setBorderPainted(false);
         cometSupportButton.setContentAreaFilled(false);
 

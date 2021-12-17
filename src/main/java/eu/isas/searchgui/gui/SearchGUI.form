@@ -1137,9 +1137,9 @@
                     <Component class="javax.swing.JButton" name="cometSupportButton">
                       <Properties>
                         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/icons/windows_and_linux_gray-new.png"/>
+                          <Image iconType="3" name="/icons/all_platforms_gray.png"/>
                         </Property>
-                        <Property name="toolTipText" type="java.lang.String" value="Supported on Windows and Linux"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Supported on Windows, Mac and Linux"/>
                         <Property name="borderPainted" type="boolean" value="false"/>
                         <Property name="contentAreaFilled" type="boolean" value="false"/>
                       </Properties>

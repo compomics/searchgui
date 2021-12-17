@@ -445,9 +445,9 @@ public class SearchHandler {
                 Advocate.comet,
                 false,
                 true,
+                true,
+                true,
                 false,
-                true,
-                true,
                 false,
                 false
         );
@@ -699,9 +699,9 @@ public class SearchHandler {
                     Advocate.comet,
                     false,
                     true,
+                    true,
+                    true,
                     false,
-                    true,
-                    true,
                     false,
                     false
             ); // try to use the default

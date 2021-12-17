@@ -46,7 +46,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2021.01 rev. 0"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2021.02 rev. 0"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -93,8 +93,17 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @throws IOException thrown if there are problems creating the Comet
      * parameter file
      */
-    public CometProcessBuilder(File cometFolder, File cometTempFolder, SearchParameters searchParameters, File spectrumFile, File fastaFile, 
-            WaitingHandler waitingHandler, ExceptionHandler exceptionHandler, int nThreads, Double refMass) throws IOException {
+    public CometProcessBuilder(
+            File cometFolder, 
+            File cometTempFolder, 
+            SearchParameters searchParameters, 
+            File spectrumFile, 
+            File fastaFile, 
+            WaitingHandler waitingHandler, 
+            ExceptionHandler exceptionHandler, 
+            int nThreads, 
+            Double refMass
+    ) throws IOException {
 
         this.cometFolder = cometFolder;
         this.cometTempFolder = cometTempFolder;
