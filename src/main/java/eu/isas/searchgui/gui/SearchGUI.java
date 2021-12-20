@@ -1054,7 +1054,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
-        cometLinkLabel.setText("<html><a style=\"text-decoration: none\" href=http://comet-ms.sourceforge.net\">Comet search algorithm</a></html> ");
+        cometLinkLabel.setText("<html><a style=\"text-decoration: none\" href=https://uwpr.github.io/Comet\">Comet search algorithm</a></html> ");
         cometLinkLabel.setToolTipText("Open the Comet web page");
         cometLinkLabel.setEnabled(false);
         cometLinkLabel.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -4471,7 +4471,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void cometLinkLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cometLinkLabelMouseClicked
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-        BareBonesBrowserLaunch.openURL("http://comet-ms.sourceforge.net");
+        BareBonesBrowserLaunch.openURL("https://uwpr.github.io/Comet");
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
     }//GEN-LAST:event_cometLinkLabelMouseClicked
 

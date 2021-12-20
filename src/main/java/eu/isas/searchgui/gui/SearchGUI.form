@@ -808,7 +808,7 @@
                     </Component>
                     <Component class="javax.swing.JLabel" name="cometLinkLabel">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=http://comet-ms.sourceforge.net&quot;&gt;Comet search algorithm&lt;/a&gt;&lt;/html&gt; "/>
+                        <Property name="text" type="java.lang.String" value="&lt;html&gt;&lt;a style=&quot;text-decoration: none&quot; href=https://uwpr.github.io/Comet&quot;&gt;Comet search algorithm&lt;/a&gt;&lt;/html&gt; "/>
                         <Property name="toolTipText" type="java.lang.String" value="Open the Comet web page"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
