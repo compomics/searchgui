@@ -17,6 +17,7 @@
                 <exclude>${project.basedir}/resources/XTandem/linux/**</exclude>
                 <exclude>${project.basedir}/resources/XTandem/osx/**</exclude>
                 <exclude>${project.basedir}/resources/MyriMatch/linux/**</exclude>
+                <exclude>${project.basedir}/resources/Comet/osx/**</exclude>
                 <exclude>${project.basedir}/resources/Comet/linux/**</exclude>
                 <exclude>${project.basedir}/resources/MS Amanda/linux/**</exclude>
                 <exclude>${project.basedir}/resources/MS Amanda/osx/**</exclude>
