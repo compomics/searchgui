@@ -142,10 +142,10 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // the min number of modifications per peptide
-        if (tideParameters.getMinVariableModificationsPerPeptide() != null) {
-            process_name_array.add("--min-mods");
-            process_name_array.add(tideParameters.getMinVariableModificationsPerPeptide().toString());
-        }
+//        if (tideParameters.getMinVariableModificationsPerPeptide() != null) {
+//            process_name_array.add("--min-mods");
+//            process_name_array.add(tideParameters.getMinVariableModificationsPerPeptide().toString());
+//        }
 
         // the max number of modifications per peptide
         if (tideParameters.getMaxVariableModificationsPerPeptide() != null) {
