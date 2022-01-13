@@ -70,6 +70,16 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
             ExceptionHandler exceptionHandler
     ) throws IOException {
 
+        ///////////////////////////////////////////////////
+        // the following Tide options are not implemented:
+        //  --mod-precision
+        //  --mass-precision
+        //  --auto-modifications
+        //  --allow-dups
+        //  --num-decoys-per-target
+        //
+        //  see http://crux.ms/commands/tide-index.html
+        ///////////////////////////////////////////////////
         this.tideTempFolder = tideTempFolder;
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -110,15 +120,31 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("--mods-spec");
             process_name_array.add(getNonTerminalModifications());
         }
-        String nTermMods = getTerminalModifications(true);
-        if (!nTermMods.isEmpty()) {
+        String nTermPeptideMods = getTerminalModifications(true, false);
+        if (!nTermPeptideMods.isEmpty()) {
             process_name_array.add("--nterm-peptide-mods-spec");
-            process_name_array.add(nTermMods);
+            process_name_array.add(nTermPeptideMods);
         }
-        String cTermMods = getTerminalModifications(false);
-        if (!cTermMods.isEmpty()) {
+        String nTermProteinMods = getTerminalModifications(true, true);
+        if (!nTermProteinMods.isEmpty()) {
+            process_name_array.add("--nterm-protein-mods-spec");
+            process_name_array.add(nTermProteinMods);
+        }
+        String cTermPeptideMods = getTerminalModifications(false, false);
+        if (!cTermPeptideMods.isEmpty()) {
             process_name_array.add("--cterm-peptide-mods-spec");
-            process_name_array.add(cTermMods);
+            process_name_array.add(cTermPeptideMods);
+        }
+        String cTermProteinMods = getTerminalModifications(false, true);
+        if (!cTermProteinMods.isEmpty()) {
+            process_name_array.add("--cterm-protein-mods-spec");
+            process_name_array.add(cTermProteinMods);
+        }
+
+        // the min number of modifications per peptide
+        if (tideParameters.getMinVariableModificationsPerPeptide() != null) {
+            process_name_array.add("--min-mods");
+            process_name_array.add(tideParameters.getMinVariableModificationsPerPeptide().toString());
         }
 
         // the max number of modifications per peptide
@@ -183,105 +209,139 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
 
-        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
+        if (null != digestionPreferences.getCleavageParameter()) {
 
-            process_name_array.add("--custom-enzyme");
-            process_name_array.add("[Z]|[Z]");
+            switch (digestionPreferences.getCleavageParameter()) {
 
-        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
+                case wholeProtein:
+                    process_name_array.add("--custom-enzyme");
+                    process_name_array.add("[Z]|[Z]");
+                    break;
 
-            process_name_array.add("--enzyme");
-            process_name_array.add("no-enzyme");
+                case unSpecific:
+                    process_name_array.add("--enzyme");
+                    process_name_array.add("no-enzyme");
+                    break;
 
-        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+                case enzyme:
 
-            if (digestionPreferences.getEnzymes().size() == 1) {
+                    if (digestionPreferences.getEnzymes().size() == 1) {
 
-                Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
-                String enzymeName = enzyme.getName();
-                // enzyme
-                //      note: Tide enzymes not implemented in utilities:
-                //          elastase ([ALIV]|{P}), clostripain ([R]|[]), iodosobenzoate ([W]|[]), proline-endopeptidase ([P]|[]), 
-                //          staph-protease ([E]|[]), elastase-trypsin-chymotrypsin ([ALIVKRWFY]|{P})
-                switch (enzymeName) {
-                    case "Trypsin":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("trypsin");
-                        break;
-                    case "Trypsin (no P rule)":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("trypsin/p");
-                        break;
-                    case "Chymotrypsin":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("chymotrypsin");
-                        break;
-                    case "CNBr":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("cyanogen-bromide");
-                        break;
-                    case "Asp-N":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("asp-n");
-                        break;
-                    case "Lys-C":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("lys-c");
-                        break;
-                    case "Lys-N":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("lys-n");
-                        break;
-                    case "Arg-C":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("arg-c");
-                        break;
-                    case "Glu-C":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("glu-c");
-                        break;
-                    case "Pepsin A":
-                        process_name_array.add("--enzyme");
-                        process_name_array.add("pepsin-a");
-                        break;
-                    default:
+                        Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+                        String enzymeName = enzyme.getName();
+                        // enzyme
+                        //      note: Tide enzymes not implemented in utilities:
+                        //          elastase ([ALIV]|{P}), clostripain ([R]|[]), iodosobenzoate ([W]|[]), proline-endopeptidase ([P]|[]),
+                        //          staph-protease ([E]|[]), elastase-trypsin-chymotrypsin ([ALIVKRWFY]|{P})
+                        switch (enzymeName) {
+
+                            case "Trypsin":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("trypsin");
+                                break;
+
+                            case "Trypsin (no P rule)":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("trypsin/p");
+                                break;
+
+                            case "Chymotrypsin":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("chymotrypsin");
+                                break;
+
+                            case "CNBr":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("cyanogen-bromide");
+                                break;
+
+                            case "Asp-N":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("asp-n");
+                                break;
+
+                            case "Lys-C":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("lys-c");
+                                break;
+
+                            case "Lys-N":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("lys-n");
+                                break;
+
+                            case "Arg-C":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("arg-c");
+                                break;
+
+                            case "Glu-C":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("glu-c");
+                                break;
+
+                            case "Pepsin A":
+                                process_name_array.add("--enzyme");
+                                process_name_array.add("pepsin-a");
+                                break;
+
+                            default:
+                                process_name_array.add("--custom-enzyme");
+                                process_name_array.add(digestionPreferences.getXTandemFormat());
+                                break;
+                        }
+
+                        process_name_array.add("--missed-cleavages");
+                        Integer missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
+                        process_name_array.add("" + missedCleavages);
+
+                    } else {
                         process_name_array.add("--custom-enzyme");
                         process_name_array.add(digestionPreferences.getXTandemFormat());
-                        break;
-                }
-                process_name_array.add("--missed-cleavages");
-                Integer missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
-                process_name_array.add("" + missedCleavages);
-            } else {
-                process_name_array.add("--custom-enzyme");
-                process_name_array.add(digestionPreferences.getXTandemFormat());
 
-                // missed cleavages
-                process_name_array.add("--missed-cleavages");
-                Integer missedCleavages = null;
-                for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
-                    int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
-                    if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
-                        missedCleavages = enzymeMissedCleavages;
+                        // missed cleavages
+                        process_name_array.add("--missed-cleavages");
+                        Integer missedCleavages = null;
+
+                        for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+
+                            int enzymeMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme.getName());
+
+                            if (missedCleavages == null || enzymeMissedCleavages > missedCleavages) {
+                                missedCleavages = enzymeMissedCleavages;
+                            }
+                        }
+
+                        process_name_array.add("" + missedCleavages);
                     }
-                }
-                process_name_array.add("" + missedCleavages);
+
+                    break;
+
+                default:
+                    break;
             }
         }
 
         // full or partial enzyme digestion
         boolean semiSpecific = false;
+
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+
             for (Enzyme enzyme : digestionPreferences.getEnzymes()) {
+
                 if (digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
                         || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
                         || digestionPreferences.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                     break;
                 }
+
             }
+
         }
+
         process_name_array.add("--digestion");
+
         if (semiSpecific) {
             process_name_array.add("partial-digest");
         } else {
@@ -331,9 +391,12 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param modifications the modifications to check
      * @param fixed if the modifications are to to be added as fixed or variable
-     * @return the non-terminal modifications as a string in the Tide forma
+     * @return the non-terminal modifications as a string in the Tide format
      */
-    private String getNonTerminalModifications(ArrayList<String> modifications, boolean fixed) {
+    private String getNonTerminalModifications(
+            ArrayList<String> modifications,
+            boolean fixed
+    ) {
 
         // tide modification pattern: [max_per_peptide]residues[+/-]mass_change
         String nonTerminalModifications = "";
@@ -391,20 +454,36 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param nTerm true if the modifications are n-terminal, false if
      * c-terminal
-     * @return the terminal modifications as a string in the Tide format.
+     * @param proteinTerm true returns only the protein terminal modifications,
+     * while false return only the peptide terminal modifications
+     * @return the terminal modifications as a string in the Tide format
      */
-    private String getTerminalModifications(boolean nTerm) {
+    private String getTerminalModifications(
+            boolean nTerm,
+            boolean proteinTerm
+    ) {
 
-        String tempNTermModifications = getTerminalModifications(searchParameters.getModificationParameters().getFixedModifications(), true, nTerm);
-        String tempCTermModifications = getTerminalModifications(searchParameters.getModificationParameters().getVariableModifications(), false, nTerm);
+        String tempTermModifications = getTerminalModifications(
+                searchParameters.getModificationParameters().getFixedModifications(),
+                true,
+                nTerm,
+                proteinTerm
+        );
 
-        if (!tempNTermModifications.isEmpty() && !tempCTermModifications.isEmpty()) {
-            tempNTermModifications += "," + tempCTermModifications;
-        } else if (!tempCTermModifications.isEmpty()) {
-            return tempCTermModifications;
+        String tempTermVariableModifications = getTerminalModifications(
+                searchParameters.getModificationParameters().getVariableModifications(),
+                false,
+                nTerm,
+                proteinTerm
+        );
+
+        if (!tempTermModifications.isEmpty() && !tempTermVariableModifications.isEmpty()) {
+            tempTermModifications += "," + tempTermVariableModifications;
+        } else if (!tempTermVariableModifications.isEmpty()) {
+            return tempTermVariableModifications;
         }
 
-        return tempNTermModifications;
+        return tempTermModifications;
     }
 
     /**
@@ -414,9 +493,16 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      * @param fixed if the modifications are to to be added as fixed or variable
      * @param nTerm true if the modifications are n-terminal, false if
      * c-terminal
+     * @param proteinTerm true returns only the protein terminal modifications,
+     * while false return only the peptide terminal modifications
      * @return the terminal modifications as a string in the Tide format
      */
-    private String getTerminalModifications(ArrayList<String> modifications, boolean fixed, boolean nTerm) {
+    private String getTerminalModifications(
+            ArrayList<String> modifications,
+            boolean fixed,
+            boolean nTerm,
+            boolean proteinTerm
+    ) {
 
         String terminalModifications = "";
 
@@ -425,8 +511,30 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
             Modification modification = modificationFactory.getSingleAAModification(modName);
             ModificationType modificationType = modification.getModificationType();
 
-            if ((modificationType.isNTerm() && nTerm)
-                    || (modificationType.isCTerm() && !nTerm)) {
+            boolean includeModification = false;
+
+            switch (modificationType) {
+                case modc_peptide:
+                case modcaa_peptide:
+                    includeModification = !nTerm && !proteinTerm;
+                    break;
+                case modc_protein:
+                case modcaa_protein:
+                    includeModification = !nTerm && proteinTerm;
+                    break;
+                case modn_peptide:
+                case modnaa_peptide:
+                    includeModification = nTerm && !proteinTerm;
+                    break;
+                case modn_protein:
+                case modnaa_protein:
+                    includeModification = nTerm && proteinTerm;
+                    break;
+                default:
+                    break;
+            }
+
+            if (includeModification) {
 
                 if (!terminalModifications.isEmpty()) {
                     terminalModifications += ",";

@@ -457,9 +457,9 @@ public class SearchHandler {
                 true,
                 true,
                 true,
-                true,
                 false,
-                true
+                false,
+                false
         );
         enableAndromeda = loadSearchEngineLocation(
                 Advocate.andromeda,
@@ -716,9 +716,9 @@ public class SearchHandler {
                     true,
                     true,
                     true,
-                    true,
                     false,
-                    true
+                    false,
+                    false
             ); // try to use the default
         }
 

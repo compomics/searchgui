@@ -57,6 +57,27 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
             ExceptionHandler exceptionHandler,
             int nThreads
     ) throws IOException {
+        
+        ///////////////////////////////////////////////////
+        // the following Tide options are not implemented:
+        //  --use-tailor-calibration
+        //  --mod-precision
+        //  --auto-precursor-window
+        //  --auto-mz-bin-width
+        //  --deisotope
+        //  --isotope-error
+        //  --score-function
+        //  --fragment-tolerance
+        //  --evidence-granularity
+        //  --skip-preprocessing
+        //  --mass-precision
+        //  --precision
+        //  --use-z-line
+        //  --peptide-centric-search
+        //  --scan-number
+        //
+        //  see http://crux.ms/commands/tide-search.html
+        ///////////////////////////////////////////////////
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -141,11 +162,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         // max precursor charge
         process_name_array.add("--max-precursor-charge");
         process_name_array.add("" + searchParameters.getMaxChargeSearched());
-        //
-        // scan number 
-        //process_name_array.add("--scan-number");
-        //process_name_array.add("<int>|<int>-<int>"); // @TODO: implement?
-        //
+
         // remove precusor peak
         process_name_array.add("--remove-precursor-peak");
         if (tideParameters.getRemovePrecursor()) {
@@ -185,14 +202,6 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         // mz bin offset
         process_name_array.add("--mz-bin-offset");
         process_name_array.add(tideParameters.getMzBinOffset().toString());
-//        
-//        // peptide centric search 
-//        process_name_array.add("--peptide-centric-search"); // @TODO: implement?
-//        if (tideParameters.getPeptideCentricSearch()) {
-//            process_name_array.add("T");
-//        } else {
-//            process_name_array.add("F");
-//        }
 
         // number of threads
         process_name_array.add("--num-threads");
