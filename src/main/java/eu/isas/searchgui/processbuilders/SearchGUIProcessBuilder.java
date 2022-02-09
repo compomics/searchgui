@@ -119,6 +119,8 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                             if (line.startsWith("writing output file:")) {
                                 progressOutputStarted = true;
                                 waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                                waitingHandler.resetSecondaryProgressCounter();
+                                waitingHandler.setMaxSecondaryProgressCounter(100);
                             }
 
                         } else {
@@ -150,6 +152,8 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                     scanner.useDelimiter("\\s|\\n");
 
                     waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                    waitingHandler.resetSecondaryProgressCounter();
+                    waitingHandler.setMaxSecondaryProgressCounter(100);
 
                     // get input from scanner, send to std out and text box
                     while (scanner.hasNext() && !waitingHandler.isRunCanceled()) {
@@ -176,6 +180,7 @@ public abstract class SearchGUIProcessBuilder implements Runnable {
                     scanner.useDelimiter("\\s|\\n");
 
                     waitingHandler.setSecondaryProgressCounterIndeterminate(false);
+                    waitingHandler.resetSecondaryProgressCounter();
                     waitingHandler.setMaxSecondaryProgressCounter(100);
 
                     int numberOfEmptyLines = 0;

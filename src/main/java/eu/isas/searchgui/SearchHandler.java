@@ -2601,6 +2601,9 @@ public class SearchHandler {
                     }
 
                     waitingHandler.appendReportEndLine();
+                    
+                    waitingHandler.resetSecondaryProgressCounter();
+                    waitingHandler.setSecondaryProgressCounterIndeterminate(true);
 
                     // Run X!Tandem
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
