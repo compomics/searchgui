@@ -247,10 +247,6 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             myriMatchBrowse.setEnabled(false);
             enableMyriMatchCombo.setEnabled(false);
 
-            cometLocationTxt.setText("");
-            cometBrowse.setEnabled(false);
-            enableCometCombo.setEnabled(false);
-
             direcTagLocationTxt.setText("");
             direcTagBrowse.setEnabled(false);
             enableDirecTagCombo.setEnabled(false);

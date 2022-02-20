@@ -422,7 +422,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             String operatingSystem = System.getProperty("os.name").toLowerCase();
 
-            // disable myrimatch, comet and directag if mac
+            // disable myrimatch and directag if mac
             if (operatingSystem.contains("mac os")) {
 
                 enableMyriMatchJCheckBox.setSelected(false);
@@ -435,16 +435,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 myriMatchLinkLabel.setEnabled(false);
                 searchHandler.setMyriMatchEnabled(false);
 
-                enableCometJCheckBox.setSelected(false);
-                enableCometJCheckBox.setEnabled(false);
-                enableCometJCheckBox.setToolTipText("Not available for Mac");
-                cometButton.setEnabled(false);
-                cometButton.setToolTipText("Not available for Mac");
-                cometSettingsButton.setEnabled(false);
-                cometSettingsButton.setToolTipText("Not available for Mac");
-                cometLinkLabel.setEnabled(false);
-                searchHandler.setCometEnabled(false);
-
                 enableDirecTagJCheckBox.setSelected(false);
                 enableDirecTagJCheckBox.setEnabled(false);
                 enableDirecTagJCheckBox.setToolTipText("Not available for Mac");
@@ -453,7 +443,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 direcTagSettingsButton.setEnabled(false);
                 direcTagSettingsButton.setToolTipText("Not available for Mac");
                 direcTagLinkLabel.setEnabled(false);
-                searchHandler.setCometEnabled(false);
+                searchHandler.setDirecTagEnabled(false);
 
             }
 
@@ -468,7 +458,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 andromedaSettingsButton.setEnabled(false);
                 andromedaSettingsButton.setToolTipText("Only available for Windows");
                 andromedaLinkLabel.setEnabled(false);
-                searchHandler.setCometEnabled(false);
+                searchHandler.setAndromedaEnabled(false);
 
             }
 
@@ -8326,6 +8316,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         omssaSettingsButton.setEnabled(enable);
         tideSettingsButton.setEnabled(enable);
         metaMorpheusSettingsButton.setEnabled(enable);
+        cometSettingsButton.setEnabled(enable);
 
         enableXTandemJCheckBox.setEnabled(enable);
         enableMsAmandaJCheckBox.setEnabled(enable);
@@ -8333,6 +8324,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         enableOmssaJCheckBox.setEnabled(enable);
         enableTideJCheckBox.setEnabled(enable);
         enableMetaMorpheusJCheckBox.setEnabled(enable);
+        enableCometJCheckBox.setEnabled(enable);
 
         xtandemButton.setEnabled(enable);
         msAmandaButton.setEnabled(enable);
@@ -8340,6 +8332,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         omssaButton.setEnabled(enable);
         tideButton.setEnabled(enable);
         metaMorpheusButton.setEnabled(enable);
+        cometButton.setEnabled(enable);
 
         xtandemLinkLabel.setEnabled(enable);
         msAmandaLinkLabel.setEnabled(enable);
@@ -8347,6 +8340,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         omssaLinkLabel.setEnabled(enable);
         tideLinkLabel.setEnabled(enable);
         metaMorpheusLinkLabel.setEnabled(enable);
+        cometLinkLabel.setEnabled(enable);
 
         // de novo
         novorSettingsButton.setEnabled(enable);
@@ -8362,17 +8356,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         String operatingSystem = System.getProperty("os.name").toLowerCase();
 
-        // disable myrimatch, comet and directag if mac
+        // disable myrimatch and directag if mac
         if (!operatingSystem.contains("mac os")) {
             myriMatchSettingsButton.setEnabled(enable);
             myriMatchButton.setEnabled(enable);
             myriMatchLinkLabel.setEnabled(enable);
             enableMyriMatchJCheckBox.setEnabled(enable);
-
-            cometSettingsButton.setEnabled(enable);
-            enableCometJCheckBox.setEnabled(enable);
-            cometButton.setEnabled(enable);
-            cometLinkLabel.setEnabled(enable);
 
             direcTagSettingsButton.setEnabled(enable);
             direcTagButton.setEnabled(enable);
