@@ -14,7 +14,7 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
 
@@ -298,7 +298,7 @@
         <repository>
             <id>genesis-maven2-repository</id>
             <name>Genesis maven2 repository</name>
-            <url>http://genesis.UGent.be/maven2</url>
+            <url>https://genesis.ugent.be/archiva/repository/maven2/</url>
             <layout>default</layout>
         </repository>
 
@@ -403,7 +403,7 @@
         <repository>
             <id>archiva.compomics_maven_2</id>
             <name>Internal Release Repository</name>
-            <url>http://genesis.ugent.be/maven2</url>
+            <url>https://genesis.ugent.be/maven2</url>
         </repository>
          
         <!-- UGent Genesis archiva snapshot repository -->
