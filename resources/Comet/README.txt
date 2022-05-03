@@ -1,25 +1,29 @@
-Comet is an open source MS/MS database search engine released under the Apache
-2.0 license.
+<img src="https://uwpr.github.io/Comet/images/cometlogo_1_small.png" align="right">
 
-Current supported input formats are mzXML, mzML, mgf, ms2, cms2, and Thermo RAW
-files (under Windows).  Current supported output formats are pepXML, Percolator
-pin (tsv), SQT, tab-delimited text, and mzIdentML.
+# Comet MS/MS
 
-To run a search on an input file requires the Comet binary, a search parameters
-file (comet.params), an input file, and a protein sequence database in FASTA
-format.  The syntax of a search assuming the binary is named "comet.exe":
+Comet is an open source tandem mass spectrometry (MS/MS) sequence database search tool written primarily in C/C++. The original Comet repository lived on [SourceForge](https://sourceforge.net/projects/comet-ms/) since 2012. It was migrated to GitHub on September 2021.
 
-   comet.exe input.mzXML
-   comet.exe input.ms2
+The project website, including release notes and search parameters documentation, [can be found here](https://uwpr.github.io/Comet/).
 
-Search parameters, such as which sequence database to query, modifications to
-consider, mass tolerances, output format, etc. are defined in the comet.params
-file.
+To compile on linux and macOS:
 
-One can generate a parameters file with the command
+- Type 'make'.  This will generate a binary "comet.exe"
 
-   comet.exe -p
+To compile with Microsoft Visual Studio:
 
-Rename the created file "comet.params.new" to "comet.params".
+- use build tools v142 with Microsoft Visual Studio 2019
 
-See https://github.com/UWPR/Comet for more details.
+- First install [MSFileReader from Thermo Fischer Scientific](https://thermo.flexnetoperations.com/control/thmo/login).
+  Once registered you will find the software under "Other Software Releases".
+  As of 10/19/2020, use the file "MSFileReader_x64_3.1_SP4.exe".
+
+- Load "Comet.sln" in Visual Studio
+
+- Set the build to "Release" and "x64".
+
+- Right-mouse-click on the "Comet" project and choose "Build".
+  This should generate a binary "Comet.exe" in x64/Release.
+  If you want to also build CometUI or the RealtimeSearch
+  test applications, both C# tools, build the entire solution
+  or build each specific application.
