@@ -232,7 +232,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * The ms file handler.
      */
     private final MsFileHandler msFileHandler = new MsFileHandler();
-    
 
     /**
      * Creates a SearchGUI dialog.
@@ -522,12 +521,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (utilitiesUserParameters.isAutoUpdate()) {
                 Util.sendGAUpdate("UA-36198780-2", "toolstart", "searchgui-" + (new eu.isas.searchgui.utilities.Properties().getVersion()));
             }
-            
+
             String javaVersion = System.getProperty("java.version");
-            boolean javaVersionWarning = javaVersion.startsWith("1.5") 
-                || javaVersion.startsWith("1.6")
-                || javaVersion.startsWith("1.7");
-            
+            boolean javaVersionWarning = javaVersion.startsWith("1.5")
+                    || javaVersion.startsWith("1.6")
+                    || javaVersion.startsWith("1.7");
+
             if (javaVersionWarning) {
                 new JavaParametersDialog(this, this, null, "SearchGUI", true);
             }
@@ -2695,7 +2694,6 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                                 + ++fileCounter + "/" + tempSpectrumFiles.size() + ")");
 
                         // @TODO: charge testing has been removed?
-                        
                         if (validSpectrumTitles) {
                             spectrumFiles.add(spectrumFile);
                             lastSelectedFolder.setLastSelectedFolder(spectrumFile.getAbsolutePath());
@@ -7070,7 +7068,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // ignore, i.e. simply show the warnings...
             //ex.printStackTrace();
         }
-        
+
         // set the look and feel
         boolean numbusLookAndFeelSet = false;
         try {
@@ -7901,7 +7899,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     process_name_array.add(executableWrapper);
 
                 }
-                
+
                 // make sure that the file is executable
                 File executableFile = new File(searchEngineLocation + File.separator + executable);
                 executableFile.setExecutable(true);
@@ -8085,9 +8083,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         try {
 
-            File jarFile = new File(SearchGUI.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            File jarFile = new File(
+                    SearchGUI.class
+                            .getProtectionDomain()
+                            .getCodeSource()
+                            .getLocation()
+                            .toURI()
+                            .getPath()
+            );
+
             MavenJarFile oldMavenJarFile = new MavenJarFile(jarFile.toURI());
-            URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
+
+            URL jarRepository = new URL(
+                    "https",
+                    "genesis.ugent.be",
+                    "/archiva/repository/maven2/"
+            );
 
             return CompomicsWrapper.checkForNewDeployedVersion(
                     "SearchGUI",
@@ -8103,16 +8114,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             );
 
         } catch (UnknownHostException ex) {
+
             // no internet connection
             System.out.println("Checking for new version failed. No internet connection.");
             return false;
+
         } catch (ConnectException ex) {
+
             // connection refused
             System.out.println("Checking for new version failed. Connection refused.");
             return false;
+
         } catch (Exception e) {
+
             e.printStackTrace();
             return false;
+
         }
     }
 

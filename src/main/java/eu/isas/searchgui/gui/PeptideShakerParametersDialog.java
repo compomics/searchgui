@@ -69,16 +69,16 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         // check for 64 bit java and for at least 4 gb memory 
         boolean java64bit = CompomicsWrapper.is64BitJava();
         boolean memoryOk = utilitiesUserParameters.getMemoryParameter() >= 4000;
-        
+
         String javaVersion = System.getProperty("java.version");
-        boolean javaVersionWarning = javaVersion.startsWith("1.5") 
+        boolean javaVersionWarning = javaVersion.startsWith("1.5")
                 || javaVersion.startsWith("1.6")
                 || javaVersion.startsWith("1.7");
-        
+
         if (java64bit && memoryOk && !javaVersionWarning) {
             lowMemoryWarningLabel.setVisible(false);
         }
-        
+
         if (javaVersionWarning) {
             lowMemoryWarningLabel.setText("<html><u>Java Version Warning!</u>");
         }
@@ -524,7 +524,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         if (startLocation == null) {
             startLocation = new File(searchGUI.getLastSelectedFolder().getLastSelectedFolder());
         }
-        
+
         if (!outputFileTextField.getText().isEmpty() && new File(outputFileTextField.getText()).getParentFile() != null) {
             startLocation = new File(outputFileTextField.getText()).getParentFile();
         }
@@ -533,7 +533,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
         if (!tempProjectReference.isEmpty()) {
             tempProjectReference = "-" + tempProjectReference;
         }
-        
+
         File selectedFile = FileChooserUtil.getUserSelectedFile(
                 this,
                 ".psdb",
@@ -548,7 +548,7 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
             if (!selectedFile.getName().endsWith(".psdb")) {
                 selectedFile = new File(selectedFile.getAbsolutePath() + ".psdb");
             }
-            
+
             searchGUI.getUtilitiesUserParameters().setOutputFolder(selectedFile.getParentFile());
             searchGUI.getLastSelectedFolder().setLastSelectedFolder(selectedFile.getParentFile().getAbsolutePath());
 
@@ -844,18 +844,31 @@ public class PeptideShakerParametersDialog extends javax.swing.JDialog {
      * @return true if a new version is available
      */
     public boolean checkForNewVersion(String peptideShakerJarPath) {
+
         try {
+
             File jarFile = new File(peptideShakerJarPath);
             MavenJarFile oldMavenJarFile = new MavenJarFile(jarFile.toURI());
-            URL jarRepository = new URL("http", "genesis.ugent.be", new StringBuilder().append("/maven2/").toString());
+
+            URL jarRepository = new URL(
+                    "https",
+                    "genesis.ugent.be",
+                    "/archiva/repository/maven2/"
+            );
+
             return WebDAO.newVersionReleased(oldMavenJarFile, jarRepository);
+
         } catch (UnknownHostException ex) {
+
             // no internet connection
             System.out.println("Checking for new version failed. No internet connection.");
             return false;
+
         } catch (Exception e) {
+
             e.printStackTrace();
             return false;
+
         }
     }
 
