@@ -110,6 +110,7 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-p");
         }
         process_name_array.add("-e");
+        process_name_array.add("-x");
 
         process_name_array.trimToSize();
 
