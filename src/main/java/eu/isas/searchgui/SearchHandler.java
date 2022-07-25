@@ -18,6 +18,7 @@ import com.compomics.util.gui.waiting.waitinghandlers.WaitingDialog;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.io.IoUtil;
 import com.compomics.util.io.compression.GzUtils;
+import static com.compomics.util.io.compression.GzUtils.GZ_EXTENSION;
 import com.compomics.util.io.compression.ZipUtils;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
@@ -4096,7 +4097,13 @@ public class SearchHandler {
                 for (Entry<Integer, File> entry2 : map.entrySet()) {
 
                     File file = entry2.getValue();
-                    File gzFile = new File(file.getAbsolutePath() + ".gz");
+                    File gzFile;
+                    
+                    if (!file.getAbsolutePath().endsWith(GZ_EXTENSION)) {
+                        gzFile = new File(file.getAbsolutePath() + ".gz");
+                    } else {
+                        gzFile = file;
+                    }
 
                     newMap.put(entry2.getKey(), gzFile);
 
