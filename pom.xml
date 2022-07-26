@@ -5,7 +5,7 @@
     <groupId>eu.isas.searchgui</groupId>
     <artifactId>SearchGUI</artifactId>
     <packaging>jar</packaging>
-    <version>4.1.15</version>
+    <version>4.1.16</version>
     <name>SearchGUI</name>
     <url>https://github.com/compomics/searchgui</url>
     <description>Graphical user interface for proteomics identification search engines</description>
