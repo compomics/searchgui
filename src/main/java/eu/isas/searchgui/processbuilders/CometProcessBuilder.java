@@ -46,7 +46,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2022.01 rev. 0"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2022.01 rev. 1"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -315,7 +315,8 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "output_pepxmlfile = " + outputFormat(CometOutputFormat.PepXML) + "           # 0=no, 1=yes  write pep.xml file" + System.getProperty("line.separator")
                     + "output_percolatorfile = " + outputFormat(CometOutputFormat.Percolator) + "   # 0=no, 1=yes  write Percolator tab-delimited input file" + System.getProperty("line.separator")
                     // @TODO: test mzid export
-                    + "output_mzidentmlfile = " + outputFormat(CometOutputFormat.mzIdentML) + "     # 0=no, 1=yes  write mzIdentML file" + System.getProperty("line.separator")
+                    // @TODO: support the mzid option with protein sequences?
+                    + "output_mzidentmlfile = " + outputFormat(CometOutputFormat.mzIdentML) + "     # 0=no, 1=yes, 2=yes, and include protein sequences" + System.getProperty("line.separator")
                     + "output_outfiles = 0                 # 0=no, 1=yes  write .out files" + System.getProperty("line.separator")
                     + "print_expect_score = " + Util.convertBooleanToInteger(cometParameters.getPrintExpectScore()) + "                 # 0=no, 1=yes to replace Sp with expect in out & sqt" + System.getProperty("line.separator")
                     + "num_output_lines = " + cometParameters.getNumberOfSpectrumMatches() + "                 # num peptide results to show" + System.getProperty("line.separator")
