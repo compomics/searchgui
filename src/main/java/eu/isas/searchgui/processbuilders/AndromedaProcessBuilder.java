@@ -782,14 +782,27 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
 
             if (digestionParameters.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
 
-                Enzyme enzyme = digestionParameters.getEnzymes().get(0);
-                String enzymeName = enzyme.getName();
-                bw.write("enzymes=" + enzymeName); //@TODO: support multiple enzymes?
+                StringBuilder enzymesAsString = new StringBuilder();
+                
+                for (Enzyme enzyme : digestionParameters.getEnzymes()) {
+                    
+                    if (!enzymesAsString.isEmpty()) {
+                        enzymesAsString.append(",");
+                    }
+                    
+                    enzymesAsString.append(enzyme.getName());
+ 
+                }
+
+                bw.write("enzymes=" + enzymesAsString.toString());
                 bw.newLine();
 
-                if (digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.semiSpecific
-                        || digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
-                        || digestionParameters.getSpecificity(enzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
+                Enzyme firstEnzyme = digestionParameters.getEnzymes().get(0);
+                
+                // @TODO: support enzyme-specific specificity and missed cleavages?
+                if (digestionParameters.getSpecificity(firstEnzyme.getName()) == DigestionParameters.Specificity.semiSpecific
+                        || digestionParameters.getSpecificity(firstEnzyme.getName()) == DigestionParameters.Specificity.specificCTermOnly
+                        || digestionParameters.getSpecificity(firstEnzyme.getName()) == DigestionParameters.Specificity.specificNTermOnly) {
                     semiSpecific = true;
                 }
 

@@ -94,14 +94,14 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * parameter file
      */
     public CometProcessBuilder(
-            File cometFolder, 
-            File cometTempFolder, 
-            SearchParameters searchParameters, 
-            File spectrumFile, 
-            File fastaFile, 
-            WaitingHandler waitingHandler, 
-            ExceptionHandler exceptionHandler, 
-            int nThreads, 
+            File cometFolder,
+            File cometTempFolder,
+            SearchParameters searchParameters,
+            File spectrumFile,
+            File fastaFile,
+            WaitingHandler waitingHandler,
+            ExceptionHandler exceptionHandler,
+            int nThreads,
             Double refMass
     ) throws IOException {
 
@@ -120,7 +120,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         if (!cometTempFolder.exists()) {
             cometTempFolder.mkdirs();
         }
-        
+
         createParametersFile();
 
         // make sure that the comet file is executable
@@ -165,6 +165,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         BufferedWriter br = new BufferedWriter(new FileWriter(new File(cometTempFolder, "comet.params")));
 
         String precursorToleranceType; // @TODO: what about mmu?
+
         if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
             precursorToleranceType = "0";
         } else {
@@ -172,6 +173,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         String theoretical_Fragment_ions;
+
         if (cometParameters.getTheoreticalFragmentIonsSumOnly()) {
             theoretical_Fragment_ions = "1";
         } else {
@@ -179,13 +181,15 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         String clip_nterm_methionine;
+
         if (cometParameters.getRemoveMethionine()) {
             clip_nterm_methionine = "1";
         } else {
             clip_nterm_methionine = "0";
         }
 
-        int enzymeId = -1;
+        int enzyme1Id = -1;
+        int enzyme2Id = 0; // 0 means no second enzyme
         Integer nMissedCleavages = 2;
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         Integer enzymeType = cometParameters.getEnzymeType();
@@ -193,53 +197,93 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
 
-            Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
-            String enzymeName = enzyme.getName();
-            nMissedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
+            Enzyme enzyme1 = digestionPreferences.getEnzymes().get(0);
+            Enzyme enzyme2 = null;
+
+            if (digestionPreferences.getEnzymes().size() > 1) {
+                enzyme2 = digestionPreferences.getEnzymes().get(1);
+            }
+
+            String enzyme1Name = enzyme1.getName();
+
+            // @TODO: support enzyme-specific missed cleavages?
+            nMissedCleavages = digestionPreferences.getnMissedCleavages(enzyme1Name);
+
             if (nMissedCleavages > 5) {
                 nMissedCleavages = 5;
             }
 
-            DigestionParameters.Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
+            // @TODO: support enzyme-specific specificity?
+            DigestionParameters.Specificity specificity = digestionPreferences.getSpecificity(enzyme1Name);
+
             if (null != specificity) {
+
                 switch (specificity) {
                     case semiSpecific:
                         enzymeType = 1;
                         break;
+
                     case specific:
                         enzymeType = 2;
                         break;
+
                     case specificNTermOnly:
                         enzymeType = 8;
                         break;
+
                     case specificCTermOnly:
                         enzymeType = 9;
                         break;
+
                     default:
                         break;
                 }
+
             }
-            boolean found = false;
+
+            boolean enzyme1found = false;
+            boolean enzyme2found = false;
+
             for (int i = 1; i < enzymes.size(); i++) {
+
                 Enzyme tempEnzyme = enzymes.get(i - 1);
-                if (enzyme.equals(tempEnzyme)) {
-                    enzymeId = i;
-                    found = true;
-                    break;
+
+                if (enzyme1.equals(tempEnzyme)) {
+
+                    enzyme1Id = i;
+                    enzyme1found = true;
+
+                } else if (enzyme2 != null && enzyme2.equals(tempEnzyme)) {
+
+                    enzyme2Id = i;
+                    enzyme2found = true;
+
                 }
+
             }
-            if (!found) {
-                throw new IllegalArgumentException("No index found for enzyme " + enzymeName + ".");
+
+            if (!enzyme1found) {
+                throw new IllegalArgumentException("No index found for enzyme " + enzyme1Name + ".");
             }
+
+            if (enzyme2 != null && !enzyme2found) {
+                throw new IllegalArgumentException("No index found for enzyme " + enzyme2.getName() + ".");
+            }
+
         } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
+
             enzymeType = 2;
-            enzymeId = enzymes.size() + 1;
+            enzyme1Id = enzymes.size() + 1;
+
         } else {
+
             enzymeType = 1;
-            enzymeId = enzymes.size() + 2;
+            enzyme1Id = enzymes.size() + 2;
+
         }
 
         try {
+
             br.write(
                     /////////////////////////
                     // comet header
@@ -277,9 +321,9 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "#" + System.getProperty("line.separator")
                     + "# search enzyme" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
-                    + "search_enzyme_number = " + enzymeId + "           # choose from list at end of this params file" + System.getProperty("line.separator")
-                    + "search_enzyme2_number = 0           # second enzyme; set to 0 if no second enzyme" + System.getProperty("line.separator") // @TODO: implement?
-                    + "num_enzyme_termini = " + enzymeType + "           # valid values are 1 (semi-digested), 2 (fully digested, default), 8 N-term, 9 C-term" + System.getProperty("line.separator")
+                    + "search_enzyme_number = " + enzyme1Id + "           # choose from list at end of this params file" + System.getProperty("line.separator")
+                    + "search_enzyme2_number = " + enzyme2Id + "          # second enzyme; set to 0 if no second enzyme" + System.getProperty("line.separator") // @TODO: implement?
+                    + "num_enzyme_termini = " + enzymeType + "            # valid values are 1 (semi-digested), 2 (fully digested, default), 8 N-term, 9 C-term" + System.getProperty("line.separator")
                     + "allowed_missed_cleavage = " + nMissedCleavages + "           # maximum value is 5; for enzyme search" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
@@ -321,7 +365,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "print_expect_score = " + Util.convertBooleanToInteger(cometParameters.getPrintExpectScore()) + "                 # 0=no, 1=yes to replace Sp with expect in out & sqt" + System.getProperty("line.separator")
                     + "num_output_lines = " + cometParameters.getNumberOfSpectrumMatches() + "                 # num peptide results to show" + System.getProperty("line.separator")
                     + "show_fragment_ions = 0                 # 0=no, 1=yes for out files only" + System.getProperty("line.separator")
-                    + "sample_enzyme_number = " + enzymeId + "               # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator")
+                    + "sample_enzyme_number = " + enzyme1Id + "               # Sample enzyme which is possibly different than the one applied to the search." + System.getProperty("line.separator")
                     + "                                       # Used to calculate NTT & NMC in pepXML output (default=1 for trypsin)." + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
@@ -343,7 +387,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "# misc parameters" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
                     + "digest_mass_range = " + cometParameters.getMinPrecursorMass() + " " + cometParameters.getMaxPrecursorMass() + "                 # MH+ peptide mass range to analyze" + System.getProperty("line.separator")
-                    + "peptide_length_range = " + cometParameters.getMinPeptideLength() + " " + cometParameters.getMaxPeptideLength() + "                 # minimum and maximum peptide length to analyze (default 1 63; max length 63)"  + System.getProperty("line.separator")
+                    + "peptide_length_range = " + cometParameters.getMinPeptideLength() + " " + cometParameters.getMaxPeptideLength() + "                 # minimum and maximum peptide length to analyze (default 1 63; max length 63)" + System.getProperty("line.separator")
                     + "num_results = " + cometParameters.getNumberOfSpectrumMatches() + "                 # number of search hits to store internally" + System.getProperty("line.separator")
                     + "max_duplicate_proteins = 0             # maximum number of protein names to report for each peptide identification; -1 reports all duplicates" + System.getProperty("line.separator") // @TODO: implement?
                     + "skip_researching = 1                   # for '.out' file output only, 0=search everything again (default), 1=don't search if .out exists" + System.getProperty("line.separator")
@@ -377,10 +421,10 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     // enzyme properties
                     /////////////////////////
                     + getEnzymeListing()
-                    /////////////////////////
-                    // parameters not yet implemented:
-                    // explicit_deltacn which controls how the deltaCn output score is calculated
-                    /////////////////////////
+            /////////////////////////
+            // parameters not yet implemented:
+            // explicit_deltacn which controls how the deltaCn output score is calculated
+            /////////////////////////
             );
         } finally {
             br.close();
@@ -489,21 +533,39 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
             // add targeted residues
             if (modificationCometPattern.length() == 0) {
-                if (modification.getModificationType() == ModificationType.modc_peptide
-                        || modification.getModificationType() == ModificationType.modc_protein
-                        || modification.getModificationType() == ModificationType.modcaa_peptide
-                        || modification.getModificationType() == ModificationType.modcaa_protein) {
-                    result.append("c");
-                } else if (modification.getModificationType() == ModificationType.modn_peptide
-                        || modification.getModificationType() == ModificationType.modn_protein
-                        || modification.getModificationType() == ModificationType.modnaa_peptide
-                        || modification.getModificationType() == ModificationType.modnaa_protein) {
-                    result.append("n");
-                } else {
+
+                if (modification.getModificationType() == null) {
+
                     result.append("X");
+
+                } else {
+
+                    switch (modification.getModificationType()) {
+                        case modc_peptide:
+                        case modc_protein:
+                        case modcaa_peptide:
+                        case modcaa_protein:
+                            result.append("c");
+                            break;
+
+                        case modn_peptide:
+                        case modn_protein:
+                        case modnaa_peptide:
+                        case modnaa_protein:
+                            result.append("n");
+                            break;
+
+                        default:
+                            result.append("X");
+                            break;
+                    }
+
                 }
+
             } else {
+
                 result.append(modificationCometPattern);
+
             }
 
             // add variable modification tag:
@@ -532,24 +594,30 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
             // add which terminus the terminus constraint applies to (protein or peptide, c or n term)
             switch (modification.getModificationType()) {
+
                 case modn_protein:
                 case modnaa_protein:
                     result.append("0 ");
                     break;
+
                 case modn_peptide:
                 case modnaa_peptide:
                     result.append("2 ");
                     break;
+
                 case modc_protein:
                 case modcaa_protein:
                     result.append("1 ");
                     break;
+
                 case modc_peptide:
                 case modcaa_peptide:
                     result.append("3 ");
                     break;
+
                 default:
                     result.append("0 ");
+
             }
 
             // add whether peptides must contain this modification
@@ -560,23 +628,27 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // add fragment neutral loss
             //      For any fragment ion that contain the variable modification, a neutral loss will 
             //      also be analyzed if the specified neutral loss value is not zero (0.0).
-            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) { 
+            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) {
                 result.append(" ").append(modification.getNeutralLosses().get(0).getMass()); // @TODO: verify wether only taking the first neutal ion is always the best option?
             }
-            
+
             result.append(System.getProperty("line.separator"));
-   
+
         }
 
         // add empty lines for the remaining modification parameter lines
         while (++cpt < 10) {
+
             result.append("variable_mod");
+
             if (cpt < 10) {
                 result.append("0");
             }
+
             result.append(cpt);
             result.append(" = 0.0 X 0 3 -1 0 0");
             result.append(System.getProperty("line.separator"));
+
         }
 
         // set the max variable modifications per peptide
@@ -606,8 +678,11 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 peptideNTermModification = 0;
 
         for (String modName : searchParameters.getModificationParameters().getFixedModifications()) {
+
             Modification modification = modificationFactory.getModification(modName);
+
             switch (modification.getModificationType()) {
+
                 case modaa:
                     for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
                         Double modificationMass = residueToModificationMap.get(aminoAcid);
@@ -618,21 +693,27 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                         }
                     }
                     break;
+
                 case modc_protein:
                     proteinCtermModification += modification.getRoundedMass();
                     break;
+
                 case modn_protein:
                     proteinNtermModification += modification.getRoundedMass();
                     break;
+
                 case modc_peptide:
                     peptideCtermModification += modification.getRoundedMass();
                     break;
+
                 case modn_peptide:
                     peptideNTermModification += modification.getRoundedMass();
                     break;
+
                 default:
                     break;
             }
+
         }
 
         StringBuilder result = new StringBuilder();
@@ -829,27 +910,40 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             String restriction = "-";
 
             if (enzyme.getAminoAcidBefore().isEmpty()) {
+
                 cleavageType = "0";
+
                 for (Character character : enzyme.getAminoAcidAfter()) {
                     cleavageSite += character;
                 }
+
                 if (!enzyme.getRestrictionBefore().isEmpty()) {
+
                     restriction = "";
+
                     for (Character character : enzyme.getRestrictionBefore()) {
                         restriction += character;
                     }
+
                 }
+
             } else {
+
                 cleavageType = "1";
+
                 for (Character character : enzyme.getAminoAcidBefore()) {
                     cleavageSite += character;
                 }
+
                 if (!enzyme.getRestrictionAfter().isEmpty()) {
+
                     restriction = "";
+
                     for (Character character : enzyme.getRestrictionAfter()) {
                         restriction += character;
                     }
                 }
+
             }
 
             String currentEnzymeAsString = i + ". "
@@ -860,6 +954,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + System.getProperty("line.separator");
 
             enzymeMap.put(i, currentEnzymeAsString);
+
         }
 
         // whole protein
@@ -907,10 +1002,12 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
      * @return 1 if the given output is to be generated, 0 otherwise
      */
     private int outputFormat(CometOutputFormat cometOutputFormat) {
+
         if (cometParameters.getSelectedOutputFormat() == cometOutputFormat) {
             return 1;
         } else {
             return 0;
         }
+
     }
 }

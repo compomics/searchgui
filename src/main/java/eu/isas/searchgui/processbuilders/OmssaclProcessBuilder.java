@@ -590,15 +590,17 @@ public class OmssaclProcessBuilder extends SearchGUIProcessBuilder {
      * @param digestionPreferences the digestion preferences
      *
      * @return the OMSSA enzyme index corresponding to the digestion preferences
+     * 
+     * @throws IOException exception thrown whenever an IO error occurs
      */
-    private int getEnzymeIndex(DigestionParameters digestionPreferences) {
+    private int getEnzymeIndex(DigestionParameters digestionPreferences) throws IOException {
 
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
             return 11;
         } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             return 17;
         } else if (digestionPreferences.getEnzymes().size() > 1) {
-            return 17;
+            throw new IOException("Multiple enzymes not supported by OMSSA!");
         }
 
         Enzyme enzyme = digestionPreferences.getEnzymes().get(0);

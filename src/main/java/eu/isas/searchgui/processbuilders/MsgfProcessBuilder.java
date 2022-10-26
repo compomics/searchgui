@@ -136,7 +136,7 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // create the ms-gf+ params folder
         File msgfParamsFolder = new File(msgfTempFolder, "params");
         msgfParamsFolder.mkdir();
-        
+
         // create the ms-gf+ modification file
         msgfModFile = new File(msgfParamsFolder, MOD_FILE);
         createModificationsFile();
@@ -266,7 +266,6 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // set mass of charge carrier, default: mass of proton (1.00727649)
         //process_name_array.add("-ccm");
         //process_name_array.add("1.00727649"); // @TODO: implement?
-
         // set the maximum missed cleavages
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
@@ -295,7 +294,6 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         // set the report level
         //process_name_array.add("-verbose");
         //process_name_array.add("1"); // @TODO: implement per-thread progress? i.e. set to 0
-        
         process_name_array.trimToSize();
 
         // print the command to the log file
@@ -379,9 +377,9 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         enzymeMap = new HashMap<>();
 
         try {
-            
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(msgfEnzymesFile));
-            
+
             try {
 
                 EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
@@ -519,16 +517,19 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      * @param digestionPreferences the utilities digestion preferences
      *
      * @return the index of the MS-GF+ enzyme
+     * 
+     * @throws IOException exception thrown whenever an IO error occurs
      */
-    private Integer getEnzymeMapping(DigestionParameters digestionPreferences) {
+    private Integer getEnzymeMapping(DigestionParameters digestionPreferences) throws IOException {
+
+        if (digestionPreferences.getEnzymes().size() > 1) {
+            throw new IOException("Multiple enzymes not supported by MS-GF+!");
+        }
 
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
             return 9;
         }
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
-            return 0;
-        }
-        if (digestionPreferences.getEnzymes().size() > 1) {
             return 0;
         }
 

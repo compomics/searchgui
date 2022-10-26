@@ -204,7 +204,8 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
-     * @param nThreads the number of threads to use (note: cannot be used)
+     * @param nThreads the number of threads to use (note: note supported by ms amanda)
+     * @throws java.io.IOException thrown whenever an IO error occurs
      */
     public MsAmandaProcessBuilder(
             File msAmandaDirectory,
@@ -216,7 +217,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             WaitingHandler waitingHandler,
             ExceptionHandler exceptionHandler,
             int nThreads
-    ) {
+    ) throws IOException {
 
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
@@ -270,7 +271,12 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         // set the digestion preferences
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
-            Enzyme enzyme = digestionPreferences.getEnzymes().get(0);
+            
+            if (digestionPreferences.getEnzymes().size() > 1) {
+                 throw new IOException("Multiple enzymes not supported by MS Amanda!");
+            }
+            
+            Enzyme enzyme = digestionPreferences.getEnzymes().get(0); // @TODO: support more than one enzyme?
             enzymeName = enzyme.getName();
             Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
             if (specificity == Specificity.specific) {

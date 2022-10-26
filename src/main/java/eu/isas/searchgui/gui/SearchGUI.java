@@ -84,6 +84,7 @@ import com.compomics.util.parameters.identification.tool_specific.XtandemParamet
 import com.compomics.util.parameters.tools.ProcessingParameters;
 import com.compomics.util.parameters.searchgui.OutputParameters;
 import com.compomics.util.parameters.UtilitiesUserParameters;
+import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.tool_specific.MetaMorpheusParameters;
 import com.google.common.collect.Sets;
 import eu.isas.searchgui.SearchGUIWrapper;
@@ -3061,6 +3062,38 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     return;
 
                 }
+            }
+        }
+
+        // check if all selected search engines support the number of selected enzymes
+        if (searchParameters.getDigestionParameters().getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+
+            if (searchParameters.getDigestionParameters().getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
+
+                if (searchParameters.getDigestionParameters().getEnzymes().size() > 1) {
+
+                    if ((enableMsAmandaJCheckBox.isSelected()
+                            || enableMsgfJCheckBox.isSelected()
+                            || enableOmssaJCheckBox.isSelected()
+                            || enableTideJCheckBox.isSelected()
+                            || enableMetaMorpheusJCheckBox.isSelected())
+                            || (enableCometJCheckBox.isSelected() && searchParameters.getDigestionParameters().getEnzymes().size() > 2)) {
+
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Only X! Tandem, Comet, MyriMatch and Andromeda supports the use of more than\n"
+                                + "one enzyme at the time (Comet supports up to two). Please select a different\n"
+                                + "set of search engines or change your enzyme settings.",
+                                "Enzyme Warning",
+                                JOptionPane.WARNING_MESSAGE
+                        );
+
+                        return;
+
+                    }
+
+                }
+
             }
         }
 

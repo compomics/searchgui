@@ -84,8 +84,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      *
-     * @throws IOException thrown whenever an error occurred while reading or
-     * writing a file.
+     * @throws IOException thrown whenever an IO error occurs
      */
     public MetaMorpheusProcessBuilder(
             File metaMorpheusFolder,
@@ -245,8 +244,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @return the parameter file
      *
-     * @throws IOException exception thrown whenever an error occurred while
-     * writing the configuration file
+     * @throws IOException exception thrown whenever an IO error occurs
      */
     private File createParameterFile(SearchParameters searchParameters, MetaMorpheusTaskType taskType) throws IOException {
 
@@ -266,7 +264,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
                 enzymeName = "Unspecific";
                 missedCleavages = 24;
             } else if (digestionParameters.getEnzymes().size() > 1) {
-                throw new IOException("Multiple enzymes not supported!");
+                throw new IOException("Multiple enzymes not supported by MetaMorpheus!");
             } else {
                 Enzyme enzyme = digestionParameters.getEnzymes().get(0);
                 enzymeName = enzyme.getName();

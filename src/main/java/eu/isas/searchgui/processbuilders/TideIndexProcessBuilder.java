@@ -146,7 +146,6 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 //            process_name_array.add("--min-mods");
 //            process_name_array.add(tideParameters.getMinVariableModificationsPerPeptide().toString());
 //        }
-
         // the max number of modifications per peptide
         if (tideParameters.getMaxVariableModificationsPerPeptide() != null) {
             process_name_array.add("--max-mods");
@@ -296,6 +295,13 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
                         process_name_array.add("" + missedCleavages);
 
                     } else {
+
+                        // @TODO: can perhaps be removed in newer versions of tide?
+                        if (digestionPreferences.getEnzymes().size() > 1) {
+                            throw new IOException("Multiple enzymes not supported by Tide!");
+                        }
+
+                        // note: the below code works, but tide complains if given more than one enzyme...
                         process_name_array.add("--custom-enzyme");
                         process_name_array.add(digestionPreferences.getXTandemFormat());
 
