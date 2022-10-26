@@ -3082,8 +3082,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         JOptionPane.showMessageDialog(
                                 this,
                                 "Only X! Tandem, Comet, MyriMatch and Andromeda supports the use of more than\n"
-                                + "one enzyme at the time (Comet supports up to two). Please select a different\n"
-                                + "set of search engines or change your enzyme settings.",
+                                + "one enzyme at the time (Comet supports up to two). Please select a different set\n"
+                                + "of search engines or change your enzyme settings.",
                                 "Enzyme Warning",
                                 JOptionPane.WARNING_MESSAGE
                         );
