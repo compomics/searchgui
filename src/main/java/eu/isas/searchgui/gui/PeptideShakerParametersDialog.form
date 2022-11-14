@@ -307,7 +307,7 @@
                           <Component id="mascotFilesTextField" max="32767" attributes="0"/>
                           <Component id="projectSettingsTxt" alignment="0" pref="476" max="32767" attributes="3"/>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="browseMascotFilesButton" pref="70" max="32767" attributes="0"/>
@@ -329,7 +329,7 @@
                           <Component id="projectSettingsTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="editProjectSettingsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="mascotFilesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="mascotFilesTextField" alignment="3" min="-2" max="-2" attributes="0"/>

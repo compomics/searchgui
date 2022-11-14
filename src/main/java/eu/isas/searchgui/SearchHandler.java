@@ -129,6 +129,10 @@ public class SearchHandler {
      */
     private boolean enableMetaMorpheus = false;
     /**
+     * If true, Sage will be used.
+     */
+    private boolean enableSage = false;
+    /**
      * If true, Novor will be used.
      */
     private boolean enableNovor = false;
@@ -205,6 +209,10 @@ public class SearchHandler {
      */
     private File metaMorpheusLocation = null;
     /**
+     * The Sage location.
+     */
+    private File sageLocation = null;
+    /**
      * The Novor location.
      */
     private File novorLocation = null;
@@ -280,6 +288,10 @@ public class SearchHandler {
      * The MetaMorpheus process.
      */
     private MetaMorpheusProcessBuilder metaMorpheusProcessBuilder = null;
+    /**
+     * The Sage process.
+     */
+    private SageProcessBuilder sageProcessBuilder = null;
     /**
      * The Novor process.
      */
@@ -402,6 +414,7 @@ public class SearchHandler {
                 false,
                 false
         );
+
         enableXtandem = loadSearchEngineLocation(
                 Advocate.xtandem,
                 false,
@@ -412,6 +425,7 @@ public class SearchHandler {
                 false,
                 true
         );
+
         enableMsgf = loadSearchEngineLocation(
                 Advocate.msgf,
                 true,
@@ -422,6 +436,7 @@ public class SearchHandler {
                 false,
                 false
         );
+
         enableMsAmanda = loadSearchEngineLocation(
                 Advocate.msAmanda,
                 false,
@@ -432,6 +447,7 @@ public class SearchHandler {
                 false,
                 false
         );
+
         enableMyriMatch = loadSearchEngineLocation(
                 Advocate.myriMatch,
                 false,
@@ -442,6 +458,7 @@ public class SearchHandler {
                 false,
                 true
         );
+
         enableComet = loadSearchEngineLocation(
                 Advocate.comet,
                 false,
@@ -452,6 +469,7 @@ public class SearchHandler {
                 false,
                 false
         );
+
         enableTide = loadSearchEngineLocation(
                 Advocate.tide,
                 false,
@@ -462,6 +480,7 @@ public class SearchHandler {
                 false,
                 false
         );
+
         enableAndromeda = loadSearchEngineLocation(
                 Advocate.andromeda,
                 false,
@@ -472,6 +491,7 @@ public class SearchHandler {
                 false,
                 false
         );
+
         enableMetaMorpheus = loadSearchEngineLocation(
                 Advocate.metaMorpheus,
                 true,
@@ -482,6 +502,18 @@ public class SearchHandler {
                 false,
                 false
         );
+
+        enableSage = loadSearchEngineLocation(
+                Advocate.sage,
+                false,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+        );
+
         enableNovor = loadSearchEngineLocation(
                 Advocate.novor,
                 true,
@@ -492,6 +524,7 @@ public class SearchHandler {
                 false,
                 false
         );
+
         enableDirecTag = loadSearchEngineLocation(
                 Advocate.direcTag,
                 false,
@@ -502,6 +535,7 @@ public class SearchHandler {
                 false,
                 true
         );
+
         this.identificationParametersFile = identificationParametersFile;
         this.processingParameters = processingParameters;
         this.identificationParameters = identificationParameters;
@@ -532,6 +566,7 @@ public class SearchHandler {
      * @param runTide if true, the Tide search is enabled
      * @param runAndromeda if true, the Andromeda search is enabled
      * @param runMetaMorpheus if true, the MetaMorpheus search is enabled
+     * @param runSage if true, the Sage search is enabled
      * @param runNovor if true, the Novor search is enabled
      * @param runDirecTag if true, the DirecTag search is enabled
      * @param omssaFolder the folder where OMSSA is installed, if null the
@@ -552,6 +587,8 @@ public class SearchHandler {
      * the default location is used
      * @param metaMorpheusFolder the folder where MetaMorpheus is installed, if
      * null the default location is used
+     * @param sageFolder the folder where Sage is installed, if null the default
+     * location is used
      * @param novorFolder the folder where Novor is installed, if null the
      * default location is used
      * @param direcTagFolder the folder where DirecTag is installed, if null the
@@ -577,6 +614,7 @@ public class SearchHandler {
             boolean runTide,
             boolean runAndromeda,
             boolean runMetaMorpheus,
+            boolean runSage,
             boolean runNovor,
             boolean runDirecTag,
             File omssaFolder,
@@ -588,6 +626,7 @@ public class SearchHandler {
             File tideFolder,
             File andromedaFolder,
             File metaMorpheusFolder,
+            File sageFolder,
             File novorFolder,
             File direcTagFolder,
             File makeblastdbFolder,
@@ -611,6 +650,7 @@ public class SearchHandler {
         this.enableTide = runTide;
         this.enableAndromeda = runAndromeda;
         this.enableMetaMorpheus = runMetaMorpheus;
+        this.enableSage = runSage;
         this.enableNovor = runNovor;
         this.enableDirecTag = runDirecTag;
 
@@ -753,6 +793,21 @@ public class SearchHandler {
             ); // try to use the default
         }
 
+        if (sageFolder != null) {
+            this.sageLocation = sageFolder;
+        } else {
+            loadSearchEngineLocation(
+                    Advocate.sage,
+                    false,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
+        }
+
         if (novorFolder != null) {
             this.novorLocation = novorFolder;
         } else {
@@ -858,6 +913,7 @@ public class SearchHandler {
      * Cancel the search.
      */
     public void cancelSearch() {
+
         searchWorker.cancelRun();
 
         if (waitingHandler != null) {
@@ -1082,6 +1138,7 @@ public class SearchHandler {
 
         boolean enableSearchEngine = false;
         String advocateName;
+
         if (searchEngineAdvocate == null) {
             advocateName = "makeblastdb";
         } else {
@@ -1095,15 +1152,22 @@ public class SearchHandler {
         File searchEngineLoation = null;
 
         if (folder.exists()) {
+
             File input = new File(folder, SEARCHGUI_CONFIGURATION_FILE);
+
             try {
+
                 BufferedReader br = new BufferedReader(new FileReader(input));
                 String line;
+
                 while ((line = br.readLine()) != null) {
+
                     line = line.trim();
+
                     if (line.equals("") || line.startsWith("#")) {
                         // skip empty lines and comment ('#') lines.
                     } else if (line.equals(advocateName + " Location:")) {
+
                         String result = br.readLine().trim();
                         searchEngineLoation = new File(result);
 
@@ -1121,6 +1185,7 @@ public class SearchHandler {
 
                                 // default to the correct version for the given os
                                 if (operatingSystem.contains("windows") && windowsSupported) {
+
                                     if (!windowsBitVersions) {
                                         searchEngineLoation = new File(basePath + File.separator + "windows");
                                     } else if (is64Bit) {
@@ -1128,7 +1193,9 @@ public class SearchHandler {
                                     } else {
                                         searchEngineLoation = new File(basePath + File.separator + "windows" + File.separator + "windows_32bit");
                                     }
+
                                 } else if (operatingSystem.contains("mac os") && osxSupported) {
+
                                     if (!osxBitVersions) {
                                         searchEngineLoation = new File(basePath + File.separator + "osx");
                                     } else if (is64Bit) {
@@ -1136,7 +1203,9 @@ public class SearchHandler {
                                     } else {
                                         searchEngineLoation = new File(basePath + File.separator + "osx" + File.separator + "osx_32bit");
                                     }
+
                                 } else if ((operatingSystem.contains("nix") || operatingSystem.contains("nux")) && linuxSupported) {
+
                                     if (!linuxBitVersions) {
                                         searchEngineLoation = new File(basePath + File.separator + "linux");
                                     } else if (is64Bit) {
@@ -1144,34 +1213,51 @@ public class SearchHandler {
                                     } else {
                                         searchEngineLoation = new File(basePath + File.separator + "linux" + File.separator + "linux_32bit");
                                     }
+
                                 } else {
                                     // unsupported OS version
                                     searchEngineLoation = null;
                                 }
+
                             }
+
                         } else {
                             searchEngineLoation = new File(result); // use given location
                         }
 
                         if (searchEngineLoation == null) {
+
                             enableSearchEngine = false;
+
                         } else {
+
                             String selected = br.readLine().trim();
+
                             if (selected.length() > 0) {
                                 enableSearchEngine = Boolean.parseBoolean(selected);
                             } else {
                                 enableSearchEngine = true;
                             }
+
                         }
                     }
                 }
+
                 br.close();
+
             } catch (IOException ioe) {
+
                 enableSearchEngine = false;
                 ioe.printStackTrace();
-                JOptionPane.showMessageDialog(null, "An error occurred when trying to load the " + advocateName + " location.",
-                        "Configuration Import Error", JOptionPane.ERROR_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "An error occurred when trying to load the " + advocateName + " location.",
+                        "Configuration Import Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
+
         } else {
             enableSearchEngine = false;
         }
@@ -1195,6 +1281,8 @@ public class SearchHandler {
                 andromedaLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.metaMorpheus) {
                 metaMorpheusLocation = searchEngineLoation;
+            } else if (searchEngineAdvocate == Advocate.sage) {
+                sageLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.novor) {
                 novorLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.direcTag) {
@@ -1367,6 +1455,17 @@ public class SearchHandler {
      */
     public static String getMsgfFileName(String spectrumFileName) {
         return IoUtil.removeExtension(spectrumFileName) + ".msgf.mzid";
+    }
+
+    /**
+     * Returns the name of the Sage result file.
+     *
+     * @param spectrumFileName the spectrum file name
+     *
+     * @return the name of the Sage result file
+     */
+    public static String getSageFileName(String spectrumFileName) {
+        return "results.sage.tsv";
     }
 
     /**
@@ -1609,6 +1708,24 @@ public class SearchHandler {
     }
 
     /**
+     * Returns the Sage location.
+     *
+     * @return the Sage location
+     */
+    public File getSageLocation() {
+        return sageLocation;
+    }
+
+    /**
+     * Set the Sage location.
+     *
+     * @param sageLocation the Sage location to set
+     */
+    public void setSageLocation(File sageLocation) {
+        this.sageLocation = sageLocation;
+    }
+
+    /**
      * Returns the Novor location.
      *
      * @return the Novor location
@@ -1780,6 +1897,15 @@ public class SearchHandler {
     }
 
     /**
+     * Returns true if Sage is to be used.
+     *
+     * @return if Sage is to be used
+     */
+    public boolean isSageEnabled() {
+        return enableSage;
+    }
+
+    /**
      * Returns true if Novor is to be used.
      *
      * @return if Novor is to be used
@@ -1867,6 +1993,15 @@ public class SearchHandler {
      */
     public void setMetaMorpheusEnabled(boolean runMetaMorpheus) {
         this.enableMetaMorpheus = runMetaMorpheus;
+    }
+
+    /**
+     * Set if Sage is to be used.
+     *
+     * @param runSage run Sage?
+     */
+    public void setSageEnabled(boolean runSage) {
+        this.enableSage = runSage;
     }
 
     /**
@@ -2135,6 +2270,9 @@ public class SearchHandler {
             if (metaMorpheusProcessBuilder != null) {
                 metaMorpheusProcessBuilder.endProcess();
             }
+            if (sageProcessBuilder != null) {
+                sageProcessBuilder.endProcess();
+            }
             if (novorProcessBuilder != null) {
                 novorProcessBuilder.endProcess();
             }
@@ -2202,6 +2340,9 @@ public class SearchHandler {
                     nProgress++; // the adromeda indexing
                 }
                 if (enableMetaMorpheus) {
+                    nProgress += nFilesToSearch;
+                }
+                if (enableSage) {
                     nProgress += nFilesToSearch;
                 }
                 if (enableNovor) {
@@ -2602,7 +2743,7 @@ public class SearchHandler {
                     }
 
                     waitingHandler.appendReportEndLine();
-                    
+
                     waitingHandler.resetSecondaryProgressCounter();
                     waitingHandler.setSecondaryProgressCounterIndeterminate(true);
 
@@ -3255,6 +3396,87 @@ public class SearchHandler {
 
                     }
 
+                    // Run Sage
+                    if (enableSage && !waitingHandler.isRunCanceled()) {
+
+                        // @TODO: support multiple spectrum files resulting in one combined results file?
+                        File sageOutputFile = new File(outputTempFolder, IoUtil.removeExtension(spectrumFileName) + ".sage.tsv");
+                        File sageTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "sage");
+
+                        sageProcessBuilder = new SageProcessBuilder(
+                                sageLocation,
+                                sageTempFolder,
+                                searchParameters,
+                                spectrumFile,
+                                fastaFile,
+                                waitingHandler,
+                                exceptionHandler,
+                                processingParameters.getnThreads()
+                        );
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFileName + " with " + Advocate.sage.getName() + ".",
+                                true,
+                                true
+                        );
+                        waitingHandler.appendReportEndLine();
+                        sageProcessBuilder.startProcess();
+
+                        if (!waitingHandler.isRunCanceled()) {
+
+                            File tempResultFile = new File(
+                                    sageTempFolder.getAbsolutePath(),
+                                    getSageFileName(spectrumFileName));
+
+                            if (tempResultFile.exists()) {
+
+                                IoUtil.copyFile(tempResultFile, sageOutputFile);
+
+                                try {
+                                    tempResultFile.delete();
+                                } catch (Exception e) {
+                                    waitingHandler.appendReport(
+                                            "An error occurred when attempting to delete " + tempResultFile.getName() + ".",
+                                            true,
+                                            true
+                                    );
+                                }
+
+                                HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
+                                if (runIdentificationFiles == null) {
+
+                                    runIdentificationFiles = new HashMap<>();
+                                    identificationFiles.put(spectrumFileName, runIdentificationFiles);
+
+                                }
+
+                                if (sageOutputFile.exists()) {
+
+                                    runIdentificationFiles.put(Advocate.sage.getIndex(), sageOutputFile);
+                                    idFileToSpectrumFileMap.put(sageOutputFile.getName(), spectrumFile);
+
+                                } else {
+
+                                    waitingHandler.appendReport(
+                                            "Could not find " + Advocate.sage.getName() + " result file for " + spectrumFileName + ".",
+                                            true,
+                                            true
+                                    );
+
+                                }
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.sage.getName() + " .mzID file for " + spectrumFileName + ".",
+                                        true,
+                                        true
+                                );
+                            }
+
+                        }
+
+                    }
+
                     // Run Novor
                     if (enableNovor && !waitingHandler.isRunCanceled()) {
 
@@ -3655,6 +3877,27 @@ public class SearchHandler {
 
                                 waitingHandler.appendReport(
                                         "Could not find " + Advocate.metaMorpheus.getName() + " results.",
+                                        true,
+                                        true
+                                );
+                            }
+                        }
+                        if (enableSage) {
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.sage.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
+                            if (outputFile.exists()) {
+
+                                identificationFilesList.add(outputFile);
+
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.sage.getName() + " results.",
                                         true,
                                         true
                                 );
@@ -4098,7 +4341,7 @@ public class SearchHandler {
 
                     File file = entry2.getValue();
                     File gzFile;
-                    
+
                     if (!file.getAbsolutePath().endsWith(GZ_EXTENSION)) {
                         gzFile = new File(file.getAbsolutePath() + ".gz");
                     } else {

@@ -11,6 +11,7 @@ import eu.isas.searchgui.processbuilders.MsgfProcessBuilder;
 import eu.isas.searchgui.processbuilders.MyriMatchProcessBuilder;
 import eu.isas.searchgui.processbuilders.NovorProcessBuilder;
 import eu.isas.searchgui.processbuilders.OmssaclProcessBuilder;
+import eu.isas.searchgui.processbuilders.SageProcessBuilder;
 import eu.isas.searchgui.processbuilders.TandemProcessBuilder;
 import eu.isas.searchgui.processbuilders.TideSearchProcessBuilder;
 import java.awt.Color;
@@ -77,6 +78,10 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      */
     private boolean metaMorpheusValid = true;
     /**
+     * True if the Sage installation is valid.
+     */
+    private boolean sageValid = true;
+    /**
      * True if the Novor installation is valid.
      */
     private boolean novorValid = true;
@@ -91,7 +96,11 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @param searchGUIMainFrame reference to the SearchGUI main frame
      * @param modal if the dialog is to be modal
      */
-    public SoftwareLocationDialog(SearchGUI searchGUIMainFrame, boolean modal) {
+    public SoftwareLocationDialog(
+            SearchGUI searchGUIMainFrame,
+            boolean modal
+    ) {
+
         super(searchGUIMainFrame, modal);
         this.searchGUIMainFrame = searchGUIMainFrame;
         initComponents();
@@ -100,6 +109,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         guiLoaded = true;
         setLocationRelativeTo(searchGUIMainFrame);
         setVisible(true);
+
     }
 
     /**
@@ -108,141 +118,214 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     private void loadSearchEngines() {
 
         if (searchGUIMainFrame.getSearchHandler().getOmssaLocation() != null) {
+
             omssaLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getOmssaLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isOmssaEnabled()) {
                 enableOmssaCombo.setSelectedItem("Enabled");
             } else {
                 enableOmssaCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             omssaLocationTxt.setText("");
             enableOmssaCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getXtandemLocation() != null) {
+
             xTandemLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getXtandemLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isXtandemEnabled()) {
                 enableXTandemCombo.setSelectedItem("Enabled");
             } else {
                 enableXTandemCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             xTandemLocationTxt.setText("");
             enableXTandemCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getMsgfLocation() != null) {
+
             msgfLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getMsgfLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isMsgfEnabled()) {
                 enableMsgfCombo.setSelectedItem("Enabled");
             } else {
                 enableMsgfCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             msgfLocationTxt.setText("");
             enableMsgfCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getMsAmandaLocation() != null) {
+
             msAmandaLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getMsAmandaLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isMsAmandaEnabled()) {
                 enableMsAmandaCombo.setSelectedItem("Enabled");
             } else {
                 enableMsAmandaCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             msAmandaLocationTxt.setText("");
             enableMsAmandaCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getMyriMatchLocation() != null) {
+
             myriMatchLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getMyriMatchLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isMyriMatchEnabled()) {
                 enableMyriMatchCombo.setSelectedItem("Enabled");
             } else {
                 enableMyriMatchCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             myriMatchLocationTxt.setText("");
             enableMyriMatchCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getCometLocation() != null) {
+
             cometLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getCometLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isCometEnabled()) {
                 enableCometCombo.setSelectedItem("Enabled");
             } else {
                 enableCometCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             cometLocationTxt.setText("");
             enableCometCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getTideLocation() != null) {
+
             tideLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getTideLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isTideEnabled()) {
                 enableTideCombo.setSelectedItem("Enabled");
             } else {
                 enableTideCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             tideLocationTxt.setText("");
             enableTideCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getAndromedaLocation() != null) {
+
             andromedaLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getAndromedaLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isAndromedaEnabled()) {
                 enableAndromedaCombo.setSelectedItem("Enabled");
             } else {
                 enableAndromedaCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             andromedaLocationTxt.setText("");
             enableAndromedaCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getMetaMorpheusLocation() != null) {
+
             metaMorpheusLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getMetaMorpheusLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isMetaMorpheusEnabled()) {
                 enableMetaMorpheusCombo.setSelectedItem("Enabled");
             } else {
                 enableMetaMorpheusCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             metaMorpheusLocationTxt.setText("");
             enableMetaMorpheusCombo.setSelectedItem("Disabled");
+
+        }
+
+        if (searchGUIMainFrame.getSearchHandler().getSageLocation() != null) {
+
+            sageLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getSageLocation().getAbsolutePath());
+
+            if (searchGUIMainFrame.getSearchHandler().isSageEnabled()) {
+                enableSageCombo.setSelectedItem("Enabled");
+            } else {
+                enableSageCombo.setSelectedItem("Disabled");
+            }
+
+        } else {
+
+            sageLocationTxt.setText("");
+            enableSageCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getNovorLocation() != null) {
+
             novorLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getNovorLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isNovorEnabled()) {
                 enableNovorCombo.setSelectedItem("Enabled");
             } else {
                 enableNovorCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             novorLocationTxt.setText("");
             enableNovorCombo.setSelectedItem("Disabled");
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getDirecTagLocation() != null) {
+
             direcTagLocationTxt.setText(searchGUIMainFrame.getSearchHandler().getDirecTagLocation().getAbsolutePath());
+
             if (searchGUIMainFrame.getSearchHandler().isDirecTagEnabled()) {
                 enableDirecTagCombo.setSelectedItem("Enabled");
             } else {
                 enableDirecTagCombo.setSelectedItem("Disabled");
             }
+
         } else {
+
             direcTagLocationTxt.setText("");
             enableDirecTagCombo.setSelectedItem("Disabled");
+
         }
 
         String operatingSystem = System.getProperty("os.name").toLowerCase();
 
         // disable myrimatch, comet and directag for mac
         if (operatingSystem.contains("mac os")) {
+
             myriMatchLocationTxt.setText("");
             myriMatchBrowse.setEnabled(false);
             enableMyriMatchCombo.setEnabled(false);
@@ -250,6 +333,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             direcTagLocationTxt.setText("");
             direcTagBrowse.setEnabled(false);
             enableDirecTagCombo.setEnabled(false);
+
         }
 
         if (searchGUIMainFrame.getSearchHandler().getMakeblastdbLocation() != null) {
@@ -319,6 +403,10 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         metaMorpheusLocationTxt = new javax.swing.JTextField();
         metaMorpheusBrowse = new javax.swing.JButton();
         enableMetaMorpheusCombo = new javax.swing.JComboBox();
+        sageLocationLabel = new javax.swing.JLabel();
+        sageLocationTxt = new javax.swing.JTextField();
+        sageBrowse = new javax.swing.JButton();
+        enableSageCombo = new javax.swing.JComboBox();
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -547,6 +635,24 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             }
         });
 
+        sageLocationLabel.setText("Sage");
+
+        sageLocationTxt.setEditable(false);
+
+        sageBrowse.setText("Browse");
+        sageBrowse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sageBrowseActionPerformed(evt);
+            }
+        });
+
+        enableSageCombo.setModel(new DefaultComboBoxModel(ENABLED_DISABLED));
+        enableSageCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableSageComboActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout searchEnginesLocationPanelLayout = new javax.swing.GroupLayout(searchEnginesLocationPanel);
         searchEnginesLocationPanel.setLayout(searchEnginesLocationPanelLayout);
         searchEnginesLocationPanelLayout.setHorizontalGroup(
@@ -583,6 +689,12 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesLocationPanelLayout.createSequentialGroup()
                         .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
+                                .addComponent(sageLocationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sageLocationTxt)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sageBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(searchEnginesLocationPanelLayout.createSequentialGroup()
                                 .addComponent(metaMorpheusLocationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -633,6 +745,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                                     .addComponent(makeblastdbBrowse, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(6, 6, 6)))
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(enableSageCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(enableMetaMorpheusCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(enableDirecTagCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(enableAndromedaCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -655,67 +768,73 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                     .addComponent(xTandemLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(xTandemBrowse)
                     .addComponent(enableXTandemCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enableMyriMatchCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchBrowse)
                     .addComponent(myriMatchLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(myriMatchLocationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enableMsAmandaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaBrowse)
                     .addComponent(msAmandaLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msAmandaLocationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(msgfLocationLabel)
                     .addComponent(msgfLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(enableMsgfCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(msgfBrowse))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enableOmssaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaBrowse)
                     .addComponent(omssaLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(omssaLocationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enableCometCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometBrowse)
                     .addComponent(cometLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cometLocationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enableTideCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideBrowse)
                     .addComponent(tideLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tideLocationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enableAndromedaCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaBrowse)
                     .addComponent(andromedaLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(andromedaLocationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enableMetaMorpheusCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(metaMorpheusBrowse)
                     .addComponent(metaMorpheusLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(metaMorpheusLocationLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
+                .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(enableSageCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sageBrowse)
+                    .addComponent(sageLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sageLocationLabel))
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(novorLocationLabel)
                     .addComponent(novorLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(novorBrowse)
                     .addComponent(enableNovorCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(direcTagLocationLabel)
                     .addComponent(direcTagLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(direcTagBrowse)
                     .addComponent(enableDirecTagCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(searchEnginesLocationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(makeblastdbBrowse)
                     .addComponent(makeblastdbLocationTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -802,8 +921,11 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+
         boolean valid = validateInput(true);
+
         if (valid) {
+
             searchGUIMainFrame.getSearchHandler().setOmssaLocation(getOmssaLocation());
             searchGUIMainFrame.getSearchHandler().setXtandemLocation(getXtandemLocation());
             searchGUIMainFrame.getSearchHandler().setMsgfLocation(getMsgfLocation());
@@ -813,10 +935,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
             searchGUIMainFrame.getSearchHandler().setTideLocation(getTideLocation());
             searchGUIMainFrame.getSearchHandler().setAndromedaLocation(getAndromedaLocation());
             searchGUIMainFrame.getSearchHandler().setMetaMorpheusLocation(getMetaMorpheusLocation());
+            searchGUIMainFrame.getSearchHandler().setSageLocation(getSageLocation());
             searchGUIMainFrame.getSearchHandler().setNovorLocation(getNovorLocation());
             searchGUIMainFrame.getSearchHandler().setDirecTagLocation(getDirecTagLocation());
             searchGUIMainFrame.getSearchHandler().setMakeblastdbLocation(getMakeblastdbLocation());
-            searchGUIMainFrame.enableSearchEngines(enableOmssaCombo.getSelectedIndex() == 0,
+
+            searchGUIMainFrame.enableSearchEngines(
+                    enableOmssaCombo.getSelectedIndex() == 0,
                     enableXTandemCombo.getSelectedIndex() == 0,
                     enableMsgfCombo.getSelectedIndex() == 0,
                     enableMsAmandaCombo.getSelectedIndex() == 0,
@@ -825,8 +950,11 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                     enableTideCombo.getSelectedIndex() == 0,
                     enableAndromedaCombo.getSelectedIndex() == 0,
                     enableMetaMorpheusCombo.getSelectedIndex() == 0,
+                    enableSageCombo.getSelectedIndex() == 0,
                     enableNovorCombo.getSelectedIndex() == 0,
-                    enableDirecTagCombo.getSelectedIndex() == 0);
+                    enableDirecTagCombo.getSelectedIndex() == 0
+            );
+
             dispose();
         }
     }//GEN-LAST:event_okButtonActionPerformed
@@ -837,6 +965,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+
         searchGUIMainFrame.enableSearchEngines(
                 enableOmssaCombo.getSelectedIndex() == 0 && omssaValid,
                 enableXTandemCombo.getSelectedIndex() == 0 && tandemValid,
@@ -847,9 +976,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
                 enableTideCombo.getSelectedIndex() == 0 && tideValid,
                 enableAndromedaCombo.getSelectedIndex() == 0 && andromedaValid,
                 enableMetaMorpheusCombo.getSelectedIndex() == 0 && metaMorpheusValid,
+                enableSageCombo.getSelectedIndex() == 0 && sageValid,
                 enableNovorCombo.getSelectedIndex() == 0 && novorValid,
-                enableDirecTagCombo.getSelectedIndex() == 0 && direcTagValid);
+                enableDirecTagCombo.getSelectedIndex() == 0 && direcTagValid
+        );
+
         dispose();
+
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
@@ -922,29 +1055,50 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @param evt
      */
     private void makeblastdbBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeblastdbBrowseActionPerformed
+
         // First check whether a file has already been selected.
         // If so, start from that file's parent.
         File startLocation = new File(searchGUIMainFrame.getLastSelectedFolder().getLastSelectedFolder());
+
         if (makeblastdbLocationTxt != null && makeblastdbLocationTxt.getText() != null && !makeblastdbLocationTxt.getText().trim().equals("")) {
+
             File temp = new File(makeblastdbLocationTxt.getText());
+
             if (temp.exists() && temp.isDirectory()) {
                 startLocation = temp;
             }
+
         }
+
         JFileChooser fc = new JFileChooser(startLocation);
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int result = fc.showOpenDialog(this);
+
         if (result == JFileChooser.APPROVE_OPTION) {
+
             File file = fc.getSelectedFile();
             searchGUIMainFrame.getLastSelectedFolder().setLastSelectedFolder(file.getAbsolutePath());
+
             if (validateSearchEngineFolder(file, "makeblastdb")) {
+
                 makeblastdbLocationTxt.setText(file.getAbsolutePath());
+
             } else {
-                JOptionPane.showMessageDialog(this,
-                        new String[]{"Incorrect makeblastdb folder specified.", "Please try again, or press cancel to exit."},
-                        "Incorrect makeblastdb Folder", JOptionPane.WARNING_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        new String[]{
+                            "Incorrect makeblastdb folder specified.",
+                            "Please try again, or press cancel to exit."
+                        },
+                        "Incorrect makeblastdb Folder",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
                 makeblastdbBrowseActionPerformed(null);
+
             }
+
             validateInput(true);
         }
     }//GEN-LAST:event_makeblastdbBrowseActionPerformed
@@ -1096,6 +1250,27 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_enableMetaMorpheusComboActionPerformed
 
+    /**
+     * This method should be called whenever 'browse' has been pressed for the
+     * Sage location. It auto-validates the Sage location.
+     *
+     * @param evt
+     */
+    private void sageBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sageBrowseActionPerformed
+        browseSageLocationPressed();
+    }//GEN-LAST:event_sageBrowseActionPerformed
+
+    /**
+     * Validate the search engine input.
+     *
+     * @param evt
+     */
+    private void enableSageComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableSageComboActionPerformed
+        if (guiLoaded) {
+            validateInput(true);
+        }
+    }//GEN-LAST:event_enableSageComboActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton andromedaBrowse;
     private javax.swing.JLabel andromedaLocationLabel;
@@ -1117,6 +1292,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox enableMyriMatchCombo;
     private javax.swing.JComboBox enableNovorCombo;
     private javax.swing.JComboBox enableOmssaCombo;
+    private javax.swing.JComboBox enableSageCombo;
     private javax.swing.JComboBox enableTideCombo;
     private javax.swing.JComboBox enableXTandemCombo;
     private javax.swing.JButton makeblastdbBrowse;
@@ -1141,6 +1317,9 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     private javax.swing.JButton omssaBrowse;
     private javax.swing.JLabel omssaLocationLabel;
     private javax.swing.JTextField omssaLocationTxt;
+    private javax.swing.JButton sageBrowse;
+    private javax.swing.JLabel sageLocationLabel;
+    private javax.swing.JTextField sageLocationTxt;
     private javax.swing.JPanel searchEnginesLocationPanel;
     private javax.swing.JButton tideBrowse;
     private javax.swing.JLabel tideLocationLabel;
@@ -1155,7 +1334,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * OMSSA location. It auto-validates the OMSSA location.
      */
     public void browseOMSSALocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.omssa, OmssaclProcessBuilder.EXECUTABLE_FILE_NAME, omssaLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.omssa,
+                OmssaclProcessBuilder.EXECUTABLE_FILE_NAME,
+                omssaLocationTxt
+        );
+
     }
 
     /**
@@ -1163,7 +1348,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * X!Tandem location. It auto-validates the X!Tandem location.
      */
     public void browseXTandemLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.xtandem, TandemProcessBuilder.EXECUTABLE_FILE_NAME, xTandemLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.xtandem,
+                TandemProcessBuilder.EXECUTABLE_FILE_NAME,
+                xTandemLocationTxt
+        );
+
     }
 
     /**
@@ -1171,7 +1362,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * MS-GF+ location. It auto-validates the MS-GF+ location.
      */
     public void browseMsgfLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.msgf, MsgfProcessBuilder.EXECUTABLE_FILE_NAME, msgfLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.msgf,
+                MsgfProcessBuilder.EXECUTABLE_FILE_NAME,
+                msgfLocationTxt
+        );
+
     }
 
     /**
@@ -1179,7 +1376,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * MS Amanda location. It auto-validates the MS Amanda location.
      */
     public void browseMsAmandaLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.msAmanda, MsAmandaProcessBuilder.EXECUTABLE_FILE_NAME, msAmandaLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.msAmanda,
+                MsAmandaProcessBuilder.EXECUTABLE_FILE_NAME,
+                msAmandaLocationTxt
+        );
+
     }
 
     /**
@@ -1187,7 +1390,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * MyriMatch location. It auto-validates the MyriMatch location.
      */
     public void browseMyriMatchLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.myriMatch, MyriMatchProcessBuilder.EXECUTABLE_FILE_NAME, myriMatchLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.myriMatch,
+                MyriMatchProcessBuilder.EXECUTABLE_FILE_NAME,
+                myriMatchLocationTxt
+        );
+
     }
 
     /**
@@ -1195,7 +1404,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * Comet location. It auto-validates the Comet location.
      */
     public void browseCometLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.comet, CometProcessBuilder.EXECUTABLE_FILE_NAME, cometLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.comet,
+                CometProcessBuilder.EXECUTABLE_FILE_NAME,
+                cometLocationTxt
+        );
+
     }
 
     /**
@@ -1203,7 +1418,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * Tide location. It auto-validates the Tide location.
      */
     public void browseTideLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.tide, TideSearchProcessBuilder.EXECUTABLE_FILE_NAME, tideLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.tide,
+                TideSearchProcessBuilder.EXECUTABLE_FILE_NAME,
+                tideLocationTxt
+        );
+
     }
 
     /**
@@ -1211,7 +1432,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * Andromeda location. It auto-validates the Andromeda location.
      */
     public void browseAndromedaLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.andromeda, AndromedaProcessBuilder.EXECUTABLE_FILE_NAME, andromedaLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.andromeda,
+                AndromedaProcessBuilder.EXECUTABLE_FILE_NAME,
+                andromedaLocationTxt
+        );
+
     }
 
     /**
@@ -1219,7 +1446,27 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * MetaMorpheus location. It auto-validates the MetaMorpheus location.
      */
     public void browseMetaMorpheusLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.metaMorpheus, MetaMorpheusProcessBuilder.getExecutableFileName(), metaMorpheusLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.metaMorpheus,
+                MetaMorpheusProcessBuilder.getExecutableFileName(),
+                metaMorpheusLocationTxt
+        );
+
+    }
+
+    /**
+     * This method should be called whenever 'browse' has been pressed for the
+     * Sage location. It auto-validates the Sage location.
+     */
+    public void browseSageLocationPressed() {
+
+        browseSearchEngineLocationPressed(
+                Advocate.sage,
+                SageProcessBuilder.getExecutableFileName(),
+                sageLocationTxt
+        );
+
     }
 
     /**
@@ -1227,7 +1474,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * Novor location. It auto-validates the Novor location.
      */
     public void browseNovorLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.novor, NovorProcessBuilder.EXECUTABLE_FILE_NAME, novorLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.novor,
+                NovorProcessBuilder.EXECUTABLE_FILE_NAME,
+                novorLocationTxt
+        );
+
     }
 
     /**
@@ -1235,7 +1488,13 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * DirecTag location. It auto-validates the DirecTag location.
      */
     public void browseDirecTagLocationPressed() {
-        browseSearchEngineLocationPressed(Advocate.direcTag, DirecTagProcessBuilder.EXECUTABLE_FILE_NAME, direcTagLocationTxt);
+
+        browseSearchEngineLocationPressed(
+                Advocate.direcTag,
+                DirecTagProcessBuilder.EXECUTABLE_FILE_NAME,
+                direcTagLocationTxt
+        );
+
     }
 
     /**
@@ -1247,8 +1506,19 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @param searchEngineLocationTxt the text file displaying the search engine
      * location
      */
-    public void browseSearchEngineLocationPressed(Advocate advocate, String firstTargetName, JTextField searchEngineLocationTxt) {
-        browseSearchEngineLocationPressed(advocate, firstTargetName, null, searchEngineLocationTxt);
+    public void browseSearchEngineLocationPressed(
+            Advocate advocate,
+            String firstTargetName,
+            JTextField searchEngineLocationTxt
+    ) {
+
+        browseSearchEngineLocationPressed(
+                advocate,
+                firstTargetName,
+                null,
+                searchEngineLocationTxt
+        );
+
     }
 
     /**
@@ -1261,31 +1531,65 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @param searchEngineLocationTxt the text file displaying the search engine
      * location
      */
-    public void browseSearchEngineLocationPressed(Advocate advocate, String firstTargetName, String secondTargetName, JTextField searchEngineLocationTxt) {
-        // first check whether a file has already been selected, if so, start from that file's parent
+    public void browseSearchEngineLocationPressed(
+            Advocate advocate,
+            String firstTargetName,
+            String secondTargetName,
+            JTextField searchEngineLocationTxt
+    ) {
+
+        // first check whether a file has already been selected, 
+        // if so, start from that file's parent
         File startLocation = new File(searchGUIMainFrame.getLastSelectedFolder().getLastSelectedFolder());
-        if (searchEngineLocationTxt != null && searchEngineLocationTxt.getText() != null && !searchEngineLocationTxt.getText().trim().equals("")) {
+
+        if (searchEngineLocationTxt != null
+                && searchEngineLocationTxt.getText() != null
+                && !searchEngineLocationTxt.getText().trim().equals("")) {
+
             File temp = new File(searchEngineLocationTxt.getText());
+
             if (temp.exists() && temp.isDirectory()) {
                 startLocation = temp;
             }
+
         }
+
         JFileChooser fc = new JFileChooser(startLocation);
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int result = fc.showOpenDialog(this);
+
         if (result == JFileChooser.APPROVE_OPTION) {
+
             File file = fc.getSelectedFile();
             searchGUIMainFrame.getLastSelectedFolder().setLastSelectedFolder(file.getAbsolutePath());
+
             if (validateSearchEngineFolder(file, firstTargetName, secondTargetName)) {
                 searchEngineLocationTxt.setText(file.getAbsolutePath());
             } else {
-                JOptionPane.showMessageDialog(this,
-                        new String[]{"Incorrect " + advocate + " home folder specified.", "Please try again, or press cancel to exit."},
-                        "Incorrect " + advocate + " Folder", JOptionPane.WARNING_MESSAGE);
-                browseSearchEngineLocationPressed(advocate, firstTargetName, secondTargetName, searchEngineLocationTxt);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        new String[]{
+                            "Incorrect " + advocate + " home folder specified.",
+                            "Please try again, or press cancel to exit."
+                        },
+                        "Incorrect " + advocate + " Folder",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+                browseSearchEngineLocationPressed(
+                        advocate,
+                        firstTargetName,
+                        secondTargetName,
+                        searchEngineLocationTxt
+                );
+
             }
+
             validateInput(true);
+
         }
+
     }
 
     /**
@@ -1297,8 +1601,17 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return boolean to indicate whether the correct search engine root folder
      * has been selected.
      */
-    public boolean validateSearchEngineFolder(File aFile, String targetFile) {
-        return validateSearchEngineFolder(aFile, targetFile, null);
+    public boolean validateSearchEngineFolder(
+            File aFile,
+            String targetFile
+    ) {
+
+        return validateSearchEngineFolder(
+                aFile,
+                targetFile,
+                null
+        );
+
     }
 
     /**
@@ -1312,17 +1625,27 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return boolean to indicate whether the correct search engine root folder
      * has been selected.
      */
-    public boolean validateSearchEngineFolder(File aFile, String targetFile, String secondTargetFile) {
+    public boolean validateSearchEngineFolder(
+            File aFile,
+            String targetFile,
+            String secondTargetFile
+    ) {
+
         boolean result = false;
+
         if (aFile.exists() && aFile.isDirectory()) {
+
             String[] fileNames = aFile.list();
             int count = 0;
+
             for (String lFileName : fileNames) {
+
                 if (lFileName.startsWith(targetFile)) {
                     count++;
                 } else if (secondTargetFile != null && lFileName.startsWith(secondTargetFile)) {
                     count++;
                 }
+
             }
 
             if (count > 0) {
@@ -1358,6 +1681,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         tideLocationTxt.setForeground(Color.BLACK);
         andromedaLocationTxt.setForeground(Color.BLACK);
         metaMorpheusLocationTxt.setForeground(Color.BLACK);
+        sageLocationTxt.setForeground(Color.BLACK);
         novorLocationTxt.setForeground(Color.BLACK);
         direcTagLocationTxt.setForeground(Color.BLACK);
 
@@ -1370,6 +1694,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         tideLocationLabel.setToolTipText(null);
         andromedaLocationLabel.setToolTipText(null);
         metaMorpheusLocationLabel.setToolTipText(null);
+        sageLocationLabel.setToolTipText(null);
         novorLocationLabel.setToolTipText(null);
         direcTagLocationLabel.setToolTipText(null);
 
@@ -1382,51 +1707,163 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
         tideValid = true;
         andromedaValid = true;
         metaMorpheusValid = true;
+        sageValid = true;
         novorValid = true;
         direcTagValid = true;
 
         if (isOmssaEnabled()) {
-            omssaValid = validateSearchEngineInstallation(Advocate.omssa, getOmssaLocation(), valid, omssaLocationLabel, showMessage);
+
+            omssaValid = validateSearchEngineInstallation(
+                    Advocate.omssa,
+                    getOmssaLocation(),
+                    valid,
+                    omssaLocationLabel,
+                    showMessage
+            );
+
             valid = omssaValid && valid;
         }
+
         if (isXtandemEnabled()) {
-            tandemValid = validateSearchEngineInstallation(Advocate.xtandem, getXtandemLocation(), valid, xTandemLocationLabel, showMessage);
+
+            tandemValid = validateSearchEngineInstallation(
+                    Advocate.xtandem,
+                    getXtandemLocation(),
+                    valid,
+                    xTandemLocationLabel,
+                    showMessage
+            );
+
             valid = tandemValid && valid;
         }
+
         if (isMsgfEnabled()) {
-            msgfValid = validateSearchEngineInstallation(Advocate.msgf, getMsgfLocation(), valid, msgfLocationLabel, showMessage);
+
+            msgfValid = validateSearchEngineInstallation(
+                    Advocate.msgf,
+                    getMsgfLocation(),
+                    valid,
+                    msgfLocationLabel,
+                    showMessage
+            );
+
             valid = msgfValid && valid;
         }
+
         if (isMsAmandaEnabled()) {
-            msAmandaValid = validateSearchEngineInstallation(Advocate.msAmanda, getMsAmandaLocation(), valid, msAmandaLocationLabel, showMessage);
+
+            msAmandaValid = validateSearchEngineInstallation(
+                    Advocate.msAmanda,
+                    getMsAmandaLocation(),
+                    valid,
+                    msAmandaLocationLabel,
+                    showMessage
+            );
+
             valid = msAmandaValid && valid;
         }
+
         if (isMyriMatchEnabled()) {
-            myriMatchValid = validateSearchEngineInstallation(Advocate.myriMatch, getMyriMatchLocation(), valid, myriMatchLocationLabel, showMessage);
+
+            myriMatchValid = validateSearchEngineInstallation(
+                    Advocate.myriMatch,
+                    getMyriMatchLocation(),
+                    valid,
+                    myriMatchLocationLabel,
+                    showMessage
+            );
+
             valid = myriMatchValid && valid;
         }
+
         if (isCometEnabled()) {
-            cometValid = validateSearchEngineInstallation(Advocate.comet, getCometLocation(), valid, cometLocationLabel, showMessage);
+
+            cometValid = validateSearchEngineInstallation(
+                    Advocate.comet,
+                    getCometLocation(),
+                    valid,
+                    cometLocationLabel,
+                    showMessage
+            );
+
             valid = cometValid && valid;
         }
+
         if (isTideEnabled()) {
-            tideValid = validateSearchEngineInstallation(Advocate.tide, getTideLocation(), valid, tideLocationLabel, showMessage);
+
+            tideValid = validateSearchEngineInstallation(
+                    Advocate.tide,
+                    getTideLocation(),
+                    valid,
+                    tideLocationLabel,
+                    showMessage
+            );
+
             valid = tideValid && valid;
         }
+
         if (isAndromedaEnabled()) {
-            andromedaValid = validateSearchEngineInstallation(Advocate.andromeda, getAndromedaLocation(), valid, andromedaLocationLabel, showMessage);
+
+            andromedaValid = validateSearchEngineInstallation(
+                    Advocate.andromeda,
+                    getAndromedaLocation(),
+                    valid,
+                    andromedaLocationLabel,
+                    showMessage
+            );
+
             valid = andromedaValid && valid;
         }
+
         if (isMetaMorpheusEnabled()) {
-            metaMorpheusValid = validateSearchEngineInstallation(Advocate.metaMorpheus, getMetaMorpheusLocation(), valid, metaMorpheusLocationLabel, showMessage);
+
+            metaMorpheusValid = validateSearchEngineInstallation(
+                    Advocate.metaMorpheus,
+                    getMetaMorpheusLocation(),
+                    valid,
+                    metaMorpheusLocationLabel,
+                    showMessage
+            );
+
             valid = metaMorpheusValid && valid;
         }
+
+        if (isSageEnabled()) {
+
+            sageValid = validateSearchEngineInstallation(
+                    Advocate.sage,
+                    getSageLocation(),
+                    valid,
+                    sageLocationLabel,
+                    showMessage
+            );
+
+            valid = sageValid && valid;
+        }
+
         if (isNovorEnabled()) {
-            novorValid = validateSearchEngineInstallation(Advocate.novor, getNovorLocation(), valid, novorLocationLabel, showMessage);
+
+            novorValid = validateSearchEngineInstallation(
+                    Advocate.novor,
+                    getNovorLocation(),
+                    valid,
+                    novorLocationLabel,
+                    showMessage
+            );
+
             valid = novorValid && valid;
         }
+
         if (isDirecTagEnabled()) {
-            direcTagValid = validateSearchEngineInstallation(Advocate.direcTag, getDirecTagLocation(), valid, direcTagLocationLabel, showMessage);
+
+            direcTagValid = validateSearchEngineInstallation(
+                    Advocate.direcTag,
+                    getDirecTagLocation(),
+                    valid,
+                    direcTagLocationLabel,
+                    showMessage
+            );
+
             valid = direcTagValid && valid;
         }
 
@@ -1443,60 +1880,160 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @param searchEngineLabel the search engine label
      * @param showMessage if an error message is to be shown if an error occurs
      */
-    private boolean validateSearchEngineInstallation(Advocate advocate, File searchEngineLocation, boolean allValid, JLabel searchEngineLabel, boolean showMessage) {
+    private boolean validateSearchEngineInstallation(
+            Advocate advocate,
+            File searchEngineLocation,
+            boolean allValid,
+            JLabel searchEngineLabel,
+            boolean showMessage
+    ) {
 
         boolean searchEngineValid = true;
         boolean installationOk = false;
 
         if (searchEngineLocation == null) {
-            if (showMessage && allValid) {
-                JOptionPane.showMessageDialog(this, "You need to specify the location of " + advocate + ".", advocate + " Not Found", JOptionPane.WARNING_MESSAGE);
-            }
-            allValid = false;
-            searchEngineValid = false;
-            searchEngineLabel.setToolTipText("Please specify the location of " + advocate);
-            searchEngineLabel.setForeground(Color.RED);
-        } else if (searchEngineLocation == null || !searchEngineLocation.exists()) {
-            if (showMessage && allValid) {
-                JOptionPane.showMessageDialog(this, "The " + advocate + " folder does not exist. Please specify the location of " + advocate + ".",
-                        advocate + " Not Found", JOptionPane.WARNING_MESSAGE);
-            }
-            allValid = false;
-            searchEngineValid = false;
-            searchEngineLabel.setToolTipText("Please specify the location of " + advocate);
-            searchEngineLabel.setForeground(Color.RED);
-        } else // test if search engine is installed correctly
-        if (allValid) {
 
+            if (showMessage && allValid) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "You need to specify the location of " + advocate + ".",
+                        advocate + " Not Found",
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+            }
+
+            allValid = false;
+            searchEngineValid = false;
+            searchEngineLabel.setToolTipText("Please specify the location of " + advocate);
+            searchEngineLabel.setForeground(Color.RED);
+
+        } else if (!searchEngineLocation.exists()) {
+
+            if (showMessage && allValid) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "The " + advocate + " folder does not exist. Please specify the location of " + advocate + ".",
+                        advocate + " Not Found",
+                        JOptionPane.WARNING_MESSAGE
+                );
+            }
+
+            allValid = false;
+            searchEngineValid = false;
+            searchEngineLabel.setToolTipText("Please specify the location of " + advocate);
+            searchEngineLabel.setForeground(Color.RED);
+
+        } else if (allValid) {
+
+            // test if the search engine are installed correctly
             if (advocate == Advocate.tide) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.tide, getTideLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.tide,
+                        getTideLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.comet) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.comet, getCometLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.comet,
+                        getCometLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.myriMatch) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.myriMatch, getMyriMatchLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.myriMatch,
+                        getMyriMatchLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.msAmanda) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.msAmanda, getMsAmandaLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.msAmanda,
+                        getMsAmandaLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.msgf) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.msgf, getMsgfLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.msgf,
+                        getMsgfLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.xtandem) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.xtandem, getXtandemLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.xtandem,
+                        getXtandemLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.omssa) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.omssa, getOmssaLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.omssa,
+                        getOmssaLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.andromeda) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.andromeda, getAndromedaLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.andromeda,
+                        getAndromedaLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.metaMorpheus) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.metaMorpheus, getMetaMorpheusLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.metaMorpheus,
+                        getMetaMorpheusLocation(),
+                        showMessage
+                );
+
+            } else if (advocate == Advocate.sage) {
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.sage,
+                        getSageLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.novor) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.novor, getNovorLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.novor,
+                        getNovorLocation(),
+                        showMessage
+                );
+
             } else if (advocate == Advocate.direcTag) {
-                installationOk = SearchGUI.validateSearchEngineInstallation(Advocate.direcTag, getDirecTagLocation(), showMessage);
+
+                installationOk = SearchGUI.validateSearchEngineInstallation(
+                        Advocate.direcTag,
+                        getDirecTagLocation(),
+                        showMessage
+                );
+
             }
 
             if (!installationOk) {
+
                 allValid = false;
                 searchEngineValid = false;
                 searchEngineLabel.setToolTipText("Failed to run " + advocate);
                 searchEngineLabel.setForeground(Color.RED);
+
             }
         }
 
@@ -1515,9 +2052,9 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     }
 
     /**
-     * Returns whether X!Tandem is enabled.
+     * Returns whether X! Tandem is enabled.
      *
-     * @return a boolean indicating if X!Tandem is enabled
+     * @return a boolean indicating if X! Tandem is enabled
      */
     public boolean isXtandemEnabled() {
         return ((String) enableXTandemCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
@@ -1587,6 +2124,15 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     }
 
     /**
+     * Returns whether Sage is enabled.
+     *
+     * @return a boolean indicating if sage is enabled
+     */
+    public boolean isSageEnabled() {
+        return ((String) enableSageCombo.getSelectedItem()).equals(ENABLED_DISABLED[0]);
+    }
+
+    /**
      * Returns whether Novor is enabled.
      *
      * @return a boolean indicating if Novor is enabled
@@ -1610,17 +2156,19 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
      * @return the OMSSA location
      */
     public File getOmssaLocation() {
+
         if (omssaLocationTxt.getText() != null) {
             return new File(omssaLocationTxt.getText());
         } else {
             return null;
         }
+
     }
 
     /**
-     * Returns the X!Tandem location.
+     * Returns the X! Tandem location.
      *
-     * @return the X!Tandem location
+     * @return the X! Tandem location
      */
     public File getXtandemLocation() {
         if (xTandemLocationTxt.getText() != null) {
@@ -1716,6 +2264,19 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
     public File getMetaMorpheusLocation() {
         if (metaMorpheusLocationTxt.getText() != null) {
             return new File(metaMorpheusLocationTxt.getText());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the Sage location.
+     *
+     * @return the Sage location
+     */
+    public File getSageLocation() {
+        if (sageLocationTxt.getText() != null) {
+            return new File(sageLocationTxt.getText());
         } else {
             return null;
         }

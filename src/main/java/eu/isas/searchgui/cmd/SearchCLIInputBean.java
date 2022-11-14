@@ -77,6 +77,10 @@ public class SearchCLIInputBean {
      */
     private boolean metaMorpheusEnabled = false;
     /**
+     * If true, Sage is enabled.
+     */
+    private boolean sageEnabled = false;
+    /**
      * If true, Novor is enabled.
      */
     private boolean novorEnabled = false;
@@ -120,6 +124,10 @@ public class SearchCLIInputBean {
      * The folder where MetaMopheus is installed.
      */
     private File metaMorpheusLocation = null;
+    /**
+     * The folder where Sage is installed.
+     */
+    private File sageLocation = null;
     /**
      * The folder where Novor is installed.
      */
@@ -273,6 +281,10 @@ public class SearchCLIInputBean {
             String metaMorpheusOption = aLine.getOptionValue(SearchCLIParams.META_MORPHEUS.id);
             metaMorpheusEnabled = metaMorpheusOption.trim().equals("1");
         }
+        if (aLine.hasOption(SearchCLIParams.SAGE.id)) {
+            String sageOption = aLine.getOptionValue(SearchCLIParams.SAGE.id);
+            sageEnabled = sageOption.trim().equals("1");
+        }
         if (aLine.hasOption(SearchCLIParams.NOVOR.id)) {
             String novorOption = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
             novorEnabled = novorOption.trim().equals("1");
@@ -318,6 +330,10 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.META_MORPHEUS_LOCATION.id)) {
             String metaMorpheusFolder = aLine.getOptionValue(SearchCLIParams.META_MORPHEUS_LOCATION.id);
             metaMorpheusLocation = new File(metaMorpheusFolder);
+        }
+        if (aLine.hasOption(SearchCLIParams.SAGE_LOCATION.id)) {
+            String sageFolder = aLine.getOptionValue(SearchCLIParams.SAGE_LOCATION.id);
+            sageLocation = new File(sageFolder);
         }
         if (aLine.hasOption(SearchCLIParams.NOVOR_LOCATION.id)) {
             String novorFolder = aLine.getOptionValue(SearchCLIParams.NOVOR_LOCATION.id);
@@ -553,6 +569,15 @@ public class SearchCLIInputBean {
     public boolean isMetaMorpheusEnabled() {
         return metaMorpheusEnabled;
     }
+    
+    /**
+     * Returns true if Sage is to be used.
+     *
+     * @return if Sage is to be used
+     */
+    public boolean isSageEnabled() {
+        return sageEnabled;
+    }
 
     /**
      * Returns true if Novor is to be used.
@@ -651,6 +676,15 @@ public class SearchCLIInputBean {
      */
     public File getMetaMorpheusLocation() {
         return metaMorpheusLocation;
+    }
+    
+    /**
+     * Returns the Sage location.
+     *
+     * @return the Sage location
+     */
+    public File getSageLocation() {
+        return sageLocation;
     }
 
     /**

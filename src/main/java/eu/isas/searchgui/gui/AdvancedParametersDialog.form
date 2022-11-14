@@ -127,7 +127,7 @@
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="duplicateTitlesLabel" min="-2" pref="200" max="-2" attributes="1"/>
-                                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Component id="duplicateTitlesComboBox" min="-2" pref="150" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -183,34 +183,34 @@
                           <Component id="peakPickingComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="peakPickingLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="duplicateTitlesComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="duplicateTitlesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="checkSpectrumChargesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="checkSpectrumChargesComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="spectrumChargeRangeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lowSpectrumChargeRangeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="highSpectrumChargeRangeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="spectrumChargeRangeDelimiterLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="checkMgfFileSizeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="checkMgfFileSizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="maxMgfFileSizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="mgfMaxSizeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="maxSpectraPerFileLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="mgfReducedSizeTxt" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -430,22 +430,22 @@
                           <Component id="groupResultFilesCmb" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="groupResultFilesTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="includeDataTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="includeDataCmb" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="includeDateLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="includeDateCmb" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="renameCmb" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="renameXTandemFileLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="zipIdFilesCmb" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="zipIdFilesLabel" alignment="3" min="-2" max="-2" attributes="0"/>

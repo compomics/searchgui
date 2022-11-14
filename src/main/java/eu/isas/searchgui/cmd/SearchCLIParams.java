@@ -31,6 +31,7 @@ public enum SearchCLIParams {
     TIDE("tide", "Turn the Tide search on or off (0: off, 1: on, default is '0').", false),
     ANDROMEDA("andromeda", "Turn the Andromeda search on or off (0: off, 1: on, default is '0').", false),
     META_MORPHEUS("meta_morpheus", "Turn the MetaMorpheus search on or off (0: off, 1: on, default is '0').", false),
+    SAGE("sage", "Turn the Sage search on or off (0: off, 1: on, default is '0').", false),
     NOVOR("novor", "Turn the Novor sequencing on or off (0: off, 1: on, default is '0').", false),
     DIRECTAG("directag", "Turn the DirecTag sequencing on or off (0: off, 1: on, default is '0').", false),
     
@@ -44,6 +45,7 @@ public enum SearchCLIParams {
     TIDE_LOCATION("tide_folder", "The folder where Tide is installed, defaults to the included version.", false),
     ANDROMEDA_LOCATION("andromeda_folder", "The folder where Andromeda is installed, defaults to the included version.", false),
     META_MORPHEUS_LOCATION("meta_morpheus_folder", "The folder where MetaMorpheus is installed, defaults to the included version.", false),
+    SAGE_LOCATION("sage_folder", "The folder where Sage is installed, defaults to the included version.", false),
     NOVOR_LOCATION("novor_folder", "The folder where Novor is installed, defaults to the included version.", false),
     DIRECTAG_LOCATION("directag_folder", "The folder where DirecTag is installed, defaults to the included version.", false),
     

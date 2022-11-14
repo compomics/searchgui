@@ -135,6 +135,13 @@
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Group type="102" attributes="0">
+                                      <Component id="sageLocationLabel" min="-2" pref="91" max="-2" attributes="1"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="sageLocationTxt" max="32767" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="sageBrowse" min="-2" pref="80" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
                                       <Component id="metaMorpheusLocationLabel" min="-2" pref="91" max="-2" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="metaMorpheusLocationTxt" max="32767" attributes="0"/>
@@ -197,6 +204,7 @@
                           </Group>
                       </Group>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="enableSageCombo" max="32767" attributes="1"/>
                           <Component id="enableMetaMorpheusCombo" max="32767" attributes="1"/>
                           <Component id="enableDirecTagCombo" max="32767" attributes="1"/>
                           <Component id="enableAndromedaCombo" max="32767" attributes="1"/>
@@ -223,77 +231,84 @@
                           <Component id="xTandemBrowse" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="enableXTandemCombo" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="enableMyriMatchCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="myriMatchBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="myriMatchLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="myriMatchLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="enableMsAmandaCombo" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="msAmandaBrowse" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="msAmandaLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="msAmandaLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="msgfLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="msgfLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="enableMsgfCombo" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="msgfBrowse" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="enableOmssaCombo" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="omssaBrowse" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="omssaLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="omssaLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="enableCometCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cometBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cometLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="cometLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="enableTideCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="tideBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="tideLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="tideLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="enableAndromedaCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="andromedaBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="andromedaLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="andromedaLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="enableMetaMorpheusCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="metaMorpheusBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="metaMorpheusLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="metaMorpheusLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="enableSageCombo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="sageBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="sageLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="sageLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="novorLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="novorLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="novorBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="enableNovorCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="direcTagLocationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="direcTagLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="direcTagBrowse" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="enableDirecTagCombo" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="makeblastdbBrowse" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="makeblastdbLocationTxt" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -631,6 +646,34 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableMetaMorpheusComboActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="sageLocationLabel">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Sage"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="sageLocationTxt">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="sageBrowse">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Browse"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="sageBrowseActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JComboBox" name="enableSageCombo">
+              <Properties>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new DefaultComboBoxModel(ENABLED_DISABLED)" type="code"/>
+                </Property>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableSageComboActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
