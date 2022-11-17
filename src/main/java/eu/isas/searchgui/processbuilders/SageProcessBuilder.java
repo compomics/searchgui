@@ -33,7 +33,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.7.1";
+    private final String SAGE_VERSION = "0.8.0";
     /**
      * The spectrum file.
      */
@@ -213,6 +213,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     ///////////////////////////////////
                     // database settings
                     ///////////////////////////////////
+                    + "\t\t\"max_variable_mods\": " + sageParameters.getMaxVariableMods() + "," + System.getProperty("line.separator")
                     + "\t\t\"decoy_tag\": \"" + sageParameters.getDecoyTag() + "\"," + System.getProperty("line.separator")
                     + "\t\t\"generate_decoys\": " + sageParameters.getGenerateDecoys().toString() + "," + System.getProperty("line.separator")
                     + "\t\t\"fasta\": \"" + fastaFile.getAbsolutePath().replace("\\", "\\\\") + "\"" + System.getProperty("line.separator")
@@ -298,6 +299,12 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     break;
 
                 case modn_protein:
+                    if (!modificationsAsString.isEmpty()) {
+                        modificationsAsString += "," + System.getProperty("line.separator");
+                    }
+                    modificationsAsString += "\t\t\t\"[\": " + modification.getMass();
+                    break;
+                    
                 case modn_peptide:
                     if (!modificationsAsString.isEmpty()) {
                         modificationsAsString += "," + System.getProperty("line.separator");
@@ -311,9 +318,18 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     throw new IOException("Modification " + modification.getName() + " is not supported by Sage!");
 
                 case modc_protein:
+                    if (!modificationsAsString.isEmpty()) {
+                        modificationsAsString += "," + System.getProperty("line.separator");
+                    }
+                    modificationsAsString += "\t\t\t\"]\": " + modification.getMass();
+                    break;
+                    
                 case modc_peptide:
-                    // @TODO: what about c-terminal mods?
-                    throw new IOException("Modification " + modification.getName() + " is not supported by Sage!");
+                    if (!modificationsAsString.isEmpty()) {
+                        modificationsAsString += "," + System.getProperty("line.separator");
+                    }
+                    modificationsAsString += "\t\t\t\"$\": " + modification.getMass();
+                    break;
 
                 case modcaa_protein:
                 case modcaa_peptide:
@@ -358,7 +374,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         if (operatingSystem.contains("windows")) {
             return "sage.exe";
         } else {
-            return "sage";
+            return "sage"; // @TODO: support both M1 and x86 versions for osx?
         }
 
     }
