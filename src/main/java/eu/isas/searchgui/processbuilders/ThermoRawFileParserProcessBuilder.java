@@ -2,6 +2,7 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserParameters;
+import com.compomics.util.io.IoUtil;
 import com.compomics.util.waiting.WaitingHandler;
 import java.io.File;
 import java.io.IOException;
@@ -104,7 +105,7 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the conversion parameters
         process_name_array.add("-i=" + rawFile.getAbsolutePath());
-        process_name_array.add("-o=" + destinationFolder.getAbsolutePath());
+        process_name_array.add("-b=" + new File(destinationFolder, IoUtil.removeExtension(rawFile.getName()) + ".mzml").getAbsolutePath());
         process_name_array.add("-f=" + thermoRawFileParserParameters.getOutputFormat().index);
         if (!thermoRawFileParserParameters.isPeackPicking()) {
             process_name_array.add("-p");
