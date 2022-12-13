@@ -522,15 +522,12 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
      */
     private Integer getEnzymeMapping(DigestionParameters digestionPreferences) throws IOException {
 
-        if (digestionPreferences.getEnzymes().size() > 1) {
-            throw new IOException("Multiple enzymes not supported by MS-GF+!");
-        }
-
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.wholeProtein) {
             return 9;
-        }
-        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
+        } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
             return 0;
+        } else if (digestionPreferences.getEnzymes().size() > 1) {
+            throw new IOException("Multiple enzymes not supported by MS-GF+!");
         }
 
         Enzyme enzyme = digestionPreferences.getEnzymes().get(0);

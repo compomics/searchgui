@@ -228,9 +228,9 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             }
         } else{
             /*
-             * When running into Conda, Linux and Mac executable names are taken from 
-             * MetaMorpheus Conda package and are special
-            */
+             * When running in Conda, Linux or Mac, executable names are taken 
+             * from the MetaMorpheus Conda package
+             */
             return "metamorpheus";
         }
         
