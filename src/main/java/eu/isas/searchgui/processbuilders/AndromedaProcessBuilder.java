@@ -786,7 +786,7 @@ public class AndromedaProcessBuilder extends SearchGUIProcessBuilder {
                 
                 for (Enzyme enzyme : digestionParameters.getEnzymes()) {
                     
-                    if (!enzymesAsString.isEmpty()) {
+                    if (enzymesAsString.length() > 0) {
                         enzymesAsString.append(",");
                     }
                     
