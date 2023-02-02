@@ -46,7 +46,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2022.01 rev. 2"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2023.01 rev. 0"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -660,6 +660,13 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             result.append("require_variable_mod = 0").append(System.getProperty("line.separator"));
         }
+        
+        // multiply fragment neutral loss mass by the number of modified residues in the fragment
+//        if (cometParameters.getScaleFragmentNL()) {
+//            result.append("scale_fragmentNL = 1").append(System.getProperty("line.separator"));
+//        } else {
+//            result.append("scale_fragmentNL = 0").append(System.getProperty("line.separator"));
+//        }
 
         return result.toString();
     }
