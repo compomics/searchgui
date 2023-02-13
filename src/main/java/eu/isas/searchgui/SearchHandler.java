@@ -3409,6 +3409,7 @@ public class SearchHandler {
                                 searchParameters,
                                 spectrumFile,
                                 fastaFile,
+                                identificationParameters.getFastaParameters().getDecoyFlag(),
                                 waitingHandler,
                                 exceptionHandler,
                                 processingParameters.getnThreads()

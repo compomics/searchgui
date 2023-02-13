@@ -43,6 +43,10 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File fastaFile;
     /**
+     * The FASTA file decoy tag.
+     */
+    private String decoyTag;
+    /**
      * The search parameters.
      */
     private SearchParameters searchParameters;
@@ -71,6 +75,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param fastaFile the FASTA file
+     * @param decoyTag the FASTA file decoy tag
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads
@@ -84,6 +89,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
             SearchParameters searchParameters,
             File spectrumFile,
             File fastaFile,
+            String decoyTag,
             WaitingHandler waitingHandler,
             ExceptionHandler exceptionHandler,
             int nThreads
@@ -95,6 +101,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         sageParameters = (SageParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.sage.getIndex());
         this.spectrumFile = spectrumFile;
         this.fastaFile = fastaFile;
+        this.decoyTag = decoyTag;
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
         this.nThreads = nThreads;
@@ -178,6 +185,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
         String performLfq = sageParameters.getPerformLfq() ? "true" : "null";
         String tmtType = sageParameters.getTmtType() != null ? "\"" + sageParameters.getTmtType() + "\"" : "null";
+        //String tmtLevel = sageParameters.getTmtLevel() != null ? "\"" + sageParameters.getTmtLevel() + "\"" : "3";
 
         BufferedWriter br = new BufferedWriter(new FileWriter(new File(sageTempFolder, "sage.json")));
 
@@ -214,7 +222,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     // database settings
                     ///////////////////////////////////
                     + "\t\t\"max_variable_mods\": " + sageParameters.getMaxVariableMods() + "," + System.getProperty("line.separator")
-                    + "\t\t\"decoy_tag\": \"" + sageParameters.getDecoyTag() + "\"," + System.getProperty("line.separator")
+                    + "\t\t\"decoy_tag\": \"" + decoyTag + "\"," + System.getProperty("line.separator")
                     + "\t\t\"generate_decoys\": " + sageParameters.getGenerateDecoys().toString() + "," + System.getProperty("line.separator")
                     + "\t\t\"fasta\": \"" + fastaFile.getAbsolutePath().replace("\\", "\\\\") + "\"" + System.getProperty("line.separator")
                     + "\t\t}," + System.getProperty("line.separator")
@@ -223,6 +231,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     ///////////////////////////////////    
                     + "\t\"quant\": {" + System.getProperty("line.separator")
                     + "\t\t\"tmt\": " + tmtType + "," + System.getProperty("line.separator")
+                    + "\t\t\"tmt_level\": 3," + System.getProperty("line.separator") //+ "\t\t\"tmt_level\": " + tmtLevel + "," + System.getProperty("line.separator")
                     + "\t\t\"lfq\": " + performLfq + System.getProperty("line.separator")
                     + "\t}," + System.getProperty("line.separator")
                     ////////////////////////////////////////
