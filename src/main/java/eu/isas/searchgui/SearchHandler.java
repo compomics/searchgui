@@ -2736,6 +2736,7 @@ public class SearchHandler {
 
                         MsFileExporter.writeMgfFile(
                                 msFileHandler,
+                                false, // only include ms2 spectra
                                 IoUtil.removeExtension(spectrumFileName),
                                 mgfFile,
                                 waitingHandler
@@ -3143,6 +3144,7 @@ public class SearchHandler {
 
                         MsFileExporter.writeMs2File(
                                 msFileHandler,
+                                false, // only include ms2 spectra
                                 IoUtil.removeExtension(spectrumFileName),
                                 ms2File,
                                 waitingHandler
@@ -3226,6 +3228,7 @@ public class SearchHandler {
 
                         MsFileExporter.writeAplFile(
                                 msFileHandler,
+                                false, // only include ms2 spectra
                                 IoUtil.removeExtension(spectrumFileName),
                                 aplFile,
                                 searchParameters,
