@@ -33,7 +33,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.8.0";
+    private final String SAGE_VERSION = "0.9.0";
     /**
      * The spectrum file.
      */
@@ -153,31 +153,118 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     private void createParametersFile() throws IOException {
 
         Enzyme tempEnzyme;
+        String enzymeDetailsAsString = "";
+        String enzymeMissedCleavagesAsString = "";
 
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
-        if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
 
-            if (searchParameters.getDigestionParameters().getEnzymes().size() > 1) {
-                throw new IOException("Multiple enzymes not supported by Sage!");
-            } else {
-                tempEnzyme = searchParameters.getDigestionParameters().getEnzymes().get(0);
-            }
+        if (null == digestionPreferences.getCleavageParameter()) {
+
+            throw new IOException("Enzyme type not supported by Sage!");
+
         } else {
-            throw new IOException("Unspecific and whole protein is not supported by Sage!");
-        }
 
-        if (tempEnzyme.getAminoAcidBefore().isEmpty()) { // @TODO: what about c-terminal enzymes?
-            throw new IOException("Emzyme " + tempEnzyme.getName() + " is not supported by Sage!");
-        }
+            switch (digestionPreferences.getCleavageParameter()) {
 
-        String aminoAcidsBefore = "";
-        for (Character character : tempEnzyme.getAminoAcidBefore()) {
-            aminoAcidsBefore += character;
-        }
+                case enzyme:
 
-        String restrictionAfter = "";
-        for (Character character : tempEnzyme.getRestrictionAfter()) {
-            restrictionAfter += character;
+                    if (searchParameters.getDigestionParameters().getEnzymes().size() > 1) {
+                        throw new IOException("Multiple enzymes not supported by Sage!");
+                    } else {
+                        tempEnzyme = searchParameters.getDigestionParameters().getEnzymes().get(0);
+                    }
+
+                    String aminoAcidsBefore = "";
+                    String restrictionAfter = "";
+                    String aminoAcidsAfter = "";
+                    String restrictionBefore = "";
+
+                    for (Character character : tempEnzyme.getAminoAcidBefore()) {
+                        aminoAcidsBefore += character;
+                    }
+
+                    for (Character character : tempEnzyme.getRestrictionAfter()) {
+                        restrictionAfter += character;
+                    }
+
+                    for (Character character : tempEnzyme.getAminoAcidAfter()) {
+                        aminoAcidsAfter += character;
+                    }
+
+                    for (Character character : tempEnzyme.getRestrictionBefore()) {
+                        restrictionBefore += character;
+                    }
+
+                    if (!aminoAcidsBefore.isEmpty() && !aminoAcidsAfter.isEmpty()) {
+                        throw new IOException("Enzymes cleavage site not supported by Sage!");
+                    }
+
+                    String cleaveAt;
+                    String restrict = null;
+                    Boolean cTerminalEnzyme = null;
+
+                    if (!aminoAcidsBefore.isEmpty()) {
+
+                        cTerminalEnzyme = true;
+                        cleaveAt = aminoAcidsBefore;
+                        restrict = restrictionAfter;
+
+                    } else if (!aminoAcidsAfter.isEmpty()) {
+
+                        cTerminalEnzyme = false;
+                        cleaveAt = aminoAcidsAfter;
+                        restrict = restrictionBefore;
+
+                    } else {
+                        throw new IOException("Enzyme type not supported by Sage!");
+                    }
+
+                    enzymeDetailsAsString
+                            = "\t\t\t\"cleave_at\": \""
+                            + cleaveAt
+                            + "\","
+                            + System.getProperty("line.separator");
+
+                    if (!restrict.isEmpty()) {
+                        enzymeDetailsAsString
+                                += "\t\t\t\"restrict\": \""
+                                + restrict
+                                + "\","
+                                + System.getProperty("line.separator");
+                    }
+
+                    enzymeDetailsAsString
+                            += "\t\t\t\"c_terminal\": "
+                            + cTerminalEnzyme + ""
+                            + System.getProperty("line.separator");
+
+                    enzymeMissedCleavagesAsString
+                            = "\t\t\t\"missed_cleavages\": "
+                            + digestionPreferences.getnMissedCleavages(tempEnzyme.getName())
+                            + ","
+                            + System.getProperty("line.separator");
+
+                    break;
+
+                case unSpecific:
+
+                    enzymeDetailsAsString
+                            = "\t\t\t\"cleave_at\": \"\""
+                            + System.getProperty("line.separator");
+                    break;
+
+                case wholeProtein:
+
+                    enzymeDetailsAsString
+                            = "\t\t\t\"cleave_at\": \"$\""
+                            + System.getProperty("line.separator");
+                    break;
+
+                default:
+
+                    throw new IOException("Enzyme type not supported by Sage!");
+
+            }
         }
 
         String fixedModificationsAsString = getModifications(searchParameters.getModificationParameters().getFixedModifications(), true);
@@ -199,11 +286,10 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     // emzyme settings
                     //////////////////////
                     + "\t\t\"enzyme\": {" + System.getProperty("line.separator")
-                    + "\t\t\t\"missed_cleavages\": " + digestionPreferences.getnMissedCleavages(tempEnzyme.getName()) + "," + System.getProperty("line.separator")
+                    + enzymeMissedCleavagesAsString
                     + "\t\t\t\"min_len\": " + sageParameters.getMinPeptideLength() + "," + System.getProperty("line.separator")
                     + "\t\t\t\"max_len\": " + sageParameters.getMaxPeptideLength() + "," + System.getProperty("line.separator")
-                    + "\t\t\t\"cleave_at\": \"" + aminoAcidsBefore + "\"," + System.getProperty("line.separator")
-                    + "\t\t\t\"restrict\": \"" + restrictionAfter + "\"" + System.getProperty("line.separator")
+                    + enzymeDetailsAsString
                     + "\t\t}," + System.getProperty("line.separator")
                     ///////////////////////////////////
                     // fragment and peptide settings
@@ -313,7 +399,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     }
                     modificationsAsString += "\t\t\t\"[\": " + modification.getMass();
                     break;
-                    
+
                 case modn_peptide:
                     if (!modificationsAsString.isEmpty()) {
                         modificationsAsString += "," + System.getProperty("line.separator");
@@ -332,7 +418,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     }
                     modificationsAsString += "\t\t\t\"]\": " + modification.getMass();
                     break;
-                    
+
                 case modc_peptide:
                     if (!modificationsAsString.isEmpty()) {
                         modificationsAsString += "," + System.getProperty("line.separator");
