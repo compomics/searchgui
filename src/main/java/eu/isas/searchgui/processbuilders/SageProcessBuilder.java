@@ -33,7 +33,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.9.1";
+    private final String SAGE_VERSION = "0.9.3";
     /**
      * The spectrum file.
      */
@@ -270,9 +270,10 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         String fixedModificationsAsString = getModifications(searchParameters.getModificationParameters().getFixedModifications(), true);
         String variableModificationsAsString = getModifications(searchParameters.getModificationParameters().getVariableModifications(), false);
 
-        String performLfq = sageParameters.getPerformLfq() ? "true" : "null";
         String tmtType = sageParameters.getTmtType() != null ? "\"" + sageParameters.getTmtType() + "\"" : "null";
-        //String tmtLevel = sageParameters.getTmtLevel() != null ? "\"" + sageParameters.getTmtLevel() + "\"" : "3";
+        String tmtLevel = sageParameters.getTmtLevel() != null ? "\"" + sageParameters.getTmtLevel() + "\"" : "3";
+        String tmtSn = sageParameters.getTmtSn() ? "true" : "null";
+        String performLfq = sageParameters.getPerformLfq() ? "true" : "null";
 
         BufferedWriter br = new BufferedWriter(new FileWriter(new File(sageTempFolder, "sage.json")));
 
@@ -317,7 +318,8 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     ///////////////////////////////////    
                     + "\t\"quant\": {" + System.getProperty("line.separator")
                     + "\t\t\"tmt\": " + tmtType + "," + System.getProperty("line.separator")
-                    + "\t\t\"tmt_level\": 3," + System.getProperty("line.separator") //+ "\t\t\"tmt_level\": " + tmtLevel + "," + System.getProperty("line.separator")
+                    + "\t\t\"tmt_level\": " + tmtLevel + "," + System.getProperty("line.separator")
+                    + "\t\t\"tmt_sn\": " + tmtSn + "," + System.getProperty("line.separator")
                     + "\t\t\"lfq\": " + performLfq + System.getProperty("line.separator")
                     + "\t}," + System.getProperty("line.separator")
                     ////////////////////////////////////////
@@ -350,6 +352,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\"predict_rt\": " + sageParameters.getPredictRt().toString() + "," + System.getProperty("line.separator")
                     + "\t\"min_peaks\": " + sageParameters.getMinPeaks() + "," + System.getProperty("line.separator")
                     + "\t\"max_peaks\": " + sageParameters.getMaxPeaks() + "," + System.getProperty("line.separator")
+                    + "\t\"min_matched_peaks\": " + sageParameters.getMinMatchedPeaks() + "," + System.getProperty("line.separator")
                     + "\t\"max_fragment_charge\": " + sageParameters.getMaxFragmentCharge() + "," + System.getProperty("line.separator")
                     + "\t\"report_psms\": " + sageParameters.getNumPsmsPerSpectrum() + "," + System.getProperty("line.separator")
                     + "\t\"parallel\": " + sageParameters.getParallelSearch() + "," + System.getProperty("line.separator")

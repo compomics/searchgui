@@ -213,6 +213,7 @@ Sage will process a protein into peptides via several routes listed below. Curre
   "quant": {                // Optional - specify only if TMT or LFQ
     "tmt": "Tmt16",         // Optional[str] {default=null}, one of "Tmt6", "Tmt10", "Tmt11", "Tmt16", or "Tmt18"
     "tmt_level": 2,         // Optional[int] {default=3}, MS-level to perform TMT quantification on
+    "tmt_sn": false,        // Optional[bool] {default=false}, use Signal/Noise instead of intensity for TMT quant. Requires noise values in mzML
     "lfq": true             // Optional[bool] {default=null}, perform label-free quantification
   },
   "precursor_tol": {        // Tolerance can be either "ppm" or "da"
@@ -236,6 +237,7 @@ Sage will process a protein into peptides via several routes listed below. Curre
   "predict_rt": false,    // Optional[bool] {default=true}: use retention time prediction model as an feature for LDA
   "min_peaks": 15,          // Optional[int] {default=15}: only process MS2 spectra with at least N peaks
   "max_peaks": 150,         // Optional[int] {default=150}: take the top N most intense MS2 peaks to search,
+  "min_matched_peaks": 6,   // Optional[int] {default=4}: minimum # of matched b+y ions to use for reporting PSMs
   "max_fragment_charge": 1, // Optional[int] {default=null}: maximum fragment ion charge states to consider,
   "report_psms": 1,         // Optional[int] {default=1}: number of PSMs to report for each spectra. Recommend setting to 1, higher values might disrupt LDA
   "parallel": true,         // Optional[bool] {default=true}: search files in parallel. For large numbers of files or low RAM, set this to false
