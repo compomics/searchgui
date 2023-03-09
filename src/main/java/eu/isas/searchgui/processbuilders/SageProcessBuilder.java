@@ -33,7 +33,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.9.3";
+    private final String SAGE_VERSION = "0.9.4";
     /**
      * The spectrum file.
      */
@@ -271,7 +271,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         String variableModificationsAsString = getModifications(searchParameters.getModificationParameters().getVariableModifications(), false);
 
         String tmtType = sageParameters.getTmtType() != null ? "\"" + sageParameters.getTmtType() + "\"" : "null";
-        String tmtLevel = sageParameters.getTmtLevel() != null ? "\"" + sageParameters.getTmtLevel() + "\"" : "3";
+        String tmtLevel = sageParameters.getTmtLevel() != null ? sageParameters.getTmtLevel().toString() : "3";
         String tmtSn = sageParameters.getTmtSn() ? "true" : "null";
         String performLfq = sageParameters.getPerformLfq() ? "true" : "null";
 
