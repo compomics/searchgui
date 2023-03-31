@@ -4977,18 +4977,25 @@ public class SearchHandler {
     public static String getTempFolderPath(
             String jarFilePath
     ) {
+
         if (tempFolderPath == null) {
+
             if (jarFilePath.equals(".")) {
                 tempFolderPath = "resources" + File.separator + "temp";
             } else {
                 tempFolderPath = jarFilePath + File.separator + "resources" + File.separator + "temp";
             }
+
             File tempFolder = new File(tempFolderPath);
+
             if (!tempFolder.exists()) {
                 tempFolder.mkdirs();
             }
+
         }
+
         return tempFolderPath;
+
     }
 
     /**
@@ -5011,21 +5018,26 @@ public class SearchHandler {
     public static String getTempSearchEngineFolderPath(
             String jarFilePath
     ) {
+
         if (tempSearchEngineFolderPath == null) {
+
             if (jarFilePath.equals(".")) {
                 tempSearchEngineFolderPath = "resources" + File.separator + "temp" + File.separator + "search_engines";
             } else {
                 tempSearchEngineFolderPath = jarFilePath + File.separator + "resources" + File.separator + "temp" + File.separator + "search_engines";
             }
+
         }
 
         File tempFolder = new File(tempSearchEngineFolderPath);
         tempSearchEngineFolderPath = tempFolder.getAbsolutePath();
+
         if (!tempFolder.exists()) {
             tempFolder.mkdirs();
         }
 
         return tempSearchEngineFolderPath;
+
     }
 
     /**
@@ -5062,23 +5074,36 @@ public class SearchHandler {
     public static String loadModifications(
             SearchParameters searchParameters
     ) {
+
         String error = null;
         ArrayList<String> toCheck = ModificationFactory.getInstance().loadBackedUpModifications(searchParameters, true);
+
         if (!toCheck.isEmpty()) {
+
             error = "The definition of the following PTM(s) seems to have changed and were overwritten:\n";
+
             for (int i = 0; i < toCheck.size(); i++) {
+
                 if (i > 0) {
+
                     if (i < toCheck.size() - 1) {
                         error += ", ";
                     } else {
                         error += " and ";
                     }
+
                 }
+
                 error += toCheck.get(i);
+
             }
+
             error += ".\nPlease verify the definition of the PTM(s) in the modifications editor.";
+
         }
+
         return error;
+
     }
 
     /**

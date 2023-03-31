@@ -62,8 +62,10 @@ public class SearchCLI implements Callable {
     public SearchCLI(String[] args) {
 
         try {
+
             // turn off illegal access log messages
             try {
+
                 Class loggerClass = Class.forName("jdk.internal.module.IllegalAccessLogger");
                 Field loggerField = loggerClass.getDeclaredField("logger");
                 Class unsafeClass = Class.forName("sun.misc.Unsafe");
@@ -73,6 +75,7 @@ public class SearchCLI implements Callable {
                 Long offset = (Long) unsafeClass.getMethod("staticFieldOffset", Field.class).invoke(unsafe, loggerField);
                 unsafeClass.getMethod("putObjectVolatile", Object.class, long.class, Object.class) //
                         .invoke(unsafe, loggerClass, offset, null);
+
             } catch (Throwable ex) {
                 // ignore, i.e. simply show the warnings...
                 //ex.printStackTrace();
@@ -84,19 +87,20 @@ public class SearchCLI implements Callable {
             waitingHandler = new WaitingHandlerCLIImpl();
 
             try {
-            
+
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
                 speciesFactory.initiate(getJarFilePath());
-            
+
             } catch (Exception e) {
-                
+
                 waitingHandler.appendReport(
-                        "An error occurred while loading the species.", 
-                        true, 
+                        "An error occurred while loading the species.",
+                        true,
                         true
                 );
+
                 e.printStackTrace();
-            
+
             }
 
             // parse the rest of the options   
@@ -106,7 +110,7 @@ public class SearchCLI implements Callable {
             CommandLine line = parser.parse(nonPathOptions, nonPathSettingArgsAsList);
 
             if (!SearchCLIInputBean.isValidStartup(line)) {
-                
+
                 PrintWriter lPrintWriter = new PrintWriter(System.out);
                 lPrintWriter.print(System.getProperty("line.separator") + "======================" + System.getProperty("line.separator"));
                 lPrintWriter.print("SearchCLI" + System.getProperty("line.separator"));
@@ -117,21 +121,23 @@ public class SearchCLI implements Callable {
                 lPrintWriter.close();
 
                 System.exit(0);
+
             } else {
-                
+
                 searchCLIInputBean = new SearchCLIInputBean(line);
                 call();
-            
+
             }
         } catch (Exception e) {
-            
+
             waitingHandler.appendReport(
-                    "An error occurred while running the command line. " + getLogFileMessage(), 
-                    true, 
+                    "An error occurred while running the command line. " + getLogFileMessage(),
+                    true,
                     true
             );
+
             e.printStackTrace();
-        
+
         }
     }
 
@@ -144,7 +150,7 @@ public class SearchCLI implements Callable {
         enzymeFactory = EnzymeFactory.getInstance();
 
         try {
-            
+
             WaitingHandlerCLIImpl waitingHandlerCLIImpl = new WaitingHandlerCLIImpl();
 
             // get the spectrum files
@@ -172,18 +178,19 @@ public class SearchCLI implements Callable {
                     name += ".par";
 
                 }
-                
+
                 parametersFile = new File(searchCLIInputBean.getOutputFolder(), name);
                 IdentificationParameters.saveIdentificationParameters(identificationParameters, parametersFile);
-            
+
             }
 
             SearchParameters searchParameters = identificationParameters.getSearchParameters();
             String error = SearchHandler.loadModifications(searchParameters);
+
             if (error != null) {
                 System.out.println(error);
             }
-           
+
             UtilitiesUserParameters userParameters = UtilitiesUserParameters.loadUserParameters();
             userParameters.setRefMass(searchCLIInputBean.getRefMass());
             userParameters.setRenameXTandemFile(searchCLIInputBean.renameXTandemFile());
@@ -196,35 +203,35 @@ public class SearchCLI implements Callable {
             // @TODO: validate the mgf files: see SearchGUI.validateMgfFile
             SearchHandler searchHandler = new SearchHandler(
                     identificationParameters,
-                    searchCLIInputBean.getOutputFolder(), 
+                    searchCLIInputBean.getOutputFolder(),
                     searchCLIInputBean.getDefaultOutputFileName(),
-                    spectrumFiles, 
-                    searchCLIInputBean.getFastaFile(), 
-                    new ArrayList<File>(), 
+                    spectrumFiles,
+                    searchCLIInputBean.getFastaFile(),
+                    new ArrayList<File>(),
                     parametersFile,
-                    searchCLIInputBean.isOmssaEnabled(), 
+                    searchCLIInputBean.isOmssaEnabled(),
                     searchCLIInputBean.isXTandemEnabled(),
-                    searchCLIInputBean.isMsgfEnabled(), 
+                    searchCLIInputBean.isMsgfEnabled(),
                     searchCLIInputBean.isMsAmandaEnabled(),
-                    searchCLIInputBean.isMyriMatchEnabled(), 
+                    searchCLIInputBean.isMyriMatchEnabled(),
                     searchCLIInputBean.isCometEnabled(),
-                    searchCLIInputBean.isTideEnabled(), 
+                    searchCLIInputBean.isTideEnabled(),
                     searchCLIInputBean.isAndromedaEnabled(),
                     searchCLIInputBean.isMetaMorpheusEnabled(),
                     searchCLIInputBean.isSageEnabled(),
-                    searchCLIInputBean.isNovorEnabled(), 
+                    searchCLIInputBean.isNovorEnabled(),
                     searchCLIInputBean.isDirecTagEnabled(),
-                    searchCLIInputBean.getOmssaLocation(), 
+                    searchCLIInputBean.getOmssaLocation(),
                     searchCLIInputBean.getXtandemLocation(),
-                    searchCLIInputBean.getMsgfLocation(), 
+                    searchCLIInputBean.getMsgfLocation(),
                     searchCLIInputBean.getMsAmandaLocation(),
-                    searchCLIInputBean.getMyriMatchLocation(), 
+                    searchCLIInputBean.getMyriMatchLocation(),
                     searchCLIInputBean.getCometLocation(),
-                    searchCLIInputBean.getTideLocation(), 
+                    searchCLIInputBean.getTideLocation(),
                     searchCLIInputBean.getAndromedaLocation(),
                     searchCLIInputBean.getMetaMorpheusLocation(),
                     searchCLIInputBean.getSageLocation(),
-                    searchCLIInputBean.getNovorLocation(), 
+                    searchCLIInputBean.getNovorLocation(),
                     searchCLIInputBean.getDirecTagLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
                     processingParameters
@@ -234,51 +241,53 @@ public class SearchCLI implements Callable {
 
             // incrementing the counter for a new SearchGUI start
             if (userParameters.isAutoUpdate()) {
-                
+
                 Util.sendGAUpdate(
-                        "UA-36198780-2", 
-                        "startrun-cl", 
+                        "UA-36198780-2",
+                        "startrun-cl",
                         "searchgui-" + (new Properties().getVersion())
                 );
 
             }
 
             searchHandler.startSearch(waitingHandlerCLIImpl);
-            
+
         } catch (Exception e) {
-            
+
             waitingHandler.appendReport(
-                    "An error occurred while running the command line. " + getLogFileMessage(), 
-                    true, 
+                    "An error occurred while running the command line. " + getLogFileMessage(),
+                    true,
                     true
             );
             e.printStackTrace();
-        
+
         }
 
         try {
-            
+
             TempFilesManager.deleteTempFolders();
-        
+
         } catch (Exception e) {
-        
+
             waitingHandler.appendReport(
-                    "An error occurred while deleting the temp folder. " + getLogFileMessage(), 
-                    true, 
+                    "An error occurred while deleting the temp folder. " + getLogFileMessage(),
+                    true,
                     true
             );
+
             e.printStackTrace();
-        
+
         }
 
         return null;
-        
+
     }
 
     /**
      * SearchCLI header message when printing the usage.
      */
     private static String getHeader() {
+
         return System.getProperty("line.separator")
                 + "SearchCLI searches spectrum files according to search parameters using multiple search engines." + System.getProperty("line.separator")
                 + System.getProperty("line.separator")
@@ -297,6 +306,7 @@ public class SearchCLI implements Callable {
                 + System.getProperty("line.separator")
                 + "----------------------" + System.getProperty("line.separator")
                 + "\n";
+
     }
 
     /**
@@ -306,11 +316,13 @@ public class SearchCLI implements Callable {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         try {
             new SearchCLI(args);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -323,6 +335,7 @@ public class SearchCLI implements Callable {
         logFolder = aLogFolder;
 
         try {
+
             aLogFolder.mkdirs();
             File file = new File(aLogFolder, "SearchGUI.log");
             System.setErr(new java.io.PrintStream(new FileOutputStream(file, true)));
@@ -333,9 +346,13 @@ public class SearchCLI implements Callable {
             System.err.println("Total amount of memory in the Java virtual machine: " + Runtime.getRuntime().totalMemory() + ".");
             System.err.println("Free memory: " + Runtime.getRuntime().freeMemory() + ".");
             System.err.println("Java version: " + System.getProperty("java.version") + ".");
+
         } catch (Exception e) {
+
             e.printStackTrace();
+
         }
+
     }
 
     /**
@@ -344,11 +361,20 @@ public class SearchCLI implements Callable {
      * @return the "see the log file" message
      */
     public static String getLogFileMessage() {
+
         if (logFolder == null) {
+
             return "Please see the SearchGUI log file.";
+
         } else {
-            return "Please see the SearchGUI log file: " + logFolder.getAbsolutePath() + File.separator + "SearchGUI.log";
+
+            return "Please see the SearchGUI log file: "
+                    + logFolder.getAbsolutePath()
+                    + File.separator
+                    + "SearchGUI.log";
+
         }
+
     }
 
     /**
@@ -356,7 +382,7 @@ public class SearchCLI implements Callable {
      *
      * @return the path to the jar file
      */
-    public String getJarFilePath() {
+    public String getJarFilePath() { // @TODO: make it possible to use a user-defined folder instead?
         return CompomicsWrapper.getJarFilePath(this.getClass().getResource("SearchCLI.class").getPath(), "SearchGUI");
     }
 }

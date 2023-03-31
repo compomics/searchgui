@@ -140,7 +140,7 @@ public class SearchGUIPathParameters {
             File inputFile
     ) throws FileNotFoundException, IOException {
 
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(inputFile)) {
+        try ( SimpleFileReader reader = SimpleFileReader.getFileReader(inputFile)) {
 
             String line;
 
@@ -343,7 +343,7 @@ public class SearchGUIPathParameters {
             String jarFilePath
     ) throws IOException {
 
-        try (SimpleFileWriter writer = new SimpleFileWriter(file, false)) {
+        try ( SimpleFileWriter writer = new SimpleFileWriter(file, false)) {
 
             writeConfigurationToFile(writer, jarFilePath);
 
@@ -393,30 +393,43 @@ public class SearchGUIPathParameters {
         switch (pathKey) {
 
             case tempDirectory:
+
                 String toWrite = SearchHandler.getTempFolderPath(jarFilePath);
+
                 if (toWrite == null) {
                     toWrite = UtilitiesPathParameters.defaultPath;
                 }
+
                 writer.write(toWrite);
+
                 break;
 
             case tempSearchEngineDirectory:
+
                 toWrite = SearchHandler.getTempSearchEngineFolderPath(jarFilePath);
+
                 if (toWrite == null) {
                     toWrite = UtilitiesPathParameters.defaultPath;
                 }
+
                 writer.write(toWrite);
+
                 break;
 
             case cmsFolder:
+
                 toWrite = CmsFolder.getParentFolder();
+
                 if (toWrite == null) {
                     toWrite = UtilitiesPathParameters.defaultPath;
                 }
+
                 writer.write(toWrite);
+
                 break;
 
             default:
+
                 throw new UnsupportedOperationException(
                         "Path "
                         + pathKey.id
@@ -459,6 +472,7 @@ public class SearchGUIPathParameters {
         }
 
         result.addAll(UtilitiesPathParameters.getErrorKeys());
+
         return result;
 
     }
@@ -469,9 +483,11 @@ public class SearchGUIPathParameters {
      * @return the path to the jar file
      */
     public String getJarFilePath() {
+
         return CompomicsWrapper.getJarFilePath(
                 this.getClass().getResource("SearchGUIPathPreferences.class").getPath(),
                 "SearchGUI"
         );
+
     }
 }
