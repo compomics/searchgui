@@ -131,7 +131,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private File outputFolder;
     /**
-     * The mgf files.
+     * The config folder.
+     */
+    private File configFolder = null;
+    /**
+     * The spectrum files.
      */
     private ArrayList<File> spectrumFiles = new ArrayList<>();
     /**
@@ -246,6 +250,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param identificationParametersFile the identification settings file (can
      * be null)
      * @param outputFolder the output folder (can be null)
+     * @param configFolder the config folder (can be null)
      * @param species the species (can be null)
      * @param speciesType the species type (can be null)
      * @param projectName the PeptideShaker project name
@@ -256,12 +261,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             ArrayList<File> rawFiles,
             File identificationParametersFile,
             File outputFolder,
+            File configFolder,
             String species,
             String speciesType,
             String projectName
     ) {
 
         this.identificationParametersFile = identificationParametersFile;
+
+        // set the config folder
+        if (configFolder != null) {
+
+        }
 
         // set path configuration
         try {
@@ -270,7 +281,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // Will be taken care of next 
         }
         try {
-            if (!SearchGUIPathParameters.getErrorKeys(getJarFilePath()).isEmpty()) {
+            if (!SearchGUIPathParameters.getErrorKeys(getConfigFolder()).isEmpty()) {
                 editPathParameters();
             }
         } catch (Exception e) {
@@ -299,7 +310,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         // check if a newer version of SearchGUI is available
         boolean newVersion = false;
 
-        if (!getJarFilePath().equalsIgnoreCase(".")
+        if (!getConfigFolder().toString().equalsIgnoreCase(".")
                 && !CompomicsWrapper.appRunningIntoConda(SearchHandler.CONDA_APP_NAME)
                 && utilitiesUserParameters.isAutoUpdate()) {
             newVersion = checkForNewVersion();
@@ -313,25 +324,41 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             // load gene mappings
             ProteinGeneDetailsProvider geneFactory = new ProteinGeneDetailsProvider();
             try {
-                geneFactory.initialize(getJarFilePath());
+                geneFactory.initialize(getConfigFolder());
             } catch (Exception e) {
+
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "An error occurred while loading the gene mappings.", "Gene Mapping File Error", JOptionPane.ERROR_MESSAGE);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "An error occurred while loading the gene mappings.",
+                        "Gene Mapping File Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+
             }
 
             // load the species mapping
             try {
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
-                speciesFactory.initiate(getJarFilePath());
+                speciesFactory.initiate(getConfigFolder());
             } catch (Exception e) {
+
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "An error occurred while loading the species mapping.", "File Error", JOptionPane.OK_OPTION);
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "An error occurred while loading the species mapping.",
+                        "File Error",
+                        JOptionPane.OK_OPTION
+                );
+
             }
 
             // set this version as the default SearchGUI version
-            if (!getJarFilePath().equalsIgnoreCase(".")) {
+            if (!getConfigFolder().toString().equalsIgnoreCase(".")) {
                 String versionNumber = new eu.isas.searchgui.utilities.Properties().getVersion();
-                utilitiesUserParameters.setSearchGuiPath(new File(getJarFilePath(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
+                utilitiesUserParameters.setSearchGuiPath(new File(getConfigFolder(), "SearchGUI-" + versionNumber + ".jar").getAbsolutePath());
                 UtilitiesUserParameters.saveUserParameters(utilitiesUserParameters);
             }
 
@@ -345,6 +372,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             searchHandler = new SearchHandler(
                     identificationParameters,
                     outputFolder,
+                    getConfigFolder(),
                     spectrumFiles,
                     fastaFile,
                     rawFiles,
@@ -368,13 +396,13 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             enableDirecTagJCheckBox.setSelected(searchHandler.isDirecTagEnabled());
 
             // add desktop shortcut?
-            if (!getJarFilePath().equalsIgnoreCase(".")
+            if (!getConfigFolder().toString().equalsIgnoreCase(".")
                     && System.getProperty("os.name").lastIndexOf("Windows") != -1
-                    && new File(getJarFilePath() + "/resources/conf/firstRun").exists()) {
+                    && new File(getConfigFolder() + "/resources/conf/firstRun").exists()) {
 
                 // @TODO: add support for desktop icons on mac and linux??
                 // delete the firstRun file such that the user is not asked the next time around
-                boolean fileDeleted = new File(getJarFilePath() + "/resources/conf/firstRun").delete();
+                boolean fileDeleted = new File(getConfigFolder() + "/resources/conf/firstRun").delete();
 
                 if (!fileDeleted) {
                     JOptionPane.showMessageDialog(this, "Failed to delete the file /resources/conf/firstRun.\n"
@@ -528,6 +556,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
 
             String javaVersion = System.getProperty("java.version");
+
             boolean javaVersionWarning = javaVersion.startsWith("1.5")
                     || javaVersion.startsWith("1.6")
                     || javaVersion.startsWith("1.7");
@@ -535,7 +564,11 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (javaVersionWarning) {
                 new JavaParametersDialog(this, this, null, "SearchGUI", true);
             }
+
         }
+
+        this.configFolder = configFolder;
+
     }
 
     /**
@@ -3730,6 +3763,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * @param evt the action event
      */
     private void logReportMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logReportMenuActionPerformed
+
         new BugReport(
                 this,
                 lastSelectedFolder,
@@ -3738,8 +3772,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 new eu.isas.searchgui.utilities.Properties().getVersion(),
                 "peptide-shaker",
                 "PeptideShaker",
-                new File(getJarFilePath() + "/resources/SearchGUI.log")
+                new File(getConfigFolder() + "/resources/SearchGUI.log")
         );
+
     }//GEN-LAST:event_logReportMenuActionPerformed
 
     /**
@@ -4989,7 +5024,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             JOptionPane.WARNING_MESSAGE
                     );
                 }
-                
+
                 // add any missing advanced parameters
                 identificationParameters.getSearchParameters().setDefaultAdvancedSettings(identificationParameters.getSearchParameters());
 
@@ -6823,7 +6858,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
 
-                pathParameters.put(searchGUIPathKey, SearchGUIPathParameters.getPathParameter(searchGUIPathKey, getJarFilePath()));
+                pathParameters.put(searchGUIPathKey, SearchGUIPathParameters.getPathParameter(searchGUIPathKey, getConfigFolder()));
 
             }
 
@@ -6854,22 +6889,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
 
                 // write path file preference
-                File destinationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+                File destinationFile = new File(getConfigFolder(), UtilitiesPathParameters.configurationFileName);
 
                 try {
 
-                    SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getJarFilePath());
+                    SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getConfigFolder());
                     restart();
 
                 } catch (Exception e) {
 
                     e.printStackTrace();
+
                     JOptionPane.showMessageDialog(
                             this,
                             new String[]{"An error occurred while setting the configuration ", e.getMessage()},
                             "Error Reading File",
                             JOptionPane.WARNING_MESSAGE
                     );
+
                 }
             }
 
@@ -7481,13 +7518,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             TITLED_BORDER_HORIZONTAL_PADDING = "   ";
         }
 
-        ArrayList<File> spectrumFiles = null;
-        File fastaFile = null;
-        ArrayList<File> rawFiles = null;
-        File searchParametersFile = null;
-        File outputFolder = null;
+        ArrayList<File> spectrumFiles = null, rawFiles = null;
+        File fastaFile = null, searchParametersFile = null, outputFolder = null, configFolder = null;
         String currentSpecies = null, currentSpeciesType = null, currentProjectName = null;
-        boolean spectrum = false, fasta = false, raw = false, parameters = false, output = false, species = false, speciesType = false, projectName = false;
+        boolean spectrum = false, fasta = false, raw = false, parameters = false,
+                output = false, config = false, species = false, speciesType = false,
+                projectName = false;
 
         for (String arg : args) {
 
@@ -7507,6 +7543,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             "Spectrum Files",
                             JOptionPane.WARNING_MESSAGE
                     );
+
                     e.printStackTrace();
 
                 }
@@ -7543,7 +7580,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     JOptionPane.showMessageDialog(
                             null,
-                            "Failed importing raw files from command line option " + arg + ".",
+                            "Failed to import raw files from command line option " + arg + ".",
                             "Raw Files",
                             JOptionPane.WARNING_MESSAGE
                     );
@@ -7583,6 +7620,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 outputFolder = new File(arg);
                 output = false;
             }
+            if (config) {
+                configFolder = new File(arg);
+                config = false;
+            }
             if (species) {
                 currentSpecies = arg;
                 species = false;
@@ -7607,13 +7648,16 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             if (arg.equals(ToolFactory.OUTPUT_FOLDER_OPTION)) {
                 output = true;
             }
+            if (arg.equals(ToolFactory.CONFIG_FOLDER)) {
+                config = true;
+            }
             if (arg.equals(ToolFactory.SPECIES_OPTION)) {
                 species = true;
             }
             if (arg.equals(ToolFactory.SPECIES_TYPE_OPTION)) {
                 speciesType = true;
             }
-            if (arg.equals(ToolFactory.PROJEC_NAME_OPTION)) {
+            if (arg.equals(ToolFactory.PROJECT_NAME_OPTION)) {
                 projectName = true;
             }
         }
@@ -7624,6 +7668,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 rawFiles,
                 searchParametersFile,
                 outputFolder,
+                configFolder,
                 currentSpecies,
                 currentSpeciesType,
                 currentProjectName
@@ -7693,9 +7738,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Set up the log file.
      */
     private void setUpLogFile() {
-        if (useLogFile && !getJarFilePath().equalsIgnoreCase(".")) {
+
+        if (useLogFile && !getConfigFolder().toString().equalsIgnoreCase(".")) {
+
             try {
-                String path = getJarFilePath() + "/resources/SearchGUI.log";
+
+                String path = getConfigFolder() + "/resources/SearchGUI.log";
 
                 File file = new File(path);
                 System.setOut(new java.io.PrintStream(new FileOutputStream(file, true)));
@@ -7792,7 +7840,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     private void saveConfigurationFile() {
 
-        File folder = new File(getJarFilePath() + File.separator + "resources" + File.separator + "conf" + File.separator);
+        File folder = new File(getConfigFolder() + File.separator + "resources" + File.separator + "conf" + File.separator);
 
         if (!folder.exists()) {
 
@@ -7969,6 +8017,30 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     }
 
     /**
+     * Returns the folder where the configuration files are stored.
+     *
+     * @return the folder where the configuration files are stored
+     */
+    public File getConfigFolder() {
+
+        if (configFolder != null) {
+            return configFolder;
+        } else {
+            return new File(CompomicsWrapper.getJarFilePath(this.getClass().getResource("SearchGUI.class").getPath(), "SearchGUI"));
+        }
+
+    }
+
+    /**
+     * Set the config folder.
+     *
+     * @param configFolder the config folder to set
+     */
+    public void setConfigFolder(File configFolder) {
+        this.configFolder = configFolder;
+    }
+
+    /**
      * Sets the path configuration.
      *
      * @throws java.io.IOException exception thrown whenever an error occurs
@@ -7976,20 +8048,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      */
     public void setPathConfiguration() throws IOException {
 
-        File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+        File pathConfigurationFile = new File(getConfigFolder(), UtilitiesPathParameters.configurationFileName);
 
         if (pathConfigurationFile.exists()) {
 
             SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
 
         }
+
     }
 
     @Override
     public void restart() {
+
         dispose();
         new SearchGUIWrapper();
+
         System.exit(0); // have to close the current java process (as a new one is started on the line above)
+
     }
 
     @Override

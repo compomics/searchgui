@@ -19,6 +19,7 @@ public enum SearchCLIParams {
     SPECTRUM_FILES("spectrum_files", "Spectrum files (mgf or mzml), comma separated list or an entire folder.", true),
     FASTA_FILE("fasta_file", "The complete path to the FASTA file.", true),
     OUTPUT_FOLDER("output_folder", "The output folder.", true),
+    CONFIG_FOLDER("config_folder", "The config folder.", true),
     THREADS("threads", "Number of threads to use for the processing, default: the number of cores.", false),
     OMSSA("omssa", "Turn the OMSSA search on or off (0: off, 1: on,  default is '0').", false),
     XTANDEM("xtandem", "Turn the X!Tandem search on or off (0: off, 1: on, default is '0').", false),
@@ -175,8 +176,9 @@ public enum SearchCLIParams {
         output += "\n\nAdvanced Options:\n\n";
         output += "-" + String.format(formatter, REFERENCE_MASS.id) + " " + REFERENCE_MASS.description + "\n";
 
-        output += "\n\nOptional Temporary Folder:\n\n";
+        output += "\n\nOptional Folder Options:\n\n";
         output += "-" + String.format(formatter, PathSettingsCLIParams.ALL.id) + " " + PathSettingsCLIParams.ALL.description + "\n";
+        output += "-" + String.format(formatter, CONFIG_FOLDER.id) + " " + CONFIG_FOLDER.description + "\n";
 
         output += "\n\n\nFor identification parameters options:\nReplace eu.isas.searchgui.cmd.SearchCLI with eu.isas.searchgui.cmd.IdentificationParametersCLI\n\n";
 

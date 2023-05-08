@@ -89,7 +89,7 @@ public class SearchCLI implements Callable {
             try {
 
                 SpeciesFactory speciesFactory = SpeciesFactory.getInstance();
-                speciesFactory.initiate(getJarFilePath());
+                speciesFactory.initiate(SearchHandler.getConfigFolder());
 
             } catch (Exception e) {
 
@@ -204,6 +204,7 @@ public class SearchCLI implements Callable {
             SearchHandler searchHandler = new SearchHandler(
                     identificationParameters,
                     searchCLIInputBean.getOutputFolder(),
+                    searchCLIInputBean.getConfigFolder(),
                     searchCLIInputBean.getDefaultOutputFileName(),
                     spectrumFiles,
                     searchCLIInputBean.getFastaFile(),
@@ -377,12 +378,27 @@ public class SearchCLI implements Callable {
 
     }
 
-    /**
-     * Returns the path to the jar file.
-     *
-     * @return the path to the jar file
-     */
-    public String getJarFilePath() { // @TODO: make it possible to use a user-defined folder instead?
-        return CompomicsWrapper.getJarFilePath(this.getClass().getResource("SearchCLI.class").getPath(), "SearchGUI");
-    }
+//    /**
+//     * Returns the path to the jar file.
+//     *
+//     * @return the path to the jar file
+//     */
+//    public String getJarFilePath() { // @TODO: make it possible to use a user-defined folder instead?
+//        return CompomicsWrapper.getJarFilePath(this.getClass().getResource("SearchCLI.class").getPath(), "SearchGUI");
+//    }
+    
+//    /**
+//     * Returns the folder where the configuration files are stored.
+//     *
+//     * @return the folder where the configuration files are stored
+//     */
+//    public File getConfigFolder() {
+//
+//        if (configFolder != null) {
+//            return configFolder;
+//        } else {
+//            return new File(CompomicsWrapper.getJarFilePath(this.getClass().getResource("SearchCLI.class").getPath(), "SearchGUI"));
+//        }
+//
+//    }
 }

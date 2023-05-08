@@ -33,6 +33,10 @@ public class SearchCLIInputBean {
      */
     private File outputFolder;
     /**
+     * The config folder.
+     */
+    private File configFolder;
+    /**
      * The identification parameters input.
      */
     private IdentificationParametersInputBean identificationParametersInputBean;
@@ -225,6 +229,12 @@ public class SearchCLIInputBean {
         // output folder
         arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
         outputFolder = new File(arg);
+        
+        // get the config folder
+        if (aLine.hasOption(SearchCLIParams.CONFIG_FOLDER.id)) {
+            arg = aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id);
+            configFolder = new File(arg);
+        }
 
         // get the mgf size check settings
         if (aLine.hasOption(SearchCLIParams.MGF_CHECK_SIZE.id)) {
@@ -449,6 +459,15 @@ public class SearchCLIInputBean {
      */
     public File getOutputFolder() {
         return outputFolder;
+    }
+    
+    /**
+     * Returns the config folder.
+     *
+     * @return the config folder
+     */
+    public File getConfigFolder() {
+        return configFolder;
     }
 
     /**
@@ -834,6 +853,18 @@ public class SearchCLIInputBean {
             File file = new File(((String) aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id)));
             if (!file.exists()) {
                 System.out.println(System.getProperty("line.separator") + "Output folder \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        
+        // check the config folder
+        if (aLine.hasOption(SearchCLIParams.CONFIG_FOLDER.id) && ((String) aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id)).equals("")) {
+            System.out.println(System.getProperty("line.separator") + "Config folder not specified." + System.getProperty("line.separator"));
+            return false;
+        } else {
+            File file = new File(((String) aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id)));
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "Config folder \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
                 return false;
             }
         }

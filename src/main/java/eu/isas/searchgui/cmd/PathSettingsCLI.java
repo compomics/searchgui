@@ -1,10 +1,10 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.software.CompomicsWrapper;
 import com.compomics.software.settings.PathKey;
 import com.compomics.software.settings.UtilitiesPathParameters;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
 import com.compomics.util.waiting.WaitingHandler;
+import eu.isas.searchgui.SearchHandler;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
 import java.io.File;
 import java.io.PrintWriter;
@@ -82,7 +82,7 @@ public class PathSettingsCLI {
             if (pathSettingsCLIInputBean.getLogFolder() != null) {
                 SearchCLI.redirectErrorStream(pathSettingsCLIInputBean.getLogFolder());
             } else {
-                SearchCLI.redirectErrorStream(new File(getJarFilePath() + File.separator + "resources"));
+                SearchCLI.redirectErrorStream(new File(SearchHandler.getConfigFolder() + File.separator + "resources"));
             }
 
         } else {
@@ -143,11 +143,11 @@ public class PathSettingsCLI {
             }
 
             // write path file preference
-            File destinationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+            File destinationFile = new File(SearchHandler.getConfigFolder(), UtilitiesPathParameters.configurationFileName);
 
             try {
 
-                SearchGUIPathParameters.writeConfigurationToFile(destinationFile, getJarFilePath());
+                SearchGUIPathParameters.writeConfigurationToFile(destinationFile, SearchHandler.getConfigFolder());
 
             } catch (Exception e) {
 
@@ -167,7 +167,7 @@ public class PathSettingsCLI {
 
             try {
 
-                File pathConfigurationFile = new File(getJarFilePath(), UtilitiesPathParameters.configurationFileName);
+                File pathConfigurationFile = new File(SearchHandler.getConfigFolder(), UtilitiesPathParameters.configurationFileName);
 
                 if (pathConfigurationFile.exists()) {
                     SearchGUIPathParameters.loadPathParametersFromFile(pathConfigurationFile);
@@ -185,7 +185,7 @@ public class PathSettingsCLI {
         // test the temp paths
         try {
 
-            ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
+            ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(SearchHandler.getConfigFolder());
 
             if (!errorKeys.isEmpty()) {
 
@@ -203,20 +203,6 @@ public class PathSettingsCLI {
             System.out.println("Unable to load the path configurations. Default paths will be used.");
 
         }
-
-    }
-
-    /**
-     * Returns the path to the jar file.
-     *
-     * @return the path to the jar file
-     */
-    public String getJarFilePath() {
-
-        return CompomicsWrapper.getJarFilePath(
-                this.getClass().getResource("SearchCLI.class").getPath(),
-                "SearchGUI"
-        );
 
     }
 

@@ -349,6 +349,10 @@ public class SearchHandler {
      */
     private File logFolder = null;
     /**
+     * The config folder.
+     */
+    private static File configFolder = null;
+    /**
      * The output time stamp.
      */
     private static String outputTimeStamp = null;
@@ -370,6 +374,13 @@ public class SearchHandler {
     public final static String CONDA_APP_NAME = "searchgui";
 
     /**
+     * Empty default constructor.
+     */
+    public SearchHandler() {
+        this.msFileHandler = null;
+    }
+
+    /**
      * Constructor for the SearchGUI command line interface.Uses the
      * configuration file searchGUI_configuration.txt to get the default search
      * engine locations and which search engines that are enabled.Mainly for use
@@ -377,6 +388,7 @@ public class SearchHandler {
      *
      * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
+     * @param configFolder the config folder (can be null)
      * @param msFiles list of mass spectrometry files
      * @param fastaFile the FASTA file
      * @param rawFiles list of raw files
@@ -388,6 +400,7 @@ public class SearchHandler {
     public SearchHandler(
             IdentificationParameters identificationParameters,
             File resultsFolder,
+            File configFolder,
             ArrayList<File> msFiles,
             File fastaFile,
             ArrayList<File> rawFiles,
@@ -398,6 +411,11 @@ public class SearchHandler {
     ) {
 
         this.resultsFolder = resultsFolder;
+
+        if (configFolder != null) {
+            this.configFolder = configFolder;
+        }
+
         this.msFiles = msFiles;
         this.cmsFiles = new ArrayList<File>();
         this.fastaFile = fastaFile;
@@ -552,6 +570,7 @@ public class SearchHandler {
      *
      * @param identificationParameters the identification parameters
      * @param resultsFolder the results folder
+     * @param configFolder the config folder (can be null)
      * @param msFiles list of mass spectrometry files
      * @param defaultOutputFileName the default output file name
      * @param fastaFile the FASTA file
@@ -600,6 +619,7 @@ public class SearchHandler {
     public SearchHandler(
             IdentificationParameters identificationParameters,
             File resultsFolder,
+            File configFolder,
             String defaultOutputFileName,
             ArrayList<File> msFiles,
             File fastaFile,
@@ -634,6 +654,9 @@ public class SearchHandler {
     ) {
 
         this.resultsFolder = resultsFolder;
+        if (configFolder != null) {
+            this.configFolder = configFolder;
+        }
         if (defaultOutputFileName != null) {
             this.defaultOutputFileName = defaultOutputFileName;
         }
@@ -2395,7 +2418,7 @@ public class SearchHandler {
                         }
                     }
 
-                    File omssaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "omssa");
+                    File omssaTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "omssa");
 
                     // create the temp folder if it does not exist
                     if (!omssaTempFolder.exists()) {
@@ -2436,11 +2459,12 @@ public class SearchHandler {
                             true,
                             true
                     );
+
                     waitingHandler.appendReportEndLine();
 
                     // create generic database
                     AndromedaProcessBuilder.createGenericFastaFile(
-                            new File(getTempSearchEngineFolderPath(getJarFilePath()), "andromeda"),
+                            new File(getTempSearchEngineFolderPath(getConfigFolder()), "andromeda"),
                             fastaFile,
                             waitingHandler
                     );
@@ -2448,7 +2472,7 @@ public class SearchHandler {
                     // write andromeda database configuration file
                     AndromedaProcessBuilder.createDatabaseFile(
                             andromedaLocation,
-                            new File(getTempSearchEngineFolderPath(getJarFilePath()), "andromeda"),
+                            new File(getTempSearchEngineFolderPath(getConfigFolder()), "andromeda"),
                             fastaFile
                     );
 
@@ -2469,26 +2493,38 @@ public class SearchHandler {
 
                 if (enableTide && !waitingHandler.isRunCanceled()) {
 
-                    File tideTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "tide");
+                    File tideTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "tide");
 
-                    // create the tide index
-                    tideIndexProcessBuilder = new TideIndexProcessBuilder(
-                            tideLocation,
-                            tideTempFolder,
-                            fastaFile,
-                            searchParameters,
-                            waitingHandler,
-                            exceptionHandler
-                    );
-                    waitingHandler.appendReport(
-                            "Indexing " + fastaFile.getName() + " for Tide.",
-                            true,
-                            true
-                    );
-                    waitingHandler.appendReportEndLine();
-                    tideIndexProcessBuilder.startProcess();
+                    TideParameters tideParameters = ((TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex()));
+
+                    if (tideParameters.getRemoveTempFolders()
+                            || !tideTempFolder.exists()
+                            || tideTempFolder.listFiles().length == 0) {
+
+                        // create the tide index
+                        tideIndexProcessBuilder = new TideIndexProcessBuilder(
+                                tideLocation,
+                                tideTempFolder,
+                                fastaFile,
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler
+                        );
+
+                        waitingHandler.appendReport(
+                                "Indexing " + fastaFile.getName() + " for Tide.",
+                                true,
+                                true
+                        );
+
+                        waitingHandler.appendReportEndLine();
+
+                        tideIndexProcessBuilder.startProcess();
+
+                    }
 
                     waitingHandler.increasePrimaryProgressCounter();
+
                 }
 
                 // convert raw files
@@ -2731,7 +2767,7 @@ public class SearchHandler {
                                 true
                         );
 
-                        mgfFile = new File(getPeakListFolder(getJarFilePath()),
+                        mgfFile = new File(getPeakListFolder(getConfigFolder()),
                                 IoUtil.removeExtension(spectrumFileName) + ".mgf");
 
                         MsFileExporter.writeMgfFile(
@@ -2752,7 +2788,7 @@ public class SearchHandler {
                     if (enableXtandem && !waitingHandler.isRunCanceled()) {
 
                         File xTandemOutputFile = new File(outputTempFolder, getXTandemFileName(spectrumFileName));
-                        File xTandemTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "xtandem");
+                        File xTandemTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "xtandem");
 
                         xTandemProcessBuilder = new TandemProcessBuilder(
                                 xtandemLocation,
@@ -2898,7 +2934,7 @@ public class SearchHandler {
 
                         File msAmandaOutputFile = new File(outputTempFolder, getMsAmandaFileName(spectrumFileName));
                         String filePath = msAmandaOutputFile.getAbsolutePath();
-                        File msAmandaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "msamanda");
+                        File msAmandaTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "msamanda");
 
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(
                                 msAmandaLocation,
@@ -2952,7 +2988,7 @@ public class SearchHandler {
                     if (enableMsgf && !waitingHandler.isRunCanceled()) {
 
                         File msgfOutputFile = new File(outputTempFolder, getMsgfFileName(spectrumFileName));
-                        File msgfTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "msgf");
+                        File msgfTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "msgf");
 
                         msgfProcessBuilder = new MsgfProcessBuilder(
                                 msgfLocation,
@@ -3009,7 +3045,7 @@ public class SearchHandler {
                     if (enableOmssa && !waitingHandler.isRunCanceled()) {
 
                         File omssaOutputFile = new File(outputTempFolder, getOMSSAFileName(spectrumFileName));
-                        File omssaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "omssa");
+                        File omssaTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "omssa");
 
                         omssaProcessBuilder = new OmssaclProcessBuilder(
                                 omssaLocation,
@@ -3071,7 +3107,7 @@ public class SearchHandler {
                             cometOutputFile.delete();
                         }
 
-                        File cometTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "comet");
+                        File cometTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "comet");
 
                         cometProcessBuilder = new CometProcessBuilder(
                                 cometLocation,
@@ -3140,7 +3176,7 @@ public class SearchHandler {
                                 true
                         );
 
-                        ms2File = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".ms2");
+                        ms2File = new File(getPeakListFolder(getConfigFolder()), IoUtil.removeExtension(spectrumFileName) + ".ms2");
 
                         MsFileExporter.writeMs2File(
                                 msFileHandler,
@@ -3151,7 +3187,7 @@ public class SearchHandler {
                         );
 
                         File tideOutputFile = new File(outputTempFolder, getTideFileName(spectrumFileName));
-                        File tideTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "tide");
+                        File tideTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "tide");
 
                         // perform the tide search
                         if (!waitingHandler.isRunCanceled()) {
@@ -3224,7 +3260,7 @@ public class SearchHandler {
                                 true
                         );
 
-                        aplFile = new File(getPeakListFolder(getJarFilePath()), IoUtil.removeExtension(spectrumFileName) + ".apl");
+                        aplFile = new File(getPeakListFolder(getConfigFolder()), IoUtil.removeExtension(spectrumFileName) + ".apl");
 
                         MsFileExporter.writeAplFile(
                                 msFileHandler,
@@ -3236,7 +3272,7 @@ public class SearchHandler {
                         );
 
                         File andromedaOutputFile = new File(outputTempFolder, getAndromedaFileName(spectrumFileName));
-                        File andromedaTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "andromeda");
+                        File andromedaTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "andromeda");
 
                         andromedaProcessBuilder = new AndromedaProcessBuilder(
                                 andromedaLocation,
@@ -3316,7 +3352,7 @@ public class SearchHandler {
                     if (enableMetaMorpheus && !waitingHandler.isRunCanceled()) {
 
                         File metaMorpheusOutputFile = new File(outputTempFolder, getMetaMorpheusFileName(spectrumFileName));
-                        File metaMorpheusTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "metamorpheus");
+                        File metaMorpheusTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "metamorpheus");
 
                         metaMorpheusProcessBuilder = new MetaMorpheusProcessBuilder(
                                 metaMorpheusLocation,
@@ -3404,7 +3440,7 @@ public class SearchHandler {
 
                         // @TODO: support multiple spectrum files resulting in one combined results file?
                         File sageOutputFile = new File(outputTempFolder, IoUtil.removeExtension(spectrumFileName) + ".sage.tsv");
-                        File sageTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "sage");
+                        File sageTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "sage");
 
                         sageProcessBuilder = new SageProcessBuilder(
                                 sageLocation,
@@ -3485,7 +3521,7 @@ public class SearchHandler {
                     if (enableNovor && !waitingHandler.isRunCanceled()) {
 
                         File novorOutputFile = new File(outputTempFolder, getNovorFileName(spectrumFileName));
-                        File novorTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "novor");
+                        File novorTempFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()), "novor");
 
                         novorProcessBuilder = new NovorProcessBuilder(
                                 novorLocation,
@@ -3598,32 +3634,6 @@ public class SearchHandler {
                     }
                 }
 
-                // delete the tide index and the crux-output folder?
-                if (enableTide) {
-
-                    TideParameters tideParameters = ((TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex()));
-
-                    if (tideParameters.getRemoveTempFolders()) {
-
-                        String tideResultsFolderName = tideParameters.getOutputFolderName();
-                        File tideResultsFolder = new File(tideLocation, tideResultsFolderName);
-
-                        if (tideResultsFolder.exists()) {
-
-                            FileUtils.deleteDirectory(tideResultsFolder);
-
-                        }
-
-                        File tideIndexFolder = new File(tideLocation, "fasta-index");
-
-                        if (tideIndexFolder.exists()) {
-
-                            FileUtils.deleteDirectory(tideIndexFolder);
-
-                        }
-                    }
-                }
-
                 // save the ptm mappings for novor and directag
                 identificationParametersFactory.addIdentificationParameters(identificationParameters);
 
@@ -3707,6 +3717,7 @@ public class SearchHandler {
                                 );
                             }
                         }
+
                         if (enableMsgf) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3714,6 +3725,7 @@ public class SearchHandler {
                                     Advocate.msgf.getName(),
                                     utilitiesUserParameters.isIncludeDateInOutputName()
                             );
+
                             if (outputFile.exists()) {
 
                                 identificationFilesList.add(outputFile);
@@ -3727,6 +3739,7 @@ public class SearchHandler {
                                 );
                             }
                         }
+
                         if (enableMyriMatch) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3748,6 +3761,7 @@ public class SearchHandler {
                                 );
                             }
                         }
+
                         if (enableOmssa) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3769,6 +3783,7 @@ public class SearchHandler {
                                 );
                             }
                         }
+
                         if (enableXtandem) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3790,6 +3805,7 @@ public class SearchHandler {
                                 );
                             }
                         }
+
                         if (enableComet) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3811,18 +3827,23 @@ public class SearchHandler {
                                 );
                             }
                         }
+
                         if (enableTide) {
+
                             File outputFile = getDefaultOutputFile(
                                     outputFolder,
                                     Advocate.tide.getName(),
                                     utilitiesUserParameters.isIncludeDateInOutputName()
                             );
+
                             if (outputFile.exists()) {
                                 identificationFilesList.add(outputFile);
                             } else {
                                 waitingHandler.appendReport("Could not find " + Advocate.tide.getName() + " results.", true, true);
                             }
+
                         }
+
                         if (enableAndromeda) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3843,7 +3864,9 @@ public class SearchHandler {
                                         true
                                 );
                             }
+
                         }
+
                         if (enableAndromeda) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3864,7 +3887,9 @@ public class SearchHandler {
                                         true
                                 );
                             }
+
                         }
+
                         if (enableMetaMorpheus) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3884,8 +3909,10 @@ public class SearchHandler {
                                         true,
                                         true
                                 );
+
                             }
                         }
+
                         if (enableSage) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3905,8 +3932,11 @@ public class SearchHandler {
                                         true,
                                         true
                                 );
+
                             }
+
                         }
+
                         if (enableDirecTag) {
 
                             File outputFile = getDefaultOutputFile(
@@ -3926,8 +3956,11 @@ public class SearchHandler {
                                         true,
                                         true
                                 );
+
                             }
+
                         }
+
                     } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.run) {
 
                         for (String run : identificationFiles.keySet()) {
@@ -4055,9 +4088,43 @@ public class SearchHandler {
                 }
 
                 // clear the search engine temp folders
-                File tempSearchEngineFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()));
+                File tempSearchEngineFolder = new File(getTempSearchEngineFolderPath(getConfigFolder()));
+
                 if (tempSearchEngineFolder.exists()) {
-                    IoUtil.emptyDir(tempSearchEngineFolder);
+
+                    TideParameters tideParameters = ((TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex()));
+
+                    for (File tempFolder : tempSearchEngineFolder.listFiles()) {
+
+                        if (!tempFolder.getName().equalsIgnoreCase("tide")
+                                || (tempFolder.getName().equalsIgnoreCase("tide") && tideParameters.getRemoveTempFolders())) {
+
+                            FileUtils.deleteDirectory(tempFolder);
+
+                        } else {
+
+                            // potentially keep the tide index  
+                            for (File tempTideFolders : tempFolder.listFiles()) {
+
+                                if (tideParameters.getRemoveTempFolders()) {
+
+                                    IoUtil.deleteDir(tempTideFolders);
+
+                                } else {
+
+                                    if (!tempTideFolders.getName().equalsIgnoreCase("fasta-index")) {
+
+                                        IoUtil.deleteDir(tempTideFolders);
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+                    }
+
                 }
 
                 finished = true;
@@ -4088,8 +4155,10 @@ public class SearchHandler {
                         true,
                         true
                 );
+
                 e.printStackTrace();
                 searchCrashed();
+
                 return 1;
 
             }
@@ -4103,6 +4172,7 @@ public class SearchHandler {
         public boolean isFinished() {
             return finished;
         }
+
     }
 
     /**
@@ -4945,16 +5015,18 @@ public class SearchHandler {
     /**
      * Returns the folder to use to store peak lists.
      *
-     * @param jarFilePath the path to the jar file
+     * @param configFolder the config folder
      * @return the folder to use to store peak lists
      */
     public File getPeakListFolder(
-            String jarFilePath
+            File configFolder
     ) {
-        File peakListFolder = new File(getTempFolderPath(jarFilePath), PEAK_LIST_SUBFOLDER);
+        File peakListFolder = new File(getTempFolderPath(configFolder), PEAK_LIST_SUBFOLDER);
+        
         if (!peakListFolder.exists()) {
             peakListFolder.mkdirs();
         }
+        
         return peakListFolder;
     }
 
@@ -4963,27 +5035,42 @@ public class SearchHandler {
      *
      * @return the path to the jar file
      */
-    public String getJarFilePath() {
-        return CompomicsWrapper.getJarFilePath(this.getClass().getResource("SearchHandler.class").getPath(), "SearchGUI");
+    public static String getJarFilePath() {
+        return CompomicsWrapper.getJarFilePath((new SearchHandler()).getClass().getResource("SearchHandler.class").getPath(), "SearchGUI");
+    }
+
+    /**
+     * Returns the folder where the configuration files are stored.
+     *
+     * @return the folder where the configuration files are stored
+     */
+    public static File getConfigFolder() {
+
+        if (configFolder != null) {
+            return configFolder;
+        } else {
+            return new File(getJarFilePath());
+        }
+
     }
 
     /**
      * Returns the folder to use for temporary files. By default the resources
      * folder is used.
      *
-     * @param jarFilePath the path to the jar file
+     * @param configFolder the config folder
      * @return the folder to use for temporary files
      */
     public static String getTempFolderPath(
-            String jarFilePath
+            File configFolder
     ) {
 
         if (tempFolderPath == null) {
 
-            if (jarFilePath.equals(".")) {
+            if (configFolder.toString().equals(".")) {
                 tempFolderPath = "resources" + File.separator + "temp";
             } else {
-                tempFolderPath = jarFilePath + File.separator + "resources" + File.separator + "temp";
+                tempFolderPath = configFolder + File.separator + "resources" + File.separator + "temp";
             }
 
             File tempFolder = new File(tempFolderPath);
@@ -5012,19 +5099,19 @@ public class SearchHandler {
     /**
      * Returns the folder to use for temporary search engine files.
      *
-     * @param jarFilePath the path to the jar file
+     * @param configFolder the config folder
      * @return the folder to use for temporary search engine files
      */
     public static String getTempSearchEngineFolderPath(
-            String jarFilePath
+            File configFolder
     ) {
 
         if (tempSearchEngineFolderPath == null) {
 
-            if (jarFilePath.equals(".")) {
+            if (configFolder.toString().equals(".")) {
                 tempSearchEngineFolderPath = "resources" + File.separator + "temp" + File.separator + "search_engines";
             } else {
-                tempSearchEngineFolderPath = jarFilePath + File.separator + "resources" + File.separator + "temp" + File.separator + "search_engines";
+                tempSearchEngineFolderPath = configFolder + File.separator + "resources" + File.separator + "temp" + File.separator + "search_engines";
             }
 
         }
