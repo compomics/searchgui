@@ -2,6 +2,7 @@ package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
+import com.compomics.util.experiment.biology.ions.impl.PeptideFragmentIon;
 import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.identification.Advocate;
@@ -121,8 +122,19 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(sage.getAbsolutePath());
 
         // link to the output directory
-        process_name_array.add("-o" + sageTempFolder.getAbsolutePath());
+        process_name_array.add("-o");
+        process_name_array.add(sageTempFolder.getAbsolutePath());
 
+        // set the batch size
+        if (sageParameters.getBatchSize() != null) {
+            process_name_array.add("-batch-size" + sageParameters.getBatchSize());
+        }
+
+        // @TODO: implement?
+//        // write pin file
+//        if (sageParameters.getWritePin() != null) {
+//            process_name_array.add("-write-pin");
+//        }
         // link to the parameter file
         String path = new File(sageTempFolder, "sage.json").getAbsolutePath();
         process_name_array.add(path);
@@ -299,6 +311,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t\"fragment_max_mz\": " + sageParameters.getMaxFragmentMz() + "," + System.getProperty("line.separator")
                     + "\t\t\"peptide_min_mass\": " + sageParameters.getMinPeptideMass() + "," + System.getProperty("line.separator")
                     + "\t\t\"peptide_max_mass\": " + sageParameters.getMaxPeptideMass() + "," + System.getProperty("line.separator")
+                    + "\t\t\"ion_kinds\": " + getFragmentIonTypesAsList() + "," + System.getProperty("line.separator")
                     + "\t\t\"min_ion_index\": " + sageParameters.getMinIonIndex() + "," + System.getProperty("line.separator")
                     //////////////////////////////////////
                     // fixed and variable modifications
@@ -318,9 +331,17 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     ///////////////////////////////////    
                     + "\t\"quant\": {" + System.getProperty("line.separator")
                     + "\t\t\"tmt\": " + tmtType + "," + System.getProperty("line.separator")
-                    + "\t\t\"tmt_level\": " + tmtLevel + "," + System.getProperty("line.separator")
-                    + "\t\t\"tmt_sn\": " + tmtSn + "," + System.getProperty("line.separator")
-                    + "\t\t\"lfq\": " + performLfq + System.getProperty("line.separator")
+                    + "\t\t\"tmt_settings\": {" + System.getProperty("line.separator")
+                    + "\t\t\t\"tmt_level\": " + tmtLevel + "," + System.getProperty("line.separator")
+                    + "\t\t\t\"tmt_sn\": " + tmtSn + System.getProperty("line.separator")
+                    + "\t\t}," + System.getProperty("line.separator")
+                    + "\t\t\"lfq\": " + performLfq + "," + System.getProperty("line.separator")
+                    + "\t\t\"lfq_settings\": {" + System.getProperty("line.separator")
+                    + "\t\t\t\"peak_scoring\" : \"" + sageParameters.getLfqPeakScoring() + "\"," + System.getProperty("line.separator")
+                    + "\t\t\t\"integration\": \"" + sageParameters.getLfqIntergration() + "\"," + System.getProperty("line.separator")
+                    + "\t\t\t\"spectral_angle\": " + sageParameters.getLfqSpectralAngle() + "," + System.getProperty("line.separator")
+                    + "\t\t\t\"ppm_tolerance\": " + sageParameters.getLfqPpmTolerance() + System.getProperty("line.separator")
+                    + "\t\t}" + System.getProperty("line.separator")
                     + "\t}," + System.getProperty("line.separator")
                     ////////////////////////////////////////
                     // precursor and fragment tolerance
@@ -349,13 +370,13 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     // other
                     ////////////////////////////////////////
                     + "\t\"chimera\": " + sageParameters.getChimera().toString() + "," + System.getProperty("line.separator")
+                    + "\t\"wide_window\": " + sageParameters.getWideWindow().toString() + "," + System.getProperty("line.separator")
                     + "\t\"predict_rt\": " + sageParameters.getPredictRt().toString() + "," + System.getProperty("line.separator")
                     + "\t\"min_peaks\": " + sageParameters.getMinPeaks() + "," + System.getProperty("line.separator")
                     + "\t\"max_peaks\": " + sageParameters.getMaxPeaks() + "," + System.getProperty("line.separator")
                     + "\t\"min_matched_peaks\": " + sageParameters.getMinMatchedPeaks() + "," + System.getProperty("line.separator")
                     + "\t\"max_fragment_charge\": " + sageParameters.getMaxFragmentCharge() + "," + System.getProperty("line.separator")
                     + "\t\"report_psms\": " + sageParameters.getNumPsmsPerSpectrum() + "," + System.getProperty("line.separator")
-                    + "\t\"parallel\": " + sageParameters.getParallelSearch() + "," + System.getProperty("line.separator")
                     ////////////////////////////////////////
                     // spectrum file paths
                     ////////////////////////////////////////
@@ -365,6 +386,41 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         } finally {
             br.close();
         }
+    }
+
+    /**
+     * Returns the list of fragment ions types in the Sage format.
+     *
+     * @return the list of fragment ions type
+     */
+    private String getFragmentIonTypesAsList() { // @TODO: support more then two fragment ion types at the same time in the GUI?
+
+        String listOfFragmentIonTypes = "[";
+
+        for (Integer tempFragmentIonNumber : searchParameters.getForwardIons()) {
+
+            if (listOfFragmentIonTypes.length() > 1) {
+                listOfFragmentIonTypes += ", ";
+            }
+
+            listOfFragmentIonTypes += "\"" + PeptideFragmentIon.getSubTypeAsString(tempFragmentIonNumber) + "\"";
+
+        }
+
+        for (Integer tempFragmentIonNumber : searchParameters.getRewindIons()) {
+
+            if (listOfFragmentIonTypes.length() > 1) {
+                listOfFragmentIonTypes += ", ";
+            }
+
+            listOfFragmentIonTypes += "\"" + PeptideFragmentIon.getSubTypeAsString(tempFragmentIonNumber) + "\"";
+
+        }
+
+        listOfFragmentIonTypes += "]";
+
+        return listOfFragmentIonTypes;
+
     }
 
     /**

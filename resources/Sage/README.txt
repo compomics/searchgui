@@ -43,7 +43,6 @@ Check out the [blog post introducing Sage](https://lazear.github.io/sage/) for m
 
 - When chimeric searching is turned on, 2 peptide identifications will be reported for each MS2 scan, both with `rank=1`
 
-
 ### Sage trains machine learning models for FDR refinement and posterior error probability calculation
 
 - Retention times are globally aligned across runs
@@ -99,22 +98,23 @@ Sage is capable of natively reading & writing files to AWS S3:
 # Usage 
 
 ```shell
-$ sage --help
 Usage: sage [OPTIONS] <parameters> [mzml_paths]...
 
 🔮 Sage 🧙 - Proteomics searching so fast it feels like magic!
 
 Arguments:
-  <parameters>     The search parameters as a JSON file.
-  [mzml_paths]...  mzML files to analyze. Overrides mzML files listed in the parameter file.
+  <parameters>     Path to configuration parameters (JSON file)
+  [mzml_paths]...  Paths to mzML files to process. Overrides mzML files listed in the configuration file.
 
 Options:
   -f, --fasta <fasta>
-          The FASTA protein database. Overrides the FASTA file specified in the parameter file.
+          Path to FASTA database. Overrides the FASTA file specified in the configuration file.
   -o, --output_directory <output_directory>
-          Where the search and quant results will be written. Overrides the directory specified in the parameter file.
-      --no-parallel
-          Turn off parallel file searching. Useful for memory constrained systems or large sets of files.
+          Path where search and quant results will be written. Overrides the directory specified in the configuration file.
+      --batch-size <batch-size>
+          Number of files to search in parallel (default = number of CPUs/2)
+      --write-pin
+          Write percolator-compatible `.pin` output files
   -h, --help
           Print help information
   -V, --version
@@ -125,8 +125,7 @@ Sage is called from the command line using and requires a path to a JSON-encoded
 
 Example usage: `sage config.json`
 
-Some options in the parameters file can be over-written using the command line
-interface. These are:
+Some options in the parameters file can be over-written using the command line interface. These are:
 
 1. The paths to the raw mzML data
 2. The path to the database (fasta file)
@@ -148,7 +147,7 @@ sage config.json s3://my-bucket/YYYY-MM-DD_expt_A_fraction_1.mzML.gz
 Running Sage will produce several output files (located in either the current directory, or `output_directory` if that option is specified):
 - Record of search parameters (`results.json`) will be created that details input/output paths and all search parameters used for the search
 - MS2 search results will be stored as a tab-separated file (`results.sage.tsv`) file - this is a tab-separated file, which can be opened in Excel/Pandas/etc
-- MS2 and MS3 quantitation results will be stored as a tab-separated file (`quant.tsv`) if `quant.tmt` option is used in the parameter file
+- MS2 and MS3 quantitation results will be stored as a tab-separated file (`tmt.tsv`, `lfq.tsv`) if `quant.tmt` or `quant.lfq` options are used in the parameter file
 
 ## Configuration file schema
 
@@ -176,6 +175,8 @@ Sage will process a protein into peptides via several routes listed below. Curre
 
 ### Example configuration file
 
+For additional information about configuration options and output file formats, please see [DOCS.md](DOCS.md)
+
 ```jsonc
 // Note that json does not allow comments, they are here just as explanation
 // but need to be removed in a real config.json file
@@ -194,6 +195,7 @@ Sage will process a protein into peptides via several routes listed below. Curre
     "fragment_max_mz": 2000.0,      // Optional[float] {default=2000.0}, Maximum mass of fragments to search 
     "peptide_min_mass": 500.0,      // Optional[float] {default=500.0}, Minimum monoisotopic mass of peptides to fragment
     "peptide_max_mass": 5000.0,     // Optional[float] {default=5000.0}, Maximum monoisotopic mass of peptides to fragment
+    "ion_kinds": ["b", "y"],        // Optional[List[str]] {default=["b","y"]} Which fragment ions to generate and search?
     "min_ion_index": 2,     // Optional[int] {default=2}, Do not generate b1/b2/y1/y2 ions for preliminary searching. Does not affect full scoring of PSMs
     "static_mods": {        // Optional[Dict[char, float]] {default={}}, static modifications
       "^": 304.207,         // Apply static modification to N-terminus of peptide
@@ -213,9 +215,17 @@ Sage will process a protein into peptides via several routes listed below. Curre
   },
   "quant": {                // Optional - specify only if TMT or LFQ
     "tmt": "Tmt16",         // Optional[str] {default=null}, one of "Tmt6", "Tmt10", "Tmt11", "Tmt16", or "Tmt18"
-    "tmt_level": 2,         // Optional[int] {default=3}, MS-level to perform TMT quantification on
-    "tmt_sn": false,        // Optional[bool] {default=false}, use Signal/Noise instead of intensity for TMT quant. Requires noise values in mzML
+    "tmt_settings": {
+      "level": 3,           // Optional[int] {default=3}, MS-level to perform TMT quantification on
+      "sn": false           // Optional[bool] {default=false}, use Signal/Noise instead of intensity for TMT quant. Requires noise values in mzML
+    },
     "lfq": true             // Optional[bool] {default=null}, perform label-free quantification
+    "lfq_settings": {
+      "peak_scoring": "Hybrid", // See DOCS.md for details - recommend that you do not change this setting
+      "integration": "Sum",   // Optional["Sum" | "Apex"], use sum of MS1 traces in peak, or MS1 intensity at peak apex
+      "spectral_angle": 0.7,  // Optional[float] {default = 0.7}, normalized spectral angle cutoff for calling an MS1 peak
+      "ppm_tolerance": 5.0    // Optional[float] {default = 5.0}, tolerance (in p.p.m.) for DICE window around calculated precursor mass
+    }
   },
   "precursor_tol": {        // Tolerance can be either "ppm" or "da"
     "da": [
@@ -235,13 +245,13 @@ Sage will process a protein into peptides via several routes listed below. Curre
   ],
   "deisotope": false,       // Optional[bool] {default=false}: perform deisotoping and charge state deconvolution
   "chimera": false,         // Optional[bool] {default=false}: search for chimeric/co-fragmenting PSMS
+  "wide_window": false,     // Optional[bool] {default=false}: _ignore_ `precursor_tol` and search in wide-window/DIA mode
   "predict_rt": false,    // Optional[bool] {default=true}: use retention time prediction model as an feature for LDA
   "min_peaks": 15,          // Optional[int] {default=15}: only process MS2 spectra with at least N peaks
   "max_peaks": 150,         // Optional[int] {default=150}: take the top N most intense MS2 peaks to search,
   "min_matched_peaks": 6,   // Optional[int] {default=4}: minimum # of matched b+y ions to use for reporting PSMs
   "max_fragment_charge": 1, // Optional[int] {default=null}: maximum fragment ion charge states to consider,
-  "report_psms": 1,         // Optional[int] {default=1}: number of PSMs to report for each spectra. Recommend setting to 1, higher values might disrupt LDA
-  "parallel": true,         // Optional[bool] {default=true}: search files in parallel. For large numbers of files or low RAM, set this to false
+  "report_psms": 1,         // Optional[int] {default=1}: number of PSMs to report for each spectra. Higher values might disrupt PSM rescoring.
   "output_directory": "s3://bucket/prefix" // Optional[str] {default=`.`}: Place output files in a given directory or S3 bucket/prefix
   "mzml_paths": [           // List[str]: representing paths to mzML (or gzipped-mzML) files for search
     "local/path.mzML",
