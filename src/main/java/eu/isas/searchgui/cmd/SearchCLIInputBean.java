@@ -229,7 +229,7 @@ public class SearchCLIInputBean {
         // output folder
         arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
         outputFolder = new File(arg);
-        
+
         // get the config folder
         if (aLine.hasOption(SearchCLIParams.CONFIG_FOLDER.id)) {
             arg = aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id);
@@ -442,7 +442,7 @@ public class SearchCLIInputBean {
     public ArrayList<File> getSpectrumFiles() {
         return spectrumFiles;
     }
-    
+
     /**
      * Return the FASTA file.
      *
@@ -460,7 +460,7 @@ public class SearchCLIInputBean {
     public File getOutputFolder() {
         return outputFolder;
     }
-    
+
     /**
      * Returns the config folder.
      *
@@ -579,7 +579,7 @@ public class SearchCLIInputBean {
     public boolean isAndromedaEnabled() {
         return andromedaEnabled;
     }
-    
+
     /**
      * Returns true if MetaMorpheus is to be used.
      *
@@ -588,7 +588,7 @@ public class SearchCLIInputBean {
     public boolean isMetaMorpheusEnabled() {
         return metaMorpheusEnabled;
     }
-    
+
     /**
      * Returns true if Sage is to be used.
      *
@@ -687,7 +687,7 @@ public class SearchCLIInputBean {
     public File getAndromedaLocation() {
         return andromedaLocation;
     }
-    
+
     /**
      * Returns the MetaMorpheus location.
      *
@@ -696,7 +696,7 @@ public class SearchCLIInputBean {
     public File getMetaMorpheusLocation() {
         return metaMorpheusLocation;
     }
-    
+
     /**
      * Returns the Sage location.
      *
@@ -832,7 +832,7 @@ public class SearchCLIInputBean {
                 }
             }
         }
-        
+
         // check the FASTA file
         if (!aLine.hasOption(SearchCLIParams.FASTA_FILE.id) || ((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)).equals("")) {
             System.out.println(System.getProperty("line.separator") + "FASTA file not specified." + System.getProperty("line.separator"));
@@ -856,16 +856,18 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
-        
+
         // check the config folder
-        if (aLine.hasOption(SearchCLIParams.CONFIG_FOLDER.id) && ((String) aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id)).equals("")) {
-            System.out.println(System.getProperty("line.separator") + "Config folder not specified." + System.getProperty("line.separator"));
-            return false;
-        } else {
-            File file = new File(((String) aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id)));
-            if (!file.exists()) {
-                System.out.println(System.getProperty("line.separator") + "Config folder \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
+        if (aLine.hasOption(SearchCLIParams.CONFIG_FOLDER.id)) {
+            if (((String) aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id)).equals("")) {
+                System.out.println(System.getProperty("line.separator") + "Config folder not specified." + System.getProperty("line.separator"));
                 return false;
+            } else {
+                File file = new File(((String) aLine.getOptionValue(SearchCLIParams.CONFIG_FOLDER.id)));
+                if (!file.exists()) {
+                    System.out.println(System.getProperty("line.separator") + "Config folder \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
+                    return false;
+                }
             }
         }
 
@@ -1176,8 +1178,9 @@ public class SearchCLIInputBean {
 
     /**
      * Indicates whether identification files should be gzipped.
-     * 
-     * @return A boolean indicating whether identification files should be gzipped.
+     *
+     * @return A boolean indicating whether identification files should be
+     * gzipped.
      */
     public boolean isGzip() {
         return gzip;
@@ -1193,8 +1196,8 @@ public class SearchCLIInputBean {
     }
 
     /**
-     * Indicates whether input data should be included in the output
-     * when it is zipped.
+     * Indicates whether input data should be included in the output when it is
+     * zipped.
      *
      * @return whether input data should be included in the output
      */
