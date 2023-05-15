@@ -4094,27 +4094,35 @@ public class SearchHandler {
 
                     TideParameters tideParameters = ((TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex()));
 
-                    for (File tempFolder : tempSearchEngineFolder.listFiles()) {
+                    for (File tempFile : tempSearchEngineFolder.listFiles()) {
 
-                        if (!tempFolder.getName().equalsIgnoreCase("tide")
-                                || (tempFolder.getName().equalsIgnoreCase("tide") && tideParameters.getRemoveTempFolders())) {
+                        if (!tempFile.getName().equalsIgnoreCase("tide")
+                                || (tempFile.getName().equalsIgnoreCase("tide") && tideParameters.getRemoveTempFolders())) {
 
-                            FileUtils.deleteDirectory(tempFolder);
+                            if (tempFile.isDirectory()) {
+
+                                FileUtils.deleteDirectory(tempFile);
+
+                            } else {
+
+                                FileUtils.delete(tempFile);
+
+                            }
 
                         } else {
 
                             // potentially keep the tide index  
-                            for (File tempTideFolders : tempFolder.listFiles()) {
+                            for (File tempTideFolder : tempFile.listFiles()) {
 
                                 if (tideParameters.getRemoveTempFolders()) {
 
-                                    IoUtil.deleteDir(tempTideFolders);
+                                    IoUtil.deleteDir(tempTideFolder);
 
                                 } else {
 
-                                    if (!tempTideFolders.getName().equalsIgnoreCase("fasta-index")) {
+                                    if (!tempTideFolder.getName().equalsIgnoreCase("fasta-index")) {
 
-                                        IoUtil.deleteDir(tempTideFolders);
+                                        IoUtil.deleteDir(tempTideFolder);
 
                                     }
 
@@ -5022,11 +5030,11 @@ public class SearchHandler {
             File configFolder
     ) {
         File peakListFolder = new File(getTempFolderPath(configFolder), PEAK_LIST_SUBFOLDER);
-        
+
         if (!peakListFolder.exists()) {
             peakListFolder.mkdirs();
         }
-        
+
         return peakListFolder;
     }
 
