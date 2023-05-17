@@ -433,8 +433,15 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @throws IOException if an unsupported modification is detected
      */
-    private String getModifications(ArrayList<String> modifications, boolean fixed) throws IOException {
+    private String getModifications(
+            ArrayList<String> modifications,
+            boolean fixed
+    ) throws IOException {
 
+        // @TODO: also support multiple mods on the same residue?
+        //        "Either a single floating point number (-18.0) or a list of 
+        //         floating point numbers ([-18.0, -15.2]) can be supplied 
+        //         as modifications."
         String modificationsAsString = "";
 
         for (String modName : modifications) {
@@ -444,51 +451,109 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
             switch (modification.getModificationType()) {
 
                 case modaa:
+
                     for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
+
                         if (!modificationsAsString.isEmpty()) {
                             modificationsAsString += "," + System.getProperty("line.separator");
                         }
+
                         modificationsAsString += "\t\t\t\"" + aminoAcid + "\": " + modification.getMass();
                     }
+
                     break;
 
                 case modn_protein:
+
                     if (!modificationsAsString.isEmpty()) {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
+
                     modificationsAsString += "\t\t\t\"[\": " + modification.getMass();
+
                     break;
 
                 case modn_peptide:
+
                     if (!modificationsAsString.isEmpty()) {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
+
                     modificationsAsString += "\t\t\t\"^\": " + modification.getMass();
+
                     break;
 
                 case modnaa_protein:
+
+                    for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
+
+                        if (!modificationsAsString.isEmpty()) {
+                            modificationsAsString += "," + System.getProperty("line.separator");
+                        }
+
+                        modificationsAsString += "\t\t\t\"[" + aminoAcid + "\": " + modification.getMass();
+                    }
+
+                    break;
+
                 case modnaa_peptide:
-                    // @TODO: what about n-terminal mods at specific amino acids?
-                    throw new IOException("Modification " + modification.getName() + " is not supported by Sage!");
+
+                    for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
+
+                        if (!modificationsAsString.isEmpty()) {
+                            modificationsAsString += "," + System.getProperty("line.separator");
+                        }
+
+                        modificationsAsString += "\t\t\t\"^" + aminoAcid + "\": " + modification.getMass();
+                    }
+
+                    break;
 
                 case modc_protein:
+
                     if (!modificationsAsString.isEmpty()) {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
+
                     modificationsAsString += "\t\t\t\"]\": " + modification.getMass();
+
                     break;
 
                 case modc_peptide:
+
                     if (!modificationsAsString.isEmpty()) {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
+
                     modificationsAsString += "\t\t\t\"$\": " + modification.getMass();
+
                     break;
 
                 case modcaa_protein:
+
+                    for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
+
+                        if (!modificationsAsString.isEmpty()) {
+                            modificationsAsString += "," + System.getProperty("line.separator");
+                        }
+
+                        modificationsAsString += "\t\t\t\"]" + aminoAcid + "\": " + modification.getMass();
+                    }
+
+                    break;
+
                 case modcaa_peptide:
-                    // @TODO: what about c-terminal mods at specific amino acids?
-                    throw new IOException("Modification " + modification.getName() + " is not supported by Sage!");
+
+                    for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
+
+                        if (!modificationsAsString.isEmpty()) {
+                            modificationsAsString += "," + System.getProperty("line.separator");
+                        }
+
+                        modificationsAsString += "\t\t\t\"$" + aminoAcid + "\": " + modification.getMass();
+                    }
+
+                    break;
 
                 default:
                     break;

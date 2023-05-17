@@ -202,12 +202,14 @@ For additional information about configuration options and output file formats, 
       "K": 304.207,         // Apply static modification to lysine
       "C": 57.0215          // Apply static modification to cysteine
     },
-    "variable_mods": {      // Optional[Dict[char, float]] {default={}}, variable modifications
-      "M": 15.9949,         // Variable mods are applied *before* static mods
-      "$": 49.2022,         // Apply variable modification to C-terminus of peptide
-      "[": 42.0,            // Apply variable modification to N-terminus of protein
-      "]": 111.0            // Apply variable modification to C-terminus of protein
-    },
+    "variable_mods": {    // Optional[Dict[char, float]] {default={}}, variable modifications
+      "M": [15.9949],     // Variable mods are applied *before* static mod
+      "^Q": [-17.026549],
+      "^E": [-18.010565], // Applied to N-terminal glutamic acid
+      "$": [49.2, 22.9],  // Applied to peptide C-terminus
+      "[": 42.0,          // Applied to protein N-terminus
+      "]": 111.0          // Applied to protein C-terminus
+    }
     "max_variable_mods": 2, // Optional[int] {default=2} Limit k-combinations of variable modifications
     "decoy_tag": "rev_",    // Optional[str] {default="rev_"}: See notes above
     "generate_decoys": false, // Optional[bool] {default="true"}: Ignore decoys in FASTA database matching `decoy_tag`
@@ -219,7 +221,7 @@ For additional information about configuration options and output file formats, 
       "level": 3,           // Optional[int] {default=3}, MS-level to perform TMT quantification on
       "sn": false           // Optional[bool] {default=false}, use Signal/Noise instead of intensity for TMT quant. Requires noise values in mzML
     },
-    "lfq": true             // Optional[bool] {default=null}, perform label-free quantification
+    "lfq": true,            // Optional[bool] {default=null}, perform label-free quantification
     "lfq_settings": {
       "peak_scoring": "Hybrid", // See DOCS.md for details - recommend that you do not change this setting
       "integration": "Sum",   // Optional["Sum" | "Apex"], use sum of MS1 traces in peak, or MS1 intensity at peak apex
