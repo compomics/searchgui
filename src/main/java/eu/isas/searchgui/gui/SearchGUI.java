@@ -1687,7 +1687,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         });
 
         sageButton.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
-        sageButton.setText("Sage (beta)");
+        sageButton.setText("Sage");
         sageButton.setToolTipText("Enable Sage");
         sageButton.setBorder(null);
         sageButton.setBorderPainted(false);
