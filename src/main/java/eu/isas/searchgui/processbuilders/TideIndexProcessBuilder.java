@@ -53,6 +53,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param tideFolder the Tide folder
      * @param tideTempFolder the Tide temp folder
+     * @param tideIndexLocation the file where to store the index
      * @param fastaFile the FASTA file
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
@@ -64,6 +65,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
     public TideIndexProcessBuilder(
             File tideFolder,
             File tideTempFolder,
+            File tideIndexLocation,
             File fastaFile,
             SearchParameters searchParameters,
             WaitingHandler waitingHandler,
@@ -91,6 +93,13 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         if (!tideTempFolder.exists()) {
             tideTempFolder.mkdirs();
         }
+        
+        // See if the output file was provided by the user
+        if (tideIndexLocation == null) {
+            
+            tideIndexLocation = new File(tideTempFolder, tideParameters.getFastIndexFolderName());
+            
+        }
 
         // make sure that the tide file is executable
         File tide = new File(tideFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
@@ -104,7 +113,7 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(fastaFile.getAbsolutePath());
 
         // the name of the index file
-        process_name_array.add(new File(tideTempFolder, tideParameters.getFastIndexFolderName()).getAbsolutePath());
+        process_name_array.add(tideIndexLocation.getAbsolutePath());
 
         // the temp folder
         process_name_array.add("--temp-dir");

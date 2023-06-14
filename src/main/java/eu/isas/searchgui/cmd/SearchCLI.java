@@ -221,6 +221,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getMyriMatchLocation(), 
                     searchCLIInputBean.getCometLocation(),
                     searchCLIInputBean.getTideLocation(), 
+                    searchCLIInputBean.getTideIndexLocation(), 
                     searchCLIInputBean.getAndromedaLocation(),
                     searchCLIInputBean.getMetaMorpheusLocation(),
                     searchCLIInputBean.getSageLocation(),

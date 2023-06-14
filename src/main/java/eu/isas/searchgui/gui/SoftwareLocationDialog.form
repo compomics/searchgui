@@ -214,7 +214,7 @@
                           <Component id="enableMsgfCombo" max="32767" attributes="1"/>
                           <Component id="enableMsAmandaCombo" max="32767" attributes="1"/>
                           <Component id="enableMyriMatchCombo" max="32767" attributes="1"/>
-                          <Component id="enableXTandemCombo" alignment="1" pref="80" max="32767" attributes="1"/>
+                          <Component id="enableXTandemCombo" alignment="1" max="32767" attributes="1"/>
                           <Component id="enableNovorCombo" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>

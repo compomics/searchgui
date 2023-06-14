@@ -117,6 +117,10 @@ public class SearchCLIInputBean {
      */
     private File tideLocation = null;
     /**
+     * The file where to store the Tide index.
+     */
+    private File tideIndexLocation = null;
+    /**
      * The folder where Andromeda is installed.
      */
     private File andromedaLocation = null;
@@ -322,6 +326,10 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.TIDE_LOCATION.id)) {
             String tideFolder = aLine.getOptionValue(SearchCLIParams.TIDE_LOCATION.id);
             tideLocation = new File(tideFolder);
+        }
+        if (aLine.hasOption(SearchCLIParams.TIDE_INDEX_LOCATION.id)) {
+            String tideIndexFile = aLine.getOptionValue(SearchCLIParams.TIDE_INDEX_LOCATION.id);
+            tideIndexLocation = new File(tideIndexFile);
         }
         if (aLine.hasOption(SearchCLIParams.ANDROMEDA_LOCATION.id)) {
             String andromedaFolder = aLine.getOptionValue(SearchCLIParams.ANDROMEDA_LOCATION.id);
@@ -658,6 +666,15 @@ public class SearchCLIInputBean {
      */
     public File getTideLocation() {
         return tideLocation;
+    }
+
+    /**
+     * Returns the Tide index location.
+     *
+     * @return the Tide index location
+     */
+    public File getTideIndexLocation() {
+        return tideIndexLocation;
     }
 
     /**
@@ -1030,6 +1047,14 @@ public class SearchCLIInputBean {
             File file = new File(input);
             if (!file.exists()) {
                 System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.TIDE_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.TIDE_INDEX_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.TIDE_INDEX_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.TIDE_INDEX_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
                 return false;
             }
         }

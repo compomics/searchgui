@@ -1449,7 +1449,7 @@ public class SoftwareLocationDialog extends javax.swing.JDialog {
 
         browseSearchEngineLocationPressed(
                 Advocate.metaMorpheus,
-                MetaMorpheusProcessBuilder.getExecutableFileName(),
+                MetaMorpheusProcessBuilder.getExecutableFileName(false),
                 metaMorpheusLocationTxt
         );
 

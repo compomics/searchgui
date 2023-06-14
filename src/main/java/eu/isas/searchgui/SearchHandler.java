@@ -201,6 +201,10 @@ public class SearchHandler {
      */
     private File tideLocation = null;
     /**
+     * The Tide index location.
+     */
+    private File tideIndexLocation = null;
+    /**
      * The Andromeda location.
      */
     private File andromedaLocation = null;
@@ -208,6 +212,10 @@ public class SearchHandler {
      * The MetaMorpheus location.
      */
     private File metaMorpheusLocation = null;
+    /**
+     * Boolean indicating whether the user provided the location to MetaMorpheus.
+     */
+    private boolean metaMorpheusLocationSetByUser = false;
     /**
      * The Sage location.
      */
@@ -624,6 +632,7 @@ public class SearchHandler {
             File myriMatchFolder,
             File cometFolder,
             File tideFolder,
+            File tideIndexLocation,
             File andromedaFolder,
             File metaMorpheusFolder,
             File sageFolder,
@@ -762,6 +771,7 @@ public class SearchHandler {
                     false
             ); // try to use the default
         }
+        this.tideIndexLocation = tideIndexLocation;
 
         if (andromedaFolder != null) {
             this.andromedaLocation = andromedaFolder;
@@ -780,6 +790,7 @@ public class SearchHandler {
 
         if (metaMorpheusFolder != null) {
             this.metaMorpheusLocation = metaMorpheusFolder;
+            metaMorpheusLocationSetByUser = true;
         } else {
             loadSearchEngineLocation(
                     Advocate.metaMorpheus,
@@ -2469,26 +2480,31 @@ public class SearchHandler {
 
                 if (enableTide && !waitingHandler.isRunCanceled()) {
 
-                    File tideTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "tide");
+                    if (tideIndexLocation == null || !tideIndexLocation.exists()) {
+                        
+                        File tideTempFolder = new File(getTempSearchEngineFolderPath(getJarFilePath()), "tide");
 
-                    // create the tide index
-                    tideIndexProcessBuilder = new TideIndexProcessBuilder(
-                            tideLocation,
-                            tideTempFolder,
-                            fastaFile,
-                            searchParameters,
-                            waitingHandler,
-                            exceptionHandler
-                    );
-                    waitingHandler.appendReport(
-                            "Indexing " + fastaFile.getName() + " for Tide.",
-                            true,
-                            true
-                    );
-                    waitingHandler.appendReportEndLine();
-                    tideIndexProcessBuilder.startProcess();
+                        // create the tide index
+                        tideIndexProcessBuilder = new TideIndexProcessBuilder(
+                                tideLocation,
+                                tideTempFolder,
+                                tideIndexLocation,
+                                fastaFile,
+                                searchParameters,
+                                waitingHandler,
+                                exceptionHandler
+                        );
+                        waitingHandler.appendReport(
+                                "Indexing " + fastaFile.getName() + " for Tide.",
+                                true,
+                                true
+                        );
+                        waitingHandler.appendReportEndLine();
+                        tideIndexProcessBuilder.startProcess();
 
-                    waitingHandler.increasePrimaryProgressCounter();
+                        waitingHandler.increasePrimaryProgressCounter();
+
+                    }
                 }
 
                 // convert raw files
@@ -3317,6 +3333,7 @@ public class SearchHandler {
 
                         metaMorpheusProcessBuilder = new MetaMorpheusProcessBuilder(
                                 metaMorpheusLocation,
+                                metaMorpheusLocationSetByUser,
                                 metaMorpheusTempFolder,
                                 searchParameters,
                                 spectrumFile, // @TODO: should complain if not mzml!!

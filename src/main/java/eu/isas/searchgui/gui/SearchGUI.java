@@ -8133,8 +8133,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
             }
 
-            return validateSearchEngineInstallation(Advocate.metaMorpheus,
-                    MetaMorpheusProcessBuilder.getExecutableFileName(),
+            return validateSearchEngineInstallation(
+                    Advocate.metaMorpheus,
+                    MetaMorpheusProcessBuilder.getExecutableFileName(false),
                     null,
                     dotNet,
                     searchEngineLocation,
