@@ -56,17 +56,23 @@ public class PathSettingsCLIInputBean {
         }
 
         for (SearchGUIPathParameters.SearchGUIPathKey searchGUIPathKey : SearchGUIPathParameters.SearchGUIPathKey.values()) {
+
             String id = searchGUIPathKey.getId();
+
             if (aLine.hasOption(id)) {
                 paths.put(id, aLine.getOptionValue(id));
             }
+
         }
 
         for (UtilitiesPathParameters.UtilitiesPathKey utilitiesPathKey : UtilitiesPathParameters.UtilitiesPathKey.values()) {
+
             String id = utilitiesPathKey.getId();
+
             if (aLine.hasOption(id)) {
                 paths.put(id, aLine.getOptionValue(id));
             }
+
         }
     }
 
@@ -96,10 +102,12 @@ public class PathSettingsCLIInputBean {
      * configuration input.
      */
     public boolean hasInput() {
+
         return !tempFolder.equals("")
                 || !paths.isEmpty()
                 || logFolder != null
                 || useLogFile != null;
+
     }
 
     /**
@@ -119,9 +127,12 @@ public class PathSettingsCLIInputBean {
      * standard output
      */
     public boolean useLogFile() {
+
         if (useLogFile == null) {
             return true;
         }
+
         return useLogFile;
+
     }
 }

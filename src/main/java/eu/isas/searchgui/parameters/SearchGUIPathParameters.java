@@ -140,7 +140,7 @@ public class SearchGUIPathParameters {
             File inputFile
     ) throws FileNotFoundException, IOException {
 
-        try (SimpleFileReader reader = SimpleFileReader.getFileReader(inputFile)) {
+        try ( SimpleFileReader reader = SimpleFileReader.getFileReader(inputFile)) {
 
             String line;
 
@@ -271,22 +271,22 @@ public class SearchGUIPathParameters {
      * Returns the path according to the given key and path.
      *
      * @param searchGUIPathKey the key of the path
-     * @param jarFilePath path to the jar file
+     * @param configFolder the config folder
      *
      * @return the path
      */
     public static String getPathParameter(
             SearchGUIPathKey searchGUIPathKey,
-            String jarFilePath
+            File configFolder
     ) {
 
         switch (searchGUIPathKey) {
 
             case tempDirectory:
-                return SearchHandler.getTempFolderPath(jarFilePath);
+                return SearchHandler.getTempFolderPath(configFolder);
 
             case tempSearchEngineDirectory:
-                return SearchHandler.getTempSearchEngineFolderPath(jarFilePath);
+                return SearchHandler.getTempSearchEngineFolderPath(configFolder);
 
             case cmsFolder:
                 return CmsFolder.getParentFolder();
@@ -334,18 +334,18 @@ public class SearchGUIPathParameters {
      * Writes all path configurations to the given file.
      *
      * @param file the destination file
-     * @param jarFilePath path to the jar file
+     * @param configFolder config folder
      *
      * @throws IOException thrown of the file cannot be found
      */
     public static void writeConfigurationToFile(
             File file,
-            String jarFilePath
+            File configFolder
     ) throws IOException {
 
-        try (SimpleFileWriter writer = new SimpleFileWriter(file, false)) {
+        try ( SimpleFileWriter writer = new SimpleFileWriter(file, false)) {
 
-            writeConfigurationToFile(writer, jarFilePath);
+            writeConfigurationToFile(writer, configFolder);
 
         }
     }
@@ -354,18 +354,18 @@ public class SearchGUIPathParameters {
      * Writes all path configurations to the given file.
      *
      * @param writer the writer to use for writing
-     * @param jarFilePath path to the jar file
+     * @param configFolder the config folder
      *
      * @throws IOException thrown of the file cannot be found
      */
     public static void writeConfigurationToFile(
             SimpleFileWriter writer,
-            String jarFilePath
+            File configFolder
     ) throws IOException {
 
         for (SearchGUIPathKey pathKey : SearchGUIPathKey.values()) {
 
-            writePathToFile(writer, pathKey, jarFilePath);
+            writePathToFile(writer, pathKey, configFolder);
 
         }
 
@@ -378,14 +378,14 @@ public class SearchGUIPathParameters {
      *
      * @param writer the writer to use for writing
      * @param pathKey the key of the path of interest
-     * @param jarFilePath path to the jar file
+     * @param configFolder the config folder
      *
      * @throws IOException thrown of the file cannot be found
      */
     public static void writePathToFile(
             SimpleFileWriter writer,
             SearchGUIPathKey pathKey,
-            String jarFilePath
+            File configFolder
     ) throws IOException {
 
         writer.write(pathKey.id + UtilitiesPathParameters.separator);
@@ -393,30 +393,43 @@ public class SearchGUIPathParameters {
         switch (pathKey) {
 
             case tempDirectory:
-                String toWrite = SearchHandler.getTempFolderPath(jarFilePath);
+
+                String toWrite = SearchHandler.getTempFolderPath(configFolder);
+
                 if (toWrite == null) {
                     toWrite = UtilitiesPathParameters.defaultPath;
                 }
+
                 writer.write(toWrite);
+
                 break;
 
             case tempSearchEngineDirectory:
-                toWrite = SearchHandler.getTempSearchEngineFolderPath(jarFilePath);
+
+                toWrite = SearchHandler.getTempSearchEngineFolderPath(configFolder);
+
                 if (toWrite == null) {
                     toWrite = UtilitiesPathParameters.defaultPath;
                 }
+
                 writer.write(toWrite);
+
                 break;
 
             case cmsFolder:
+
                 toWrite = CmsFolder.getParentFolder();
+
                 if (toWrite == null) {
                     toWrite = UtilitiesPathParameters.defaultPath;
                 }
+
                 writer.write(toWrite);
+
                 break;
 
             default:
+
                 throw new UnsupportedOperationException(
                         "Path "
                         + pathKey.id
@@ -433,7 +446,7 @@ public class SearchGUIPathParameters {
      * Returns a list containing the keys of the paths where the tool is not
      * able to write.
      *
-     * @param jarFilePath the path to the jar file
+     * @param configFolder the config folder
      *
      * @return a list containing the keys of the paths where the tool is not
      * able to write
@@ -442,14 +455,14 @@ public class SearchGUIPathParameters {
      * loading the path configuration
      */
     public static ArrayList<PathKey> getErrorKeys(
-            String jarFilePath
+            File configFolder
     ) throws IOException {
 
         ArrayList<PathKey> result = new ArrayList<>();
 
         for (SearchGUIPathKey pathKey : SearchGUIPathKey.values()) {
 
-            String folder = SearchGUIPathParameters.getPathParameter(pathKey, jarFilePath);
+            String folder = SearchGUIPathParameters.getPathParameter(pathKey, configFolder);
 
             if (folder != null && !UtilitiesPathParameters.testPath(folder)) {
 
@@ -459,6 +472,7 @@ public class SearchGUIPathParameters {
         }
 
         result.addAll(UtilitiesPathParameters.getErrorKeys());
+
         return result;
 
     }
@@ -469,9 +483,11 @@ public class SearchGUIPathParameters {
      * @return the path to the jar file
      */
     public String getJarFilePath() {
+
         return CompomicsWrapper.getJarFilePath(
                 this.getClass().getResource("SearchGUIPathPreferences.class").getPath(),
                 "SearchGUI"
         );
+
     }
 }

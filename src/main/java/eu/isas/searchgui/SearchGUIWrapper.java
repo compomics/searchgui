@@ -49,7 +49,7 @@ public class SearchGUIWrapper extends CompomicsWrapper {
             System.out.println("Unable to load the path configurations. Default paths will be used.");
         }
         try {
-            ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(getJarFilePath());
+            ArrayList<PathKey> errorKeys = SearchGUIPathParameters.getErrorKeys(new File(getJarFilePath()));
             if (!errorKeys.isEmpty()) {
                 System.out.println("Unable to write in the following configuration folders. Please edit the configuration paths.");
                 for (PathKey pathKey : errorKeys) {

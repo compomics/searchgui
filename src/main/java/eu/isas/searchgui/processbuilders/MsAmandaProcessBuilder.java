@@ -204,7 +204,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @param searchParameters the search parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
-     * @param nThreads the number of threads to use (note: note supported by ms amanda)
+     * @param nThreads the number of threads to use (not supported by ms amanda)
      * @throws java.io.IOException thrown whenever an IO error occurs
      */
     public MsAmandaProcessBuilder(
@@ -228,7 +228,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         this.msAmandaTempFolder = msAmandaTempFolder;
         spectrumFile = mgfFile;
         database = fastaFile.getAbsoluteFile();
-        
+
         // create the temp folder if it does not exist
         if (!msAmandaTempFolder.exists()) {
             msAmandaTempFolder.mkdirs();
@@ -253,11 +253,13 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         // set the mass accuracies
         fragmentMassError = searchParameters.getFragmentIonAccuracy();
         precursorMassError = searchParameters.getPrecursorAccuracy();
+
         if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
             precursorUnit = "ppm";
         } else if (searchParameters.getPrecursorAccuracyType() == SearchParameters.MassAccuracyType.DA) {
             precursorUnit = "Da";
         }
+
         if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.PPM) {
             fragmentUnit = "ppm";
         } else if (searchParameters.getFragmentAccuracyType() == SearchParameters.MassAccuracyType.DA) {
@@ -270,33 +272,48 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the digestion preferences
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
+
         if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.enzyme) {
-            
+
             if (digestionPreferences.getEnzymes().size() > 1) {
-                 throw new IOException("Multiple enzymes not supported by MS Amanda!");
+                throw new IOException("Multiple enzymes not supported by MS Amanda!");
             }
-            
+
             Enzyme enzyme = digestionPreferences.getEnzymes().get(0); // @TODO: support more than one enzyme?
             enzymeName = enzyme.getName();
             Specificity specificity = digestionPreferences.getSpecificity(enzymeName);
-            if (specificity == Specificity.specific) {
-                enzymeSpecificity = "FULL";
-            } else if (specificity == Specificity.semiSpecific) {
-                enzymeSpecificity = "SEMI";
-            } else if (specificity == Specificity.specificCTermOnly) {
-                enzymeSpecificity = "SEMI(C)";
-            } else if (specificity == Specificity.specificNTermOnly) {
-                enzymeSpecificity = "SEMI(N)";
+
+            switch (specificity) {
+                case specific:
+                    enzymeSpecificity = "FULL";
+                    break;
+                case semiSpecific:
+                    enzymeSpecificity = "SEMI";
+                    break;
+                case specificCTermOnly:
+                    enzymeSpecificity = "SEMI(C)";
+                    break;
+                case specificNTermOnly:
+                    enzymeSpecificity = "SEMI(N)";
+                    break;
+                default:
+                    break;
             }
+
             missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
+
         } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
+
             enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
             missedCleavages = 2; // note: this settings is ignored anyway (but has to be between 0 and 5)
+
         } else { // whole protein
+
             enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
             missedCleavages = 0;
+
         }
 
         // set the modifications
@@ -330,6 +347,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the file format
         process_name_array.add("-f");
+
         if (msAmandaParameters.getOutputFormat().equalsIgnoreCase("csv")) {
             process_name_array.add("1"); // csv
         } else {
@@ -344,9 +362,11 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // print the command to the log file
         System.out.println(System.getProperty("line.separator") + System.getProperty("line.separator") + "ms amanda command: ");
+
         for (Object processElement : process_name_array) {
             System.out.print(processElement + " ");
         }
+
         System.out.println(System.getProperty("line.separator"));
 
         pb = new ProcessBuilder(process_name_array);
@@ -354,6 +374,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // set error out and std out to same stream
         pb.redirectErrorStream(true);
+
     }
 
     /**
@@ -364,6 +385,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         File enzymeFile = new File(msAmandaTempFolder, ENZYMES_FILE);
 
         try {
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(enzymeFile));
             bw.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + System.getProperty("line.separator"));
             bw.write("<enzymes>" + System.getProperty("line.separator"));
@@ -380,33 +402,49 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                 String restriction = "";
 
                 if (enzyme.getAminoAcidBefore().isEmpty()) {
+
                     cleavageType = "before";
+
                     for (Character character : enzyme.getAminoAcidAfter()) {
                         cleavageSite += character;
                     }
+
                     if (!enzyme.getRestrictionBefore().isEmpty()) {
+
                         restriction = "";
+
                         for (Character character : enzyme.getRestrictionBefore()) {
                             restriction += character;
                         }
+
                     }
+
                 } else {
+
                     cleavageType = "after";
+
                     for (Character character : enzyme.getAminoAcidBefore()) {
                         cleavageSite += character;
                     }
+
                     if (!enzyme.getRestrictionAfter().isEmpty()) {
+
                         restriction = "";
+
                         for (Character character : enzyme.getRestrictionAfter()) {
                             restriction += character;
                         }
+
                     }
+
                 }
 
                 bw.write("    <cleavage_sites>" + cleavageSite + "</cleavage_sites>" + System.getProperty("line.separator"));
+
                 if (!restriction.isEmpty()) {
                     bw.write("    <inhibitors>" + restriction + "</inhibitors>" + System.getProperty("line.separator"));
                 }
+
                 bw.write("    <position>" + cleavageType + "</position>" + System.getProperty("line.separator"));
 
                 bw.write("  </enzyme>" + System.getProperty("line.separator"));
@@ -426,8 +464,15 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
             bw.flush();
             bw.close();
+
         } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not create MS Amanda enzyme file. Unable to write file: '" + ioe.getMessage() + "'!");
+
+            throw new IllegalArgumentException(
+                    "Could not create MS Amanda enzyme file. Unable to write file: '"
+                    + ioe.getMessage()
+                    + "'!"
+            );
+
         }
     }
 
@@ -439,7 +484,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         File settingsFile = new File(msAmandaTempFolder, SETTINGS_FILE);
 
         try {
+
             BufferedWriter bw = new BufferedWriter(new FileWriter(settingsFile));
+
             bw.write(
                     "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + System.getProperty("line.separator")
                     + "<settings>" + System.getProperty("line.separator")
@@ -478,10 +525,18 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "</settings>"
                     + System.getProperty("line.separator")
             );
+
             bw.flush();
             bw.close();
+
         } catch (IOException ioe) {
-            throw new IllegalArgumentException("Could not create MS Amanda settings file. Unable to write file: '" + ioe.getMessage() + "'!");
+
+            throw new IllegalArgumentException(
+                    "Could not create MS Amanda settings file. Unable to write file: '"
+                    + ioe.getMessage()
+                    + "'!"
+            );
+
         }
     }
 
@@ -518,6 +573,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         temp += "\t\t</modifications>" + System.getProperty("line.separator");
 
         return temp;
+
     }
 
     /**
@@ -540,27 +596,33 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
         // get the terminal tags
         switch (modification.getModificationType()) {
+
             case modaa:
                 // not terminal
                 break;
+
             case modc_protein:
             case modcaa_protein:
                 //proteinTag = " protein=\"true\""; // note: MS Amanda Manual: "Protein level modifications are only valid in combination with n‐terminal modifications"
                 cTermTag = " cterm=\"true\"";
                 break;
+
             case modc_peptide:
             case modcaa_peptide:
                 cTermTag = " cterm=\"true\"";
                 break;
+
             case modn_protein:
             case modnaa_protein:
                 proteinTag = " protein=\"true\"";
                 nTermTag = " nterm=\"true\"";
                 break;
+
             case modn_peptide:
             case modnaa_peptide:
                 nTermTag = " nterm=\"true\"";
                 break;
+
         }
 
         String aminoAcidsAtTarget = "";
@@ -571,12 +633,16 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                 || modification.getModificationType() == ModificationType.modcaa_protein
                 || modification.getModificationType() == ModificationType.modnaa_peptide
                 || modification.getModificationType() == ModificationType.modnaa_protein) {
+
             for (Character aa : modification.getPattern().getAminoAcidsAtTarget()) {
+
                 if (!aminoAcidsAtTarget.isEmpty()) {
                     aminoAcidsAtTarget += ",";
                 }
+
                 aminoAcidsAtTarget += aa;
             }
+
         }
 
         if (!aminoAcidsAtTarget.isEmpty()) {
@@ -605,10 +671,13 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         String charges = "";
 
         for (int i = minCharge; i <= maxCharge; i++) {
+
             if (!charges.isEmpty()) {
                 charges += ",";
             }
+
             charges += i + "+";
+
         }
 
         return charges;

@@ -42,10 +42,12 @@ public enum FastaCLIParams {
      * @param hasArgument do we expect an argument for this option
      */
     private FastaCLIParams(String id, String description, boolean mandatory, boolean hasArgument) {
+
         this.id = id;
         this.description = description;
         this.mandatory = mandatory;
         this.hasArgument = hasArgument;
+
     }
 
     /**
@@ -64,11 +66,12 @@ public enum FastaCLIParams {
         output += "\n\nOptional Parameters:\n\n";
         output += "-" + String.format(formatter, decoy.id) + " " + decoy.description + "\n";
         output += "-" + String.format(formatter, decoy_suffix.id) + " " + decoy_suffix.description + "\n";
-        
+
         output += "\n\nOptional Temporary Folder:\n\n";
         output += "-" + String.format(formatter, PathSettingsCLIParams.ALL.id) + " " + PathSettingsCLIParams.ALL.description + "\n";
 
         return output;
+
     }
 
     /**
@@ -78,8 +81,10 @@ public enum FastaCLIParams {
      * @param aOptions the options object where the options will be added
      */
     public static void createOptionsCLI(Options aOptions) {
+
         for (FastaCLIParams param : values()) {
             aOptions.addOption(param.id, param.hasArgument, param.description);
         }
+
     }
 }

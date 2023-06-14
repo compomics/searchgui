@@ -83,6 +83,7 @@ public enum PathSettingsCLIParams {
         }
 
         return options;
+
     }
 
     /**
@@ -113,5 +114,6 @@ public enum PathSettingsCLIParams {
         }
 
         return output;
+
     }
 }

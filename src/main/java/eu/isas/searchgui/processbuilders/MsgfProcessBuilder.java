@@ -255,6 +255,14 @@ public class MsgfProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("-n");
         process_name_array.add("" + msgfParameters.getNumberOfSpectrumMatches());
 
+        // allow inclusion of spectra with high-density centroid data
+//        process_name_array.add("-allowDenseCentroidedPeaks");
+//        if (msgfParameters.getAllowDenseCentroidedPeaks()) {
+//            process_name_array.add("1");
+//        } else {
+//            process_name_array.add("0");
+//        }
+        
         // provide additional output
         process_name_array.add("-addFeatures");
         if (msgfParameters.isAdditionalOutput()) {
