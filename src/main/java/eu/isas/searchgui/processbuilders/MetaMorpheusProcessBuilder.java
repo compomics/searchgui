@@ -43,7 +43,8 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      */
     private File metaMorpheusFolder;
     /**
-     * Boolean indicating whether the location of MetaMorpheus was set by the user.
+     * Boolean indicating whether the location of MetaMorpheus was set by the
+     * user.
      */
     private boolean metaMorpheusLocationSetByUser;
     /**
@@ -80,7 +81,8 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param metaMorpheusFolder the MetaMorpheus folder
      * @param metaMorpheusTempFolder the MetaMorpheus temp folder
-     * @param metaMorpheusLocationSetByUser boolean indicating whether the location of MetaMorpheus was set by the user.
+     * @param metaMorpheusLocationSetByUser boolean indicating whether the
+     * location of MetaMorpheus was set by the user
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param threads the number of threads to use
@@ -123,7 +125,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         // make sure that the MetaMorpheus file is executable
         File metaMorpheus = new File(metaMorpheusFolder.getAbsolutePath() + File.separator + getExecutableFileName(metaMorpheusLocationSetByUser));
         metaMorpheus.setExecutable(true);
-        
+
         // copy the default metamorpheus settings to the metamorpheus temp folder
         FileUtils.copyDirectory(new File(metaMorpheusFolder, "Contaminants"), new File(metaMorpheusTempFolder, "Contaminants"));
         FileUtils.copyDirectory(new File(metaMorpheusFolder, "CustomAminoAcids"), new File(metaMorpheusTempFolder, "CustomAminoAcids"));
@@ -147,33 +149,32 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
         File metaMorpheusSearchParametersFile = createParameterFile(searchParameters, MetaMorpheusTaskType.Search);
 
         if (metaMorpheusLocationSetByUser || !CompomicsWrapper.appRunningIntoConda(SearchHandler.CONDA_APP_NAME)) {
-            
+
             // add dotnet if not on windows
             String operatingSystem = System.getProperty("os.name").toLowerCase();
-            
+
             if (!operatingSystem.contains("windows")) {
-                
+
                 String dotNetPath = "dotnet";
-                
+
                 if (operatingSystem.contains("mac os x")) {
-                
+
                     dotNetPath = "/usr/local/share/dotnet/dotnet";
-                
+
                 }
-                
+
                 process_name_array.add(dotNetPath);
-            
+
             }
         }
-        
+
         /*
         * When using Conda, our binaries are replaced by the ones available at
         * https://anaconda.org/conda-forge/metamorpheus
         * On Windows, MetaMorpheus Conda package looks the same than our binaries
         * On Linux and Mac, it internally executes dotnet but we do not have to care about it,
         * so no explicit call to dotnet is necessary.
-        */
-        
+         */
         // full path to executable
         process_name_array.add(metaMorpheus.getAbsolutePath());
 
@@ -222,8 +223,8 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Returns the name of the MetaMorpheus executable.
      *
-     * @param local If true the execution will be expected to run locally.
-     * 
+     * @param local if true, the execution will be expected to run locally
+     *
      * @return the name of the MetaMorpheus executable
      */
     public static String getExecutableFileName(boolean local) {
@@ -236,14 +237,14 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
             } else {
                 return "CMD.dll";
             }
-        } else{
+        } else {
             /*
              * When running in Conda, Linux or Mac, executable names are taken 
              * from the MetaMorpheus Conda package
              */
             return "metamorpheus";
         }
-        
+
     }
 
     /**
@@ -560,7 +561,7 @@ public class MetaMorpheusProcessBuilder extends SearchGUIProcessBuilder {
 
                     // cleavage mass shifts (and 'notes' after that if any)
                     bw.write("\t");
-                    
+
                     bw.newLine();
                 }
 
