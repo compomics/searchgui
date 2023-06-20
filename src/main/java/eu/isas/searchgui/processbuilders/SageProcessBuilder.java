@@ -34,7 +34,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.10.0";
+    private final String SAGE_VERSION = "0.13.2";
     /**
      * The spectrum file.
      */

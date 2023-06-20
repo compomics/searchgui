@@ -1,39 +1,41 @@
 OMSSA Location:
-./resources/OMSSA/linux
+Not Selected
 false
 X!Tandem Location:
-./resources/XTandem/linux/linux_64bit
+Not Selected
 false
 MS-GF+ Location:
-./resources/MS-GF+
+Not Selected
 false
 MS Amanda Location:
-./resources/MS Amanda/linux
+Not Selected
 false
 MyriMatch Location:
-./resources/MyriMatch/linux/linux_64bit
+Not Selected
 false
 Comet Location:
-./resources/Comet/linux
+Not Selected
 false
 Tide Location:
-./resources/Tide/linux
+Not Selected
 false
 Andromeda Location:
-null
+Not Selected
 false
 MetaMorpheus Location:
-./resources/MetaMorpheus
+Not Selected
 false
 Sage Location:
-./resources/Sage/linux
+Not Selected
 false
 Novor Location:
-./resources/Novor
+Not Selected
 false
 DirecTag Location:
-./resources/DirecTag/linux/linux_64bit
+Not Selected
 false
 makeblastdb Location:
-null
+Not Selected
 
+Modification use:
+Acetylation of K//Acetylation of protein N-term//Carbamidomethylation of C//Oxidation of M//Phosphorylation of S//Phosphorylation of T//Phosphorylation of Y//iTRAQ 4-plex of peptide N-term//iTRAQ 4-plex of K//iTRAQ 4-plex of Y//iTRAQ 8-plex of peptide N-term//iTRAQ 8-plex of K//iTRAQ 8-plex of Y//TMT 6-plex of peptide N-term//TMT 6-plex of K//TMT 10-plex of peptide N-term//TMT 10-plex of K//Pyrolidone from E//Pyrolidone from Q//Pyrolidone from carbamidomethylated C//Deamidation of N//Deamidation of Q//
