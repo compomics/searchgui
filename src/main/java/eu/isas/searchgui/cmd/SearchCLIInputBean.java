@@ -1281,10 +1281,7 @@ public class SearchCLIInputBean {
      *
      * @return true if the mgf should be checked for size
      */
-    public Boolean checkMgfSize() {
-        if (checkMgfSize == null) {
-            checkMgfSize = false;
-        }
+    public boolean checkMgfSize() {
         return checkMgfSize;
     }
 

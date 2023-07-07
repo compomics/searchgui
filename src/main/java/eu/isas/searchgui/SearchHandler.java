@@ -426,7 +426,7 @@ public class SearchHandler {
         }
 
         this.msFiles = msFiles;
-        this.cmsFiles = new ArrayList<File>();
+        this.cmsFiles = new ArrayList<>();
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
@@ -672,7 +672,7 @@ public class SearchHandler {
             this.defaultOutputFileName = defaultOutputFileName;
         }
         this.msFiles = msFiles;
-        this.cmsFiles = new ArrayList<File>();
+        this.cmsFiles = new ArrayList<>();
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.enableOmssa = runOmssa;

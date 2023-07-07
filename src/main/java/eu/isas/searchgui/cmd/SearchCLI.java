@@ -1,6 +1,5 @@
 package eu.isas.searchgui.cmd;
 
-import com.compomics.software.CompomicsWrapper;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
@@ -35,14 +34,6 @@ public class SearchCLI implements Callable {
      * The command line parameters.
      */
     private SearchCLIInputBean searchCLIInputBean;
-    /**
-     * The enzyme factory.
-     */
-    private EnzymeFactory enzymeFactory;
-    /**
-     * The mass spectrometry file handler.
-     */
-    private final MsFileHandler msFileHandler = new MsFileHandler();
     /**
      * The log folder given on the command line. Null if not set.
      */
@@ -147,7 +138,7 @@ public class SearchCLI implements Callable {
     public Object call() {
 
         // load enzymes
-        enzymeFactory = EnzymeFactory.getInstance();
+        EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
 
         try {
 
@@ -208,7 +199,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getDefaultOutputFileName(),
                     spectrumFiles,
                     searchCLIInputBean.getFastaFile(),
-                    new ArrayList<File>(),
+                    new ArrayList<>(),
                     parametersFile,
                     searchCLIInputBean.isOmssaEnabled(),
                     searchCLIInputBean.isXTandemEnabled(),
