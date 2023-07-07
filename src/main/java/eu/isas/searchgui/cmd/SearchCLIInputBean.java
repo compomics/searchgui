@@ -1084,12 +1084,7 @@ public class SearchCLIInputBean {
             }
         }
         if (aLine.hasOption(SearchCLIParams.TIDE_INDEX_LOCATION.id)) {
-            String input = aLine.getOptionValue(SearchCLIParams.TIDE_INDEX_LOCATION.id);
-            File file = new File(input);
-            if (!file.getParentFile().exists()) {
-                System.out.println(System.getProperty("line.separator") + "The folder where to save the index " + SearchCLIParams.TIDE_INDEX_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
-                return false;
-            }
+            // Nothing to do here
         }
         if (aLine.hasOption(SearchCLIParams.ANDROMEDA_LOCATION.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.ANDROMEDA_LOCATION.id);
