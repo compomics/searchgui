@@ -611,6 +611,7 @@ public class SearchHandler {
      * default location is used
      * @param tideFolder the folder where Tide is installed, if null the default
      * location is used
+     * @param tideIndexLocation the folder where the tide index is to be saved
      * @param andromedaFolder the folder where Andromeda is installed, if null
      * the default location is used
      * @param metaMorpheusFolder the folder where MetaMorpheus is installed, if
