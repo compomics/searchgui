@@ -3383,6 +3383,7 @@ public class SearchHandler {
                             tideSearchProcessBuilder = new TideSearchProcessBuilder(
                                     tideLocation,
                                     tideTempFolder,
+                                    tideIndexLocation,
                                     searchParameters,
                                     ms2File,
                                     waitingHandler,
