@@ -1084,12 +1084,7 @@ public class SearchCLIInputBean {
             }
         }
         if (aLine.hasOption(SearchCLIParams.TIDE_INDEX_LOCATION.id)) {
-            String input = aLine.getOptionValue(SearchCLIParams.TIDE_INDEX_LOCATION.id);
-            File file = new File(input);
-            if (!file.exists()) {
-                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.TIDE_INDEX_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
-                return false;
-            }
+            // Nothing to do here
         }
         if (aLine.hasOption(SearchCLIParams.ANDROMEDA_LOCATION.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.ANDROMEDA_LOCATION.id);
@@ -1286,10 +1281,7 @@ public class SearchCLIInputBean {
      *
      * @return true if the mgf should be checked for size
      */
-    public Boolean checkMgfSize() {
-        if (checkMgfSize == null) {
-            checkMgfSize = false;
-        }
+    public boolean checkMgfSize() {
         return checkMgfSize;
     }
 

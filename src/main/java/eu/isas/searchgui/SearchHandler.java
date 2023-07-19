@@ -426,7 +426,7 @@ public class SearchHandler {
         }
 
         this.msFiles = msFiles;
-        this.cmsFiles = new ArrayList<File>();
+        this.cmsFiles = new ArrayList<>();
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.exceptionHandler = exceptionHandler;
@@ -611,6 +611,7 @@ public class SearchHandler {
      * default location is used
      * @param tideFolder the folder where Tide is installed, if null the default
      * location is used
+     * @param tideIndexLocation the folder where the tide index is to be saved
      * @param andromedaFolder the folder where Andromeda is installed, if null
      * the default location is used
      * @param metaMorpheusFolder the folder where MetaMorpheus is installed, if
@@ -671,7 +672,7 @@ public class SearchHandler {
             this.defaultOutputFileName = defaultOutputFileName;
         }
         this.msFiles = msFiles;
-        this.cmsFiles = new ArrayList<File>();
+        this.cmsFiles = new ArrayList<>();
         this.fastaFile = fastaFile;
         this.rawFiles = rawFiles;
         this.enableOmssa = runOmssa;
@@ -3382,6 +3383,7 @@ public class SearchHandler {
                             tideSearchProcessBuilder = new TideSearchProcessBuilder(
                                     tideLocation,
                                     tideTempFolder,
+                                    tideIndexLocation,
                                     searchParameters,
                                     ms2File,
                                     waitingHandler,

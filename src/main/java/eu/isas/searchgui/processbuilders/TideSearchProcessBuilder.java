@@ -39,6 +39,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
      *
      * @param tideFolder the Tide folder
      * @param tideTempFolder the folder for Tide temp files
+     * @param tideIndexLocation the file where to store the index
      * @param searchParameters the search parameters
      * @param spectrumFile the spectrum file
      * @param waitingHandler the waiting handler
@@ -51,6 +52,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
     public TideSearchProcessBuilder(
             File tideFolder,
             File tideTempFolder,
+            File tideIndexLocation,
             SearchParameters searchParameters,
             File spectrumFile,
             WaitingHandler waitingHandler,
@@ -85,7 +87,7 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         tideParameters = (TideParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.tide.getIndex());
         this.spectrumFile = spectrumFile;
 
-        // make sure that the comet file is executable
+        // make sure that the file is executable
         File tide = new File(tideFolder.getAbsolutePath() + File.separator + EXECUTABLE_FILE_NAME);
         tide.setExecutable(true);
 
@@ -105,7 +107,8 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add(spectrumFile.getAbsolutePath());
 
         // link to the index
-        process_name_array.add(new File(tideTempFolder, tideParameters.getFastIndexFolderName()).getAbsolutePath());
+        File tideIndexFolder = tideIndexLocation != null ? tideIndexLocation : new File(tideTempFolder, tideParameters.getFastIndexFolderName());
+        process_name_array.add(tideIndexFolder.getAbsolutePath());
 
         // overwrite existing files
         process_name_array.add("--overwrite");
