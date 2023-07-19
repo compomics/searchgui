@@ -1,5 +1,5 @@
 format-version: 1.2
-date: 2018:04:17 09:27
+date: 2018:10:25 09:32
 
 saved-by: psi-pi_team
 default-namespace: UNIMOD
@@ -316,7 +316,7 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:7
 name: Deamidated
-def: "Deamidation." [FindMod:FLAC, RESID:AA0128, FindMod:CITR, URL:http\://www.ionsource.com/Card/Deamidation/deamidation.htm, RESID:AA0214, PMID:6838602, PMID:15700232, FindMod:DEAM, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=7]
+def: "Deamidation." [PMID:6838602, RESID:AA0214, URL:http\://www.ionsource.com/Card/Deamidation/deamidation.htm, FindMod:CITR, RESID:AA0128, FindMod:FLAC, PMID:15700232, FindMod:DEAM, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=7]
 synonym: "phenyllactyl from N-term Phe Citrullination" []
 xref: record_id "7"
 xref: delta_mono_mass "0.984016"
@@ -325,7 +325,7 @@ xref: delta_composition "H(-1) N(-1) O"
 xref: username_of_poster "unimod"
 xref: group_of_poster "admin"
 xref: date_time_posted "2002-08-19 19:17:11"
-xref: date_time_modified "2011-05-12 08:53:06"
+xref: date_time_modified "2018-10-25 09:32:26"
 xref: approved "0"
 xref: spec_1_group "1"
 xref: spec_1_hidden "0"
@@ -344,6 +344,14 @@ xref: spec_2_site "R"
 xref: spec_2_position "Anywhere"
 xref: spec_2_classification "Post-translational"
 xref: spec_2_misc_notes "Protein which is post-translationally modified by the de-imination of one or more arginine residues; Peptidylarginine deiminase (PAD) converts protein bound to citrulline"
+xref: spec_2_neutral_loss_0_mono_mass "0"
+xref: spec_2_neutral_loss_0_avge_mass "0"
+xref: spec_2_neutral_loss_0_flag "false"
+xref: spec_2_neutral_loss_0_composition "0"
+xref: spec_2_neutral_loss_44_mono_mass "43.005814"
+xref: spec_2_neutral_loss_44_avge_mass "43.0247"
+xref: spec_2_neutral_loss_44_flag "false"
+xref: spec_2_neutral_loss_44_composition "H C N O"
 xref: spec_3_group "3"
 xref: spec_3_hidden "1"
 xref: spec_3_site "F"
@@ -527,8 +535,8 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:21
 name: Phospho
-def: "Phosphorylation." [FindMod:PHOS, RESID:AA0034, RESID:AA0222, RESID:AA0039, RESID:AA0038, RESID:AA0033, RESID:AA0037, URL:http\://www.ionsource.com/Card/phos/phos.htm, RESID:AA0036, RESID:AA0035, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=21]
-comment: Protein which is posttranslationally modified by the attachment of at least one phosphate group usually on serine, threonine or tyrosine residues, but also on aspartic acid or histidine residues.
+def: "Phosphorylation." [RESID:AA0036, URL:http\://www.ionsource.com/Card/phos/phos.htm, RESID:AA0037, RESID:AA0033, RESID:AA0038, RESID:AA0039, RESID:AA0222, FindMod:PHOS, RESID:AA0034, RESID:AA0035, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=21]
+comment: Neutral loss of phosphate is typically observed from Y/H/D/E/K/C, rather than the preferential loss of phosphoric acid from S/T.
 xref: record_id "21"
 xref: delta_mono_mass "79.966331"
 xref: delta_avge_mass "79.9799"
@@ -536,7 +544,7 @@ xref: delta_composition "H O(3) P"
 xref: username_of_poster "unimod"
 xref: group_of_poster "admin"
 xref: date_time_posted "2002-08-19 19:17:11"
-xref: date_time_modified "2011-11-25 10:55:54"
+xref: date_time_modified "2018-08-13 13:42:59"
 xref: approved "1"
 xref: spec_1_group "1"
 xref: spec_1_hidden "0"
@@ -569,7 +577,6 @@ xref: spec_2_hidden "0"
 xref: spec_2_site "Y"
 xref: spec_2_position "Anywhere"
 xref: spec_2_classification "Post-translational"
-xref: spec_2_misc_notes "Usually don't see beta elimination of phosphate"
 xref: spec_3_group "3"
 xref: spec_3_hidden "1"
 xref: spec_3_site "D"
@@ -597,8 +604,12 @@ xref: spec_7_group "7"
 xref: spec_7_hidden "1"
 xref: spec_7_site "K"
 xref: spec_7_position "Anywhere"
-xref: spec_7_classification "Other"
-xref: spec_7_misc_notes "from ProteinPilot"
+xref: spec_7_classification "Post-translational"
+xref: spec_8_group "8"
+xref: spec_8_hidden "1"
+xref: spec_8_site "E"
+xref: spec_8_position "Anywhere"
+xref: spec_8_classification "Post-translational"
 is_a: UNIMOD:0 ! unimod root node
 
 
@@ -1267,8 +1278,8 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:41
 name: Hex
-def: "Hexose." [FindMod:CMAN, RESID:AA0217, RESID:AA0327, RESID:AA0157, RESID:AA0152, PMID:15279557, FindMod:GLUC, URL:https\://glyconnect.expasy.org/browser/global/compositions/search?hex=1&mode=exact, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=41]
-synonym: "Mannose Galactose Glucose Fructose" []
+def: "Hexose." [RESID:AA0217, RESID:AA0152, PMID:15279557, FindMod:GLUC, URL:https\://glyconnect.expasy.org/browser/global/compositions/search?hex=1&mode=exact, RESID:AA0157, FindMod:CMAN, RESID:AA0327, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=41]
+synonym: "Fructose Mannose Galactose Glucose" []
 xref: record_id "41"
 xref: delta_mono_mass "162.052824"
 xref: delta_avge_mass "162.1406"
@@ -1276,14 +1287,36 @@ xref: delta_composition "Hex"
 xref: username_of_poster "unimod"
 xref: group_of_poster "admin"
 xref: date_time_posted "2002-08-19 19:17:11"
-xref: date_time_modified "2015-05-01 15:05:20"
+xref: date_time_modified "2018-06-27 13:23:10"
 xref: approved "1"
+xref: spec_1_group "1"
+xref: spec_1_hidden "1"
+xref: spec_1_site "R"
+xref: spec_1_position "Anywhere"
+xref: spec_1_classification "Other glycosylation"
+xref: spec_1_misc_notes "glycation"
+xref: spec_1_neutral_loss_55_mono_mass "54.031694"
+xref: spec_1_neutral_loss_55_avge_mass "54.0458"
+xref: spec_1_neutral_loss_55_flag "false"
+xref: spec_1_neutral_loss_55_composition "H(6) O(3)"
+xref: spec_1_neutral_loss_0_mono_mass "0"
+xref: spec_1_neutral_loss_0_avge_mass "0"
+xref: spec_1_neutral_loss_0_flag "false"
+xref: spec_1_neutral_loss_0_composition "0"
 xref: spec_1_group "1"
 xref: spec_1_hidden "1"
 xref: spec_1_site "K"
 xref: spec_1_position "Anywhere"
 xref: spec_1_classification "Other glycosylation"
 xref: spec_1_misc_notes "glycation"
+xref: spec_1_neutral_loss_0_mono_mass "0"
+xref: spec_1_neutral_loss_0_avge_mass "0"
+xref: spec_1_neutral_loss_0_flag "false"
+xref: spec_1_neutral_loss_0_composition "0"
+xref: spec_1_neutral_loss_55_mono_mass "54.031694"
+xref: spec_1_neutral_loss_55_avge_mass "54.0458"
+xref: spec_1_neutral_loss_55_flag "false"
+xref: spec_1_neutral_loss_55_composition "H(6) O(3)"
 xref: spec_2_group "2"
 xref: spec_2_hidden "1"
 xref: spec_2_site "N"
@@ -1303,6 +1336,14 @@ xref: spec_3_site "N-term"
 xref: spec_3_position "Any N-term"
 xref: spec_3_classification "Other glycosylation"
 xref: spec_3_misc_notes "glycation"
+xref: spec_3_neutral_loss_0_mono_mass "0"
+xref: spec_3_neutral_loss_0_avge_mass "0"
+xref: spec_3_neutral_loss_0_flag "false"
+xref: spec_3_neutral_loss_0_composition "0"
+xref: spec_3_neutral_loss_55_mono_mass "54.031694"
+xref: spec_3_neutral_loss_55_avge_mass "54.0458"
+xref: spec_3_neutral_loss_55_flag "false"
+xref: spec_3_neutral_loss_55_composition "H(6) O(3)"
 xref: spec_4_group "4"
 xref: spec_4_hidden "1"
 xref: spec_4_site "T"
@@ -1339,11 +1380,6 @@ xref: spec_6_hidden "1"
 xref: spec_6_site "C"
 xref: spec_6_position "Anywhere"
 xref: spec_6_classification "Other glycosylation"
-xref: spec_7_group "7"
-xref: spec_7_hidden "1"
-xref: spec_7_site "R"
-xref: spec_7_position "Anywhere"
-xref: spec_7_classification "N-linked glycosylation"
 xref: spec_8_group "8"
 xref: spec_8_hidden "1"
 xref: spec_8_site "Y"
@@ -14153,9 +14189,9 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:737
 name: TMT6plex
-def: "Sixplex Tandem Mass TagÂ®." [URL:https\://www.piercenet.com/instructions/2162073.pdf, URL:http\://www.piercenet.com/instructions/2162457.pdf, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=737]
-comment: M/z values of the TMTÂ® fragment ions to be quantified for 6plex and 10plex: 126.12773 127.12476 128.13443 129.13147 130.14114 131.13818. Additional m/z values for 10plex: 127.13108 128.12811 129.13779 130.13482.
-synonym: "Tandem Mass TagÂ® and TMTÂ® are registered Trademarks of Proteome Sciences plc. Also applies to TMT10plex Tandem Mass Tag sixplex labelling kit Proteome Sciences This is a nominal. representative mass" []
+def: "Sixplex Tandem Mass Tag®." [URL:https\://www.piercenet.com/instructions/2162073.pdf, URL:http\://www.piercenet.com/instructions/2162457.pdf, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=737]
+comment: M/z values of the TMT® fragment ions to be quantified for 6plex and 10plex: 126.12773 127.12476 128.13443 129.13147 130.14114 131.13818. Additional m/z values for 10plex: 127.13108 128.12811 129.13779 130.13482.
+synonym: "Tandem Mass Tag® and TMT® are registered Trademarks of Proteome Sciences plc. Also applies to TMT10plex Tandem Mass Tag sixplex labelling kit Proteome Sciences This is a nominal. representative mass" []
 xref: record_id "737"
 xref: delta_mono_mass "229.162932"
 xref: delta_avge_mass "229.2634"
@@ -14201,9 +14237,9 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:738
 name: TMT2plex
-def: "Duplex Tandem Mass TagÂ®." [UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=738]
-comment: Duplex-TMTÂ® reagents 2TMT-126, 2TMT-127. m/z values of the TMTÂ® fragment ions to be quantified: 126.12773 127.13108.
-synonym: "Tandem Mass TagÂ® and TMTÂ® are registered Trademarks of Proteome Sciences plc. Tandem Mass Tag Duplex labelling kit Proteome Sciences" []
+def: "Duplex Tandem Mass Tag®." [UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=738]
+comment: Duplex-TMT® reagents 2TMT-126, 2TMT-127. m/z values of the TMT® fragment ions to be quantified: 126.12773 127.13108.
+synonym: "Tandem Mass Tag® and TMT® are registered Trademarks of Proteome Sciences plc. Tandem Mass Tag Duplex labelling kit Proteome Sciences" []
 xref: record_id "738"
 xref: delta_mono_mass "225.155833"
 xref: delta_avge_mass "225.2921"
@@ -14249,9 +14285,9 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:739
 name: TMT
-def: "Native Tandem Mass TagÂ®." [UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=739]
+def: "Native Tandem Mass Tag®." [UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=739]
 comment: This modification describes the \"native\" TMT Reagent without isotopic label.
-synonym: "Tandem Mass TagÂ® and TMTÂ® are registered Trademarks of Proteome Sciences plc." []
+synonym: "Tandem Mass Tag® and TMT® are registered Trademarks of Proteome Sciences plc." []
 xref: record_id "739"
 xref: delta_mono_mass "224.152478"
 xref: delta_avge_mass "224.2994"
@@ -15131,13 +15167,23 @@ xref: delta_composition "H(33) C(29) O(10) P"
 xref: username_of_poster "unimod"
 xref: group_of_poster ""
 xref: date_time_posted "2008-02-20 14:12:31"
-xref: date_time_modified "2009-05-13 18:21:27"
+xref: date_time_modified "2018-06-26 15:22:16"
 xref: approved "0"
 xref: spec_1_group "1"
 xref: spec_1_hidden "1"
 xref: spec_1_site "N-term"
 xref: spec_1_position "Any N-term"
 xref: spec_1_classification "Chemical derivative"
+xref: spec_2_group "2"
+xref: spec_2_hidden "1"
+xref: spec_2_site "K"
+xref: spec_2_position "Anywhere"
+xref: spec_2_classification "Artefact"
+xref: spec_3_group "3"
+xref: spec_3_hidden "1"
+xref: spec_3_site "Y"
+xref: spec_3_position "Anywhere"
+xref: spec_3_classification "Artefact"
 is_a: UNIMOD:0 ! unimod root node
 
 
@@ -17347,9 +17393,9 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:984
 name: cysTMT
-def: "Native cysteine-reactive Tandem Mass TagÂ®." [URL:http\://bit.ly/1GBnaC8, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=984]
+def: "Native cysteine-reactive Tandem Mass Tag®." [URL:http\://bit.ly/1GBnaC8, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=984]
 comment: This modification describes the native cysteine-reactive cysTMT Reagent without isotopic label. Upon CID, this reagent releases a reporter ion of 126.127725 (monoisotopic mass).
-synonym: "Tandem Mass TagÂ® and TMTÂ® are registered Trademarks of Proteome Sciences plc." []
+synonym: "Tandem Mass Tag® and TMT® are registered Trademarks of Proteome Sciences plc." []
 xref: record_id "984"
 xref: delta_mono_mass "299.166748"
 xref: delta_avge_mass "299.4322"
@@ -17370,9 +17416,9 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:985
 name: cysTMT6plex
-def: "Cysteine-reactive Sixplex Tandem Mass TagÂ®." [URL:http\://bit.ly/1GBnaC8, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=985]
+def: "Cysteine-reactive Sixplex Tandem Mass Tag®." [URL:http\://bit.ly/1GBnaC8, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=985]
 comment: This modification describes the isobaric sixplex cysteine-reactive cysTMT6 Reagents with isotopic labels. Upon CID, these reagents release reporter ions of 126.127725, 127.131079, 128.134433, 129.137787, 130.141141, and 131.138176 (monoisotopic mass).
-synonym: "Tandem Mass TagÂ® and TMTÂ® are registered Trademarks of Proteome Sciences plc." []
+synonym: "Tandem Mass Tag® and TMT® are registered Trademarks of Proteome Sciences plc." []
 xref: record_id "985"
 xref: delta_mono_mass "304.177202"
 xref: delta_avge_mass "304.3962"
@@ -17484,7 +17530,7 @@ xref: spec_1_hidden "1"
 xref: spec_1_site "N-term"
 xref: spec_1_position "Any N-term"
 xref: spec_1_classification "Artefact"
-xref: spec_1_misc_notes "this is a "virtual modification", as it only accounts for the structure of the MS/MS fragment as it occurs in Top-Down MS/MS analyses. This must be accounted for in MSÂ³-analysis of z+2 ions"
+xref: spec_1_misc_notes "this is a "virtual modification", as it only accounts for the structure of the MS/MS fragment as it occurs in Top-Down MS/MS analyses. This must be accounted for in MS³-analysis of z+2 ions"
 is_a: UNIMOD:0 ! unimod root node
 
 
@@ -24806,9 +24852,9 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:1341
 name: iodoTMT
-def: "Native iodoacetyl Tandem Mass TagÂ®." [URL:http\://www.lifetechnologies.com/order/catalog/product/90100, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1341]
+def: "Native iodoacetyl Tandem Mass Tag®." [URL:http\://www.lifetechnologies.com/order/catalog/product/90100, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1341]
 comment: This modification describes the native iodoTMT Reagent without isotopic label. Upon CID, this reagent releases a reporter ion of 126.127725(monoisotopic mass).
-synonym: "iodoTMTzero iodoTMT0 Tandem Mass TagÂ® and TMTÂ® are registered Trademarks of Proteome Sciences plc." []
+synonym: "iodoTMTzero iodoTMT0 Tandem Mass Tag® and TMT® are registered Trademarks of Proteome Sciences plc." []
 xref: record_id "1341"
 xref: delta_mono_mass "324.216141"
 xref: delta_avge_mass "324.4185"
@@ -24849,9 +24895,9 @@ is_a: UNIMOD:0 ! unimod root node
 [Term]
 id: UNIMOD:1342
 name: iodoTMT6plex
-def: "Sixplex iodoacetyl Tandem Mass TagÂ®." [URL:http\://www.lifetechnologies.com/order/catalog/product/90102, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1342]
+def: "Sixplex iodoacetyl Tandem Mass Tag®." [URL:http\://www.lifetechnologies.com/order/catalog/product/90102, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1342]
 comment: This modification describes the native iodoTMT Reagent without isotopic label. Upon CID, this reagent releases a reporter ions of 126.127725, 127.124760, 128.134433, 129.131468, 130.141141, and 131.138176 (monoisotopic mass).
-synonym: "iodoTMTsixplex iodoTMT6 Tandem Mass TagÂ® and TMTÂ® are registered Trademarks of Proteome Sciences plc." []
+synonym: "iodoTMTsixplex iodoTMT6 Tandem Mass Tag® and TMT® are registered Trademarks of Proteome Sciences plc." []
 xref: record_id "1342"
 xref: delta_mono_mass "329.226595"
 xref: delta_avge_mass "329.3825"
@@ -42029,16 +42075,16 @@ is_a: UNIMOD:0 ! unimod root node
 
 [Term]
 id: UNIMOD:1927
-name: Delta:H(4)C(6)O(1)
+name: Delta:H(4)C(5)O(1)
 def: "Methylglyoxal-derived argpyrimidine." [UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1927]
 xref: record_id "1927"
-xref: delta_mono_mass "92.026215"
-xref: delta_avge_mass "92.0954"
-xref: delta_composition "H(4) C(6) O"
+xref: delta_mono_mass "80.026215"
+xref: delta_avge_mass "80.0847"
+xref: delta_composition "H(4) C(5) O"
 xref: username_of_poster "unimod"
 xref: group_of_poster ""
 xref: date_time_posted "2017-11-08 16:43:41"
-xref: date_time_modified "2017-11-08 17:02:16"
+xref: date_time_modified "2018-06-26 10:38:31"
 xref: approved "0"
 xref: spec_1_group "1"
 xref: spec_1_hidden "1"
@@ -43657,7 +43703,7 @@ is_a: UNIMOD:0 ! unimod root node
 id: UNIMOD:1970
 name: Unknown:162
 def: "Unidentified modification of 162.1258 found in open search." [URL:http\://www.matrixscience.com/blog/trying-to-illuminate-proteomics-dark-matter.html, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1970]
-synonym: "The elemental composition should be assumed incorrect" []
+synonym: "The elemental composition should be assumed incorrect Although it happens to be that of Diethylene glycol butyl ether, a common solvent." []
 xref: record_id "1970"
 xref: delta_mono_mass "162.125595"
 xref: delta_avge_mass "162.2267"
@@ -43665,7 +43711,7 @@ xref: delta_composition "H(18) C(8) O(3)"
 xref: username_of_poster "unimod"
 xref: group_of_poster ""
 xref: date_time_posted "2017-12-07 09:51:01"
-xref: date_time_modified "2017-12-07 09:54:04"
+xref: date_time_modified "2018-10-17 14:27:53"
 xref: approved "0"
 xref: spec_1_group "1"
 xref: spec_1_hidden "1"
@@ -44223,6 +44269,92 @@ xref: spec_1_hidden "1"
 xref: spec_1_site "Q"
 xref: spec_1_position "Anywhere"
 xref: spec_1_classification "Post-translational"
+is_a: UNIMOD:0 ! unimod root node
+
+
+[Term]
+id: UNIMOD:1993
+name: TMPP-Ac:13C(9)
+def: "Heavy tris(2,4,6-trimethoxyphenyl)phosphonium acetic acid N-hydroxysuccinimide ester derivative." [UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1993]
+comment: The formula is reduced from H(34) to H(33) so as to give correct observed m/z values. The charge on the TMPP means that ions have one less proton than would be expected.
+xref: record_id "1993"
+xref: delta_mono_mass "581.211328"
+xref: delta_avge_mass "581.474"
+xref: delta_composition "H(33) C(20) 13C(9) O(10) P"
+xref: username_of_poster "rompais"
+xref: group_of_poster ""
+xref: date_time_posted "2018-06-26 13:54:23"
+xref: date_time_modified "2018-06-26 15:21:14"
+xref: approved "0"
+xref: spec_1_group "1"
+xref: spec_1_hidden "1"
+xref: spec_1_site "N-term"
+xref: spec_1_position "Any N-term"
+xref: spec_1_classification "Chemical derivative"
+xref: spec_2_group "2"
+xref: spec_2_hidden "1"
+xref: spec_2_site "K"
+xref: spec_2_position "Anywhere"
+xref: spec_2_classification "Artefact"
+xref: spec_2_misc_notes "possible side chain reaction when labeling N-term"
+xref: spec_3_group "3"
+xref: spec_3_hidden "1"
+xref: spec_3_site "Y"
+xref: spec_3_position "Anywhere"
+xref: spec_3_classification "Artefact"
+xref: spec_3_misc_notes "possible side chain reaction when labeling N-term"
+is_a: UNIMOD:0 ! unimod root node
+
+
+[Term]
+id: UNIMOD:1999
+name: Xlink:DST[56]
+def: "DST crosslinker cleaved by sodium periodate." [URL:https\://assets.thermofisher.com/TFS-Assets/LSG/manuals/MAN0011282_DST_UG.pdf, PMID:212103, PMID:3001048, UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=1999]
+xref: record_id "1999"
+xref: delta_mono_mass "55.989829"
+xref: delta_avge_mass "56.0202"
+xref: delta_composition "C(2) O(2)"
+xref: username_of_poster "unimod"
+xref: group_of_poster ""
+xref: date_time_posted "2018-08-29 11:31:26"
+xref: date_time_modified "2018-08-29 11:37:13"
+xref: approved "0"
+xref: spec_1_group "1"
+xref: spec_1_hidden "1"
+xref: spec_1_site "K"
+xref: spec_1_position "Anywhere"
+xref: spec_1_classification "Chemical derivative"
+xref: spec_2_group "2"
+xref: spec_2_hidden "1"
+xref: spec_2_site "N-term"
+xref: spec_2_position "Protein N-term"
+xref: spec_2_classification "Chemical derivative"
+is_a: UNIMOD:0 ! unimod root node
+
+
+[Term]
+id: UNIMOD:2001
+name: ZQG
+def: "Lys conjugation to carbobenzoxy-L-glutaminyl-glycine." [UNIMODURL:http\://www.unimod.org/modifications_view.php?editid1=2001]
+comment: Glutamine-donor substrate for transglutaminase.
+xref: record_id "2001"
+xref: delta_mono_mass "320.100836"
+xref: delta_avge_mass "320.2973"
+xref: delta_composition "H(16) C(15) N(2) O(6)"
+xref: username_of_poster "Barbara Spolaore"
+xref: group_of_poster ""
+xref: date_time_posted "2018-09-18 12:01:47"
+xref: date_time_modified "2018-09-20 16:49:06"
+xref: approved "0"
+xref: spec_1_group "1"
+xref: spec_1_hidden "1"
+xref: spec_1_site "K"
+xref: spec_1_position "Anywhere"
+xref: spec_1_classification "Chemical derivative"
+xref: spec_1_neutral_loss_135_mono_mass "134.036779"
+xref: spec_1_neutral_loss_135_avge_mass "134.132"
+xref: spec_1_neutral_loss_135_flag "false"
+xref: spec_1_neutral_loss_135_composition "H(6) C(8) O(2)"
 is_a: UNIMOD:0 ! unimod root node
 
 
