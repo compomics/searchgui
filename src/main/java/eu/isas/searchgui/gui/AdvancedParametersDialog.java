@@ -557,16 +557,16 @@ public class AdvancedParametersDialog extends javax.swing.JDialog {
             userParameters.setCheckPeakPicking(peakPickingComboBox.getSelectedIndex() == 0);
             userParameters.setCheckDuplicateTitles(duplicateTitlesComboBox.getSelectedIndex() == 0);
             userParameters.setCheckMgfSize(checkMgfFileSizeComboBox.getSelectedIndex() == 0);
-            userParameters.setMgfMaxSize(Double.valueOf(mgfMaxSizeTxt.getText().trim()));
-            userParameters.setMgfNSpectra(Integer.valueOf(mgfReducedSizeTxt.getText().trim()));
+            userParameters.setMgfMaxSize(Double.parseDouble(mgfMaxSizeTxt.getText().trim()));
+            userParameters.setMgfNSpectra(Integer.parseInt(mgfReducedSizeTxt.getText().trim()));
             OutputParameters outputParameters = OutputParameters.getOutputParameters(groupResultFilesCmb.getSelectedIndex());
             userParameters.setSearchGuiOutputParameters(outputParameters);
             userParameters.setOutputData(includeDataCmb.getSelectedIndex() == 0);
             userParameters.setIncludeDateInOutputName(includeDateCmb.getSelectedIndex() == 0);
-            userParameters.setRefMass(Double.valueOf(refMassTxt.getText()));
+            userParameters.setRefMass(Double.parseDouble(refMassTxt.getText()));
             userParameters.setCheckSpectrumCharges(checkSpectrumChargesComboBox.getSelectedIndex() == 0);
-            userParameters.setMinSpectrumChargeRange(Integer.valueOf(lowSpectrumChargeRangeTxt.getText()));
-            userParameters.setMaxSpectrumChargeRange(Integer.valueOf(highSpectrumChargeRangeTxt.getText()));
+            userParameters.setMinSpectrumChargeRange(Integer.parseInt(lowSpectrumChargeRangeTxt.getText()));
+            userParameters.setMaxSpectrumChargeRange(Integer.parseInt(highSpectrumChargeRangeTxt.getText()));
             userParameters.setGzip(zipIdFilesCmb.getSelectedIndex() == 0);
 
             UtilitiesUserParameters.saveUserParameters(userParameters);
