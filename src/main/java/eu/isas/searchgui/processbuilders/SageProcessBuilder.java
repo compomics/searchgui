@@ -34,7 +34,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.14.0";
+    private final String SAGE_VERSION = "0.14.1";
     /**
      * The spectrum file.
      */
@@ -359,6 +359,15 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t]" + System.getProperty("line.separator")
                     + "\t}," + System.getProperty("line.separator")
                     ////////////////////////////////////////
+                    // precursor charge
+                    ////////////////////////////////////////
+                    + "\t\"precursor_charge\": ["
+                    + searchParameters.getMinChargeSearched()
+                    + ", "
+                    + searchParameters.getMaxChargeSearched()
+                    + "],"
+                    + System.getProperty("line.separator")
+                    ////////////////////////////////////////
                     // isotope settings
                     ////////////////////////////////////////
                     + "\t\"isotope_errors\": [" + System.getProperty("line.separator")
@@ -439,10 +448,9 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     ) throws IOException {
 
         // @TODO: also support multiple mods on the same residue?
-        //        "Either a single floating point number (-18.0) or a list of 
-        //         floating point numbers ([-18.0, -15.2]) can be supplied 
-        //         as modifications."
         String modificationsAsString = "";
+        String startBracket = fixed ? "" : "[";
+        String endBracket = fixed ? "" : "]";
 
         for (String modName : modifications) {
 
@@ -458,7 +466,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                             modificationsAsString += "," + System.getProperty("line.separator");
                         }
 
-                        modificationsAsString += "\t\t\t\"" + aminoAcid + "\": " + modification.getMass();
+                        modificationsAsString += "\t\t\t\"" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
                     }
 
                     break;
@@ -469,7 +477,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
 
-                    modificationsAsString += "\t\t\t\"[\": " + modification.getMass();
+                    modificationsAsString += "\t\t\t\"[\": " + startBracket + modification.getMass() + endBracket;
 
                     break;
 
@@ -479,7 +487,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
 
-                    modificationsAsString += "\t\t\t\"^\": " + modification.getMass();
+                    modificationsAsString += "\t\t\t\"^\": " + startBracket + modification.getMass() + endBracket;
 
                     break;
 
@@ -491,7 +499,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                             modificationsAsString += "," + System.getProperty("line.separator");
                         }
 
-                        modificationsAsString += "\t\t\t\"[" + aminoAcid + "\": " + modification.getMass();
+                        modificationsAsString += "\t\t\t\"[" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
                     }
 
                     break;
@@ -504,7 +512,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                             modificationsAsString += "," + System.getProperty("line.separator");
                         }
 
-                        modificationsAsString += "\t\t\t\"^" + aminoAcid + "\": " + modification.getMass();
+                        modificationsAsString += "\t\t\t\"^" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
                     }
 
                     break;
@@ -515,7 +523,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
 
-                    modificationsAsString += "\t\t\t\"]\": " + modification.getMass();
+                    modificationsAsString += "\t\t\t\"]\": " + startBracket + modification.getMass() + endBracket;
 
                     break;
 
@@ -525,7 +533,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                         modificationsAsString += "," + System.getProperty("line.separator");
                     }
 
-                    modificationsAsString += "\t\t\t\"$\": " + modification.getMass();
+                    modificationsAsString += "\t\t\t\"$\": " + startBracket + modification.getMass() + endBracket;
 
                     break;
 
@@ -537,7 +545,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                             modificationsAsString += "," + System.getProperty("line.separator");
                         }
 
-                        modificationsAsString += "\t\t\t\"]" + aminoAcid + "\": " + modification.getMass();
+                        modificationsAsString += "\t\t\t\"]" + aminoAcid + "\": " + startBracket+ modification.getMass() + endBracket;
                     }
 
                     break;
@@ -550,7 +558,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                             modificationsAsString += "," + System.getProperty("line.separator");
                         }
 
-                        modificationsAsString += "\t\t\t\"$" + aminoAcid + "\": " + modification.getMass();
+                        modificationsAsString += "\t\t\t\"$" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
                     }
 
                     break;
