@@ -34,7 +34,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.14.1";
+    private final String SAGE_VERSION = "0.14.3";
     /**
      * The spectrum file.
      */
@@ -340,7 +340,8 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t\t\"peak_scoring\" : \"" + sageParameters.getLfqPeakScoring() + "\"," + System.getProperty("line.separator")
                     + "\t\t\t\"integration\": \"" + sageParameters.getLfqIntergration() + "\"," + System.getProperty("line.separator")
                     + "\t\t\t\"spectral_angle\": " + sageParameters.getLfqSpectralAngle() + "," + System.getProperty("line.separator")
-                    + "\t\t\t\"ppm_tolerance\": " + sageParameters.getLfqPpmTolerance() + System.getProperty("line.separator")
+                    + "\t\t\t\"ppm_tolerance\": " + sageParameters.getLfqPpmTolerance() + "," + System.getProperty("line.separator")
+                    + "\t\t\t\"combine_charge_state\": " + sageParameters.getCombineChargeStates().toString() + System.getProperty("line.separator")
                     + "\t\t}" + System.getProperty("line.separator")
                     + "\t}," + System.getProperty("line.separator")
                     ////////////////////////////////////////
