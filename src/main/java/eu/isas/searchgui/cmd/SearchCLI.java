@@ -3,7 +3,6 @@ package eu.isas.searchgui.cmd;
 import com.compomics.util.Util;
 import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.taxonomy.SpeciesFactory;
-import com.compomics.util.experiment.io.mass_spectrometry.MsFileHandler;
 import com.compomics.util.experiment.io.temp.TempFilesManager;
 import com.compomics.util.waiting.WaitingHandler;
 import com.compomics.util.gui.waiting.waitinghandlers.WaitingHandlerCLIImpl;
@@ -52,6 +51,8 @@ public class SearchCLI implements Callable {
      */
     public SearchCLI(String[] args) {
 
+        waitingHandler = new WaitingHandlerCLIImpl();
+        
         try {
 
             // turn off illegal access log messages
@@ -74,8 +75,6 @@ public class SearchCLI implements Callable {
 
             // check if there are updates to the paths
             String[] nonPathSettingArgsAsList = PathSettingsCLI.extractAndUpdatePathOptions(args);
-
-            waitingHandler = new WaitingHandlerCLIImpl();
 
             try {
 
