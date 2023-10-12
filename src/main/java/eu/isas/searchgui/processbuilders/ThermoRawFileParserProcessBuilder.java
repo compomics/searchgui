@@ -1,6 +1,7 @@
 package eu.isas.searchgui.processbuilders;
 
 import com.compomics.util.exceptions.ExceptionHandler;
+import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserOutputFormat;
 import com.compomics.util.experiment.mass_spectrometry.thermo_raw_file_parser.ThermoRawFileParserParameters;
 import com.compomics.util.io.IoUtil;
 import com.compomics.util.waiting.WaitingHandler;
@@ -46,11 +47,11 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
      * @throws ClassNotFoundException thrown if a class cannot be found
      */
     public ThermoRawFileParserProcessBuilder(
-            File thermoRawFileParserFolder, 
-            File rawFile, 
-            File destinationFolder, 
-            ThermoRawFileParserParameters thermoRawFileParserParameters, 
-            WaitingHandler waitingHandler, 
+            File thermoRawFileParserFolder,
+            File rawFile,
+            File destinationFolder,
+            ThermoRawFileParserParameters thermoRawFileParserParameters,
+            WaitingHandler waitingHandler,
             ExceptionHandler exceptionHandler
     )
             throws IOException, ClassNotFoundException {
@@ -85,14 +86,14 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
             if (operatingSystem.contains("mac os x")) {
                 StringTokenizer versionTokens = new StringTokenizer(System.getProperty("os.version"), ".");
                 if (versionTokens.countTokens() > 1) {
-                    int mainVersion = Integer.valueOf(versionTokens.nextToken());
-                    int subversion = Integer.valueOf(versionTokens.nextToken());
+                    int mainVersion = Integer.parseInt(versionTokens.nextToken());
+                    int subversion = Integer.parseInt(versionTokens.nextToken());
                     if (mainVersion >= 10 && subversion >= 11) {
                         monoPath = "/Library/Frameworks/Mono.framework/Versions/Current/bin/mono";
                     }
                 }
             }
-            
+
             process_name_array.add(monoPath);
         }
 
@@ -105,7 +106,13 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
 
         // add the conversion parameters
         process_name_array.add("-i=" + rawFile.getAbsolutePath());
-        process_name_array.add("-b=" + new File(destinationFolder, IoUtil.removeExtension(rawFile.getName()) + ".mzml").getAbsolutePath());
+
+        if (thermoRawFileParserParameters.getOutputFormat() == ThermoRawFileParserOutputFormat.mgf) {
+            process_name_array.add("-b=" + new File(destinationFolder, IoUtil.removeExtension(rawFile.getName()) + ".mgf").getAbsolutePath());
+        } else {
+            process_name_array.add("-b=" + new File(destinationFolder, IoUtil.removeExtension(rawFile.getName()) + ".mzml").getAbsolutePath());
+        }
+
         process_name_array.add("-f=" + thermoRawFileParserParameters.getOutputFormat().index);
         if (!thermoRawFileParserParameters.isPeackPicking()) {
             process_name_array.add("-p");
