@@ -8,8 +8,11 @@
             </goals>
             <properties>
                 <exec.classpathScope>runtime</exec.classpathScope>
-                <exec.args>-Xmx4000M -splash:resources/conf/searchgui-splash.png -classpath %classpath eu.isas.searchgui.gui.SearchGUI</exec.args>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>java</exec.executable>
+                <exec.mainClass>eu.isas.searchgui.gui.SearchGUI</exec.mainClass>
+                <exec.vmArgs>-Xmx4000M -splash:resources/conf/searchgui-splash.png</exec.vmArgs>
+                <exec.appArgs></exec.appArgs>
             </properties>
         </action>
         <action>
@@ -19,10 +22,13 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.6.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -Xmx4000M -splash:resources/conf/searchgui-splash.png -classpath %classpath eu.isas.searchgui.gui.SearchGUI</exec.args>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.classpathScope>runtime</exec.classpathScope>
                 <jpda.listen>true</jpda.listen>
+                <exec.mainClass>eu.isas.searchgui.gui.SearchGUI</exec.mainClass>
+                <exec.vmArgs>-Xmx4000M -splash:resources/conf/searchgui-splash.png -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.appArgs></exec.appArgs>
             </properties>
         </action>
         <action>
@@ -32,9 +38,12 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.6.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xmx4000M -splash:resources/conf/searchgui-splash.png -classpath %classpath eu.isas.searchgui.gui.SearchGUI</exec.args>
+                <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.executable>${profiler.java}</exec.executable>
                 <profiler.action>profile</profiler.action>
+                <exec.mainClass>eu.isas.searchgui.gui.SearchGUI</exec.mainClass>
+                <exec.vmArgs>-Xmx4000M -splash:resources/conf/searchgui-splash.png</exec.vmArgs>
+                <exec.appArgs></exec.appArgs>
             </properties>
         </action>
         
