@@ -34,7 +34,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.14.4";
+    private final String SAGE_VERSION = "0.14.5";
     /**
      * The spectrum file.
      */
@@ -130,6 +130,9 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add("-batch-size" + sageParameters.getBatchSize());
         }
 
+        // turn off the sendig of basic telemetry data
+        process_name_array.add("--disable-telemetry-i-dont-want-to-improve-sage");
+
         // @TODO: implement?
 //        // write pin file
 //        if (sageParameters.getWritePin() != null) {
@@ -155,6 +158,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
         // set error out and std out to same stream
         pb.redirectErrorStream(true);
+
     }
 
     /**
@@ -167,6 +171,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         Enzyme tempEnzyme;
         String enzymeDetailsAsString = "";
         String enzymeMissedCleavagesAsString = "";
+        String enzymeSemiEnzymaticAsString = "";
 
         DigestionParameters digestionPreferences = searchParameters.getDigestionParameters();
 
@@ -247,7 +252,8 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
                     enzymeDetailsAsString
                             += "\t\t\t\"c_terminal\": "
-                            + cTerminalEnzyme + ""
+                            + cTerminalEnzyme
+                            + ","
                             + System.getProperty("line.separator");
 
                     enzymeMissedCleavagesAsString
@@ -255,6 +261,30 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                             + digestionPreferences.getnMissedCleavages(tempEnzyme.getName())
                             + ","
                             + System.getProperty("line.separator");
+
+                    switch (searchParameters.getDigestionParameters().getSpecificity(tempEnzyme.getName())) {
+
+                        case specific:
+
+                            enzymeSemiEnzymaticAsString
+                                    = "\t\t\t\"semi_enzymatic\": null"
+                                    + System.getProperty("line.separator");
+
+                            break;
+
+                        case semiSpecific:
+
+                            enzymeSemiEnzymaticAsString
+                                    = "\t\t\t\"semi_enzymatic\": true"
+                                    + System.getProperty("line.separator");
+
+                            break;
+
+                        default:
+                            // N-term Specific or C-term Specific
+                            throw new IOException("Enzyme specificity type not supported by Sage!");
+
+                    }
 
                     break;
 
@@ -303,6 +333,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t\t\"min_len\": " + sageParameters.getMinPeptideLength() + "," + System.getProperty("line.separator")
                     + "\t\t\t\"max_len\": " + sageParameters.getMaxPeptideLength() + "," + System.getProperty("line.separator")
                     + enzymeDetailsAsString
+                    + enzymeSemiEnzymaticAsString
                     + "\t\t}," + System.getProperty("line.separator")
                     ///////////////////////////////////
                     // fragment and peptide settings
@@ -393,9 +424,11 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\"mzml_paths\": [\"" + spectrumFile.getAbsolutePath().replace("\\", "\\\\") + "\"]" + System.getProperty("line.separator")
                     + "}" + System.getProperty("line.separator")
             );
+
         } finally {
             br.close();
         }
+
     }
 
     /**
@@ -546,7 +579,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                             modificationsAsString += "," + System.getProperty("line.separator");
                         }
 
-                        modificationsAsString += "\t\t\t\"]" + aminoAcid + "\": " + startBracket+ modification.getMass() + endBracket;
+                        modificationsAsString += "\t\t\t\"]" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
                     }
 
                     break;
@@ -606,4 +639,5 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
         }
 
     }
+
 }
