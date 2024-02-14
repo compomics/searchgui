@@ -185,6 +185,62 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private Integer maxLoadedSpectra = 2000;
     /**
+     * Maximum charge state of calculated fragment ions (+2, +3, +4, Precursor -
+     * 1).
+     */
+    private String maxAllowedChargeState = "+2";
+    /**
+     * Minimum number of selected peaks within peak picking window (1-30).
+     */
+    private Integer minPeakDepth = 1;
+    /**
+     * Maximum number of selected peaks within peak picking window (1-30).
+     */
+    private Integer maxPeakDepth = 10;
+    /**
+     * Perform second search to identify mixed spectra.
+     */
+    private Boolean performSecondSearch = false;
+    /**
+     * Whether y1 ion shall be kept for second search.
+     */
+    private Boolean keepY1Ion = true;
+    /**
+     * Whether water losses shall be removed for second search.
+     */
+    private Boolean removeWaterLosses = true;
+    /**
+     * Whether ammonia losses shall be removed for second search.
+     */
+    private Boolean removeAmmoniaLosses = true;
+    /**
+     * Exclude original precursor in second search.
+     */
+    private Boolean excludeFirstPrecursor = true;
+    /**
+     * Maximum number of different precursors for second search (1-10).
+     */
+    private Integer maxMultiplePrecursors = 5;
+    /**
+     * Which charges shall be tested for precursors (no deisotoping) where the
+     * charge cannot be defined (+2; +3; +2, +3; +2, +3, +4; +3, +4; +2, +3, +4,
+     * +5).
+     */
+    private String consideredChargesForPrecursors = "+2,+3";
+    /**
+     * Considered charges are combined in one result.
+     */
+    private Boolean combineConsideredCharges = true;
+    /**
+     * Automatically run percolator and add q-values to output file.
+     */
+    private Boolean runPercolator = false;
+    /**
+     * Generate file for percolator; filename is the same as stated in output
+     * filename with suffix _pin.tsv.
+     */
+    private Boolean generatePInFile = false;
+    /**
      * The folder where the MS Amanda temp files are stored.
      */
     private File msAmandaTempFolder;
@@ -249,6 +305,19 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         maxPeptideLength = msAmandaParameters.getMaxPeptideLength();
         maxLoadedProteins = msAmandaParameters.getMaxLoadedProteins();
         maxLoadedSpectra = msAmandaParameters.getMaxLoadedSpectra();
+        maxAllowedChargeState = msAmandaParameters.getMaxAllowedChargeState();
+        minPeakDepth = msAmandaParameters.getMinPeakDepth();
+        maxPeakDepth = msAmandaParameters.getMaxPeakDepth();
+        performSecondSearch = msAmandaParameters.getPerformSecondSearch();
+        keepY1Ion = msAmandaParameters.getKeepY1Ion();
+        removeWaterLosses = msAmandaParameters.getRemoveWaterLosses();
+        removeAmmoniaLosses = msAmandaParameters.getRemoveAmmoniaLosses();
+        excludeFirstPrecursor = msAmandaParameters.getExcludeFirstPrecursor();
+        maxMultiplePrecursors = msAmandaParameters.getMaxMultiplePrecursors();
+        consideredChargesForPrecursors = msAmandaParameters.getConsideredChargesForPrecursors();
+        combineConsideredCharges = msAmandaParameters.getCombineConsideredCharges();
+        runPercolator = msAmandaParameters.getRunPercolator();
+        generatePInFile = msAmandaParameters.getGeneratePInFile();
 
         // set the mass accuracies
         fragmentMassError = searchParameters.getFragmentIonAccuracy();
@@ -448,6 +517,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                 bw.write("    <position>" + cleavageType + "</position>" + System.getProperty("line.separator"));
 
                 bw.write("  </enzyme>" + System.getProperty("line.separator"));
+
             }
 
             bw.write("  <enzyme>" + System.getProperty("line.separator"));
@@ -474,6 +544,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             );
 
         }
+
     }
 
     /**
@@ -490,6 +561,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             bw.write(
                     "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + System.getProperty("line.separator")
                     + "<settings>" + System.getProperty("line.separator")
+                    ////////////////////////////      
+                    // search settings
+                    ////////////////////////////
                     + "\t<search_settings>" + System.getProperty("line.separator")
                     + "\t\t<enzyme specificity=\"" + enzymeSpecificity + "\">" + enzymeName + "</enzyme>" + System.getProperty("line.separator")
                     + "\t\t<missed_cleavages>" + missedCleavages + "</missed_cleavages>" + System.getProperty("line.separator")
@@ -508,8 +582,25 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<MinimumPepLength>" + minPeptideLength + "</MinimumPepLength> " + System.getProperty("line.separator")
                     + "\t\t<MaximumPepLength>" + maxPeptideLength + "</MaximumPepLength> " + System.getProperty("line.separator")
                     + "\t\t<ReportBothBestHitsForTD>" + reportBothBestHitsForTD + "</ReportBothBestHitsForTD> " + System.getProperty("line.separator")
-                    + "\t</search_settings> " + System.getProperty("line.separator")
-                    + System.getProperty("line.separator")
+                    + "\t\t<MaxAllowedChargeState>" + maxAllowedChargeState + "</MaxAllowedChargeState> " + System.getProperty("line.separator")
+                    + "\t\t<MinimumPeakDepth>" + minPeakDepth + "</MinimumPeakDepth> " + System.getProperty("line.separator")
+                    + "\t\t<MaximumPeakDepth>" + maxPeakDepth + "</MaximumPeakDepth> " + System.getProperty("line.separator")
+                    + "\t</search_settings> " + System.getProperty("line.separator") + System.getProperty("line.separator")
+                    ////////////////////////////     
+                    // second search settings
+                    ////////////////////////////
+                    + "\t<second_search_settings> " + System.getProperty("line.separator")
+                    + "\t\t<PerformSecondSearch>" + performSecondSearch + "</PerformSecondSearch> " + System.getProperty("line.separator")
+                    + "\t\t<KeepY1Ion>" + keepY1Ion + "</KeepY1Ion> " + System.getProperty("line.separator")
+                    + "\t\t<RemoveWaterLosses>" + removeWaterLosses + "</RemoveWaterLosses> " + System.getProperty("line.separator")
+                    + "\t\t<RemoveAmmoniaLosses>" + removeAmmoniaLosses + "</RemoveAmmoniaLosses> " + System.getProperty("line.separator")
+                    + "\t\t<ExcludeFirstPrecursor>" + excludeFirstPrecursor + "</ExcludeFirstPrecursor> " + System.getProperty("line.separator")
+                    + "\t\t<MaxMultiplePrecursors>" + maxMultiplePrecursors + "</MaxMultiplePrecursors> " + System.getProperty("line.separator")
+                    + "\t\t<ConsideredChargesForPrecursors>" + consideredChargesForPrecursors + "</ConsideredChargesForPrecursors> " + System.getProperty("line.separator")
+                    + "\t</second_search_settings> " + System.getProperty("line.separator") + System.getProperty("line.separator")
+                    ////////////////////////////
+                    // basic settings
+                    ////////////////////////////
                     + "\t<basic_settings> " + System.getProperty("line.separator")
                     + "\t\t<instruments_file>" + new File(msAmandaFolder, INSTRUMENTS_FILE).getAbsolutePath() + "</instruments_file> " + System.getProperty("line.separator")
                     + "\t\t<unimod_file>" + new File(msAmandaFolder, UNIMOD_FILE).getAbsolutePath() + "</unimod_file> " + System.getProperty("line.separator")
@@ -518,10 +609,18 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<psims_obo_file>" + new File(msAmandaFolder, PSI_MS_OBO_FILE).getAbsolutePath() + "</psims_obo_file> " + System.getProperty("line.separator")
                     + "\t\t<monoisotopic>" + monoisotopic + "</monoisotopic> " + System.getProperty("line.separator")
                     + "\t\t<considered_charges>" + getChargeRangeAsString() + "</considered_charges> " + System.getProperty("line.separator")
+                    + "\t\t<combine_considered_charges>" + combineConsideredCharges + "</combine_considered_charges> " + System.getProperty("line.separator")
                     + "\t\t<LoadedProteinsAtOnce>" + maxLoadedProteins + "</LoadedProteinsAtOnce> " + System.getProperty("line.separator")
                     + "\t\t<LoadedSpectraAtOnce>" + maxLoadedSpectra + "</LoadedSpectraAtOnce> " + System.getProperty("line.separator")
                     + "\t\t<data_folder>" + msAmandaTempFolder + "</data_folder> " + System.getProperty("line.separator")
                     + "\t</basic_settings> " + System.getProperty("line.separator")
+                    ////////////////////////////        
+                    // percolator settings
+                    ////////////////////////////
+                    + "\t<percolator_settings> " + System.getProperty("line.separator")
+                    + "\t\t<generatePInFile>" + generatePInFile + "</generatePInFile> " + System.getProperty("line.separator")
+                    + "\t\t<runPercolator>" + runPercolator + "</runPercolator> " + System.getProperty("line.separator")
+                    + "\t</percolator_settings> " + System.getProperty("line.separator")
                     + "</settings>"
                     + System.getProperty("line.separator")
             );
@@ -538,6 +637,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             );
 
         }
+
     }
 
     @Override
@@ -702,4 +802,5 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     public void setReportBothBestHitsForTD(boolean reportBothBestHitsForTD) {
         this.reportBothBestHitsForTD = reportBothBestHitsForTD;
     }
+
 }

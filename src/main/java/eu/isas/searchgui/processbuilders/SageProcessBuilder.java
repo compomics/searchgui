@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * ProcessBuilder for the Sage search engine.
@@ -34,7 +35,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Sage version number as a string.
      */
-    private final String SAGE_VERSION = "0.14.5";
+    private final String SAGE_VERSION = "0.14.6";
     /**
      * The spectrum file.
      */
@@ -481,10 +482,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
             boolean fixed
     ) throws IOException {
 
-        // @TODO: also support multiple mods on the same residue?
-        String modificationsAsString = "";
-        String startBracket = fixed ? "" : "[";
-        String endBracket = fixed ? "" : "]";
+        HashMap<String, ArrayList<Double>> modificationMap = new HashMap<>();
 
         for (String modName : modifications) {
 
@@ -496,32 +494,36 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
                     for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
 
-                        if (!modificationsAsString.isEmpty()) {
-                            modificationsAsString += "," + System.getProperty("line.separator");
+                        if (!modificationMap.containsKey(aminoAcid.toString())) {
+                            ArrayList modMassList = new ArrayList<>();
+                            modificationMap.put(aminoAcid.toString(), modMassList);
                         }
 
-                        modificationsAsString += "\t\t\t\"" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
+                        modificationMap.get(aminoAcid.toString()).add(modification.getMass());
+
                     }
 
                     break;
 
                 case modn_protein:
 
-                    if (!modificationsAsString.isEmpty()) {
-                        modificationsAsString += "," + System.getProperty("line.separator");
+                    if (!modificationMap.containsKey("[")) {
+                        ArrayList modMassList = new ArrayList<>();
+                        modificationMap.put("[", modMassList);
                     }
 
-                    modificationsAsString += "\t\t\t\"[\": " + startBracket + modification.getMass() + endBracket;
+                    modificationMap.get("[").add(modification.getMass());
 
                     break;
 
                 case modn_peptide:
 
-                    if (!modificationsAsString.isEmpty()) {
-                        modificationsAsString += "," + System.getProperty("line.separator");
+                    if (!modificationMap.containsKey("^")) {
+                        ArrayList modMassList = new ArrayList<>();
+                        modificationMap.put("^", modMassList);
                     }
 
-                    modificationsAsString += "\t\t\t\"^\": " + startBracket + modification.getMass() + endBracket;
+                    modificationMap.get("[").add(modification.getMass());
 
                     break;
 
@@ -529,11 +531,13 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
                     for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
 
-                        if (!modificationsAsString.isEmpty()) {
-                            modificationsAsString += "," + System.getProperty("line.separator");
+                        if (!modificationMap.containsKey("[" + aminoAcid)) {
+                            ArrayList modMassList = new ArrayList<>();
+                            modificationMap.put("[" + aminoAcid, modMassList);
                         }
 
-                        modificationsAsString += "\t\t\t\"[" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
+                        modificationMap.get("[" + aminoAcid).add(modification.getMass());
+
                     }
 
                     break;
@@ -542,32 +546,36 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
                     for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
 
-                        if (!modificationsAsString.isEmpty()) {
-                            modificationsAsString += "," + System.getProperty("line.separator");
+                        if (!modificationMap.containsKey("^" + aminoAcid)) {
+                            ArrayList modMassList = new ArrayList<>();
+                            modificationMap.put("^" + aminoAcid, modMassList);
                         }
 
-                        modificationsAsString += "\t\t\t\"^" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
+                        modificationMap.get("^" + aminoAcid).add(modification.getMass());
+
                     }
 
                     break;
 
                 case modc_protein:
 
-                    if (!modificationsAsString.isEmpty()) {
-                        modificationsAsString += "," + System.getProperty("line.separator");
+                    if (!modificationMap.containsKey("]")) {
+                        ArrayList modMassList = new ArrayList<>();
+                        modificationMap.put("]", modMassList);
                     }
 
-                    modificationsAsString += "\t\t\t\"]\": " + startBracket + modification.getMass() + endBracket;
+                    modificationMap.get("]").add(modification.getMass());
 
                     break;
 
                 case modc_peptide:
 
-                    if (!modificationsAsString.isEmpty()) {
-                        modificationsAsString += "," + System.getProperty("line.separator");
+                    if (!modificationMap.containsKey("$")) {
+                        ArrayList modMassList = new ArrayList<>();
+                        modificationMap.put("$", modMassList);
                     }
 
-                    modificationsAsString += "\t\t\t\"$\": " + startBracket + modification.getMass() + endBracket;
+                    modificationMap.get("$").add(modification.getMass());
 
                     break;
 
@@ -575,11 +583,13 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
                     for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
 
-                        if (!modificationsAsString.isEmpty()) {
-                            modificationsAsString += "," + System.getProperty("line.separator");
+                        if (!modificationMap.containsKey("]" + aminoAcid)) {
+                            ArrayList modMassList = new ArrayList<>();
+                            modificationMap.put("]" + aminoAcid, modMassList);
                         }
 
-                        modificationsAsString += "\t\t\t\"]" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
+                        modificationMap.get("]" + aminoAcid).add(modification.getMass());
+
                     }
 
                     break;
@@ -588,11 +598,13 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
                     for (Character aminoAcid : modification.getPattern().getAminoAcidsAtTarget()) {
 
-                        if (!modificationsAsString.isEmpty()) {
-                            modificationsAsString += "," + System.getProperty("line.separator");
+                        if (!modificationMap.containsKey("$" + aminoAcid)) {
+                            ArrayList modMassList = new ArrayList<>();
+                            modificationMap.put("$" + aminoAcid, modMassList);
                         }
 
-                        modificationsAsString += "\t\t\t\"$" + aminoAcid + "\": " + startBracket + modification.getMass() + endBracket;
+                        modificationMap.get("$" + aminoAcid).add(modification.getMass());
+
                     }
 
                     break;
@@ -605,12 +617,46 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
         String staticOrVariableTag = fixed ? "static_mods" : "variable_mods";
 
-        modificationsAsString
-                = "\t\t\"" + staticOrVariableTag + "\": {" + System.getProperty("line.separator")
-                + modificationsAsString + System.getProperty("line.separator")
-                + "\t\t}," + System.getProperty("line.separator");
+        String modificationsAsString
+                = "\t\t\""
+                + staticOrVariableTag
+                + "\": {"
+                + System.getProperty("line.separator");
+
+        String startBracket = fixed ? "" : "[";
+        String endBracket = fixed ? "" : "]";
+
+        String tempModString = "";
+
+        for (String modKey : modificationMap.keySet()) {
+
+            if (!tempModString.isEmpty()) {
+                tempModString += "," + System.getProperty("line.separator");
+            }
+
+            tempModString += "\t\t\t\"" + modKey + "\": " + startBracket;
+
+            ArrayList<Double> modMasses = modificationMap.get(modKey);
+
+            for (int i = 0; i < modMasses.size(); i++) {
+
+                if (i > 0) {
+                    tempModString += ", ";
+                }
+
+                tempModString += modMasses.get(i);
+
+            }
+
+            tempModString += endBracket;
+
+        }
+
+        modificationsAsString += tempModString + System.getProperty("line.separator");
+        modificationsAsString += "\t\t}," + System.getProperty("line.separator");
 
         return modificationsAsString;
+
     }
 
     @Override

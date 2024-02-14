@@ -3027,8 +3027,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         }
 
-        // check that mgf files are not given to MetaMorpheus and Sage
-        if (enableMetaMorpheusJCheckBox.isSelected() || enableSageJCheckBox.isSelected()) {
+        // check that mgf files are not given to MetaMorpheus
+        if (enableMetaMorpheusJCheckBox.isSelected()) {
 
             for (File tempSpectrumFile : spectrumFiles) {
 
@@ -3036,8 +3036,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                     JOptionPane.showMessageDialog(
                             this,
-                            "MetaMorpheus and Sage only supports mzML files as spectrum input.\n\n"
-                            + "Please change the spectrum input to mzML or provide the raw file.",
+                            "MetaMorpheus only supports mzML files as spectrum input.\n\n"
+                            + "Please change the spectrum input file  to mzML or raw.",
                             "Spectrum Format Error",
                             JOptionPane.WARNING_MESSAGE
                     );

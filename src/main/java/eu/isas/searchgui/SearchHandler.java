@@ -2922,10 +2922,10 @@ public class SearchHandler {
 
                     }
 
-                    // Write mgf file
+                    // write mgf file
                     File mgfFile = null;
-                    if (enableXtandem || enableMyriMatch || enableMsAmanda
-                            || enableOmssa || enableNovor || enableDirecTag) {
+                    if (enableXtandem || enableMyriMatch || enableOmssa
+                            || enableNovor || enableDirecTag) {
 
                         // Make mgf file
                         waitingHandler.appendReport(
@@ -3115,7 +3115,7 @@ public class SearchHandler {
                         msAmandaProcessBuilder = new MsAmandaProcessBuilder(
                                 msAmandaLocation,
                                 msAmandaTempFolder,
-                                mgfFile,
+                                spectrumFile,
                                 fastaFile,
                                 filePath,
                                 searchParameters,
@@ -3125,7 +3125,7 @@ public class SearchHandler {
                         );
 
                         waitingHandler.appendReport(
-                                "Processing " + mgfFile.getName() + " with " + Advocate.msAmanda.getName() + ".",
+                                "Processing " + spectrumFile.getName() + " with " + Advocate.msAmanda.getName() + ".",
                                 true,
                                 true
                         );
