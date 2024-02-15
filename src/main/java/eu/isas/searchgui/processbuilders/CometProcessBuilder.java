@@ -244,7 +244,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             boolean enzyme1found = false;
             boolean enzyme2found = false;
 
-            for (int i = 1; i < enzymes.size(); i++) {
+            for (int i = 1; i <= enzymes.size(); i++) {
 
                 Enzyme tempEnzyme = enzymes.get(i - 1);
 
