@@ -85,6 +85,11 @@ public class SearchHandler {
      */
     private static boolean useCommandLine = false;
     /**
+     * Boolean to control the behavior for what happens when the process
+     * completes or crashes.
+     */
+    private static boolean closeProcessWhenDone = true;
+    /**
      * The worker running the searches.
      */
     private SearchWorker searchWorker;
@@ -1072,7 +1077,10 @@ public class SearchHandler {
                         + System.getProperty("line.separator")
                 );
 
-                System.exit(0);
+                if (closeProcessWhenDone) {
+                    System.exit(0);
+                }
+                
             }
 
         }
@@ -1167,7 +1175,7 @@ public class SearchHandler {
 
             saveReport();
 
-            if (waitingHandler instanceof WaitingHandlerCLIImpl) {
+            if (waitingHandler instanceof WaitingHandlerCLIImpl && closeProcessWhenDone) {
                 System.exit(0);
             }
 
@@ -1181,8 +1189,12 @@ public class SearchHandler {
                     + JOptionPane.ERROR_MESSAGE
             );
 
-            System.exit(0);
+            if (closeProcessWhenDone) {
+                System.exit(0);
+            }
+            
         }
+        
     }
 
     /**
@@ -5527,6 +5539,15 @@ public class SearchHandler {
             String newOutputFileName
     ) {
         defaultOutputFileName = newOutputFileName;
+    }
+
+    /**
+     * Set whether the process should be closed when completing or crashing.
+     * 
+     * @param aCloseProcessWhenDone the closeProcessWhenDone to set
+     */
+    public static void setCloseProcessWhenDone(boolean aCloseProcessWhenDone) {
+        closeProcessWhenDone = aCloseProcessWhenDone;
     }
 
 }
