@@ -301,6 +301,20 @@
             <url>https://genesis.ugent.be/archiva/repository/maven2/</url>
             <layout>default</layout>
         </repository>
+        
+        <!-- EBI repository -->
+        <repository>
+            <id>nexus-ebi-release-repo</id>
+            <name>EBI Nexus Repository</name>
+            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
+        </repository>
+        
+        <!-- EBI SNAPSHOT repo -->
+        <repository>
+            <id>nexus-ebi-snapshot-repo</id>
+            <name>EBI Nexus Snapshots Repository</name>
+            <url>https://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
+        </repository>
 
     </repositories>
 
