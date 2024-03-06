@@ -2667,37 +2667,51 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         if (startLocation == null) {
             startLocation = new File(lastSelectedFolder.getLastSelectedFolder());
         }
-        if (spectrumFiles.size() > 0) {
+        if (!spectrumFiles.isEmpty()) {
             File temp = spectrumFiles.get(0);
             startLocation = temp.getParentFile();
         }
 
         JFileChooser fc = new JFileChooser(startLocation); // @TODO: implement a getUserSelectedFiles method in the Util class?
+
         FileFilter filter = new FileFilter() {
             @Override
             public boolean accept(File myFile) {
+
                 String lowercaseName = myFile.getName().toLowerCase();
+
                 for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
+
                     if (lowercaseName.endsWith(tempFormat.fileNameEnding)) {
                         return true;
                     }
+
                 }
+
                 return myFile.isDirectory();
             }
 
             @Override
             public String getDescription() {
+
                 String description = "MS Files (";
+
                 for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
+
                     if (tempFormat.index > 0) {
                         description += ", ";
                     }
+
                     description += tempFormat.fileNameEnding;
                 }
+
                 description += ")";
                 return description;
+
             }
+
         };
+
         fc.setFileFilter(filter);
         fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fc.setMultiSelectionEnabled(true);
@@ -2740,27 +2754,38 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                         if (newFile.isDirectory()) {
 
-                            File[] tempFiles = newFile.listFiles();
+                            // special case for Bruker .d folders
+                            if (newFile.getName().endsWith(ProteoWizardMsFormat.d.fileNameEnding)) {
 
-                            for (File file : tempFiles) {
+                                tempRawFiles.add(newFile);
 
-                                String extension = IoUtil.getExtension(file).toLowerCase();
+                            } else {
 
-                                if (supportedMsFormats.contains(extension)) {
+                                File[] tempFiles = newFile.listFiles();
 
-                                    tempSpectrumFiles.add(file);
+                                for (File file : tempFiles) {
 
-                                } else {
+                                    String extension = IoUtil.getExtension(file).toLowerCase();
 
-                                    for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
+                                    if (supportedMsFormats.contains(extension)) {
 
-                                        if (extension.equals(tempFormat.fileNameEnding.toLowerCase())) {
+                                        tempSpectrumFiles.add(file);
 
-                                            tempRawFiles.add(file);
+                                    } else {
 
+                                        for (ProteoWizardMsFormat tempFormat : ProteoWizardMsFormat.values()) {
+
+                                            if (extension.equals(tempFormat.fileNameEnding.toLowerCase())) {
+
+                                                tempRawFiles.add(file);
+
+                                            }
                                         }
+
                                     }
+
                                 }
+
                             }
 
                             utilitiesUserParameters.setSpectrumFolder(newFile);
@@ -2907,6 +2932,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 }
             }.start();
         }
+
     }//GEN-LAST:event_addSpectraButtonActionPerformed
 
     /**
@@ -5122,23 +5148,23 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
-                            searchParameters.setModificationParameters(xtandemParametersDialog.getModificationProfile());
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            xtandemParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.xtandem.getIndex(), newXtandemParameters);
+                                searchParameters.setModificationParameters(xtandemParametersDialog.getModificationProfile());
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                xtandemParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName()
-                                    + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName()
+                                        + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5206,21 +5232,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            myriMatchParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.myriMatch.getIndex(), newMyriMatchParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                myriMatchParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5285,21 +5311,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                         case JOptionPane.YES_OPTION:
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            msAmandaParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex(), newMsAmandaParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                msAmandaParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5372,22 +5398,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            msgfParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.msgf.getIndex(), newMsgfParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                msgfParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
+                                e.printStackTrace();
 
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5455,21 +5481,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            omssaParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.omssa.getIndex(), newOmssaParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                omssaParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5530,24 +5556,24 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     switch (value) {
 
                         case JOptionPane.YES_OPTION:
-                       
+
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            cometParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.comet.getIndex(), newCometParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                cometParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                e.printStackTrace();
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5611,22 +5637,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            tideParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.tide.getIndex(), newTideParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                tideParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
+                                e.printStackTrace();
 
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5694,22 +5720,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            andromedaParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.andromeda.getIndex(), newAndromedaParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                andromedaParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
+                                e.printStackTrace();
 
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5809,22 +5835,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.direcTag.getIndex(), newDirecTagParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            direcTagParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.direcTag.getIndex(), newDirecTagParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                direcTagParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
+                                e.printStackTrace();
 
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -5997,23 +6023,23 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.novor.getIndex(), newNovorParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            novorParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.novor.getIndex(), newNovorParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                novorParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
+                                e.printStackTrace();
 
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
 
-                        break;
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -6446,22 +6472,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.metaMorpheus.getIndex(), newMetaMorpheusParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            metaMorpheusParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.metaMorpheus.getIndex(), newMetaMorpheusParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                metaMorpheusParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
+                                e.printStackTrace();
 
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -6615,22 +6641,22 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
                             try {
 
-                            searchParameters.setIdentificationAlgorithmParameter(Advocate.sage.getIndex(), newSageParameters);
-                            identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
-                            sageParametersSet = true;
+                                searchParameters.setIdentificationAlgorithmParameter(Advocate.sage.getIndex(), newSageParameters);
+                                identificationParametersFactory.updateIdentificationParameters(identificationParameters, identificationParameters);
+                                sageParametersSet = true;
 
-                        } catch (Exception e) {
+                            } catch (Exception e) {
 
-                            e.printStackTrace();
+                                e.printStackTrace();
 
-                            JOptionPane.showMessageDialog(
-                                    null,
-                                    "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
-                                    "File Error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        break;
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "Error occurred while saving " + identificationParameters.getName() + ". Please verify the settings.",
+                                        "File Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            break;
 
                         case JOptionPane.CANCEL_OPTION:
 
@@ -7858,7 +7884,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
             File output = new File(folder, SearchHandler.SEARCHGUI_CONFIGURATION_FILE);
 
-            try ( BufferedWriter bw = new BufferedWriter(new FileWriter(output))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(output))) {
 
                 bw.write("OMSSA Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getOmssaLocation() + System.getProperty("line.separator") + searchHandler.isOmssaEnabled() + System.getProperty("line.separator"));
