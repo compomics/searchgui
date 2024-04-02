@@ -19,11 +19,11 @@ Requirements
 Java Runtime 8 or higher (use 64-bit Java)\
 At least 2GB of memory (recommended to use 4GB); larger FASTA files require more memory
 
-There are some issues running with newer version of Java (Java 11 and newer), due to the deprecation and removal of some libraries. 
+Releases after April 2019 support Java 11 and newer; older releases will not work with Java 11 or newer (at least for reading mzML files) due to the deprecation and removal of some built-in libraries.
 
 Downloads / Updates
 ======
-
+[![Github This Release](https://img.shields.io/github/downloads/MSGFPlus/msgfplus/total.svg)]() [![Github This Release](https://img.shields.io/github/downloads/MSGFPlus/msgfplus/latest/total.svg)]()
 * https://github.com/MSGFPlus/msgfplus/releases
 
 *Version number notes*
