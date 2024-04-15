@@ -74,6 +74,11 @@ public class TideIndexProcessBuilder extends SearchGUIProcessBuilder {
 
         ///////////////////////////////////////////////////
         // the following Tide options are not implemented:
+        //  --memory-limit
+        //  --auto-modifications-spectra
+        //  --min-mods
+        //  --auto-modifications
+        //  --decoy-prefix
         //  --mod-precision
         //  --mass-precision
         //  --auto-modifications

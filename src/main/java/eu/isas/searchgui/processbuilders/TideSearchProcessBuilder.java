@@ -158,10 +158,6 @@ public class TideSearchProcessBuilder extends SearchGUIProcessBuilder {
         process_name_array.add("--min-peaks");
         process_name_array.add(tideParameters.getMinSpectrumPeaks().toString());
 
-        // precursor charges
-        process_name_array.add("--spectrum-charge");
-        process_name_array.add(tideParameters.getSpectrumCharges());
-
         // max precursor charge
         process_name_array.add("--max-precursor-charge");
         process_name_array.add("" + searchParameters.getMaxChargeSearched());
