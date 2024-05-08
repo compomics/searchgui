@@ -3,11 +3,11 @@ package eu.isas.searchgui.processbuilders;
 import com.compomics.software.cli.CommandLineUtils;
 import com.compomics.util.exceptions.ExceptionHandler;
 import com.compomics.util.experiment.biology.enzymes.Enzyme;
-import com.compomics.util.experiment.biology.enzymes.EnzymeFactory;
 import com.compomics.util.experiment.biology.modifications.Modification;
 import com.compomics.util.experiment.biology.modifications.ModificationFactory;
 import com.compomics.util.experiment.biology.modifications.ModificationType;
 import com.compomics.util.experiment.identification.Advocate;
+import com.compomics.util.experiment.io.biology.protein.FastaParameters;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.search.DigestionParameters.Specificity;
 import com.compomics.util.parameters.identification.search.ModificationParameters;
@@ -33,27 +33,15 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The settings XML file for MS Amanda.
      */
-    private final String SETTINGS_FILE = "settings_SearchGUI.xml";
+    private final String SETTINGS_FILE = "settings.xml";
     /**
      * The enzymes XML file.
      */
-    private final String ENZYMES_FILE = "enzymes_SearchGUI.xml";
+    private final String ENZYMES_FILE = "enzymes.xml";
     /**
-     * The taxonomy XML file for X!Tandem.
+     * The modifications XML file.
      */
-    private final String INSTRUMENTS_FILE = "instruments_SearchGUI.xml";
-    /**
-     * The Unimod XML file.
-     */
-    private final String UNIMOD_FILE = "unimod.xml";
-    /**
-     * The Unimod OBO file.
-     */
-    private final String UNIMOD_OBO_FILE = "unimod.obo";
-    /**
-     * The PSI-MS OBO file.
-     */
-    private final String PSI_MS_OBO_FILE = "psi-ms.obo";
+    private final String MODIFICATIONS_FILE = "modifications.xml";
     /**
      * The MS Amanda folder.
      */
@@ -119,6 +107,10 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String enzymeSpecificity;
     /**
+     * The enzyme cleavage as text.
+     */
+    private String enzymeCleavage;
+    /**
      * The maximum number of matches to provide per spectrum.
      */
     private int maxRank;
@@ -136,6 +128,14 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * target and decoy.
      */
     private boolean reportBothBestHitsForTD;
+    /**
+     * The flag used to indicate decoys.
+     */
+    private String decoyFlag;
+    /**
+     * Defines whether a combined target decoy database is provided.
+     */
+    private boolean combinedTargetDecoyDBProvided;
     /**
      * Defines whether the low memory mode is used.
      *
@@ -258,6 +258,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      * @param fastaFile the FASTA file
      * @param outputPath path where to output the results
      * @param searchParameters the search parameters
+     * @param fastaParameters the FASTA parameters
      * @param waitingHandler the waiting handler
      * @param exceptionHandler the handler of exceptions
      * @param nThreads the number of threads to use (not supported by ms amanda)
@@ -270,6 +271,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             File fastaFile,
             String outputPath,
             SearchParameters searchParameters,
+            FastaParameters fastaParameters,
             WaitingHandler waitingHandler,
             ExceptionHandler exceptionHandler,
             int nThreads
@@ -278,6 +280,9 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         this.waitingHandler = waitingHandler;
         this.exceptionHandler = exceptionHandler;
         msAmandaParameters = (MsAmandaParameters) searchParameters.getIdentificationAlgorithmParameter(Advocate.msAmanda.getIndex());
+        
+        decoyFlag = fastaParameters.getDecoyFlag();
+        combinedTargetDecoyDBProvided = fastaParameters.isTargetDecoy();
 
         // set the paths
         msAmandaFolder = msAmandaDirectory;
@@ -370,27 +375,27 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             missedCleavages = digestionPreferences.getnMissedCleavages(enzymeName);
+            enzymeCleavage = getEnzymeCleavageAsText(enzyme);
 
         } else if (digestionPreferences.getCleavageParameter() == DigestionParameters.CleavageParameter.unSpecific) {
 
             enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
             missedCleavages = 2; // note: this settings is ignored anyway (but has to be between 0 and 5)
+            enzymeCleavage = "CleavageSites=\"\" PrefixInhibitors=\"\" PostfixInhibitors=\"\" Offset=\"\"";
 
         } else { // whole protein
 
             enzymeName = digestionPreferences.getCleavageParameter().toString();
             enzymeSpecificity = "FULL";
             missedCleavages = 0;
+            enzymeCleavage = "CleavageSites=\"X\" PrefixInhibitors=\"\" PostfixInhibitors=\"\" Offset=\"\"";
 
         }
 
         // set the modifications
         modificationsAsString = getModificationsAsString(searchParameters.getModificationParameters());
         instrument = msAmandaParameters.getInstrumentID();
-
-        // create the enzyme file
-        createEnzymeFile();
 
         // create the settings xml file
         createSettingsFile();
@@ -449,102 +454,67 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * Create the enzyme file.
      */
-    private void createEnzymeFile() {
+    private String getEnzymeCleavageAsText(Enzyme enzyme) {
 
-        File enzymeFile = new File(msAmandaTempFolder, ENZYMES_FILE);
+        String enzymeCleavageAsText = "";
 
-        try {
+        String cleavageType;
+        String cleavageSite = "";
+        String restriction = "";
 
-            BufferedWriter bw = new BufferedWriter(new FileWriter(enzymeFile));
-            bw.write("<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + System.getProperty("line.separator"));
-            bw.write("<enzymes>" + System.getProperty("line.separator"));
+        if (enzyme.getAminoAcidBefore().isEmpty()) {
 
-            EnzymeFactory enzymeFactory = EnzymeFactory.getInstance();
+            cleavageType = "before";
 
-            for (Enzyme enzyme : enzymeFactory.getEnzymes()) {
+            for (Character character : enzyme.getAminoAcidAfter()) {
+                cleavageSite += character;
+            }
 
-                bw.write("  <enzyme>" + System.getProperty("line.separator"));
-                bw.write("    <name>" + enzyme.getName() + "</name>" + System.getProperty("line.separator"));
+            if (!enzyme.getRestrictionBefore().isEmpty()) {
 
-                String cleavageType;
-                String cleavageSite = "";
-                String restriction = "";
+                restriction = "";
 
-                if (enzyme.getAminoAcidBefore().isEmpty()) {
-
-                    cleavageType = "before";
-
-                    for (Character character : enzyme.getAminoAcidAfter()) {
-                        cleavageSite += character;
-                    }
-
-                    if (!enzyme.getRestrictionBefore().isEmpty()) {
-
-                        restriction = "";
-
-                        for (Character character : enzyme.getRestrictionBefore()) {
-                            restriction += character;
-                        }
-
-                    }
-
-                } else {
-
-                    cleavageType = "after";
-
-                    for (Character character : enzyme.getAminoAcidBefore()) {
-                        cleavageSite += character;
-                    }
-
-                    if (!enzyme.getRestrictionAfter().isEmpty()) {
-
-                        restriction = "";
-
-                        for (Character character : enzyme.getRestrictionAfter()) {
-                            restriction += character;
-                        }
-
-                    }
-
+                for (Character character : enzyme.getRestrictionBefore()) {
+                    restriction += character;
                 }
-
-                bw.write("    <cleavage_sites>" + cleavageSite + "</cleavage_sites>" + System.getProperty("line.separator"));
-
-                if (!restriction.isEmpty()) {
-                    bw.write("    <inhibitors>" + restriction + "</inhibitors>" + System.getProperty("line.separator"));
-                }
-
-                bw.write("    <position>" + cleavageType + "</position>" + System.getProperty("line.separator"));
-
-                bw.write("  </enzyme>" + System.getProperty("line.separator"));
 
             }
 
-            bw.write("  <enzyme>" + System.getProperty("line.separator"));
-            bw.write("    <name>" + DigestionParameters.CleavageParameter.wholeProtein + "</name>" + System.getProperty("line.separator"));
-            bw.write("    <cleavage_sites></cleavage_sites>" + System.getProperty("line.separator"));
-            bw.write("  </enzyme>" + System.getProperty("line.separator"));
+        } else {
 
-            bw.write("  <enzyme>" + System.getProperty("line.separator"));
-            bw.write("    <name>" + DigestionParameters.CleavageParameter.unSpecific + "</name>" + System.getProperty("line.separator"));
-            bw.write("    <cleavage_sites>X</cleavage_sites>" + System.getProperty("line.separator"));
-            bw.write("  </enzyme>" + System.getProperty("line.separator"));
+            cleavageType = "after";
 
-            bw.write("</enzymes>" + System.getProperty("line.separator"));
+            for (Character character : enzyme.getAminoAcidBefore()) {
+                cleavageSite += character;
+            }
 
-            bw.flush();
-            bw.close();
+            if (!enzyme.getRestrictionAfter().isEmpty()) {
 
-        } catch (IOException ioe) {
+                restriction = "";
 
-            throw new IllegalArgumentException(
-                    "Could not create MS Amanda enzyme file. Unable to write file: '"
-                    + ioe.getMessage()
-                    + "'!"
-            );
+                for (Character character : enzyme.getRestrictionAfter()) {
+                    restriction += character;
+                }
+
+            }
 
         }
 
+        enzymeCleavageAsText += "CleavageSites=\"" + cleavageSite + "\"";
+
+        if (!restriction.isEmpty()) {
+
+            if (cleavageType.equalsIgnoreCase("before")) {
+                enzymeCleavageAsText += " PrefixInhibitors=\"" + restriction + "\"";
+            } else {
+                enzymeCleavageAsText += " PostfixInhibitors=\"" + restriction + "\"";
+            }
+
+        }
+
+        enzymeCleavageAsText += " Offset=\"" + cleavageType + "\"";
+
+        return enzymeCleavageAsText;
     }
 
     /**
@@ -560,19 +530,23 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
 
             bw.write(
                     "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" + System.getProperty("line.separator")
-                    + "<settings>" + System.getProperty("line.separator")
+                    + "<Settings>" + System.getProperty("line.separator")
                     ////////////////////////////      
-                    // search settings
+                    // Search settings
                     ////////////////////////////
-                    + "\t<search_settings>" + System.getProperty("line.separator")
-                    + "\t\t<enzyme specificity=\"" + enzymeSpecificity + "\">" + enzymeName + "</enzyme>" + System.getProperty("line.separator")
-                    + "\t\t<missed_cleavages>" + missedCleavages + "</missed_cleavages>" + System.getProperty("line.separator")
-                    + modificationsAsString
-                    + "\t\t<instrument>" + instrument + "</instrument>" + System.getProperty("line.separator")
-                    + "\t\t<ms1_tol unit=\"" + precursorUnit + "\">" + precursorMassError + "</ms1_tol> " + System.getProperty("line.separator")
-                    + "\t\t<ms2_tol unit=\"" + fragmentUnit + "\">" + fragmentMassError + "</ms2_tol> " + System.getProperty("line.separator")
-                    + "\t\t<max_rank>" + maxRank + "</max_rank> " + System.getProperty("line.separator")
-                    + "\t\t<generate_decoy>" + generateDecoys + "</generate_decoy> " + System.getProperty("line.separator")
+                    + "\t<SearchSettings>" + System.getProperty("line.separator")
+                    + "\t\t<Enzyme Name=\"" + enzymeName + "\" Specificity=\"" + enzymeSpecificity + "\">" + System.getProperty("line.separator")
+                    + "\t\t\t<Cleavage " + enzymeCleavage + "/>" + System.getProperty("line.separator")
+                    + "\t\t</Enzyme>" + System.getProperty("line.separator")        
+                    + "\t\t<MissedCleavages>" + missedCleavages + "</MissedCleavages>" + System.getProperty("line.separator")
+                    + modificationsAsString       
+                    + "\t\t<Instrument>" + instrument + "</Instrument>" + System.getProperty("line.separator")
+                    + "\t\t<MS1Tol Unit=\"" + precursorUnit + "\">" + precursorMassError + "</MS1Tol> " + System.getProperty("line.separator")
+                    + "\t\t<MS2Tol Unit=\"" + fragmentUnit + "\">" + fragmentMassError + "</MS2Tol> " + System.getProperty("line.separator")
+                    + "\t\t<MaxRank>" + maxRank + "</MaxRank> " + System.getProperty("line.separator")
+                    + "\t\t<GenerateDecoy>" + generateDecoys + "</GenerateDecoy> " + System.getProperty("line.separator")
+                    + "\t\t<CombinedTargetDecoyDBProvided>" + combinedTargetDecoyDBProvided + "</CombinedTargetDecoyDBProvided> " + System.getProperty("line.separator")
+                    + "\t\t<DecoyFlag>" + decoyFlag + "</DecoyFlag> " + System.getProperty("line.separator")  // @TODO: suffix vs prefix?
                     + "\t\t<PerformDeisotoping>" + performDeisotoping + "</PerformDeisotoping> " + System.getProperty("line.separator")
                     + "\t\t<MaxNoModifs>" + maxModifications + "</MaxNoModifs> " + System.getProperty("line.separator")
                     + "\t\t<MaxNoDynModifs>" + maxVariableModifications + "</MaxNoDynModifs> " + System.getProperty("line.separator")
@@ -585,43 +559,40 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<MaxAllowedChargeState>" + maxAllowedChargeState + "</MaxAllowedChargeState> " + System.getProperty("line.separator")
                     + "\t\t<MinimumPeakDepth>" + minPeakDepth + "</MinimumPeakDepth> " + System.getProperty("line.separator")
                     + "\t\t<MaximumPeakDepth>" + maxPeakDepth + "</MaximumPeakDepth> " + System.getProperty("line.separator")
-                    + "\t</search_settings> " + System.getProperty("line.separator") + System.getProperty("line.separator")
+                    + "\t</SearchSettings> " + System.getProperty("line.separator") + System.getProperty("line.separator")
                     ////////////////////////////     
-                    // second search settings
+                    // Second search settings
                     ////////////////////////////
-                    + "\t<second_search_settings> " + System.getProperty("line.separator")
+                    + "\t<SecondSearchSettings> " + System.getProperty("line.separator")
                     + "\t\t<PerformSecondSearch>" + performSecondSearch + "</PerformSecondSearch> " + System.getProperty("line.separator")
                     + "\t\t<KeepY1Ion>" + keepY1Ion + "</KeepY1Ion> " + System.getProperty("line.separator")
                     + "\t\t<RemoveWaterLosses>" + removeWaterLosses + "</RemoveWaterLosses> " + System.getProperty("line.separator")
                     + "\t\t<RemoveAmmoniaLosses>" + removeAmmoniaLosses + "</RemoveAmmoniaLosses> " + System.getProperty("line.separator")
                     + "\t\t<ExcludeFirstPrecursor>" + excludeFirstPrecursor + "</ExcludeFirstPrecursor> " + System.getProperty("line.separator")
                     + "\t\t<MaxMultiplePrecursors>" + maxMultiplePrecursors + "</MaxMultiplePrecursors> " + System.getProperty("line.separator")
-                    + "\t\t<ConsideredChargesForPrecursors>" + consideredChargesForPrecursors + "</ConsideredChargesForPrecursors> " + System.getProperty("line.separator")
-                    + "\t</second_search_settings> " + System.getProperty("line.separator") + System.getProperty("line.separator")
+                    //+ "\t\t<ConsideredChargesForPrecursors>" + consideredChargesForPrecursors + "</ConsideredChargesForPrecursors> " + System.getProperty("line.separator") // @TODO: removed?
+                    + "\t</SecondSearchSettings> " + System.getProperty("line.separator") + System.getProperty("line.separator")
                     ////////////////////////////
-                    // basic settings
+                    // Basic settings
                     ////////////////////////////
-                    + "\t<basic_settings> " + System.getProperty("line.separator")
-                    + "\t\t<instruments_file>" + new File(msAmandaFolder, INSTRUMENTS_FILE).getAbsolutePath() + "</instruments_file> " + System.getProperty("line.separator")
-                    + "\t\t<unimod_file>" + new File(msAmandaFolder, UNIMOD_FILE).getAbsolutePath() + "</unimod_file> " + System.getProperty("line.separator")
-                    + "\t\t<enzyme_file>" + new File(msAmandaTempFolder, ENZYMES_FILE).getAbsolutePath() + "</enzyme_file> " + System.getProperty("line.separator")
-                    + "\t\t<unimod_obo_file>" + new File(msAmandaFolder, UNIMOD_OBO_FILE).getAbsolutePath() + "</unimod_obo_file> " + System.getProperty("line.separator")
-                    + "\t\t<psims_obo_file>" + new File(msAmandaFolder, PSI_MS_OBO_FILE).getAbsolutePath() + "</psims_obo_file> " + System.getProperty("line.separator")
-                    + "\t\t<monoisotopic>" + monoisotopic + "</monoisotopic> " + System.getProperty("line.separator")
-                    + "\t\t<considered_charges>" + getChargeRangeAsString() + "</considered_charges> " + System.getProperty("line.separator")
-                    + "\t\t<combine_considered_charges>" + combineConsideredCharges + "</combine_considered_charges> " + System.getProperty("line.separator")
+                    + "\t<BasicSettings> " + System.getProperty("line.separator")
+                    + "\t\t<Monoisotopic>" + monoisotopic + "</Monoisotopic> " + System.getProperty("line.separator")
+                    + "\t\t<ConsideredCharges>" + getChargeRangeAsString() + "</ConsideredCharges> " + System.getProperty("line.separator")
+                    + "\t\t<CombineConsideredCharges>" + combineConsideredCharges + "</CombineConsideredCharges> " + System.getProperty("line.separator")
                     + "\t\t<LoadedProteinsAtOnce>" + maxLoadedProteins + "</LoadedProteinsAtOnce> " + System.getProperty("line.separator")
                     + "\t\t<LoadedSpectraAtOnce>" + maxLoadedSpectra + "</LoadedSpectraAtOnce> " + System.getProperty("line.separator")
-                    + "\t\t<data_folder>" + msAmandaTempFolder + "</data_folder> " + System.getProperty("line.separator")
-                    + "\t</basic_settings> " + System.getProperty("line.separator")
+                    + "\t\t<DataFolder>" + msAmandaTempFolder + "</DataFolder> " + System.getProperty("line.separator")     
+                    + "\t\t<EnzymesFile>" + new File(msAmandaFolder, ENZYMES_FILE).getAbsolutePath() + "</EnzymesFile> " + System.getProperty("line.separator")
+                    + "\t\t<ModificationsFile>" + new File(msAmandaFolder, MODIFICATIONS_FILE).getAbsolutePath() + "</ModificationsFile> " + System.getProperty("line.separator")
+                    + "\t</BasicSettings> " + System.getProperty("line.separator")
                     ////////////////////////////        
-                    // percolator settings
+                    // Percolator settings
                     ////////////////////////////
-                    + "\t<percolator_settings> " + System.getProperty("line.separator")
-                    + "\t\t<generatePInFile>" + generatePInFile + "</generatePInFile> " + System.getProperty("line.separator")
-                    + "\t\t<runPercolator>" + runPercolator + "</runPercolator> " + System.getProperty("line.separator")
-                    + "\t</percolator_settings> " + System.getProperty("line.separator")
-                    + "</settings>"
+                    + "\t<PercolatorSettings> " + System.getProperty("line.separator")
+                    + "\t\t<GeneratePInFile>" + generatePInFile + "</GeneratePInFile> " + System.getProperty("line.separator")
+                    + "\t\t<RunPercolator>" + runPercolator + "</RunPercolator> " + System.getProperty("line.separator")
+                    + "\t</PercolatorSettings> " + System.getProperty("line.separator")
+                    + "</Settings>"
                     + System.getProperty("line.separator")
             );
 
@@ -658,7 +629,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private String getModificationsAsString(ModificationParameters modificationProfile) {
 
-        String temp = "\t\t<modifications>" + System.getProperty("line.separator");
+        String temp = "\t\t<Modifications>" + System.getProperty("line.separator");
 
         for (String modificationName : modificationProfile.getFixedModifications()) {
             Modification modification = modificationFactory.getModification(modificationName);
@@ -670,7 +641,7 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             temp += getModificationAsString(modification, false) + System.getProperty("line.separator");
         }
 
-        temp += "\t\t</modifications>" + System.getProperty("line.separator");
+        temp += "\t\t</Modifications>" + System.getProperty("line.separator");
 
         return temp;
 
@@ -704,23 +675,23 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
             case modc_protein:
             case modcaa_protein:
                 //proteinTag = " protein=\"true\""; // note: MS Amanda Manual: "Protein level modifications are only valid in combination with n‐terminal modifications"
-                cTermTag = " cterm=\"true\"";
+                cTermTag = " Cterm=\"true\"";
                 break;
 
             case modc_peptide:
             case modcaa_peptide:
-                cTermTag = " cterm=\"true\"";
+                cTermTag = " Cterm=\"true\"";
                 break;
 
             case modn_protein:
             case modnaa_protein:
                 proteinTag = " protein=\"true\"";
-                nTermTag = " nterm=\"true\"";
+                nTermTag = " Nterm=\"true\"";
                 break;
 
             case modn_peptide:
             case modnaa_peptide:
-                nTermTag = " nterm=\"true\"";
+                nTermTag = " Nterm=\"true\"";
                 break;
 
         }
@@ -753,12 +724,13 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         CvTerm cvTerm = modification.getUnimodCvTerm();
 
         if (cvTerm != null) {
-            return "\t\t\t<modification" + fixedTag
-                    + nTermTag + cTermTag + proteinTag + ">" + cvTerm.getName() + aminoAcidsAtTarget + "</modification>";
+            return "\t\t\t<Modification" + fixedTag
+                    + nTermTag + cTermTag + proteinTag + ">" + cvTerm.getName() + aminoAcidsAtTarget + "</Modification>";
         } else {
-            return "\t\t\t<modification delta_mass=\"" + modification.getRoundedMass() + "\"" + fixedTag
-                    + nTermTag + cTermTag + proteinTag + ">" + modification.getName() + aminoAcidsAtTarget + "</modification>";
+            return "\t\t\t<Modification DeltaMass=\"" + modification.getRoundedMass() + "\"" + fixedTag
+                    + nTermTag + cTermTag + proteinTag + ">" + modification.getName() + aminoAcidsAtTarget + "</Modification>";
         }
+
     }
 
     /**

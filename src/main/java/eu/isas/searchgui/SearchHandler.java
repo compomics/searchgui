@@ -3131,6 +3131,7 @@ public class SearchHandler {
                                 fastaFile,
                                 filePath,
                                 searchParameters,
+                                identificationParameters.getFastaParameters(),
                                 waitingHandler,
                                 exceptionHandler,
                                 processingParameters.getnThreads()
