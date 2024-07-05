@@ -46,7 +46,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2023.01 rev. 2"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2024.01 rev. 0"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -308,12 +308,13 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                     + "#" + System.getProperty("line.separator")
                     + "# masses" + System.getProperty("line.separator")
                     + "#" + System.getProperty("line.separator")
-                    + "peptide_mass_tolerance = " + searchParameters.getPrecursorAccuracy() + System.getProperty("line.separator")
+                    + "peptide_mass_tolerance_upper = " + searchParameters.getPrecursorAccuracy() + System.getProperty("line.separator")
+                    + "peptide_mass_tolerance_lower = " + -searchParameters.getPrecursorAccuracy() + System.getProperty("line.separator") // @TODO: support non-symmetric precursor mass tolerances
                     + "peptide_mass_units = " + precursorToleranceType + "           # 0=amu, 1=mmu, 2=ppm" + System.getProperty("line.separator")
                     + "mass_type_parent = 1                   # 0=average masses, 1=monoisotopic masses" + System.getProperty("line.separator")
                     + "mass_type_fragment = 1                 # 0=average masses, 1=monoisotopic masses" + System.getProperty("line.separator")
                     + "precursor_tolerance_type = 0           # 0=MH+ (default), 1=precursor m/z; only valid for amu/mmu tolerances" + System.getProperty("line.separator")
-                    + "isotope_error = " + cometParameters.getIsotopeCorrection() + "           # 0=off, 1=on -1/0/1/2/3 (standard C13 error), 2= -8/-4/0/4/8 (for +4/+8 labeling)" + System.getProperty("line.separator")
+                    + "isotope_error = " + cometParameters.getIsotopeCorrection() + "           # 0=off, 1=0/1 (C13 error), 2=0/1/2, 3=0/1/2/3, 4=-1/0/1/2/3, 5=-1/0/1, 6=-3/-2/-1/0/1/2/3, 7=-8/-4/0/4/8" + System.getProperty("line.separator")
                     + System.getProperty("line.separator")
                     /////////////////////////
                     // enzyme
@@ -500,9 +501,9 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     private String getVariableModifications() {
 
         StringBuilder result = new StringBuilder("#" + System.getProperty("line.separator")
-                + "# Up to 9 variable modifications are supported" + System.getProperty("line.separator")
+                + "# Up to 15 variable modifications are supported" + System.getProperty("line.separator")
                 + "# format:  <mass> <residues> <0=variable/1=binary set> <max_mods_per_peptide> <term_distance> <n/c-term> <required>" + System.getProperty("line.separator")
-                + "#     e.g. 79.966331 STY 0 3 -1 0 0" + System.getProperty("line.separator")
+                + "#     e.g. 79.966331 STY 0 3 -1 0 0 97.976896" + System.getProperty("line.separator")
                 + "#" + System.getProperty("line.separator"));
 
         int cpt = 0;
@@ -512,9 +513,11 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // get the modification
             Modification modification = modificationFactory.getModification(modName);
             result.append("variable_mod");
+
             if (++cpt < 10) {
                 result.append("0");
             }
+
             result.append(cpt);
             result.append(" = ");
 
@@ -525,10 +528,15 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // find targeted residues
             StringBuilder modificationCometPattern = new StringBuilder();
             AminoAcidPattern modificationPattern = modification.getPattern();
+
             if (modificationPattern != null && modificationPattern.length() > 0) {
+
                 for (Character aminoAcid : modificationPattern.getAminoAcidsAtTarget()) {
+
                     modificationCometPattern.append(aminoAcid);
+
                 }
+
             }
 
             // add targeted residues
@@ -541,6 +549,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                 } else {
 
                     switch (modification.getModificationType()) {
+
                         case modc_peptide:
                         case modc_protein:
                         case modcaa_peptide:
@@ -558,6 +567,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
                         default:
                             result.append("X");
                             break;
+
                     }
 
                 }
@@ -573,7 +583,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             //      non-zero value = a binary modification analyzes peptides where all residues are either modified or all residues are not modified
             result.append(" 0 "); // @TODO: add support for binary modification sets?
 
-            // add max copies of this modification per peptide
+            // add max copies of this modification per peptide // @TODO: support ranges, e.g. “2,4” would specify that peptides must have between 2 and 4 of this variable modification
             if (modification.getModificationType() != ModificationType.modaa) {
                 result.append("1 ");
             } else {
@@ -583,7 +593,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // add distance to the terminus constraint // @TODO: possible to make this a user param?
             //      -1 = no distance contraint, 
             //      0 = only applies to terminal residue, 
-            //      1 = only applies to terminal residue and next residue, 
+            //      1 = only applies to terminal residue and next residue, // @TODO: support more of the optionns
             //      2 = only applies to terminal residue through next 2 residues, 
             //      N = only applies to terminal residue through next N residues where N is a positive integer)
             if (modification.getModificationType() != ModificationType.modaa) {
@@ -622,7 +632,8 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
 
             // add whether peptides must contain this modification
             //      0 = not forced to be present
-            //      1 = modification is required 
+            //      1 = modification is required // @TODO: support more of the options
+            //     -1 = exclusive modification
             result.append("0"); // @TODO: make this a user parameter?
 
             // add fragment neutral loss
@@ -637,7 +648,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         }
 
         // add empty lines for the remaining modification parameter lines
-        while (++cpt < 10) {
+        while (++cpt < 15) {
 
             result.append("variable_mod");
 
@@ -646,7 +657,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             }
 
             result.append(cpt);
-            result.append(" = 0.0 X 0 3 -1 0 0");
+            result.append(" = 0.0 X 0 3 -1 0 0 0.0");
             result.append(System.getProperty("line.separator"));
 
         }
@@ -660,14 +671,13 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
         } else {
             result.append("require_variable_mod = 0").append(System.getProperty("line.separator"));
         }
-        
+
         // multiply fragment neutral loss mass by the number of modified residues in the fragment
 //        if (cometParameters.getScaleFragmentNL()) {
 //            result.append("scale_fragmentNL = 1").append(System.getProperty("line.separator"));
 //        } else {
 //            result.append("scale_fragmentNL = 0").append(System.getProperty("line.separator"));
 //        }
-
         return result.toString();
     }
 

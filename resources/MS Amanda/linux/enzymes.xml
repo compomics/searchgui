@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Enzymes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" DateGenerated="20.02.2024">
+  <Enzyme Name="Trypsin" Accession="MS:1001251">
+    <Cleavage CleavageSites="KR" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[KR])(?!P)" />
+  </Enzyme>
+  <Enzyme Name="Arg-C" Accession="MS:1001303">
+    <Cleavage CleavageSites="R" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=R)(?!P)" />
+  </Enzyme>
+  <Enzyme Name="Asp-N" Accession="MS:1001304">
+    <Cleavage CleavageSites="BD" PrefixInhibitors="" PostfixInhibitors="" Offset="before" Regex="(?=[BD])" />
+  </Enzyme>
+  <Enzyme Name="Asp-N_ambic" Accession="MS:1001305">
+    <Cleavage CleavageSites="DE" PrefixInhibitors="" PostfixInhibitors="" Offset="before" Regex="(?=[DE])" />
+  </Enzyme>
+  <Enzyme Name="Chymotrypsin" Accession="MS:1001306">
+    <Cleavage CleavageSites="FYWL" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[FYWL])(?!P)" />
+  </Enzyme>
+  <Enzyme Name="CNBr" Accession="MS:1001307">
+    <Cleavage CleavageSites="M" PrefixInhibitors="" PostfixInhibitors="" Offset="after" Regex="(?&lt;=M)" />
+  </Enzyme>
+  <Enzyme Name="Formic_acid" Accession="MS:1001308">
+    <Cleavage CleavageSites="D" PrefixInhibitors="" PostfixInhibitors="" Offset="before|after" Regex="((?&lt;=D))|((?=D))" />
+  </Enzyme>
+  <Enzyme Name="Lys-C" Accession="MS:1001309">
+    <Cleavage CleavageSites="K" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=K)(?!P)" />
+  </Enzyme>
+  <Enzyme Name="Lys-C/P" Accession="MS:1001310">
+    <Cleavage CleavageSites="K" PrefixInhibitors="" PostfixInhibitors="" Offset="after" Regex="(?&lt;=K)" />
+  </Enzyme>
+  <Enzyme Name="PepsinA" Accession="MS:1001311">
+    <Cleavage CleavageSites="FL" PrefixInhibitors="" PostfixInhibitors="" Offset="after" Regex="(?&lt;=[FL])" />
+  </Enzyme>
+  <Enzyme Name="TrypChymo" Accession="MS:1001312">
+    <Cleavage CleavageSites="FYWLKR" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[FYWLKR])(?!P)" />
+  </Enzyme>
+  <Enzyme Name="Trypsin/P" Accession="MS:1001313">
+    <Cleavage CleavageSites="KR" PrefixInhibitors="" PostfixInhibitors="" Offset="after" Regex="(?&lt;=[KR])" />
+  </Enzyme>
+  <Enzyme Name="V8-DE" Accession="MS:1001314">
+    <Cleavage CleavageSites="BDEZ" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[BDEZ])(?!P)" />
+  </Enzyme>
+  <Enzyme Name="V8-E" Accession="MS:1001315">
+    <Cleavage CleavageSites="EZ" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[EZ])(?!P)" />
+  </Enzyme>
+  <Enzyme Name="leukocyte elastase" Accession="MS:1001915">
+    <Cleavage CleavageSites="ALIV" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[ALIV])(?!P)" />
+  </Enzyme>
+  <Enzyme Name="proline endopeptidase" Accession="MS:1001916">
+    <Cleavage CleavageSites="HKR" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[HKR]P)(?!P)" />
+  </Enzyme>
+  <Enzyme Name="glutamyl endopeptidase" Accession="MS:1001917">
+    <Cleavage CleavageSites="E" PrefixInhibitors="E" PostfixInhibitors="" Offset="after" Regex="(?&lt;=[^E]E)" />
+  </Enzyme>
+  <Enzyme Name="2-iodobenzoate" Accession="MS:1001918">
+    <Cleavage CleavageSites="W" PrefixInhibitors="" PostfixInhibitors="" Offset="after" Regex="(?&lt;=W)" />
+  </Enzyme>
+  <Enzyme Name="no cleavage" Accession="MS:1001955">
+    <Cleavage CleavageSites="" PrefixInhibitors="" PostfixInhibitors="" Offset="" Regex="" />
+  </Enzyme>
+  <Enzyme Name="unspecific cleavage" Accession="MS:1001956">
+    <Cleavage CleavageSites="X" PrefixInhibitors="" PostfixInhibitors="" Offset="" Regex="" />
+  </Enzyme>
+  <Enzyme Name="LysargiNase" Accession="MS:1002708">
+    <Cleavage CleavageSites="KR" PrefixInhibitors="" PostfixInhibitors="" Offset="before" Regex="(?=[KR])" />
+  </Enzyme>
+  <Enzyme Name="Lys-N" Accession="MS:1003093">
+    <Cleavage CleavageSites="K" PrefixInhibitors="" PostfixInhibitors="" Offset="before" Regex="(?=K)" />
+  </Enzyme>
+</Enzymes>

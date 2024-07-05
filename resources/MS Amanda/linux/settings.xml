@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SearchSettings>
+    <!-- Valid values for specificity are: "FULL" | "SEMI" | "SEMI(C)" | "SEMI(N)" (default: FULL) -->
+    <Enzyme Name="Trypsin" Specificity="FULL" />    
+    <!-- Example of a selfdefined enzyme:
+		regex for cleavage can be tested at the page https://regex101.com/  the symbol combination &lt; needs to be exchanged for a < for testing on the site. 
+		The < is a reserved symbol for the xml file, so it needs to be escaped.
+		If no Regex is added, it is generated using CleavageSites, PrefixInhibitors, PostfixInhibitors and Offset.
+		<Enzyme Name="MyTrypsin" Specificity="FULL" >
+			<Cleavage CleavageSites="KR" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[KR])(?!P)" /> 
+		</Enzyme>	-->
+    <MissedCleavages>2</MissedCleavages>
+    <Modifications>
+      <!--<Modification [Fix="true|false"] [Nterm="true|false"] [Cterm="true|false"] [NtermProtein="true|false"] [DeltaMass="+XX.XX"]>Name[(AA,AA)] [MaxOccurrences="1"]</modification>
+		If [Nterm="true"] or [Cterm="true"] is selected [MaxOccurrences] must be set to 1
+		[MaxOccurrences] must be less or equal than <MaxNoModifs>	-->
+      <Modification Fix="true" Nterm="false" Cterm="false">Carbamidomethyl(C)</Modification>
+      <Modification>Oxidation(M)</Modification>
+      <!-- Example of a selfdefined modification:
+			<Modification DeltaMass="15.9999">MyOwnModif(M)</Modification>	-->
+    </Modifications>
+    <!-- possible values: "a", "b", "c", "x", "y", "z", "H2O", "NH3", "IMM", "z+1", "z+2", "INT" (for internal fragments), "a+1", "a-1", "b+1", "b-1", "c+1", "c-1", "x+1", "x-1", "y+1", "y-1", "z-1" -->
+    <!-- all combinations of possible values are possible -->
+    <Instrument>b, y</Instrument>
+    <!-- <MS1Tol Unit="Da|ppm|mmu">VALUE</MS1Tol> (default: "5 ppm") -->
+    <MS1Tol Unit="ppm">5</MS1Tol>
+    <!-- <MS2Tol Unit="Da|ppm|mmu">VALUE</MS2Tol> (default: "0.02 Da") -->
+    <MS2Tol Unit="Da">0.02</MS2Tol>
+    <!-- Value range: 1-999 (default: 5) -->
+    <MaxRank>5</MaxRank>
+    <GenerateDecoy>true</GenerateDecoy>
+    <!-- If the database contains target and decoy proteins. Is ignored, if GenerateDecoy is true. (default: false) -->
+    <CombinedTargetDecoyDBProvided>false</CombinedTargetDecoyDBProvided>
+    <!-- If a combined target decoy database is used, how is a decoy marked in the file. Only used if CombinedTargetDecoyDBProvided is true. (default: REV_) -->
+    <DecoyFlag>REV_</DecoyFlag>
+    <PerformDeisotoping>true</PerformDeisotoping>
+    <!-- Maximum number of occurrences of the same modification on a peptide. Value range: 0-10 (default: 3) -->
+    <MaxNoModifs>3</MaxNoModifs>
+    <!-- Maximum number of dynamic modifications per peptide. Value range: 0-10 (default: 4) -->
+    <MaxNoDynModifs>4</MaxNoDynModifs>
+    <!-- Maximum number of potential modification sites for a specific modification per peptide. Peptides with a higher number are discarded, due to a too high complexity. Value range: 0-20 (default: 6) -->
+    <MaxNumberModSites>6</MaxNumberModSites>
+    <!-- Maximum number of same neutral losses per peptide regarding water and ammonia losses. Value range: 0-5 (default: 1) -->
+    <MaxNumberNeutralLoss>1</MaxNumberNeutralLoss>
+    <!-- Maximum number of same neutral losses per peptide regarding modification specific losses. Value range: 0-5 (default: 2) -->
+    <MaxNumberNeutralLossModifications>2</MaxNumberNeutralLossModifications>
+    <!-- Only peptides with a certain minimum length are matched. Value range: 0-20 (default: 6) -->
+    <MinimumPepLength>6</MinimumPepLength>
+    <!-- Only peptides with a certain maximum length are matched. Value range: 0-60 (default: 30) -->
+    <MaximumPepLength>30</MaximumPepLength>
+    <!-- Combine ranks for target and decoy (false), own rankings for target and decoy (true) (default: false) -->
+    <ReportBothBestHitsForTD>false</ReportBothBestHitsForTD>
+    <!-- Maximum charge state of calculated fragment ions. Higher charged ions are only calculated up to precursor charge - 1, i.e., for a 3+ peptide only 1+ and 2+ fragment ions are calculated, even if “4+” is selected. -->
+    <!-- valid values: 2+ | 3+ | 4+ | Precursor - 1 (default: 2+) -->
+    <MaxAllowedChargeState>2+</MaxAllowedChargeState>
+    <!-- Minimum value for number of selected peaks within peak picking window. Value range: 1-30 (default: 1) -->
+    <MinimumPeakDepth>1</MinimumPeakDepth>
+    <!-- Maximum value for number of selected peaks within peak picking window. Value range: 1-30 (default: 10) -->
+    <MaximumPeakDepth>10</MaximumPeakDepth>
+  </SearchSettings>
+  <SecondSearchSettings>
+    <!-- Perform second search to identify mixed spectra (default: false) -->
+    <PerformSecondSearch>false</PerformSecondSearch>
+    <!-- Whether y1 Ion shall be kept for second search (default: true) -->
+    <KeepY1Ion>true</KeepY1Ion>
+    <!-- Whether water losses shall be removed for second search (default: true) -->
+    <RemoveWaterLosses>true</RemoveWaterLosses>
+    <!-- Whether amonia losses shall be removed for second search (default: true) -->
+    <RemoveAmmoniaLosses>true</RemoveAmmoniaLosses>
+    <!-- Exclude original precursor in second search (default: true) -->
+    <ExcludeFirstPrecursor>true</ExcludeFirstPrecursor>
+    <!-- Maximum number of different precursors for second search. Value range: 1-10 (default: 5) -->
+    <MaxMultiplePrecursors>5</MaxMultiplePrecursors>
+  </SecondSearchSettings>
+  <BasicSettings>
+    <Monoisotopic>true</Monoisotopic>
+    <!-- Which charges shall be tested where the charge cannot be defined. This setting is also used for second search precursors (no deisotoping). -->
+    <!-- valid values: 2+ | 3+ | 2+,3+ | 2+,3+,4+ | 3+,4+ | 2+,3+,4+,5+ (default: 2+,3+,4+) -->
+    <ConsideredCharges>2+,3+,4+</ConsideredCharges>
+    <!-- considered charges are combined in one result (default: false) -->
+    <CombineConsideredCharges>false</CombineConsideredCharges>
+    <!-- Maximal number of proteins loaded into memory; bigger values need more memory. Value range: 1000-1000000000 (default: 100000) -->
+    <LoadedProteinsAtOnce>100000</LoadedProteinsAtOnce>
+    <!-- The number of spectra that shall be processed at a time; bigger values need more memory. Value range: 1000-1000000000 (default: 8000) -->
+    <LoadedSpectraAtOnce>8000</LoadedSpectraAtOnce>
+    <!-- The location where the folder MSAmanda3.0 for logs, databases,... is generated. (default: "DEFAULT") -->
+    <DataFolder>DEFAULT</DataFolder>
+    <EnzymesFile>enzymes.xml</EnzymesFile>
+    <ModificationsFile>modifications.xml</ModificationsFile>
+  </BasicSettings>
+  <PercolatorSettings>
+    <!-- Generate file for percolator; filename is the same as stated in outputfilename with suffix _pin.tsv (default: false) -->
+    <GeneratePInFile>false</GeneratePInFile>
+    <!-- automatically run percolator and add qvalues to outputfile, this setting is only available in combination with decoy db generation (default: false) -->
+    <RunPercolator>false</RunPercolator>
+  </PercolatorSettings>
+</Settings>

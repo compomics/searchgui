@@ -7,7 +7,7 @@
 		regex for cleavage can be tested at the page https://regex101.com/  the symbol combination &lt; needs to be exchanged for a < for testing on the site. 
 		The < is a reserved symbol for the xml file, so it needs to be escaped.
 		If no Regex is added, it is generated using CleavageSites, PrefixInhibitors, PostfixInhibitors and Offset.
-		<Enzyme Name="MyTrypsin" Sepcificity="FULL" >
+		<Enzyme Name="MyTrypsin" Specificity="FULL" >
 			<Cleavage CleavageSites="KR" PrefixInhibitors="" PostfixInhibitors="P" Offset="after" Regex="(?&lt;=[KR])(?!P)" /> 
 		</Enzyme>	-->
     <MissedCleavages>2</MissedCleavages>

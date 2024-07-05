@@ -222,12 +222,6 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
      */
     private Integer maxMultiplePrecursors = 5;
     /**
-     * Which charges shall be tested for precursors (no deisotoping) where the
-     * charge cannot be defined (+2; +3; +2, +3; +2, +3, +4; +3, +4; +2, +3, +4,
-     * +5).
-     */
-    private String consideredChargesForPrecursors = "+2,+3";
-    /**
      * Considered charges are combined in one result.
      */
     private Boolean combineConsideredCharges = true;
@@ -319,7 +313,6 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
         removeAmmoniaLosses = msAmandaParameters.getRemoveAmmoniaLosses();
         excludeFirstPrecursor = msAmandaParameters.getExcludeFirstPrecursor();
         maxMultiplePrecursors = msAmandaParameters.getMaxMultiplePrecursors();
-        consideredChargesForPrecursors = msAmandaParameters.getConsideredChargesForPrecursors();
         combineConsideredCharges = msAmandaParameters.getCombineConsideredCharges();
         runPercolator = msAmandaParameters.getRunPercolator();
         generatePInFile = msAmandaParameters.getGeneratePInFile();
@@ -570,7 +563,6 @@ public class MsAmandaProcessBuilder extends SearchGUIProcessBuilder {
                     + "\t\t<RemoveAmmoniaLosses>" + removeAmmoniaLosses + "</RemoveAmmoniaLosses> " + System.getProperty("line.separator")
                     + "\t\t<ExcludeFirstPrecursor>" + excludeFirstPrecursor + "</ExcludeFirstPrecursor> " + System.getProperty("line.separator")
                     + "\t\t<MaxMultiplePrecursors>" + maxMultiplePrecursors + "</MaxMultiplePrecursors> " + System.getProperty("line.separator")
-                    //+ "\t\t<ConsideredChargesForPrecursors>" + consideredChargesForPrecursors + "</ConsideredChargesForPrecursors> " + System.getProperty("line.separator") // @TODO: removed?
                     + "\t</SecondSearchSettings> " + System.getProperty("line.separator") + System.getProperty("line.separator")
                     ////////////////////////////
                     // Basic settings
