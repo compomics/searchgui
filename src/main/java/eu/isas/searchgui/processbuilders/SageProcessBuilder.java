@@ -523,7 +523,7 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
                         modificationMap.put("^", modMassList);
                     }
 
-                    modificationMap.get("[").add(modification.getMass());
+                    modificationMap.get("^").add(modification.getMass());
 
                     break;
 
