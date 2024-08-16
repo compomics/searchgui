@@ -128,7 +128,8 @@ public class SageProcessBuilder extends SearchGUIProcessBuilder {
 
         // set the batch size
         if (sageParameters.getBatchSize() != null) {
-            process_name_array.add("-batch-size" + sageParameters.getBatchSize());
+            process_name_array.add("--batch-size");
+            process_name_array.add(sageParameters.getBatchSize().toString());
         }
 
         // turn off the sendig of basic telemetry data
