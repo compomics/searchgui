@@ -12,7 +12,7 @@
 		</Enzyme>	-->
     <MissedCleavages>2</MissedCleavages>
     <Modifications>
-      <!--<Modification [Fix="true|false"] [Nterm="true|false"] [Cterm="true|false"] [NtermProtein="true|false"] [DeltaMass="+XX.XX"]>Name[(AA,AA)] [MaxOccurrences="1"]</modification>
+      <!--<Modification [Fix="true|false"] [Nterm="true|false"] [Cterm="true|false"] [NtermProtein="true|false"] [DeltaMass="+XX.XX"] [MaxOccurrences="1"]>Name[(AA,AA)]</modification>
 		If [Nterm="true"] or [Cterm="true"] is selected [MaxOccurrences] must be set to 1
 		[MaxOccurrences] must be less or equal than <MaxNoModifs>	-->
       <Modification Fix="true" Nterm="false" Cterm="false">Carbamidomethyl(C)</Modification>
