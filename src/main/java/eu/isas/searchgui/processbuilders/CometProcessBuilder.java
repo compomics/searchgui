@@ -46,7 +46,7 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
     /**
      * The Comet version number as a string.
      */
-    private final String COMET_VERSION = "2024.01 rev. 1"; // @TODO: extract from the comet usage details?
+    private final String COMET_VERSION = "2025.01 rev. 0"; // @TODO: extract from the comet usage details?
     /**
      * The spectrum file.
      */
@@ -639,8 +639,15 @@ public class CometProcessBuilder extends SearchGUIProcessBuilder {
             // add fragment neutral loss
             //      For any fragment ion that contain the variable modification, a neutral loss will 
             //      also be analyzed if the specified neutral loss value is not zero (0.0).
-            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() == 1) {
+            if (modification.getNeutralLosses() != null && !modification.getNeutralLosses().isEmpty()) {
                 result.append(" ").append(modification.getNeutralLosses().get(0).getMass()); // @TODO: verify wether only taking the first neutal ion is always the best option?
+            }
+            
+            // add second fragment neutral loss
+            //      For any fragment ion that contain the variable modification, a neutral loss will 
+            //      also be analyzed if the specified neutral loss value is not zero (0.0).
+            if (modification.getNeutralLosses() != null && modification.getNeutralLosses().size() > 1) {
+                result.append(" ").append(modification.getNeutralLosses().get(1).getMass()); // @TODO: verify wether taking the second neutal ion is always the best option?
             }
 
             result.append(System.getProperty("line.separator"));
