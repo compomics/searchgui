@@ -9,14 +9,14 @@
       "CMD/1.0.0": {
         "dependencies": {
           "CommandLineParser": "2.9.1",
-          "EngineLayer": "1.0.6.10231",
+          "EngineLayer": "1.0.8.10653",
           "Microsoft.ML": "3.0.1",
           "Microsoft.ML.CpuMath": "3.0.1",
           "Microsoft.ML.FastTree": "3.0.1",
           "Microsoft.NETCore.App": "2.2.8",
           "Nett": "0.15.0",
           "TaskLayer": "1.0.0",
-          "mzLib": "1.0.552"
+          "mzLib": "1.0.559"
         },
         "runtime": {
           "CMD.dll": {}
@@ -30,11 +30,38 @@
           }
         }
       },
+      "CsvHelper/32.0.3": {
+        "runtime": {
+          "lib/net8.0/CsvHelper.dll": {
+            "assemblyVersion": "32.0.0.0",
+            "fileVersion": "32.0.3.22"
+          }
+        }
+      },
       "Easy.Common/6.7.0": {
         "runtime": {
           "lib/net8.0/Easy.Common.dll": {
             "assemblyVersion": "6.7.0.0",
             "fileVersion": "6.7.0.0"
+          }
+        }
+      },
+      "EntityFramework/6.4.4": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.CodeDom": "4.7.0",
+          "System.ComponentModel.Annotations": "4.7.0",
+          "System.Configuration.ConfigurationManager": "4.7.0",
+          "System.Data.SqlClient": "4.8.1"
+        },
+        "runtime": {
+          "lib/netstandard2.1/EntityFramework.SqlServer.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.400.420.21404"
+          },
+          "lib/netstandard2.1/EntityFramework.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.400.420.21404"
           }
         }
       },
@@ -46,12 +73,21 @@
           }
         }
       },
+      "Microsoft.CSharp/4.7.0": {},
+      "Microsoft.Extensions.ObjectPool/9.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Extensions.ObjectPool.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52903"
+          }
+        }
+      },
       "Microsoft.ML/3.0.1": {
         "dependencies": {
           "Microsoft.ML.CpuMath": "3.0.1",
           "Microsoft.ML.DataView": "3.0.1",
           "Newtonsoft.Json": "13.0.3",
-          "System.CodeDom": "4.5.0",
+          "System.CodeDom": "4.7.0",
           "System.Collections.Immutable": "1.5.0",
           "System.Memory": "4.5.5",
           "System.Reflection.Emit.Lightweight": "4.3.0",
@@ -213,60 +249,84 @@
           "System.Security.Principal.Windows": "5.0.0"
         }
       },
-      "mzLib/1.0.552": {
+      "Microsoft.Win32.SystemEvents/4.7.0": {
         "dependencies": {
+          "Microsoft.NETCore.Platforms": "5.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
+      "mzLib/1.0.559": {
+        "dependencies": {
+          "CsvHelper": "32.0.3",
           "Easy.Common": "6.7.0",
           "MathNet.Numerics": "5.0.0",
+          "Microsoft.Extensions.ObjectPool": "9.0.0",
+          "Microsoft.ML": "3.0.1",
+          "Microsoft.ML.FastTree": "3.0.1",
           "Microsoft.Win32.Registry": "5.0.0",
           "NetSerializer": "4.1.2",
           "OpenMcdf": "2.2.1.3",
           "OpenMcdf.Extensions": "2.2.1.3",
-          "SharpLearning.Optimization": "0.28.0"
+          "SharpLearning.Optimization": "0.28.0",
+          "System.Data.SQLite": "1.0.118"
         },
         "runtime": {
           "lib/net8.0/BayesianEstimation.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/Chemistry.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/FlashLFQ.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/MassSpectrometry.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/MzIdentML.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/MzLibUtil.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/Omics.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/PepXML.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/Proteomics.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/Readers.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/SpectralAveraging.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/ThermoFisher.CommonCore.BackgroundSubtraction.dll": {
             "assemblyVersion": "5.0.0.0",
@@ -285,12 +345,33 @@
             "fileVersion": "5.0.0.7"
           },
           "lib/net8.0/Transcriptomics.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
           },
           "lib/net8.0/UsefulProteomicsDatabases.dll": {
-            "assemblyVersion": "1.0.552.0",
-            "fileVersion": "1.0.552.0"
+            "assemblyVersion": "1.0.559.0",
+            "fileVersion": "1.0.559.0"
+          },
+          "lib/net8.0/isodeclib.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "lib/net8.0/isogenmass.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "lib/net8.0/libmmd.dll": {
+            "fileVersion": "0.0.0.0"
+          },
+          "lib/net8.0/msvcp110.dll": {
+            "fileVersion": "11.0.50727.1"
+          },
+          "lib/net8.0/msvcr110.dll": {
+            "fileVersion": "11.0.50727.1"
+          },
+          "lib/net8.0/svml_dispmd.dll": {
+            "fileVersion": "19.0.0.0"
+          },
+          "lib/net8.0/timsdata.dll": {
+            "fileVersion": "2.21.104.32"
           }
         }
       },
@@ -339,6 +420,40 @@
           "lib/netstandard2.0/OpenMcdf.Extensions.dll": {
             "assemblyVersion": "2.1.6.28924",
             "fileVersion": "2.2.1.3"
+          }
+        }
+      },
+      "runtime.native.System.Data.SqlClient.sni/4.7.0": {
+        "dependencies": {
+          "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni": "4.4.0",
+          "runtime.win-x64.runtime.native.System.Data.SqlClient.sni": "4.4.0",
+          "runtime.win-x86.runtime.native.System.Data.SqlClient.sni": "4.4.0"
+        }
+      },
+      "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/sni.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "4.6.25512.1"
+          }
+        }
+      },
+      "runtime.win-x64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "runtimeTargets": {
+          "runtimes/win-x64/native/sni.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "4.6.25512.1"
+          }
+        }
+      },
+      "runtime.win-x86.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+        "runtimeTargets": {
+          "runtimes/win-x86/native/sni.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "4.6.25512.1"
           }
         }
       },
@@ -412,15 +527,133 @@
           }
         }
       },
-      "System.CodeDom/4.5.0": {
+      "Stub.System.Data.SQLite.Core.NetStandard/1.0.118": {
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.dll": {
+            "assemblyVersion": "1.0.118.0",
+            "fileVersion": "1.0.118.0"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/SQLite.Interop.dll": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/osx-x64/native/SQLite.Interop.dll": {
+            "rid": "osx-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/SQLite.Interop.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "1.0.118.0"
+          },
+          "runtimes/win-x86/native/SQLite.Interop.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "1.0.118.0"
+          }
+        }
+      },
+      "System.CodeDom/4.7.0": {
         "runtime": {
           "lib/netstandard2.0/System.CodeDom.dll": {
-            "assemblyVersion": "4.0.1.0",
-            "fileVersion": "4.6.26515.6"
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.700.19.56404"
           }
         }
       },
       "System.Collections.Immutable/1.5.0": {},
+      "System.ComponentModel.Annotations/4.7.0": {},
+      "System.Configuration.ConfigurationManager/4.7.0": {
+        "dependencies": {
+          "System.Security.Cryptography.ProtectedData": "4.7.0",
+          "System.Security.Permissions": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Configuration.ConfigurationManager.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
+      "System.Data.SqlClient/4.8.1": {
+        "dependencies": {
+          "Microsoft.Win32.Registry": "5.0.0",
+          "System.Security.Principal.Windows": "5.0.0",
+          "runtime.native.System.Data.SqlClient.sni": "4.7.0"
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "assemblyVersion": "4.6.1.1",
+            "fileVersion": "4.700.20.6702"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "4.6.1.1",
+            "fileVersion": "4.700.20.6702"
+          },
+          "runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.6.1.1",
+            "fileVersion": "4.700.20.6702"
+          }
+        }
+      },
+      "System.Data.SQLite/1.0.118": {
+        "dependencies": {
+          "System.Data.SQLite.Core": "1.0.118",
+          "System.Data.SQLite.EF6": "1.0.118"
+        }
+      },
+      "System.Data.SQLite.Core/1.0.118": {
+        "dependencies": {
+          "Stub.System.Data.SQLite.Core.NetStandard": "1.0.118"
+        }
+      },
+      "System.Data.SQLite.EF6/1.0.118": {
+        "dependencies": {
+          "EntityFramework": "6.4.4"
+        },
+        "runtime": {
+          "lib/netstandard2.1/System.Data.SQLite.EF6.dll": {
+            "assemblyVersion": "1.0.118.0",
+            "fileVersion": "1.0.118.0"
+          }
+        }
+      },
+      "System.Drawing.Common/4.7.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "5.0.0",
+          "Microsoft.Win32.SystemEvents": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "4.0.0.1",
+            "fileVersion": "4.6.26919.2"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.700.19.56404"
+          },
+          "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
       "System.IO/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "5.0.0",
@@ -482,6 +715,34 @@
           "System.Security.Principal.Windows": "5.0.0"
         }
       },
+      "System.Security.Cryptography.ProtectedData/4.7.0": {
+        "runtime": {
+          "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {
+            "assemblyVersion": "4.0.5.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.5.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
+      "System.Security.Permissions/4.7.0": {
+        "dependencies": {
+          "System.Security.AccessControl": "5.0.0",
+          "System.Windows.Extensions": "4.7.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Security.Permissions.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
       "System.Security.Principal.Windows/5.0.0": {},
       "System.Text.Encoding/4.3.0": {
         "dependencies": {
@@ -498,6 +759,25 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Windows.Extensions/4.7.0": {
+        "dependencies": {
+          "System.Drawing.Common": "4.7.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Windows.Extensions.dll": {
+            "assemblyVersion": "4.0.1.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netcoreapp3.0/System.Windows.Extensions.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "4.0.1.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
       "TopDownProteomics/0.0.297": {
         "runtime": {
           "lib/netstandard2.1/TopDownProteomics.dll": {
@@ -506,7 +786,7 @@
           }
         }
       },
-      "EngineLayer/1.0.6.10231": {
+      "EngineLayer/1.0.8.10653": {
         "dependencies": {
           "Microsoft.ML": "3.0.1",
           "Microsoft.ML.CpuMath": "3.0.1",
@@ -516,18 +796,18 @@
           "Nett": "0.15.0",
           "Newtonsoft.Json": "13.0.3",
           "TopDownProteomics": "0.0.297",
-          "mzLib": "1.0.552"
+          "mzLib": "1.0.559"
         },
         "runtime": {
           "EngineLayer.dll": {
-            "assemblyVersion": "1.0.6.10231",
-            "fileVersion": "1.0.6.10231"
+            "assemblyVersion": "1.0.8.10653",
+            "fileVersion": "1.0.8.10653"
           }
         }
       },
       "TaskLayer/1.0.0": {
         "dependencies": {
-          "EngineLayer": "1.0.6.10231",
+          "EngineLayer": "1.0.8.10653",
           "MathNet.Numerics": "5.0.0",
           "Microsoft.ML": "3.0.1",
           "Microsoft.ML.CpuMath": "3.0.1",
@@ -535,7 +815,7 @@
           "Microsoft.NETCore.App": "2.2.8",
           "NetSerializer": "4.1.2",
           "Nett": "0.15.0",
-          "mzLib": "1.0.552"
+          "mzLib": "1.0.559"
         },
         "runtime": {
           "TaskLayer.dll": {
@@ -559,6 +839,13 @@
       "path": "commandlineparser/2.9.1",
       "hashPath": "commandlineparser.2.9.1.nupkg.sha512"
     },
+    "CsvHelper/32.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JNDkd4Wc2Tim5IuyL8Ai13RhzRvaHItseEvlJ2YRkx2SMBFrIsW8a5+/o4/O1jsb6mlviihR6Hfyn+nqY6CurA==",
+      "path": "csvhelper/32.0.3",
+      "hashPath": "csvhelper.32.0.3.nupkg.sha512"
+    },
     "Easy.Common/6.7.0": {
       "type": "package",
       "serviceable": true,
@@ -566,12 +853,33 @@
       "path": "easy.common/6.7.0",
       "hashPath": "easy.common.6.7.0.nupkg.sha512"
     },
+    "EntityFramework/6.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yj1+/4tci7Panu3jKDHYizxwVm0Jvm7b7m057b5h4u8NUHGCR8WIWirBTw+8EptRffwftIWPBeIRGNKD1ewEMQ==",
+      "path": "entityframework/6.4.4",
+      "hashPath": "entityframework.6.4.4.nupkg.sha512"
+    },
     "MathNet.Numerics/5.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-pg1W2VwaEQMAiTpGK840hZgzavnqjlCMTVSbtVCXVyT+7AX4mc1o89SPv4TBlAjhgCOo9c1Y+jZ5m3ti2YgGgA==",
       "path": "mathnet.numerics/5.0.0",
       "hashPath": "mathnet.numerics.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.CSharp/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA==",
+      "path": "microsoft.csharp/4.7.0",
+      "hashPath": "microsoft.csharp.4.7.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.ObjectPool/9.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UbsU/gYe4nv1DeqMXIVzDfNNek7Sk2kKuAOXL/Y+sLcAR0HwFUqzg1EPiU88jeHNe0g81aPvvHbvHarQr3r9IA==",
+      "path": "microsoft.extensions.objectpool/9.0.0",
+      "hashPath": "microsoft.extensions.objectpool.9.0.0.nupkg.sha512"
     },
     "Microsoft.ML/3.0.1": {
       "type": "package",
@@ -650,12 +958,19 @@
       "path": "microsoft.win32.registry/5.0.0",
       "hashPath": "microsoft.win32.registry.5.0.0.nupkg.sha512"
     },
-    "mzLib/1.0.552": {
+    "Microsoft.Win32.SystemEvents/4.7.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-XczCnIOYE+XOrIy3RjueNJdfZuuoSIo1VK4SpsEpcnBmVA0reiXXarQ77KBbOOmSUytzkjhLu0SJ+H6LWGIg2g==",
-      "path": "mzlib/1.0.552",
-      "hashPath": "mzlib.1.0.552.nupkg.sha512"
+      "sha512": "sha512-mtVirZr++rq+XCDITMUdnETD59XoeMxSpLRIII7JRI6Yj0LEDiO1pPn0ktlnIj12Ix8bfvQqQDMMIF9wC98oCA==",
+      "path": "microsoft.win32.systemevents/4.7.0",
+      "hashPath": "microsoft.win32.systemevents.4.7.0.nupkg.sha512"
+    },
+    "mzLib/1.0.559": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ICE63kFdWooe+zTPyM3SDdXn6Hprs1lYR4fACYTKmOx6gY6MqZ9SsSPmV3Blv7iD+qaWK1tLx+A1+8dfiwSZrw==",
+      "path": "mzlib/1.0.559",
+      "hashPath": "mzlib.1.0.559.nupkg.sha512"
     },
     "NetSerializer/4.1.2": {
       "type": "package",
@@ -699,6 +1014,34 @@
       "path": "openmcdf.extensions/2.2.1.3",
       "hashPath": "openmcdf.extensions.2.2.1.3.nupkg.sha512"
     },
+    "runtime.native.System.Data.SqlClient.sni/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9kyFSIdN3T0qjDQ2R0HRXYIhS3l5psBzQi6qqhdLz+SzFyEy4sVxNOke+yyYv8Cu8rPER12c3RDjLT8wF3WBYQ==",
+      "path": "runtime.native.system.data.sqlclient.sni/4.7.0",
+      "hashPath": "runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512"
+    },
+    "runtime.win-arm64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LbrynESTp3bm5O/+jGL8v0Qg5SJlTV08lpIpFesXjF6uGNMWqFnUQbYBJwZTeua6E/Y7FIM1C54Ey1btLWupdg==",
+      "path": "runtime.win-arm64.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "hashPath": "runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
+    },
+    "runtime.win-x64.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-38ugOfkYJqJoX9g6EYRlZB5U2ZJH51UP8ptxZgdpS07FgOEToV+lS11ouNK2PM12Pr6X/PpT5jK82G3DwH/SxQ==",
+      "path": "runtime.win-x64.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "hashPath": "runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
+    },
+    "runtime.win-x86.runtime.native.System.Data.SqlClient.sni/4.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YhEdSQUsTx+C8m8Bw7ar5/VesXvCFMItyZF7G1AUY+OM0VPZUOeAVpJ4Wl6fydBGUYZxojTDR3I6Bj/+BPkJNA==",
+      "path": "runtime.win-x86.runtime.native.system.data.sqlclient.sni/4.4.0",
+      "hashPath": "runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512"
+    },
     "SharpLearning.Common.Interfaces/0.28.0": {
       "type": "package",
       "serviceable": true,
@@ -741,12 +1084,19 @@
       "path": "sharplearning.randomforest/0.28.0",
       "hashPath": "sharplearning.randomforest.0.28.0.nupkg.sha512"
     },
-    "System.CodeDom/4.5.0": {
+    "Stub.System.Data.SQLite.Core.NetStandard/1.0.118": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gqpR1EeXOuzNQWL7rOzmtdIz3CaXVjSQCiaGOs2ivjPwynKSJYm39X81fdlp7WuojZs/Z5t1k5ni7HtKQurhjw==",
-      "path": "system.codedom/4.5.0",
-      "hashPath": "system.codedom.4.5.0.nupkg.sha512"
+      "sha512": "sha512-4TS8IZvDj0ud6utxfXI6zv9Ditk4U9Kt9KqLyAIQGcU3GXp5oGBHgGZifq+APcqRCayuN/MSE8t9ZZmygtU28A==",
+      "path": "stub.system.data.sqlite.core.netstandard/1.0.118",
+      "hashPath": "stub.system.data.sqlite.core.netstandard.1.0.118.nupkg.sha512"
+    },
+    "System.CodeDom/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Hs9pw/kmvH3lXaZ1LFKj3pLQsiGfj2xo3sxSzwiLlRL6UcMZUTeCfoJ9Udalvn3yq5dLlPEZzYegrTQ1/LhPOQ==",
+      "path": "system.codedom/4.7.0",
+      "hashPath": "system.codedom.4.7.0.nupkg.sha512"
     },
     "System.Collections.Immutable/1.5.0": {
       "type": "package",
@@ -754,6 +1104,55 @@
       "sha512": "sha512-EXKiDFsChZW0RjrZ4FYHu9aW6+P4MCgEDCklsVseRfhoO0F+dXeMSsMRAlVXIo06kGJ/zv+2w1a2uc2+kxxSaQ==",
       "path": "system.collections.immutable/1.5.0",
       "hashPath": "system.collections.immutable.1.5.0.nupkg.sha512"
+    },
+    "System.ComponentModel.Annotations/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0YFqjhp/mYkDGpU0Ye1GjE53HMp9UVfGN7seGpAMttAC0C40v5gw598jCgpbBLMmCo0E5YRLBv5Z2doypO49ZQ==",
+      "path": "system.componentmodel.annotations/4.7.0",
+      "hashPath": "system.componentmodel.annotations.4.7.0.nupkg.sha512"
+    },
+    "System.Configuration.ConfigurationManager/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/anOTeSZCNNI2zDilogWrZ8pNqCmYbzGNexUnNhjW8k0sHqEZ2nHJBp147jBV3hGYswu5lINpNg1vxR7bnqvVA==",
+      "path": "system.configuration.configurationmanager/4.7.0",
+      "hashPath": "system.configuration.configurationmanager.4.7.0.nupkg.sha512"
+    },
+    "System.Data.SqlClient/4.8.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HKLykcv6eZLbLnSMnlQ6Os4+UAmFE+AgYm92CTvJYeTOBtOYusX3qu8OoGhFrnKZax91UcLcDo5vPrqvJUTSNQ==",
+      "path": "system.data.sqlclient/4.8.1",
+      "hashPath": "system.data.sqlclient.4.8.1.nupkg.sha512"
+    },
+    "System.Data.SQLite/1.0.118": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lm+Qc7SxuMNl/HpyAbJhQng+snqUs38jaC+GvKoYm5/w+RCTspvM6aFvdWXn6+yhntJR8FnbPWZ7oi2K4UL2vQ==",
+      "path": "system.data.sqlite/1.0.118",
+      "hashPath": "system.data.sqlite.1.0.118.nupkg.sha512"
+    },
+    "System.Data.SQLite.Core/1.0.118": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2V1PsfBeqWlZxF/VtB8lQKPfDBayCU8zD5Xc3Mq7cILOa2ZqpPDSwMP0fTfk1gtGSStSk//DxKiGy6zwCQs7Uw==",
+      "path": "system.data.sqlite.core/1.0.118",
+      "hashPath": "system.data.sqlite.core.1.0.118.nupkg.sha512"
+    },
+    "System.Data.SQLite.EF6/1.0.118": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6OqO3OA8tej0BidxjYxutfR2HlodiYAA3qU4BtYe/wQdXJ75rumiAr9inYJaxFkwgGb8jW1qyFy953ZFyCOe8A==",
+      "path": "system.data.sqlite.ef6/1.0.118",
+      "hashPath": "system.data.sqlite.ef6.1.0.118.nupkg.sha512"
+    },
+    "System.Drawing.Common/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-v+XbyYHaZjDfn0ENmJEV1VYLgGgCTx1gnfOBcppowbpOAriglYgGCvFCPr2EEZyBvXlpxbEsTwkOlInl107ahA==",
+      "path": "system.drawing.common/4.7.0",
+      "hashPath": "system.drawing.common.4.7.0.nupkg.sha512"
     },
     "System.IO/4.3.0": {
       "type": "package",
@@ -818,6 +1217,20 @@
       "path": "system.security.accesscontrol/5.0.0",
       "hashPath": "system.security.accesscontrol.5.0.0.nupkg.sha512"
     },
+    "System.Security.Cryptography.ProtectedData/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ehYW0m9ptxpGWvE4zgqongBVWpSDU/JCFD4K7krxkQwSz/sFQjEXCUqpvencjy6DYDbn7Ig09R8GFffu8TtneQ==",
+      "path": "system.security.cryptography.protecteddata/4.7.0",
+      "hashPath": "system.security.cryptography.protecteddata.4.7.0.nupkg.sha512"
+    },
+    "System.Security.Permissions/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dkOV6YYVBnYRa15/yv004eCGRBVADXw8qRbbNiCn/XpdJSUXkkUeIvdvFHkvnko4CdKMqG8yRHC4ox83LSlMsQ==",
+      "path": "system.security.permissions/4.7.0",
+      "hashPath": "system.security.permissions.4.7.0.nupkg.sha512"
+    },
     "System.Security.Principal.Windows/5.0.0": {
       "type": "package",
       "serviceable": true,
@@ -846,6 +1259,13 @@
       "path": "system.threading.tasks/4.3.0",
       "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
     },
+    "System.Windows.Extensions/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CeWTdRNfRaSh0pm2gDTJFwVaXfTq6Xwv/sA887iwPTneW7oMtMlpvDIO+U60+3GWTB7Aom6oQwv5VZVUhQRdPQ==",
+      "path": "system.windows.extensions/4.7.0",
+      "hashPath": "system.windows.extensions.4.7.0.nupkg.sha512"
+    },
     "TopDownProteomics/0.0.297": {
       "type": "package",
       "serviceable": true,
@@ -853,7 +1273,7 @@
       "path": "topdownproteomics/0.0.297",
       "hashPath": "topdownproteomics.0.0.297.nupkg.sha512"
     },
-    "EngineLayer/1.0.6.10231": {
+    "EngineLayer/1.0.8.10653": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
