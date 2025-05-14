@@ -9,14 +9,14 @@
       "CMD/1.0.0": {
         "dependencies": {
           "CommandLineParser": "2.9.1",
-          "EngineLayer": "1.0.8.10653",
+          "EngineLayer": "1.0.9.10800",
           "Microsoft.ML": "3.0.1",
           "Microsoft.ML.CpuMath": "3.0.1",
           "Microsoft.ML.FastTree": "3.0.1",
           "Microsoft.NETCore.App": "2.2.8",
           "Nett": "0.15.0",
           "TaskLayer": "1.0.0",
-          "mzLib": "1.0.559"
+          "mzLib": "1.0.562"
         },
         "runtime": {
           "CMD.dll": {}
@@ -268,7 +268,7 @@
           }
         }
       },
-      "mzLib/1.0.559": {
+      "mzLib/1.0.562": {
         "dependencies": {
           "CsvHelper": "32.0.3",
           "Easy.Common": "6.7.0",
@@ -285,48 +285,48 @@
         },
         "runtime": {
           "lib/net8.0/BayesianEstimation.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/Chemistry.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/FlashLFQ.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/MassSpectrometry.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/MzIdentML.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/MzLibUtil.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/Omics.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/PepXML.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/Proteomics.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/Readers.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/SpectralAveraging.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/ThermoFisher.CommonCore.BackgroundSubtraction.dll": {
             "assemblyVersion": "5.0.0.0",
@@ -345,12 +345,12 @@
             "fileVersion": "5.0.0.7"
           },
           "lib/net8.0/Transcriptomics.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/UsefulProteomicsDatabases.dll": {
-            "assemblyVersion": "1.0.559.0",
-            "fileVersion": "1.0.559.0"
+            "assemblyVersion": "1.0.562.0",
+            "fileVersion": "1.0.562.0"
           },
           "lib/net8.0/isodeclib.dll": {
             "fileVersion": "0.0.0.0"
@@ -786,7 +786,7 @@
           }
         }
       },
-      "EngineLayer/1.0.8.10653": {
+      "EngineLayer/1.0.9.10800": {
         "dependencies": {
           "Microsoft.ML": "3.0.1",
           "Microsoft.ML.CpuMath": "3.0.1",
@@ -796,18 +796,18 @@
           "Nett": "0.15.0",
           "Newtonsoft.Json": "13.0.3",
           "TopDownProteomics": "0.0.297",
-          "mzLib": "1.0.559"
+          "mzLib": "1.0.562"
         },
         "runtime": {
           "EngineLayer.dll": {
-            "assemblyVersion": "1.0.8.10653",
-            "fileVersion": "1.0.8.10653"
+            "assemblyVersion": "1.0.9.10800",
+            "fileVersion": "1.0.9.10800"
           }
         }
       },
       "TaskLayer/1.0.0": {
         "dependencies": {
-          "EngineLayer": "1.0.8.10653",
+          "EngineLayer": "1.0.9.10800",
           "MathNet.Numerics": "5.0.0",
           "Microsoft.ML": "3.0.1",
           "Microsoft.ML.CpuMath": "3.0.1",
@@ -815,7 +815,7 @@
           "Microsoft.NETCore.App": "2.2.8",
           "NetSerializer": "4.1.2",
           "Nett": "0.15.0",
-          "mzLib": "1.0.559"
+          "mzLib": "1.0.562"
         },
         "runtime": {
           "TaskLayer.dll": {
@@ -965,12 +965,12 @@
       "path": "microsoft.win32.systemevents/4.7.0",
       "hashPath": "microsoft.win32.systemevents.4.7.0.nupkg.sha512"
     },
-    "mzLib/1.0.559": {
+    "mzLib/1.0.562": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ICE63kFdWooe+zTPyM3SDdXn6Hprs1lYR4fACYTKmOx6gY6MqZ9SsSPmV3Blv7iD+qaWK1tLx+A1+8dfiwSZrw==",
-      "path": "mzlib/1.0.559",
-      "hashPath": "mzlib.1.0.559.nupkg.sha512"
+      "sha512": "sha512-elgL272Kxr10G+qYurHsV7meYG6RhS8oYmjUprGGGGFM4zwBRFP9BpkA0OJJdSFYXVaTudAq8+y++D7xVZiy+w==",
+      "path": "mzlib/1.0.562",
+      "hashPath": "mzlib.1.0.562.nupkg.sha512"
     },
     "NetSerializer/4.1.2": {
       "type": "package",
@@ -1273,7 +1273,7 @@
       "path": "topdownproteomics/0.0.297",
       "hashPath": "topdownproteomics.0.0.297.nupkg.sha512"
     },
-    "EngineLayer/1.0.8.10653": {
+    "EngineLayer/1.0.9.10800": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
