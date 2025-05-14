@@ -17,8 +17,8 @@
 
 |   |   |   |
 | :------------------------- | :--------------- | :--: |
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](https://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/4.3.13/SearchGUI-4.3.13-windows.zip) | *v4.3.13 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
-| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](https://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/4.3.13/SearchGUI-4.3.13-mac_and_linux.tar.gz) | *v4.3.13 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_windows.png)](https://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/4.3.14/SearchGUI-4.3.14-windows.zip) | *v4.3.14 - Windows* | [ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
+| [![download](https://github.com/compomics/searchgui/wiki/images/download_button_unix.png)](https://genesis.ugent.be/maven2/eu/isas/searchgui/SearchGUI/4.3.14/SearchGUI-4.3.14-mac_and_linux.tar.gz) | *v4.3.14 - Mac and Linux* |[ReleaseNotes](https://github.com/compomics/searchgui/wiki/ReleaseNotes) | 
 
 ----
 
@@ -164,7 +164,7 @@ To visualize and analyze the SearchGUI results we recommend the use of [PeptideS
 
 ## Troubleshooting
 
- * **Does Not Start I** - Do you have Java installed? Download the latest version of Java  [here](http://java.sun.com/javase/downloads/index.jsp) and try again. (You only need the JRE version (and not the JDK version) to run SearchGUI.)
+ * **Does Not Start I** - Do you have Java installed? Download the latest version of Java [here](https://adoptium.net/temurin/releases) and try again. (You only need the JRE version (and not the JDK version) to run SearchGUI.)
 
  * **Does Not Start II** - Have you unzipped the zip file? You need to unzip the file before double clicking the jar file. If you get the message "A Java Exception has occurred", you are most likely trying to run SearchGUI from within the zip file. Unzip the file and try again.
 
