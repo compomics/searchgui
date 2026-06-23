@@ -89,6 +89,18 @@ public class SearchCLIInputBean {
      */
     private boolean novorEnabled = false;
     /**
+     * If true, InstaNovo is enabled.
+     */
+    private boolean instaNovoEnabled = false;
+    /**
+     * If true, standalone InstaNovo+ is enabled.
+     */
+    private boolean instaNovoPlusEnabled = false;
+    /**
+     * If true, InstaNovo with InstaNovo+ refinement is enabled.
+     */
+    private boolean instaNovoRefineEnabled = false;
+    /**
      * If true, DirecTag is enabled.
      */
     private boolean direcTagEnabled = false;
@@ -140,6 +152,10 @@ public class SearchCLIInputBean {
      * The folder where Novor is installed.
      */
     private File novorLocation = null;
+    /**
+     * The folder where InstaNovo is installed.
+     */
+    private File instaNovoLocation = null;
     /**
      * The folder where DirecTag is installed.
      */
@@ -228,7 +244,9 @@ public class SearchCLIInputBean {
 
         // get the FASTA file
         String arg = aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id);
-        fastaFile = new File(arg);
+        if (arg != null && !arg.trim().isEmpty()) {
+            fastaFile = new File(arg);
+        }
 
         // output folder
         arg = aLine.getOptionValue(SearchCLIParams.OUTPUT_FOLDER.id);
@@ -303,6 +321,18 @@ public class SearchCLIInputBean {
             String novorOption = aLine.getOptionValue(SearchCLIParams.NOVOR.id);
             novorEnabled = novorOption.trim().equals("1");
         }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO.id)) {
+            String instaNovoOption = aLine.getOptionValue(SearchCLIParams.INSTANOVO.id);
+            instaNovoEnabled = instaNovoOption.trim().equals("1");
+        }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO_PLUS.id)) {
+            String instaNovoPlusOption = aLine.getOptionValue(SearchCLIParams.INSTANOVO_PLUS.id);
+            instaNovoPlusEnabled = instaNovoPlusOption.trim().equals("1");
+        }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO_REFINE.id)) {
+            String instaNovoRefineOption = aLine.getOptionValue(SearchCLIParams.INSTANOVO_REFINE.id);
+            instaNovoRefineEnabled = instaNovoRefineOption.trim().equals("1");
+        }
         if (aLine.hasOption(SearchCLIParams.DIRECTAG.id)) {
             String direcTagOption = aLine.getOptionValue(SearchCLIParams.DIRECTAG.id);
             direcTagEnabled = direcTagOption.trim().equals("1");
@@ -356,6 +386,10 @@ public class SearchCLIInputBean {
         if (aLine.hasOption(SearchCLIParams.NOVOR_LOCATION.id)) {
             String novorFolder = aLine.getOptionValue(SearchCLIParams.NOVOR_LOCATION.id);
             novorLocation = new File(novorFolder);
+        }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO_LOCATION.id)) {
+            String instaNovoFolder = aLine.getOptionValue(SearchCLIParams.INSTANOVO_LOCATION.id);
+            instaNovoLocation = new File(instaNovoFolder);
         }
         if (aLine.hasOption(SearchCLIParams.DIRECTAG_LOCATION.id)) {
             String direcTagFolder = aLine.getOptionValue(SearchCLIParams.DIRECTAG_LOCATION.id);
@@ -616,6 +650,33 @@ public class SearchCLIInputBean {
     }
 
     /**
+     * Returns true if InstaNovo is to be used.
+     *
+     * @return if InstaNovo is to be used
+     */
+    public boolean isInstaNovoEnabled() {
+        return instaNovoEnabled;
+    }
+
+    /**
+     * Returns true if standalone InstaNovo+ is to be used.
+     *
+     * @return if standalone InstaNovo+ is to be used
+     */
+    public boolean isInstaNovoPlusEnabled() {
+        return instaNovoPlusEnabled;
+    }
+
+    /**
+     * Returns true if InstaNovo with InstaNovo+ refinement is to be used.
+     *
+     * @return if InstaNovo with InstaNovo+ refinement is to be used
+     */
+    public boolean isInstaNovoRefineEnabled() {
+        return instaNovoRefineEnabled;
+    }
+
+    /**
      * Returns true if DirecTag is to be used.
      *
      * @return if DirecTag is to be used
@@ -730,6 +791,15 @@ public class SearchCLIInputBean {
      */
     public File getNovorLocation() {
         return novorLocation;
+    }
+
+    /**
+     * Returns the InstaNovo location.
+     *
+     * @return the InstaNovo location
+     */
+    public File getInstaNovoLocation() {
+        return instaNovoLocation;
     }
 
     /**
@@ -851,10 +921,14 @@ public class SearchCLIInputBean {
         }
 
         // check the FASTA file
-        if (!aLine.hasOption(SearchCLIParams.FASTA_FILE.id) || ((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)).equals("")) {
+        boolean fastaRequired = isDatabaseSearchSelected(aLine);
+        boolean fastaProvided = aLine.hasOption(SearchCLIParams.FASTA_FILE.id)
+                && !((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)).equals("");
+
+        if (fastaRequired && !fastaProvided) {
             System.out.println(System.getProperty("line.separator") + "FASTA file not specified." + System.getProperty("line.separator"));
             return false;
-        } else {
+        } else if (fastaProvided) {
             File file = new File(((String) aLine.getOptionValue(SearchCLIParams.FASTA_FILE.id)));
             if (!file.exists()) {
                 System.out.println(System.getProperty("line.separator") + "FASTA file \'" + file.getName() + "\' not found." + System.getProperty("line.separator"));
@@ -1011,11 +1085,34 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.INSTANOVO.id);
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.INSTANOVO.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO_PLUS.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.INSTANOVO_PLUS.id);
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.INSTANOVO_PLUS.id, input)) {
+                return false;
+            }
+        }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO_REFINE.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.INSTANOVO_REFINE.id);
+            if (!CommandParameter.isBooleanInput(SearchCLIParams.INSTANOVO_REFINE.id, input)) {
+                return false;
+            }
+        }
         if (aLine.hasOption(SearchCLIParams.DIRECTAG.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.DIRECTAG.id);
             if (!CommandParameter.isBooleanInput(SearchCLIParams.DIRECTAG.id, input)) {
                 return false;
             }
+        }
+
+        if (!isSearchEngineOrDeNovoAlgorithmSelected(aLine)) {
+            System.out.println(System.getProperty("line.separator") + "No search engine or de novo algorithm selected." + System.getProperty("line.separator"));
+            return false;
         }
 
         // check the search engine folders
@@ -1110,6 +1207,14 @@ public class SearchCLIInputBean {
                 return false;
             }
         }
+        if (aLine.hasOption(SearchCLIParams.INSTANOVO_LOCATION.id)) {
+            String input = aLine.getOptionValue(SearchCLIParams.INSTANOVO_LOCATION.id);
+            File file = new File(input);
+            if (!file.exists()) {
+                System.out.println(System.getProperty("line.separator") + "The " + SearchCLIParams.INSTANOVO_LOCATION.id + " \'" + input + "\' does not exist." + System.getProperty("line.separator"));
+                return false;
+            }
+        }
         if (aLine.hasOption(SearchCLIParams.DIRECTAG_LOCATION.id)) {
             String input = aLine.getOptionValue(SearchCLIParams.DIRECTAG_LOCATION.id);
             File file = new File(input);
@@ -1167,6 +1272,59 @@ public class SearchCLIInputBean {
         }
 
         return true;
+    }
+
+    /**
+     * Returns true if a selected command line engine requires a FASTA database.
+     *
+     * @param aLine the command line
+     *
+     * @return true if a FASTA database is required
+     */
+    private static boolean isDatabaseSearchSelected(CommandLine aLine) {
+
+        return isEnabled(aLine, SearchCLIParams.OMSSA)
+                || isEnabled(aLine, SearchCLIParams.XTANDEM)
+                || isEnabled(aLine, SearchCLIParams.MSGF)
+                || isEnabled(aLine, SearchCLIParams.MS_AMANDA)
+                || isEnabled(aLine, SearchCLIParams.MYRIMATCH)
+                || isEnabled(aLine, SearchCLIParams.COMET)
+                || isEnabled(aLine, SearchCLIParams.TIDE)
+                || isEnabled(aLine, SearchCLIParams.ANDROMEDA)
+                || isEnabled(aLine, SearchCLIParams.META_MORPHEUS)
+                || isEnabled(aLine, SearchCLIParams.SAGE);
+    }
+
+    /**
+     * Returns true if any command line search engine or de novo algorithm is
+     * selected.
+     *
+     * @param aLine the command line
+     *
+     * @return true if an engine or de novo algorithm is selected
+     */
+    private static boolean isSearchEngineOrDeNovoAlgorithmSelected(CommandLine aLine) {
+
+        return isDatabaseSearchSelected(aLine)
+                || isEnabled(aLine, SearchCLIParams.NOVOR)
+                || isEnabled(aLine, SearchCLIParams.INSTANOVO)
+                || isEnabled(aLine, SearchCLIParams.INSTANOVO_PLUS)
+                || isEnabled(aLine, SearchCLIParams.INSTANOVO_REFINE)
+                || isEnabled(aLine, SearchCLIParams.DIRECTAG);
+    }
+
+    /**
+     * Returns true if the option is enabled on the command line.
+     *
+     * @param aLine the command line
+     * @param option the option
+     *
+     * @return true if the option is enabled
+     */
+    private static boolean isEnabled(CommandLine aLine, SearchCLIParams option) {
+
+        return aLine.hasOption(option.id)
+                && "1".equals(aLine.getOptionValue(option.id).trim());
     }
 
     /**

@@ -11,7 +11,24 @@
         <hr>
         <br>
         SearchGUI is a user-friendly interface for configuring and running proteomics 
-        identification search engines and de novo sequencing algorithms.
+        identification search engines and de novo sequencing algorithms, including
+        InstaNovo and InstaNovo+ from the command line.
+
+        <p>
+            To use InstaNovo, clone the InstaNovo repository locally, install
+            <a href="https://docs.astral.sh/uv/getting-started/installation/">uv</a>,
+            and run <code>uv sync</code> in the InstaNovo checkout. When SearchGUI asks
+            for the InstaNovo installation folder, select the InstaNovo checkout root,
+            not the <code>.venv</code> folder. SearchGUI looks for
+            <code>&lt;folder&gt;/.venv/bin/instanovo</code> before falling back to
+            <code>&lt;folder&gt;/instanovo</code>, and the advanced settings model
+            selectors are populated from <code>&lt;folder&gt;/instanovo/models.json</code>.
+            SearchGUI uses a desktop-oriented InstaNovo batch size of 16 by default;
+            increase it in the advanced settings for larger GPUs.
+            A FASTA database is required for database search engines and PeptideShaker
+            post-processing, but not for de novo-only InstaNovo, InstaNovo+, or
+            InstaNovo with refinement runs.
+        </p>
 
         <p>
             For more details and help see the SearchGUI home page: <a href="http://compomics.github.io/projects/searchgui.html">http://compomics.github.io/projects/searchgui.html</a>.

@@ -32,7 +32,7 @@
 
 ## Introduction
 
-SearchGUI is a a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MyriMatch](http://forge.fenchurch.mc.vanderbilt.edu/scm/viewvc.php/*checkout*/trunk/doc/index.html?root=myrimatch), [MS Amanda](http://ms.imp.ac.at/?goto=msamanda), [MS-GF+](https://github.com/MSGFPlus/msgfplus), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Comet](https://uwpr.github.io/Comet), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.andromeda-search.org), [MetaMorpheus](https://github.com/smith-chem-wisc/MetaMorpheus), [Sage](https://github.com/lazear/sage), [Novor](http://rapidnovor.com) and [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/).
+SearchGUI is a a highly adaptable open-source common interface for configuring and running proteomics search and de novo engines, currently supporting [X! Tandem](http://www.thegpm.org/tandem), [MyriMatch](http://forge.fenchurch.mc.vanderbilt.edu/scm/viewvc.php/*checkout*/trunk/doc/index.html?root=myrimatch), [MS Amanda](http://ms.imp.ac.at/?goto=msamanda), [MS-GF+](https://github.com/MSGFPlus/msgfplus), [OMSSA](http://www.ncbi.nlm.nih.gov/pubmed/15473683), [Comet](https://uwpr.github.io/Comet), [Tide](http://cruxtoolkit.sourceforge.net), [Andromeda](http://www.andromeda-search.org), [MetaMorpheus](https://github.com/smith-chem-wisc/MetaMorpheus), [Sage](https://github.com/lazear/sage), [Novor](http://rapidnovor.com), [DirecTag](http://fenchurch.mc.vanderbilt.edu/bumbershoot/directag/), [InstaNovo](https://github.com/instadeepai/instanovo) and [InstaNovo+](https://github.com/instadeepai/instanovo).
 
 To start using SearchGUI, unzip the downloaded file, and double-click the `SearchGUI-X.Y.Z.jar file`. No additional installation required!
 
@@ -62,6 +62,8 @@ To start identifying peptides and proteins using SearchGUI, download the latest 
 The main purpose of SearchGUI is to make it simpler to use multiple search engines at the same time. A graphical user interface is the best choice for smaller projects. SearchGUI can also be used _via_ the command line, and be incorporated in different analysis pipelines.
 
 For details about the command line see: [SearchCLI](https://github.com/compomics/searchgui/wiki/SearchCLI).
+
+InstaNovo v1.2.2 can be run from SearchCLI with `-instanovo 1`, standalone InstaNovo+ with `-instanovo_plus 1`, and InstaNovo with InstaNovo+ refinement with `-instanovo_refine 1`. To use InstaNovo from SearchGUI or SearchCLI, clone the InstaNovo repository locally, [install `uv`](https://docs.astral.sh/uv/getting-started/installation/), and run `uv sync` in the InstaNovo checkout so that `<folder>/.venv/bin/instanovo` is created. Use `-instanovo_folder <folder>` when the `instanovo` executable is not available on `PATH` or when a specific local InstaNovo installation should be used; `<folder>` is the InstaNovo checkout root, not the `.venv` folder. SearchGUI will look for `<folder>/.venv/bin/instanovo` before falling back to `<folder>/instanovo`. The advanced settings model selectors are populated from `<folder>/instanovo/models.json`. A FASTA database is required for database search engines and PeptideShaker post-processing, but not for de novo-only InstaNovo, InstaNovo+, or InstaNovo with refinement runs.
 
 [Go to top of page](#searchgui)
 

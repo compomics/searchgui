@@ -211,6 +211,9 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.isMetaMorpheusEnabled(),
                     searchCLIInputBean.isSageEnabled(),
                     searchCLIInputBean.isNovorEnabled(),
+                    searchCLIInputBean.isInstaNovoEnabled(),
+                    searchCLIInputBean.isInstaNovoPlusEnabled(),
+                    searchCLIInputBean.isInstaNovoRefineEnabled(),
                     searchCLIInputBean.isDirecTagEnabled(),
                     searchCLIInputBean.getOmssaLocation(),
                     searchCLIInputBean.getXtandemLocation(),
@@ -224,6 +227,7 @@ public class SearchCLI implements Callable {
                     searchCLIInputBean.getMetaMorpheusLocation(),
                     searchCLIInputBean.getSageLocation(),
                     searchCLIInputBean.getNovorLocation(),
+                    searchCLIInputBean.getInstaNovoLocation(),
                     searchCLIInputBean.getDirecTagLocation(),
                     searchCLIInputBean.getMakeblastdbLocation(),
                     processingParameters

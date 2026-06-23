@@ -107,11 +107,10 @@ public class ThermoRawFileParserProcessBuilder extends SearchGUIProcessBuilder {
         // add the conversion parameters
         process_name_array.add("-i=" + rawFile.getAbsolutePath());
 
-        if (thermoRawFileParserParameters.getOutputFormat() == ThermoRawFileParserOutputFormat.mgf) {
-            process_name_array.add("-b=" + new File(destinationFolder, IoUtil.removeExtension(rawFile.getName()) + ".mgf").getAbsolutePath());
-        } else {
-            process_name_array.add("-b=" + new File(destinationFolder, IoUtil.removeExtension(rawFile.getName()) + ".mzml").getAbsolutePath());
-        }
+        // use the format's own extension (.mgf / .mzML) so the requested output name matches
+        // what ThermoRawFileParser writes and what SearchGUI looks for afterwards
+        String outputEnding = thermoRawFileParserParameters.getOutputFormat().fileNameEnding;
+        process_name_array.add("-b=" + new File(destinationFolder, IoUtil.removeExtension(rawFile.getName()) + outputEnding).getAbsolutePath());
 
         process_name_array.add("-f=" + thermoRawFileParserParameters.getOutputFormat().index);
         if (!thermoRawFileParserParameters.isPeackPicking()) {

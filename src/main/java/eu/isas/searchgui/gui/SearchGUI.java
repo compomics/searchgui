@@ -35,6 +35,7 @@ import com.compomics.util.gui.UtilitiesGUIDefaults;
 import com.compomics.util.gui.error_handlers.BugReport;
 import com.compomics.util.gui.waiting.waitinghandlers.ProgressDialogX;
 import eu.isas.searchgui.SearchHandler;
+import eu.isas.searchgui.processbuilders.InstaNovoProcessBuilder;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.*;
@@ -75,6 +76,8 @@ import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.compomics.util.parameters.identification.tool_specific.AndromedaParameters;
 import com.compomics.util.parameters.identification.tool_specific.CometParameters;
 import com.compomics.util.parameters.identification.tool_specific.DirecTagParameters;
+import com.compomics.util.parameters.identification.tool_specific.InstaNovoParameters;
+import com.compomics.util.parameters.identification.tool_specific.InstaNovoPlusParameters;
 import com.compomics.util.parameters.identification.tool_specific.MsAmandaParameters;
 import com.compomics.util.parameters.identification.tool_specific.MsgfParameters;
 import com.compomics.util.parameters.identification.tool_specific.MyriMatchParameters;
@@ -88,6 +91,9 @@ import com.compomics.util.parameters.UtilitiesUserParameters;
 import com.compomics.util.parameters.identification.search.DigestionParameters;
 import com.compomics.util.parameters.identification.tool_specific.MetaMorpheusParameters;
 import com.compomics.util.parameters.identification.tool_specific.SageParameters;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.common.collect.Sets;
 import eu.isas.searchgui.SearchGUIWrapper;
 import eu.isas.searchgui.parameters.SearchGUIPathParameters;
@@ -103,6 +109,7 @@ import eu.isas.searchgui.processbuilders.OmssaclProcessBuilder;
 import eu.isas.searchgui.processbuilders.SageProcessBuilder;
 import eu.isas.searchgui.processbuilders.TandemProcessBuilder;
 import eu.isas.searchgui.processbuilders.TideSearchProcessBuilder;
+import eu.isas.searchgui.util.InstaNovoSetup;
 import java.awt.Dimension;
 import java.lang.reflect.Field;
 import java.net.ConnectException;
@@ -214,6 +221,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
      * Reference for the separation of modification and its frequency.
      */
     public static final String MODIFICATION_USE_SEPARATOR = "_";
+    /**
+     * The InstaNovo documentation URL.
+     */
+    private static final String INSTANOVO_DOCUMENTATION_URL = "https://instadeepai.github.io/InstaNovo/";
     /**
      * If true, then one of the currently processed spectra has duplicate
      * titles.
@@ -393,6 +404,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             enableMetaMorpheusJCheckBox.setSelected(searchHandler.isMetaMorpheusEnabled());
             enableSageJCheckBox.setSelected(searchHandler.isSageEnabled());
             enableNovorJCheckBox.setSelected(searchHandler.isNovorEnabled());
+            enableInstaNovoJCheckBox.setSelected(searchHandler.isInstaNovoEnabled());
+            enableInstaNovoPlusJCheckBox.setSelected(searchHandler.isInstaNovoPlusEnabled());
+            enableInstaNovoRefineJCheckBox.setSelected(searchHandler.isInstaNovoRefineEnabled());
             enableDirecTagJCheckBox.setSelected(searchHandler.isDirecTagEnabled());
 
             // add desktop shortcut?
@@ -714,6 +728,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         direcTagLinkLabel = new javax.swing.JLabel();
         novorSettingsButton = new javax.swing.JButton();
         direcTagSettingsButton = new javax.swing.JButton();
+        enableInstaNovoJCheckBox = new javax.swing.JCheckBox();
+        enableInstaNovoPlusJCheckBox = new javax.swing.JCheckBox();
+        enableInstaNovoRefineJCheckBox = new javax.swing.JCheckBox();
+        instaNovoButton = new javax.swing.JButton();
+        instaNovoPlusButton = new javax.swing.JButton();
+        instaNovoRefineButton = new javax.swing.JButton();
+        instaNovoSupportButton = new javax.swing.JButton();
+        instaNovoPlusSupportButton = new javax.swing.JButton();
+        instaNovoRefineSupportButton = new javax.swing.JButton();
+        instaNovoLinkLabel = new javax.swing.JLabel();
+        instaNovoPlusLinkLabel = new javax.swing.JLabel();
+        instaNovoRefineLinkLabel = new javax.swing.JLabel();
+        instaNovoSettingsButton = new javax.swing.JButton();
+        instaNovoPlusSettingsButton = new javax.swing.JButton();
+        instaNovoRefineSettingsButton = new javax.swing.JButton();
         enableMetaMorpheusJCheckBox = new javax.swing.JCheckBox();
         metaMorpheusButton = new javax.swing.JButton();
         metaMorpheusSupportButton = new javax.swing.JButton();
@@ -1750,6 +1779,8 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             }
         });
 
+        initInstaNovoGuiComponents();
+
         javax.swing.GroupLayout searchEnginesPanelLayout = new javax.swing.GroupLayout(searchEnginesPanel);
         searchEnginesPanel.setLayout(searchEnginesPanelLayout);
         searchEnginesPanelLayout.setHorizontalGroup(
@@ -1828,31 +1859,46 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                             .addComponent(andromedaSettingsButton)
                             .addComponent(novorSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoPlusSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoRefineSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(metaMorpheusSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(sageSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(10, 10, 10))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchEnginesPanelLayout.createSequentialGroup()
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(enableNovorJCheckBox)
-                            .addComponent(enableDirecTagJCheckBox))
+                            .addComponent(enableDirecTagJCheckBox)
+                            .addComponent(enableInstaNovoJCheckBox)
+                            .addComponent(enableInstaNovoPlusJCheckBox)
+                            .addComponent(enableInstaNovoRefineJCheckBox))
                         .addGap(61, 61, 61)
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(novorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoPlusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoRefineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(novorSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(direcTagSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(direcTagSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoPlusSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoRefineSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(34, 34, 34)
                         .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(novorLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoPlusLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(instaNovoRefineLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaButton, cometButton, direcTagButton, metaMorpheusButton, msAmandaButton, msgfButton, myriMatchButton, novorButton, omssaButton, tideButton, xtandemButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaButton, cometButton, direcTagButton, instaNovoButton, instaNovoPlusButton, instaNovoRefineButton, metaMorpheusButton, msAmandaButton, msgfButton, myriMatchButton, novorButton, omssaButton, sageButton, tideButton, xtandemButton});
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, direcTagSettingsButton, metaMorpheusSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, novorSettingsButton, omssaSettingsButton, sageSettingsButton, tideSettingsButton, xtandemSettingsButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, direcTagSettingsButton, instaNovoSettingsButton, instaNovoPlusSettingsButton, instaNovoRefineSettingsButton, metaMorpheusSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, novorSettingsButton, omssaSettingsButton, sageSettingsButton, tideSettingsButton, xtandemSettingsButton});
 
         searchEnginesPanelLayout.setVerticalGroup(
             searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1938,12 +1984,33 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     .addComponent(direcTagButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(direcTagLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(direcTagSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(direcTagSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(direcTagSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableInstaNovoJCheckBox)
+                    .addComponent(instaNovoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableInstaNovoPlusJCheckBox)
+                    .addComponent(instaNovoPlusButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoPlusLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoPlusSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoPlusSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(searchEnginesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(enableInstaNovoRefineJCheckBox)
+                    .addComponent(instaNovoRefineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoRefineLinkLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoRefineSupportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instaNovoRefineSettingsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaButton, cometButton, metaMorpheusButton, msAmandaButton, msgfButton, myriMatchButton, omssaButton, tideButton, xtandemButton});
 
-        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, metaMorpheusSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
+        searchEnginesPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {andromedaSettingsButton, cometSettingsButton, instaNovoSettingsButton, instaNovoPlusSettingsButton, instaNovoRefineSettingsButton, metaMorpheusSettingsButton, msAmandaSettingsButton, msgfSettingsButton, myriMatchSettingsButton, omssaSettingsButton, tideSettingsButton, xtandemSettingsButton});
 
         searchEnginesScrollPane.setViewportView(searchEnginesPanel);
 
@@ -2634,6 +2701,642 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * Initializes the InstaNovo search engine controls.
+     */
+    private void initInstaNovoGuiComponents() {
+
+        configureInstaNovoCheckBox(enableInstaNovoJCheckBox, "Enable InstaNovo");
+        configureInstaNovoCheckBox(enableInstaNovoPlusJCheckBox, "Enable InstaNovo+");
+        configureInstaNovoCheckBox(enableInstaNovoRefineJCheckBox, "Enable InstaNovo with InstaNovo+ refinement");
+
+        enableInstaNovoJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableInstaNovoJCheckBoxActionPerformed(evt);
+            }
+        });
+        enableInstaNovoPlusJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableInstaNovoPlusJCheckBoxActionPerformed(evt);
+            }
+        });
+        enableInstaNovoRefineJCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableInstaNovoRefineJCheckBoxActionPerformed(evt);
+            }
+        });
+
+        configureInstaNovoButton(instaNovoButton, "InstaNovo", "Enable InstaNovo");
+        configureInstaNovoButton(instaNovoPlusButton, "InstaNovo+", "Enable InstaNovo+");
+        configureInstaNovoButton(instaNovoRefineButton, "InstaNovo with refinement", "Enable InstaNovo with InstaNovo+ refinement");
+        instaNovoRefineButton.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+
+        instaNovoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instaNovoButtonActionPerformed(evt);
+            }
+        });
+        instaNovoPlusButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instaNovoPlusButtonActionPerformed(evt);
+            }
+        });
+        instaNovoRefineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                instaNovoRefineButtonActionPerformed(evt);
+            }
+        });
+
+        configureInstaNovoSupportButton(instaNovoSupportButton);
+        configureInstaNovoSupportButton(instaNovoPlusSupportButton);
+        configureInstaNovoSupportButton(instaNovoRefineSupportButton);
+
+        configureInstaNovoDescriptionLabel(instaNovoLinkLabel, "De novo peptide sequencing with transformer based InstaNovo model");
+        configureInstaNovoDescriptionLabel(instaNovoPlusLinkLabel, "De novo peptide sequencing with diffusion based InstaNovo+ model");
+        configureInstaNovoDescriptionLabel(instaNovoRefineLinkLabel, "Refine InstaNovo predictions with InstaNovo+");
+
+        configureInstaNovoSettingsButton(instaNovoSettingsButton, "Edit InstaNovo Advanced Settings");
+        configureInstaNovoSettingsButton(instaNovoPlusSettingsButton, "Edit InstaNovo+ Advanced Settings");
+        configureInstaNovoSettingsButton(instaNovoRefineSettingsButton, "Edit InstaNovo Refinement Advanced Settings");
+
+        instaNovoSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editInstaNovoSettings(false, true, false);
+            }
+        });
+        instaNovoPlusSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editInstaNovoSettings(true, false, true);
+            }
+        });
+        instaNovoRefineSettingsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editInstaNovoSettings(false, true, true);
+            }
+        });
+
+    }
+
+    /**
+     * Configures an InstaNovo checkbox.
+     *
+     * @param checkBox the checkbox
+     * @param toolTip the tooltip
+     */
+    private void configureInstaNovoCheckBox(javax.swing.JCheckBox checkBox, String toolTip) {
+        checkBox.setToolTipText(toolTip);
+        checkBox.setEnabled(false);
+    }
+
+    /**
+     * Configures an InstaNovo text button.
+     *
+     * @param button the button
+     * @param text the button text
+     * @param toolTip the tooltip
+     */
+    private void configureInstaNovoButton(javax.swing.JButton button, String text, String toolTip) {
+        button.setFont(new java.awt.Font("Segoe UI", 1, 15)); // NOI18N
+        button.setText(text);
+        button.setToolTipText(toolTip);
+        button.setBorder(null);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setEnabled(false);
+        button.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            }
+        });
+    }
+
+    /**
+     * Configures an InstaNovo platform support button.
+     *
+     * @param button the button
+     */
+    private void configureInstaNovoSupportButton(javax.swing.JButton button) {
+        button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/all_platforms_gray.png"))); // NOI18N
+        button.setToolTipText("Supported on Windows, macOS and Linux");
+        button.setBorder(null);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setEnabled(false);
+        button.setPreferredSize(new java.awt.Dimension(85, 25));
+    }
+
+    /**
+     * Configures an InstaNovo description label.
+     *
+     * @param label the label
+     * @param description the description text
+     */
+    private void configureInstaNovoDescriptionLabel(javax.swing.JLabel label, String description) {
+        label.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        label.setText("<html><a style=\"text-decoration: none\" href=\"" + INSTANOVO_DOCUMENTATION_URL + "\">" + description + "</a></html> ");
+        label.setToolTipText("Open the InstaNovo documentation");
+        label.setEnabled(false);
+        label.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+                BareBonesBrowserLaunch.openURL(INSTANOVO_DOCUMENTATION_URL);
+                setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            }
+
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            }
+        });
+    }
+
+    /**
+     * Configures an InstaNovo settings button.
+     *
+     * @param button the button
+     * @param toolTip the tooltip
+     */
+    private void configureInstaNovoSettingsButton(javax.swing.JButton button, String toolTip) {
+        button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit_gray.png"))); // NOI18N
+        button.setToolTipText(toolTip);
+        button.setBorder(null);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setEnabled(false);
+        button.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit.png"))); // NOI18N
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+            }
+        });
+    }
+
+    /**
+     * Edit the InstaNovo advanced settings.
+     *
+     * @param plusParameters if true, edits the standalone InstaNovo+ parameter object
+     * @param showInstaNovoModel show the InstaNovo model field
+     * @param showInstaNovoPlusModel show the InstaNovo+ model field
+     */
+    private void editInstaNovoSettings(boolean plusParameters, boolean showInstaNovoModel, boolean showInstaNovoPlusModel) {
+
+        SearchParameters searchParameters = identificationParameters.getSearchParameters();
+        int advocateIndex = plusParameters ? Advocate.instanovoPlus.getIndex() : Advocate.instanovo.getIndex();
+        Object oldParameters = searchParameters.getIdentificationAlgorithmParameter(advocateIndex);
+        InstaNovoParameters instaNovoParameters = oldParameters instanceof InstaNovoParameters
+                ? copyInstaNovoParameters((InstaNovoParameters) oldParameters, plusParameters)
+                : (plusParameters ? new InstaNovoPlusParameters() : new InstaNovoParameters());
+
+        HashMap<String, ArrayList<String>> instaNovoModels = getInstaNovoModels(searchHandler.getInstaNovoLocation());
+        JComboBox<String> instaNovoModelCmb = createInstaNovoModelComboBox(instaNovoModels.get("transformer"), instaNovoParameters.getInstaNovoModel());
+        JComboBox<String> instaNovoPlusModelCmb = createInstaNovoModelComboBox(instaNovoModels.get("diffusion"), instaNovoParameters.getInstaNovoPlusModel());
+
+        if ((showInstaNovoModel && instaNovoModelCmb.getItemCount() == 0)
+                || (showInstaNovoPlusModel && instaNovoPlusModelCmb.getItemCount() == 0)) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Could not read the InstaNovo model list from instanovo/models.json. Select the InstaNovo checkout root as the installation folder before editing advanced settings.",
+                    "InstaNovo Model List",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        JTextField configPathTxt = new JTextField(instaNovoParameters.getConfigFile() == null ? "" : instaNovoParameters.getConfigFile());
+        JSpinner numberOfBeamsSpinner = new JSpinner(new SpinnerNumberModel(instaNovoParameters.getNumberOfBeams(), 1, 1000, 1));
+        JComboBox<String> beamSearchCombo = new JComboBox<>(new String[]{"Standard beam search", "Knapsack beam search"});
+        beamSearchCombo.setSelectedIndex(instaNovoParameters.isUseKnapsack() ? 1 : 0);
+        JCheckBox saveAllPredictionsCheckBox = new JCheckBox("Save all beam predictions", instaNovoParameters.isSaveAllPredictions());
+        JSpinner batchSizeSpinner = new JSpinner(new SpinnerNumberModel(instaNovoParameters.getBatchSize(), 1, 100000, 1));
+        JCheckBox forceCpuCheckBox = new JCheckBox("Force CPU execution", instaNovoParameters.isForceCpu());
+
+        JPanel panel = new JPanel(new java.awt.GridLayout(0, 2, 5, 5));
+
+        if (showInstaNovoModel) {
+            panel.add(new JLabel("InstaNovo model"));
+            panel.add(instaNovoModelCmb);
+        }
+
+        if (showInstaNovoPlusModel) {
+            panel.add(new JLabel("InstaNovo+ model"));
+            panel.add(instaNovoPlusModelCmb);
+        }
+
+        panel.add(new JLabel("Number of beams"));
+        panel.add(numberOfBeamsSpinner);
+        panel.add(new JLabel("Beam search"));
+        panel.add(beamSearchCombo);
+        panel.add(new JLabel("Predictions"));
+        panel.add(saveAllPredictionsCheckBox);
+        panel.add(new JLabel("Batch size"));
+        panel.add(batchSizeSpinner);
+        panel.add(new JLabel("Config path"));
+        panel.add(configPathTxt);
+        panel.add(new JLabel("Device"));
+        panel.add(forceCpuCheckBox);
+
+        int option = JOptionPane.showConfirmDialog(
+                this,
+                panel,
+                showInstaNovoModel && showInstaNovoPlusModel
+                        ? "InstaNovo Refinement Advanced Settings"
+                        : (plusParameters ? "InstaNovo+ Advanced Settings" : "InstaNovo Advanced Settings"),
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (option == JOptionPane.OK_OPTION) {
+
+            if (showInstaNovoModel && instaNovoModelCmb.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "The InstaNovo model cannot be empty.", "Input Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (showInstaNovoPlusModel && instaNovoPlusModelCmb.getSelectedItem() == null) {
+                JOptionPane.showMessageDialog(this, "The InstaNovo+ model cannot be empty.", "Input Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (showInstaNovoModel) {
+                instaNovoParameters.setInstaNovoModel(instaNovoModelCmb.getSelectedItem().toString());
+            }
+
+            if (showInstaNovoPlusModel) {
+                instaNovoParameters.setInstaNovoPlusModel(instaNovoPlusModelCmb.getSelectedItem().toString());
+            }
+
+            String configPath = configPathTxt.getText().trim();
+            instaNovoParameters.setConfigFile(configPath.isEmpty() ? null : configPath);
+            instaNovoParameters.setNumberOfBeams((Integer) numberOfBeamsSpinner.getValue());
+            instaNovoParameters.setUseKnapsack(beamSearchCombo.getSelectedIndex() == 1);
+            instaNovoParameters.setSaveAllPredictions(saveAllPredictionsCheckBox.isSelected());
+            instaNovoParameters.setBatchSize((Integer) batchSizeSpinner.getValue());
+            instaNovoParameters.setForceCpu(forceCpuCheckBox.isSelected());
+
+            searchParameters.setIdentificationAlgorithmParameter(advocateIndex, instaNovoParameters);
+            validateInput(false);
+
+        }
+    }
+
+    /**
+     * Creates a model combo box populated from the InstaNovo models file.
+     *
+     * @param models the available models
+     * @param selectedModel the selected model
+     *
+     * @return the model combo box
+     */
+    private JComboBox<String> createInstaNovoModelComboBox(ArrayList<String> models, String selectedModel) {
+
+        if (models == null) {
+            models = new ArrayList<>();
+        }
+
+        JComboBox<String> comboBox = new JComboBox<>(models.toArray(new String[0]));
+        comboBox.setEditable(false);
+
+        if (selectedModel != null && models.contains(selectedModel)) {
+            comboBox.setSelectedItem(selectedModel);
+        }
+
+        return comboBox;
+    }
+
+    /**
+     * Returns the available InstaNovo models for the given type.
+     *
+     * @param instaNovoLocation the InstaNovo installation folder
+     * @param modelType the model type in models.json
+     *
+     * @return the available model ids
+     */
+    static ArrayList<String> getInstaNovoModels(File instaNovoLocation, String modelType) {
+
+        HashMap<String, ArrayList<String>> models = getInstaNovoModels(instaNovoLocation);
+        ArrayList<String> result = models.get(modelType);
+
+        return result == null ? new ArrayList<>() : result;
+    }
+
+    /**
+     * Returns the available InstaNovo models.
+     *
+     * @param instaNovoLocation the InstaNovo installation folder
+     *
+     * @return the available model ids indexed by model type
+     */
+    static HashMap<String, ArrayList<String>> getInstaNovoModels(File instaNovoLocation) {
+
+        HashMap<String, ArrayList<String>> result = new HashMap<>();
+
+        if (instaNovoLocation == null) {
+            return result;
+        }
+
+        File modelsFile = InstaNovoSetup.getModelsFile(instaNovoLocation);
+
+        if (modelsFile == null || !modelsFile.exists()) {
+            return result;
+        }
+
+        try (FileReader reader = new FileReader(modelsFile)) {
+
+            JsonObject modelsJson = JsonParser.parseReader(reader).getAsJsonObject();
+
+            for (Map.Entry<String, JsonElement> modelTypeEntry : modelsJson.entrySet()) {
+
+                JsonElement modelTypeElement = modelTypeEntry.getValue();
+
+                if (modelTypeElement.isJsonObject()) {
+
+                    ArrayList<String> models = new ArrayList<>();
+
+                    for (Map.Entry<String, JsonElement> modelEntry : modelTypeElement.getAsJsonObject().entrySet()) {
+                        models.add(modelEntry.getKey());
+                    }
+
+                    result.put(modelTypeEntry.getKey(), models);
+                }
+            }
+
+        } catch (Exception e) {
+            result.clear();
+        }
+
+        return result;
+    }
+
+    /**
+     * Copies InstaNovo parameters.
+     *
+     * @param oldParameters the old parameters
+     * @param plusParameters whether to create InstaNovo+ parameters
+     *
+     * @return a copy of the parameters
+     */
+    private InstaNovoParameters copyInstaNovoParameters(InstaNovoParameters oldParameters, boolean plusParameters) {
+
+        InstaNovoParameters result = plusParameters ? new InstaNovoPlusParameters() : new InstaNovoParameters();
+        result.setInstaNovoModel(oldParameters.getInstaNovoModel());
+        result.setInstaNovoPlusModel(oldParameters.getInstaNovoPlusModel());
+        result.setConfigFile(oldParameters.getConfigFile());
+        result.setNumberOfBeams(oldParameters.getNumberOfBeams());
+        result.setUseKnapsack(oldParameters.isUseKnapsack());
+        result.setSaveAllPredictions(oldParameters.isSaveAllPredictions());
+        result.setBatchSize(oldParameters.getBatchSize());
+        result.setForceCpu(oldParameters.isForceCpu());
+
+        return result;
+
+    }
+
+    /**
+     * Enable/disable InstaNovo.
+     *
+     * @param evt the action event
+     */
+    private void enableInstaNovoJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+
+        boolean selected = enableInstaNovoJCheckBox.isSelected();
+
+        if (selected && !ensureInstaNovoLocation(Advocate.instanovo)) {
+            enableInstaNovoJCheckBox.setSelected(false);
+            selected = false;
+        }
+
+        searchHandler.setInstaNovoEnabled(selected);
+        validateInput(false);
+
+    }
+
+    /**
+     * Enable/disable InstaNovo+.
+     *
+     * @param evt the action event
+     */
+    private void enableInstaNovoPlusJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+
+        boolean selected = enableInstaNovoPlusJCheckBox.isSelected();
+
+        if (selected && !ensureInstaNovoLocation(Advocate.instanovoPlus)) {
+            enableInstaNovoPlusJCheckBox.setSelected(false);
+            selected = false;
+        }
+
+        searchHandler.setInstaNovoPlusEnabled(selected);
+        validateInput(false);
+
+    }
+
+    /**
+     * Enable/disable InstaNovo with InstaNovo+ refinement.
+     *
+     * @param evt the action event
+     */
+    private void enableInstaNovoRefineJCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {
+
+        boolean selected = enableInstaNovoRefineJCheckBox.isSelected();
+
+        if (selected && !ensureInstaNovoLocation(Advocate.instanovoPlus)) {
+            enableInstaNovoRefineJCheckBox.setSelected(false);
+            selected = false;
+        }
+
+        searchHandler.setInstaNovoRefineEnabled(selected);
+        validateInput(false);
+
+    }
+
+    /**
+     * Enable/disable InstaNovo via the text button.
+     *
+     * @param evt the action event
+     */
+    private void instaNovoButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        enableInstaNovoJCheckBox.setSelected(!enableInstaNovoJCheckBox.isSelected());
+        enableInstaNovoJCheckBoxActionPerformed(null);
+    }
+
+    /**
+     * Enable/disable InstaNovo+ via the text button.
+     *
+     * @param evt the action event
+     */
+    private void instaNovoPlusButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        enableInstaNovoPlusJCheckBox.setSelected(!enableInstaNovoPlusJCheckBox.isSelected());
+        enableInstaNovoPlusJCheckBoxActionPerformed(null);
+    }
+
+    /**
+     * Enable/disable InstaNovo refinement via the text button.
+     *
+     * @param evt the action event
+     */
+    private void instaNovoRefineButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        enableInstaNovoRefineJCheckBox.setSelected(!enableInstaNovoRefineJCheckBox.isSelected());
+        enableInstaNovoRefineJCheckBoxActionPerformed(null);
+    }
+
+    /**
+     * Makes sure SearchGUI has a valid InstaNovo installation folder.
+     *
+     * @param advocate the InstaNovo advocate variant
+     *
+     * @return true if the installation folder is valid
+     */
+    private boolean ensureInstaNovoLocation(Advocate advocate) {
+
+        File instaNovoLocation = searchHandler.getInstaNovoLocation();
+
+        if (validateSearchEngineInstallation(advocate, instaNovoLocation, false)) {
+            return true;
+        }
+
+        Object[] options = {"Install InstaNovo", "Select Existing Folder", "Cancel"};
+        int option = JOptionPane.showOptionDialog(
+                this,
+                "InstaNovo is required for the selected workflow.\n\n"
+                + "SearchGUI can install InstaNovo " + InstaNovoSetup.INSTANOVO_VERSION + " in a local virtual environment,\n"
+                + "or you can select an existing InstaNovo checkout or installation folder.",
+                "Install or Select InstaNovo",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (option == 0) {
+            return installInstaNovo(InstaNovoSetup.getDefaultInstallationFolder(), advocate);
+        } else if (option != 1) {
+            return false;
+        }
+
+        return selectInstaNovoLocation(advocate, instaNovoLocation);
+    }
+
+    /**
+     * Selects an existing InstaNovo location.
+     *
+     * @param advocate the InstaNovo advocate variant
+     * @param currentLocation the current location
+     *
+     * @return true if a valid location was selected
+     */
+    private boolean selectInstaNovoLocation(Advocate advocate, File currentLocation) {
+
+        JFileChooser folderChooser = new JFileChooser(currentLocation);
+        folderChooser.setDialogTitle("Select the InstaNovo Installation Folder");
+        folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        folderChooser.setMultiSelectionEnabled(false);
+
+        int result = folderChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+
+            searchHandler.setInstaNovoLocation(folderChooser.getSelectedFile());
+            return validateSearchEngineInstallation(advocate, searchHandler.getInstaNovoLocation(), true);
+
+        }
+
+        return false;
+
+    }
+
+    /**
+     * Installs InstaNovo in a local virtual environment.
+     *
+     * @param installationFolder the installation folder
+     * @param advocate the InstaNovo advocate variant
+     *
+     * @return true if the installation succeeded
+     */
+    private boolean installInstaNovo(File installationFolder, Advocate advocate) {
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Install InstaNovo " + InstaNovoSetup.INSTANOVO_VERSION + " into:\n"
+                + installationFolder.getAbsolutePath()
+                + "\n\n" + InstaNovoSetup.getInstallVariantDescription()
+                + "\n\nThis downloads uv if needed, a managed Python runtime, and Python dependencies.\n"
+                + "The InstaNovo model checkpoint will still be downloaded by InstaNovo on first use.",
+                "Install InstaNovo",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirm != JOptionPane.OK_OPTION) {
+            return false;
+        }
+
+        final ProgressDialogX installerDialog = new ProgressDialogX(
+                this,
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui.gif")),
+                Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/searchgui-orange.gif")),
+                true
+        );
+        installerDialog.setPrimaryProgressCounterIndeterminate(true);
+        installerDialog.setTitle("Installing InstaNovo. Please Wait...");
+
+        final boolean[] success = new boolean[]{false};
+        final Exception[] exception = new Exception[]{null};
+
+        Thread installerThread = new Thread("InstallInstaNovoThread") {
+            @Override
+            public void run() {
+                try {
+                    InstaNovoSetup.install(installationFolder, installerDialog);
+                    success[0] = true;
+                } catch (Exception e) {
+                    exception[0] = e;
+                } finally {
+                    installerDialog.setRunFinished();
+                }
+            }
+        };
+
+        installerThread.start();
+        installerDialog.setVisible(true);
+
+        if (!success[0]) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Could not install InstaNovo.\n\n" + (exception[0] == null ? "The installation was canceled." : exception[0].getMessage()),
+                    "InstaNovo Installation",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return false;
+        }
+
+        if (!InstaNovoProcessBuilder.getExecutable(installationFolder).exists()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "InstaNovo was installed, but the executable could not be found in " + installationFolder + ".",
+                    "InstaNovo Installation",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return false;
+        }
+
+        searchHandler.setInstaNovoLocation(installationFolder);
+
+        return validateSearchEngineInstallation(advocate, searchHandler.getInstaNovoLocation(), true);
+    }
 
     /**
      * Clear the list of spectra.
@@ -6753,6 +7456,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JCheckBox enableAndromedaJCheckBox;
     private javax.swing.JCheckBox enableCometJCheckBox;
     private javax.swing.JCheckBox enableDirecTagJCheckBox;
+    private javax.swing.JCheckBox enableInstaNovoJCheckBox;
+    private javax.swing.JCheckBox enableInstaNovoPlusJCheckBox;
+    private javax.swing.JCheckBox enableInstaNovoRefineJCheckBox;
     private javax.swing.JCheckBox enableMetaMorpheusJCheckBox;
     private javax.swing.JCheckBox enableMsAmandaJCheckBox;
     private javax.swing.JCheckBox enableMsgfJCheckBox;
@@ -6767,6 +7473,18 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JPanel inputFilesPanel;
+    private javax.swing.JButton instaNovoButton;
+    private javax.swing.JLabel instaNovoLinkLabel;
+    private javax.swing.JButton instaNovoPlusButton;
+    private javax.swing.JLabel instaNovoPlusLinkLabel;
+    private javax.swing.JButton instaNovoPlusSettingsButton;
+    private javax.swing.JButton instaNovoPlusSupportButton;
+    private javax.swing.JButton instaNovoRefineButton;
+    private javax.swing.JLabel instaNovoRefineLinkLabel;
+    private javax.swing.JButton instaNovoRefineSettingsButton;
+    private javax.swing.JButton instaNovoRefineSupportButton;
+    private javax.swing.JButton instaNovoSettingsButton;
+    private javax.swing.JButton instaNovoSupportButton;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator16;
@@ -7065,6 +7783,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         boolean metaMorpheusValid = true;
         boolean sageValid = true;
         boolean novorValid = true;
+        boolean instaNovoValid = true;
         boolean direcTagValid = true;
 
         if (enableOmssaJCheckBox.isSelected()) {
@@ -7166,6 +7885,17 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             );
 
         }
+        if (enableInstaNovoJCheckBox.isSelected()
+                || enableInstaNovoPlusJCheckBox.isSelected()
+                || enableInstaNovoRefineJCheckBox.isSelected()) {
+
+            instaNovoValid = validateSearchEngineInstallation(
+                    Advocate.instanovo,
+                    searchHandler.getInstaNovoLocation(),
+                    false
+            );
+
+        }
         if (enableDirecTagJCheckBox.isSelected()) {
 
             direcTagValid = validateSearchEngineInstallation(
@@ -7176,17 +7906,23 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         }
 
-        if (!omssaValid || !xtandemValid || !msgfValid || !msAmandaValid || !myriMatchValid
-                || !cometValid || !tideValid || !andromedaValid || !metaMorpheusValid
-                || !sageValid || !novorValid || !direcTagValid) {
+        if (!instaNovoValid) {
+
+            instaNovoValid = ensureInstaNovoLocation(Advocate.instanovo);
+
+        }
+
+        boolean otherSearchEnginesValid = omssaValid && xtandemValid && msgfValid && msAmandaValid && myriMatchValid
+                && cometValid && tideValid && andromedaValid && metaMorpheusValid
+                && sageValid && novorValid && direcTagValid;
+
+        if (!otherSearchEnginesValid) {
 
             new SoftwareLocationDialog(this, true);
 
         }
 
-        return omssaValid && xtandemValid && msgfValid && msAmandaValid && myriMatchValid
-                && cometValid && tideValid && andromedaValid && metaMorpheusValid
-                && sageValid && novorValid && direcTagValid;
+        return otherSearchEnginesValid && instaNovoValid;
     }
 
     /**
@@ -7209,6 +7945,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 && !enableMetaMorpheusJCheckBox.isSelected()
                 && !enableSageJCheckBox.isSelected()
                 && !enableNovorJCheckBox.isSelected()
+                && !enableInstaNovoJCheckBox.isSelected()
+                && !enableInstaNovoPlusJCheckBox.isSelected()
+                && !enableInstaNovoRefineJCheckBox.isSelected()
                 && !enableDirecTagJCheckBox.isSelected()) {
 
             if (showMessage && valid) {
@@ -7254,7 +7993,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
 
         }
 
-        if (databaseFileTxt.getText() == null || databaseFileTxt.getText().trim().equals("")) {
+        // a database is only required for database search engines; de novo only runs
+        // (including PeptideShaker post-processing) can be performed without a database
+        boolean databaseRequired = isDatabaseSearchSelected();
+
+        if (databaseRequired
+                && (databaseFileTxt.getText() == null || databaseFileTxt.getText().trim().equals(""))) {
 
             if (showMessage && valid) {
 
@@ -7272,7 +8016,7 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             databaseFileTxt.setToolTipText(null);
             valid = false;
 
-        } else {
+        } else if (databaseFileTxt.getText() != null && !databaseFileTxt.getText().trim().equals("")) {
 
             File test = new File(databaseFileTxt.getText().trim());
 
@@ -7294,6 +8038,10 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 valid = false;
 
             }
+        } else {
+
+            databaseSettingsLbl.setToolTipText("A database file is optional for de novo-only searches");
+            databaseFileTxt.setToolTipText(null);
         }
 
         // validate the search parameters
@@ -7359,6 +8107,25 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchButton.setEnabled(valid);
         return valid;
 
+    }
+
+    /**
+     * Returns true if a selected engine requires a FASTA database.
+     *
+     * @return true if a FASTA database is required
+     */
+    private boolean isDatabaseSearchSelected() {
+
+        return enableOmssaJCheckBox.isSelected()
+                || enableXTandemJCheckBox.isSelected()
+                || enableMsgfJCheckBox.isSelected()
+                || enableMsAmandaJCheckBox.isSelected()
+                || enableMyriMatchJCheckBox.isSelected()
+                || enableCometJCheckBox.isSelected()
+                || enableTideJCheckBox.isSelected()
+                || enableAndromedaJCheckBox.isSelected()
+                || enableMetaMorpheusJCheckBox.isSelected()
+                || enableSageJCheckBox.isSelected();
     }
 
     /**
@@ -7908,6 +8675,12 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                 bw.write(searchHandler.getSageLocation() + System.getProperty("line.separator") + searchHandler.isSageEnabled() + System.getProperty("line.separator"));
                 bw.write("Novor Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getNovorLocation() + System.getProperty("line.separator") + searchHandler.isNovorEnabled() + System.getProperty("line.separator"));
+                bw.write("InstaNovo Location:" + System.getProperty("line.separator"));
+                bw.write(searchHandler.getInstaNovoLocation() + System.getProperty("line.separator") + searchHandler.isInstaNovoEnabled() + System.getProperty("line.separator"));
+                bw.write("InstaNovo+ Enabled:" + System.getProperty("line.separator"));
+                bw.write(searchHandler.isInstaNovoPlusEnabled() + System.getProperty("line.separator"));
+                bw.write("InstaNovo Refinement Enabled:" + System.getProperty("line.separator"));
+                bw.write(searchHandler.isInstaNovoRefineEnabled() + System.getProperty("line.separator"));
                 bw.write("DirecTag Location:" + System.getProperty("line.separator"));
                 bw.write(searchHandler.getDirecTagLocation() + System.getProperty("line.separator") + searchHandler.isDirecTagEnabled() + System.getProperty("line.separator"));
                 bw.write("makeblastdb Location:" + System.getProperty("line.separator"));
@@ -7969,6 +8742,63 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
             boolean enableDirecTag
     ) {
 
+        enableSearchEngines(
+                enableOmssa,
+                enbleXTandem,
+                enableMsgf,
+                enableMsAmanda,
+                enableMyriMatch,
+                enableComet,
+                enableTide,
+                enableAndromeda,
+                enableMetaMorpheus,
+                enableSage,
+                enableNovor,
+                searchHandler != null && searchHandler.isInstaNovoEnabled(),
+                searchHandler != null && searchHandler.isInstaNovoPlusEnabled(),
+                searchHandler != null && searchHandler.isInstaNovoRefineEnabled(),
+                enableDirecTag
+        );
+
+    }
+
+    /**
+     * Enables/disables the search engines.
+     *
+     * @param enableOmssa enable OMSSA
+     * @param enbleXTandem enable X! Tandem
+     * @param enableMsgf enable MS-GF+
+     * @param enableMsAmanda enable MS Amanda
+     * @param enableMyriMatch enable MyriMatch
+     * @param enableComet enable Comet
+     * @param enableTide enable Tide
+     * @param enableAndromeda enable Andromeda
+     * @param enableMetaMorpheus enable MetaMorpheus
+     * @param enableSage enable Sage
+     * @param enableNovor enable Novor
+     * @param enableInstaNovo enable InstaNovo
+     * @param enableInstaNovoPlus enable InstaNovo+
+     * @param enableInstaNovoRefine enable InstaNovo with InstaNovo+ refinement
+     * @param enableDirecTag enable DirecTag
+     */
+    public void enableSearchEngines(
+            boolean enableOmssa,
+            boolean enbleXTandem,
+            boolean enableMsgf,
+            boolean enableMsAmanda,
+            boolean enableMyriMatch,
+            boolean enableComet,
+            boolean enableTide,
+            boolean enableAndromeda,
+            boolean enableMetaMorpheus,
+            boolean enableSage,
+            boolean enableNovor,
+            boolean enableInstaNovo,
+            boolean enableInstaNovoPlus,
+            boolean enableInstaNovoRefine,
+            boolean enableDirecTag
+    ) {
+
         enableOmssaJCheckBox.setSelected(enableOmssa);
         enableXTandemJCheckBox.setSelected(enbleXTandem);
         enableMsgfJCheckBox.setSelected(enableMsgf);
@@ -7980,6 +8810,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         enableMetaMorpheusJCheckBox.setSelected(enableMetaMorpheus);
         enableSageJCheckBox.setSelected(enableSage);
         enableNovorJCheckBox.setSelected(enableNovor);
+        enableInstaNovoJCheckBox.setSelected(enableInstaNovo);
+        enableInstaNovoPlusJCheckBox.setSelected(enableInstaNovoPlus);
+        enableInstaNovoRefineJCheckBox.setSelected(enableInstaNovoRefine);
         enableDirecTagJCheckBox.setSelected(enableDirecTag);
 
         searchHandler.setOmssaEnabled(enableOmssa);
@@ -7993,6 +8826,9 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         searchHandler.setMetaMorpheusEnabled(enableMetaMorpheus);
         searchHandler.setSageEnabled(enableSage);
         searchHandler.setNovorEnabled(enableNovor);
+        searchHandler.setInstaNovoEnabled(enableInstaNovo);
+        searchHandler.setInstaNovoPlusEnabled(enableInstaNovoPlus);
+        searchHandler.setInstaNovoRefineEnabled(enableInstaNovoRefine);
         searchHandler.setDirecTagEnabled(enableDirecTag);
 
         validateInput(false);
@@ -8268,6 +9104,28 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
                     searchEngineLocation,
                     "Usage: sage.ex",
                     true,
+                    feedBackInDialog
+            );
+
+        } else if (advocate == Advocate.instanovo || advocate == Advocate.instanovoPlus || advocate == Advocate.instanovoRefined) {
+
+            if (searchEngineLocation != null) {
+
+                File executable = InstaNovoProcessBuilder.getExecutable(searchEngineLocation);
+
+                if (executable.exists()) {
+                    return true;
+                }
+            }
+
+            return validateSearchEngineInstallation(
+                    advocate,
+                    InstaNovoProcessBuilder.EXECUTABLE_FILE_NAME,
+                    "version",
+                    null,
+                    searchEngineLocation,
+                    null,
+                    false,
                     feedBackInDialog
             );
 
@@ -8872,6 +9730,21 @@ public class SearchGUI extends javax.swing.JFrame implements JavaHomeOrMemoryDia
         enableNovorJCheckBox.setEnabled(enable);
         novorButton.setEnabled(enable);
         novorLinkLabel.setEnabled(enable);
+        enableInstaNovoJCheckBox.setEnabled(enable);
+        enableInstaNovoPlusJCheckBox.setEnabled(enable);
+        enableInstaNovoRefineJCheckBox.setEnabled(enable);
+        instaNovoButton.setEnabled(enable);
+        instaNovoPlusButton.setEnabled(enable);
+        instaNovoRefineButton.setEnabled(enable);
+        instaNovoSupportButton.setEnabled(enable);
+        instaNovoPlusSupportButton.setEnabled(enable);
+        instaNovoRefineSupportButton.setEnabled(enable);
+        instaNovoSettingsButton.setEnabled(enable);
+        instaNovoPlusSettingsButton.setEnabled(enable);
+        instaNovoRefineSettingsButton.setEnabled(enable);
+        instaNovoLinkLabel.setEnabled(enable);
+        instaNovoPlusLinkLabel.setEnabled(enable);
+        instaNovoRefineLinkLabel.setEnabled(enable);
 
         // peptideshaker
         peptideShakerSettingsButton.setEnabled(enable);

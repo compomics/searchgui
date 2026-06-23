@@ -127,8 +127,11 @@ public class PeptideShakerProcessBuilder extends SearchGUIProcessBuilder {
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationFiles));
             process_name_array.add("-spectrum_files");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(spectrumFiles));
-            process_name_array.add("-fasta_file");
-            process_name_array.add(CommandLineUtils.getCommandLineArgument(fastaFile));
+            if (fastaFile != null) {
+                // de novo only runs are processed without a protein sequence database
+                process_name_array.add("-fasta_file");
+                process_name_array.add(CommandLineUtils.getCommandLineArgument(fastaFile));
+            }
             process_name_array.add("-id_params");
             process_name_array.add(CommandLineUtils.getCommandLineArgument(identificationParametersFile));
             process_name_array.add("-out");

@@ -23,6 +23,8 @@ import com.compomics.util.io.compression.ZipUtils;
 import com.compomics.util.parameters.identification.IdentificationParameters;
 import com.compomics.util.parameters.identification.search.SearchParameters;
 import com.compomics.util.parameters.identification.tool_specific.CometParameters;
+import com.compomics.util.parameters.identification.tool_specific.InstaNovoParameters;
+import com.compomics.util.parameters.identification.tool_specific.InstaNovoPlusParameters;
 import com.compomics.util.parameters.identification.tool_specific.MsAmandaParameters;
 import com.compomics.util.parameters.identification.tool_specific.MyriMatchParameters;
 import com.compomics.util.parameters.identification.tool_specific.OmssaParameters;
@@ -142,6 +144,18 @@ public class SearchHandler {
      */
     private boolean enableNovor = false;
     /**
+     * If true, InstaNovo will be used.
+     */
+    private boolean enableInstaNovo = false;
+    /**
+     * If true, standalone InstaNovo+ will be used.
+     */
+    private boolean enableInstaNovoPlus = false;
+    /**
+     * If true, InstaNovo with InstaNovo+ refinement will be used.
+     */
+    private boolean enableInstaNovoRefine = false;
+    /**
      * If true, DirecTag will be used.
      */
     private boolean enableDirecTag = false;
@@ -231,6 +245,10 @@ public class SearchHandler {
      */
     private File novorLocation = null;
     /**
+     * The InstaNovo location.
+     */
+    private File instaNovoLocation = null;
+    /**
      * The DirecTag location.
      */
     private File direcTagLocation = null;
@@ -310,6 +328,10 @@ public class SearchHandler {
      * The Novor process.
      */
     private NovorProcessBuilder novorProcessBuilder = null;
+    /**
+     * The InstaNovo process.
+     */
+    private InstaNovoProcessBuilder instaNovoProcessBuilder = null;
     /**
      * The DirecTag process.
      */
@@ -557,6 +579,19 @@ public class SearchHandler {
                 false
         );
 
+        enableInstaNovo = loadSearchEngineLocation(
+                Advocate.instanovo,
+                true,
+                true,
+                true,
+                true,
+                false,
+                false,
+                false
+        );
+        enableInstaNovoPlus = loadBooleanConfigurationValue("InstaNovo+ Enabled:", false);
+        enableInstaNovoRefine = loadBooleanConfigurationValue("InstaNovo Refinement Enabled:", false);
+
         enableDirecTag = loadSearchEngineLocation(
                 Advocate.direcTag,
                 false,
@@ -651,6 +686,9 @@ public class SearchHandler {
             boolean runMetaMorpheus,
             boolean runSage,
             boolean runNovor,
+            boolean runInstaNovo,
+            boolean runInstaNovoPlus,
+            boolean runInstaNovoRefine,
             boolean runDirecTag,
             File omssaFolder,
             File xTandemFolder,
@@ -664,6 +702,7 @@ public class SearchHandler {
             File metaMorpheusFolder,
             File sageFolder,
             File novorFolder,
+            File instaNovoFolder,
             File direcTagFolder,
             File makeblastdbFolder,
             ProcessingParameters processingParameters
@@ -691,6 +730,9 @@ public class SearchHandler {
         this.enableMetaMorpheus = runMetaMorpheus;
         this.enableSage = runSage;
         this.enableNovor = runNovor;
+        this.enableInstaNovo = runInstaNovo;
+        this.enableInstaNovoPlus = runInstaNovoPlus;
+        this.enableInstaNovoRefine = runInstaNovoRefine;
         this.enableDirecTag = runDirecTag;
 
         this.identificationParameters = identificationParameters;
@@ -854,6 +896,21 @@ public class SearchHandler {
         } else {
             loadSearchEngineLocation(
                     Advocate.novor,
+                    true,
+                    true,
+                    true,
+                    true,
+                    false,
+                    false,
+                    false
+            ); // try to use the default
+        }
+
+        if (instaNovoFolder != null) {
+            this.instaNovoLocation = instaNovoFolder;
+        } else {
+            loadSearchEngineLocation(
+                    Advocate.instanovo,
                     true,
                     true,
                     true,
@@ -1383,6 +1440,8 @@ public class SearchHandler {
                 sageLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.novor) {
                 novorLocation = searchEngineLoation;
+            } else if (searchEngineAdvocate == Advocate.instanovo) {
+                instaNovoLocation = searchEngineLoation;
             } else if (searchEngineAdvocate == Advocate.direcTag) {
                 direcTagLocation = searchEngineLoation;
             }
@@ -1392,6 +1451,45 @@ public class SearchHandler {
         }
 
         return enableSearchEngine;
+
+    }
+
+    /**
+     * Loads an optional boolean value from the SearchGUI configuration file.
+     *
+     * @param key the configuration key
+     * @param defaultValue the default value
+     *
+     * @return the configured boolean value
+     */
+    private boolean loadBooleanConfigurationValue(String key, boolean defaultValue) {
+
+        File folder = new File(getJarFilePath() + File.separator + "resources" + File.separator + "conf" + File.separator);
+        File input = new File(folder, SEARCHGUI_CONFIGURATION_FILE);
+
+        if (!input.exists()) {
+            return defaultValue;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(input))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                if (line.trim().equals(key)) {
+
+                    String value = br.readLine();
+                    return value == null ? defaultValue : Boolean.parseBoolean(value.trim());
+
+                }
+            }
+
+        } catch (IOException e) {
+            return defaultValue;
+        }
+
+        return defaultValue;
 
     }
 
@@ -1521,6 +1619,63 @@ public class SearchHandler {
      */
     public static String getNovorFileName(String spectrumFileName) {
         return IoUtil.removeExtension(spectrumFileName) + ".novor.csv";
+    }
+
+    /**
+     * Returns the name of the InstaNovo transformer-only result file.
+     *
+     * @param spectrumFileName the name of the spectrum file searched
+     *
+     * @return the name of the InstaNovo result file
+     */
+    public static String getInstaNovoFileName(String spectrumFileName) {
+        return IoUtil.removeExtension(spectrumFileName) + ".instanovo.csv";
+    }
+
+    /**
+     * Returns the name of the standalone InstaNovo+ result file.
+     *
+     * @param spectrumFileName the name of the spectrum file searched
+     *
+     * @return the name of the InstaNovo+ result file
+     */
+    public static String getInstaNovoPlusFileName(String spectrumFileName) {
+        return IoUtil.removeExtension(spectrumFileName) + ".instanovoplus.csv";
+    }
+
+    /**
+     * Returns the name of the InstaNovo with InstaNovo+ refinement result file.
+     *
+     * @param spectrumFileName the name of the spectrum file searched
+     *
+     * @return the name of the refined InstaNovo result file
+     */
+    public static String getInstaNovoRefinedFileName(String spectrumFileName) {
+        return IoUtil.removeExtension(spectrumFileName) + ".instanovo.refined.csv";
+    }
+
+    /**
+     * Returns the InstaNovo parameters.
+     *
+     * @return the InstaNovo parameters
+     */
+    private InstaNovoParameters getInstaNovoParameters() {
+
+        Object parameters = identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.instanovo.getIndex());
+        return parameters instanceof InstaNovoParameters ? (InstaNovoParameters) parameters : new InstaNovoParameters();
+
+    }
+
+    /**
+     * Returns the InstaNovo+ parameters.
+     *
+     * @return the InstaNovo+ parameters
+     */
+    private InstaNovoPlusParameters getInstaNovoPlusParameters() {
+
+        Object parameters = identificationParameters.getSearchParameters().getIdentificationAlgorithmParameter(Advocate.instanovoPlus.getIndex());
+        return parameters instanceof InstaNovoPlusParameters ? (InstaNovoPlusParameters) parameters : new InstaNovoPlusParameters();
+
     }
 
     /**
@@ -1872,12 +2027,30 @@ public class SearchHandler {
     }
 
     /**
+     * Returns the InstaNovo location.
+     *
+     * @return the InstaNovo location
+     */
+    public File getInstaNovoLocation() {
+        return instaNovoLocation;
+    }
+
+    /**
      * Set the Novor location.
      *
      * @param novorLocation the Novor location to set
      */
     public void setNovorLocation(File novorLocation) {
         this.novorLocation = novorLocation;
+    }
+
+    /**
+     * Set the InstaNovo location.
+     *
+     * @param instaNovoLocation the InstaNovo location to set
+     */
+    public void setInstaNovoLocation(File instaNovoLocation) {
+        this.instaNovoLocation = instaNovoLocation;
     }
 
     /**
@@ -2052,6 +2225,33 @@ public class SearchHandler {
     }
 
     /**
+     * Returns true if InstaNovo is to be used.
+     *
+     * @return if InstaNovo is to be used
+     */
+    public boolean isInstaNovoEnabled() {
+        return enableInstaNovo;
+    }
+
+    /**
+     * Returns true if standalone InstaNovo+ is to be used.
+     *
+     * @return if standalone InstaNovo+ is to be used
+     */
+    public boolean isInstaNovoPlusEnabled() {
+        return enableInstaNovoPlus;
+    }
+
+    /**
+     * Returns true if InstaNovo with InstaNovo+ refinement is to be used.
+     *
+     * @return if InstaNovo with InstaNovo+ refinement is to be used
+     */
+    public boolean isInstaNovoRefineEnabled() {
+        return enableInstaNovoRefine;
+    }
+
+    /**
      * Returns true if DirecTag is to be used.
      *
      * @return if DirecTag is to be used
@@ -2148,6 +2348,33 @@ public class SearchHandler {
      */
     public void setNovorEnabled(boolean runNovor) {
         this.enableNovor = runNovor;
+    }
+
+    /**
+     * Set if InstaNovo is to be used.
+     *
+     * @param runInstaNovo run InstaNovo?
+     */
+    public void setInstaNovoEnabled(boolean runInstaNovo) {
+        this.enableInstaNovo = runInstaNovo;
+    }
+
+    /**
+     * Set if standalone InstaNovo+ is to be used.
+     *
+     * @param runInstaNovoPlus run standalone InstaNovo+?
+     */
+    public void setInstaNovoPlusEnabled(boolean runInstaNovoPlus) {
+        this.enableInstaNovoPlus = runInstaNovoPlus;
+    }
+
+    /**
+     * Set if InstaNovo with InstaNovo+ refinement is to be used.
+     *
+     * @param runInstaNovoRefine run InstaNovo with InstaNovo+ refinement?
+     */
+    public void setInstaNovoRefineEnabled(boolean runInstaNovoRefine) {
+        this.enableInstaNovoRefine = runInstaNovoRefine;
     }
 
     /**
@@ -2510,6 +2737,15 @@ public class SearchHandler {
                 if (enableNovor) {
                     nProgress += nFilesToSearch;
                 }
+                if (enableInstaNovo) {
+                    nProgress += nFilesToSearch * InstaNovoProcessBuilder.PRIMARY_PROGRESS_UNITS;
+                }
+                if (enableInstaNovoPlus) {
+                    nProgress += nFilesToSearch * InstaNovoProcessBuilder.PRIMARY_PROGRESS_UNITS;
+                }
+                if (enableInstaNovoRefine) {
+                    nProgress += nFilesToSearch * InstaNovoProcessBuilder.PRIMARY_PROGRESS_UNITS;
+                }
                 if (enableDirecTag) {
                     nProgress += nFilesToSearch;
                 }
@@ -2725,7 +2961,9 @@ public class SearchHandler {
                             File rawFile = rawFiles.get(i);
                             String rawFileName = rawFile.getName();
                             File folder = rawFile.getParentFile();
-                            String msFileName = IoUtil.removeExtension(rawFileName) + thermoRawFileParserParameters.getOutputFormat().fileNameEnding.toLowerCase();
+                            // use the exact extension produced by ThermoRawFileParser (e.g. .mzML) so the
+                            // converted file is found on case-sensitive file systems
+                            String msFileName = IoUtil.removeExtension(rawFileName) + thermoRawFileParserParameters.getOutputFormat().fileNameEnding;
                             File msFile = new File(folder, msFileName);
 
                             // Check whether the file exists but with a different case for the extension.
@@ -3794,6 +4032,114 @@ public class SearchHandler {
 
                     }
 
+                    // Run InstaNovo
+                    if (enableInstaNovo && !waitingHandler.isRunCanceled()) {
+
+                        File instaNovoOutputFile = new File(outputTempFolder, getInstaNovoFileName(spectrumFileName));
+
+                        instaNovoProcessBuilder = new InstaNovoProcessBuilder(
+                                instaNovoLocation,
+                                spectrumFile,
+                                instaNovoOutputFile,
+                                InstaNovoProcessBuilder.Mode.transformer,
+                                getInstaNovoParameters(),
+                                waitingHandler,
+                                exceptionHandler
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFile.getName() + " with " + Advocate.instanovo.getName() + ".",
+                                true,
+                                true
+                        );
+
+                        waitingHandler.appendReportEndLine();
+                        instaNovoProcessBuilder.startProcess();
+
+                        if (!waitingHandler.isRunCanceled()) {
+                            registerIdentificationFile(
+                                    identificationFiles,
+                                    spectrumFileName,
+                                    Advocate.instanovo,
+                                    instaNovoOutputFile,
+                                    spectrumFile
+                            );
+                            completeProcessPrimaryProgress(instaNovoProcessBuilder);
+                        }
+                    }
+
+                    // Run standalone InstaNovo+
+                    if (enableInstaNovoPlus && !waitingHandler.isRunCanceled()) {
+
+                        File instaNovoPlusOutputFile = new File(outputTempFolder, getInstaNovoPlusFileName(spectrumFileName));
+
+                        instaNovoProcessBuilder = new InstaNovoProcessBuilder(
+                                instaNovoLocation,
+                                spectrumFile,
+                                instaNovoPlusOutputFile,
+                                InstaNovoProcessBuilder.Mode.diffusion,
+                                getInstaNovoPlusParameters(),
+                                waitingHandler,
+                                exceptionHandler
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFile.getName() + " with " + Advocate.instanovoPlus.getName() + ".",
+                                true,
+                                true
+                        );
+
+                        waitingHandler.appendReportEndLine();
+                        instaNovoProcessBuilder.startProcess();
+
+                        if (!waitingHandler.isRunCanceled()) {
+                            registerIdentificationFile(
+                                    identificationFiles,
+                                    spectrumFileName,
+                                    Advocate.instanovoPlus,
+                                    instaNovoPlusOutputFile,
+                                    spectrumFile
+                            );
+                            completeProcessPrimaryProgress(instaNovoProcessBuilder);
+                        }
+                    }
+
+                    // Run InstaNovo with InstaNovo+ refinement
+                    if (enableInstaNovoRefine && !waitingHandler.isRunCanceled()) {
+
+                        File instaNovoRefinedOutputFile = new File(outputTempFolder, getInstaNovoRefinedFileName(spectrumFileName));
+
+                        instaNovoProcessBuilder = new InstaNovoProcessBuilder(
+                                instaNovoLocation,
+                                spectrumFile,
+                                instaNovoRefinedOutputFile,
+                                InstaNovoProcessBuilder.Mode.refined,
+                                getInstaNovoParameters(),
+                                waitingHandler,
+                                exceptionHandler
+                        );
+
+                        waitingHandler.appendReport(
+                                "Processing " + spectrumFile.getName() + " with InstaNovo and InstaNovo+ refinement.",
+                                true,
+                                true
+                        );
+
+                        waitingHandler.appendReportEndLine();
+                        instaNovoProcessBuilder.startProcess();
+
+                        if (!waitingHandler.isRunCanceled()) {
+                            registerIdentificationFile(
+                                    identificationFiles,
+                                    spectrumFileName,
+                                    Advocate.instanovoRefined,
+                                    instaNovoRefinedOutputFile,
+                                    spectrumFile
+                            );
+                            completeProcessPrimaryProgress(instaNovoProcessBuilder);
+                        }
+                    }
+
                     // Run DirecTag
                     if (enableDirecTag && !waitingHandler.isRunCanceled()) {
 
@@ -4207,6 +4553,78 @@ public class SearchHandler {
 
                         }
 
+                        if (enableInstaNovo) {
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.instanovo.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
+                            if (outputFile.exists()) {
+
+                                identificationFilesList.add(outputFile);
+
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.instanovo.getName() + " results.",
+                                        true,
+                                        true
+                                );
+
+                            }
+
+                        }
+
+                        if (enableInstaNovoPlus) {
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.instanovoPlus.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
+                            if (outputFile.exists()) {
+
+                                identificationFilesList.add(outputFile);
+
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.instanovoPlus.getName() + " results.",
+                                        true,
+                                        true
+                                );
+
+                            }
+
+                        }
+
+                        if (enableInstaNovoRefine) {
+
+                            File outputFile = getDefaultOutputFile(
+                                    outputFolder,
+                                    Advocate.instanovoRefined.getName(),
+                                    utilitiesUserParameters.isIncludeDateInOutputName()
+                            );
+
+                            if (outputFile.exists()) {
+
+                                identificationFilesList.add(outputFile);
+
+                            } else {
+
+                                waitingHandler.appendReport(
+                                        "Could not find " + Advocate.instanovoRefined.getName() + " results.",
+                                        true,
+                                        true
+                                );
+
+                            }
+
+                        }
+
                     } else if (utilitiesUserParameters.getSearchGuiOutputParameters() == OutputParameters.run) {
 
                         for (String run : identificationFiles.keySet()) {
@@ -4441,6 +4859,59 @@ public class SearchHandler {
     }
 
     /**
+     * Registers a search engine identification file.
+     *
+     * @param identificationFiles the identification files map
+     * @param spectrumFileName the spectrum file name
+     * @param advocate the advocate
+     * @param identificationFile the identification file
+     * @param spectrumFile the spectrum file
+     */
+    private void registerIdentificationFile(
+            HashMap<String, HashMap<Integer, File>> identificationFiles,
+            String spectrumFileName,
+            Advocate advocate,
+            File identificationFile,
+            File spectrumFile
+    ) {
+
+        HashMap<Integer, File> runIdentificationFiles = identificationFiles.get(spectrumFileName);
+
+        if (runIdentificationFiles == null) {
+            runIdentificationFiles = new HashMap<>();
+            identificationFiles.put(spectrumFileName, runIdentificationFiles);
+        }
+
+        if (identificationFile.exists()) {
+
+            runIdentificationFiles.put(advocate.getIndex(), identificationFile);
+            idFileToSpectrumFileMap.put(identificationFile.getName(), spectrumFile);
+
+        } else {
+
+            waitingHandler.appendReport(
+                    "Could not find " + advocate.getName() + " result file for " + spectrumFileName + ".",
+                    true,
+                    true
+            );
+        }
+    }
+
+    /**
+     * Completes the primary progress units allocated to a process.
+     *
+     * @param processBuilder the process builder
+     */
+    private void completeProcessPrimaryProgress(SearchGUIProcessBuilder processBuilder) {
+
+        int remainingProgress = processBuilder.getPrimaryProgressUnits() - processBuilder.getPrimaryProgressUnitsCompleted();
+
+        if (remainingProgress > 0) {
+            waitingHandler.increasePrimaryProgressCounter(remainingProgress);
+        }
+    }
+
+    /**
      * Save the input file.
      *
      * @param folder the folder where to save the input file
@@ -4452,7 +4923,9 @@ public class SearchHandler {
         try ( BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
             // add the fasta file
-            bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
+            if (fastaFile != null) {
+                bw.write(fastaFile.getAbsolutePath() + System.getProperty("line.separator"));
+            }
 
             // add the ms files
             for (File spectrumFile : msFiles) {
@@ -4978,7 +5451,9 @@ public class SearchHandler {
                     dataFolder.mkdir();
 
                     // copy fasta file
-                    IoUtil.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
+                    if (fastaFile != null) {
+                        IoUtil.copyFile(fastaFile, new File(dataFolder, fastaFile.getName()));
+                    }
 
                     // copy the spectrum files
                     for (File spectrumFile : getSpectrumFiles()) {
@@ -5046,13 +5521,15 @@ public class SearchHandler {
         );
 
         // add the fasta file
-        ZipUtils.addFileToZip(
-                DEFAULT_DATA_FOLDER,
-                fastaFile,
-                out,
-                waitingHandler,
-                totalUncompressedSize
-        );
+        if (fastaFile != null) {
+            ZipUtils.addFileToZip(
+                    DEFAULT_DATA_FOLDER,
+                    fastaFile,
+                    out,
+                    waitingHandler,
+                    totalUncompressedSize
+            );
+        }
 
         // add the spectrum files
         for (File spectrumFile : getSpectrumFiles()) {
@@ -5326,7 +5803,7 @@ public class SearchHandler {
      */
     private long getTotalUncompressedSizeOfData(File spectrumFile, File cmsFile) {
 
-        long totalUncompressedSize = fastaFile.length();
+        long totalUncompressedSize = fastaFile == null ? 0 : fastaFile.length();
 
         if (spectrumFile != null) {
             totalUncompressedSize += spectrumFile.length();
